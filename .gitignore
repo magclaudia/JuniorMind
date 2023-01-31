@@ -352,3 +352,5 @@ MigrationBackup/
 *.sln
 *.csproj
 *.ruleset
+*.editorconfig
+*.rar
