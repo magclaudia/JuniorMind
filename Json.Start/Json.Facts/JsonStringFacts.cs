@@ -23,19 +23,19 @@ namespace Json.Facts
             Assert.False(IsJsonString("\"abc"));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void IsNotNull()
         {
             Assert.False(IsJsonString(null));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void IsNotAnEmptyString()
         {
             Assert.False(IsJsonString(string.Empty));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void IsAnEmptyDoubleQuotedString()
         {
             Assert.True(IsJsonString(Quoted(string.Empty)));
