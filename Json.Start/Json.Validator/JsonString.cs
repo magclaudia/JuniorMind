@@ -69,7 +69,7 @@ namespace Json
         {
             const string escapeChars = "\"\\/bfnrt";
             const int hexUnit = 4;
-            if (input[i] == 'u' && input.Length - (1 - i) > hexUnit)
+            if (input[i] == 'u' && input.Length - i - 1 >= hexUnit)
             {
                 return IsHexValue(input, i + 1, hexUnit);
             }
@@ -79,15 +79,16 @@ namespace Json
 
         static bool IsHexValue(string input, int i, int hexUnit)
         {
-            for (int j = i; j <= hexUnit; j++)
+            int countHexChar = 0;
+            for (int j = i; j <= input.Length - 1; j++)
             {
-                if (!IsHexChar(input[j]))
+                if (IsHexChar(input[j]))
                 {
-                    return false;
+                    countHexChar++;
                 }
             }
 
-            return true;
+            return countHexChar >= hexUnit;
         }
 
         static bool IsHexChar(char c)
