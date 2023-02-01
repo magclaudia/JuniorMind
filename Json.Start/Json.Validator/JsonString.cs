@@ -74,7 +74,7 @@ namespace Json
                 return IsHexValue(input, i + 1, hexUnit);
             }
 
-            return i != input.Length - 1 && escapeChars.Contains(input[i]) || input[i - 1] == '\\';
+            return i != input.Length - 1 && escapeChars.Contains(input[i]);
         }
 
         static bool IsHexValue(string input, int i, int hexUnit)
