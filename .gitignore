@@ -350,7 +350,4 @@ MigrationBackup/
 .ionide/
 
 *.sln
-*.csproj
-*.ruleset
-*.editorconfig
 *.rar
