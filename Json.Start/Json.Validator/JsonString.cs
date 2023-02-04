@@ -21,29 +21,14 @@ namespace Json
 
         static bool VerifyForJsonCharacters(string input)
         {
-            return CheckUnicodeCharactersValue(input) && CheckEscapeCharacter(input);
+            return VerifyControlCharacters(input) && CheckEscapeCharacter(input);
         }
 
-        static bool CheckUnicodeCharactersValue(string input)
+        static bool VerifyControlCharacters(string input)
         {
-            const int minValue = 0x20;
-            int controlCase = 0;
             foreach (char c in input)
             {
-                if (Convert.ToInt32(c) < minValue)
-                {
-                    controlCase++;
-                }
-            }
-
-            return controlCase < 1;
-        }
-
-        static bool CheckEscapeCharacter(string input)
-        {
-            for (int i = 0; i <= input.Length - 1; i++)
-            {
-                if (input[i] == '\\' && !CheckForEscapeChar(input, i + 1))
+                if (Convert.ToInt32(c) < ' ')
                 {
                     return false;
                 }
@@ -52,33 +37,42 @@ namespace Json
             return true;
         }
 
-        static bool CheckForEscapeChar(string input, int i)
+        static bool CheckEscapeCharacter(string input)
         {
-            const string escapeChars = "\"\\/bfnrt";
-            if (input[i] == 'u')
+            for (int i = 0; i <= input.Length - 1; i++)
             {
-                return IsHexValue(input, i + 1);
+                if (input[i] == '\\' && !CheckForEscapeChar(input, ref i))
+                {
+                    return false;
+                }
             }
 
-            if (input[input.Length - 1 - 1] == '\\')
-            {
-                return false;
-            }
-
-            return escapeChars.Contains(input[i]) || input[i - 1 - 1] == '\\' && escapeChars.Contains(input[i - 1]);
+            return true;
         }
 
-        static bool IsHexValue(string input, int i)
+        static bool CheckForEscapeChar(string input, ref int indexPosition)
+        {
+            const string escapeChars = "\"\\/bfnrt";
+            indexPosition++;
+            if (input[indexPosition] == 'u')
+            {
+                return IsHexValue(input, indexPosition + 1);
+            }
+
+            return indexPosition < input.Length - 1 && escapeChars.Contains(input[indexPosition]);
+        }
+
+        static bool IsHexValue(string input, int indexPosition)
         {
             const int hexUnit = 4;
             for (int j = 0; j < hexUnit; j++)
             {
-                if (!IsHexChar(input[i]))
+                if (!IsHexChar(input[indexPosition]))
                 {
                     return false;
                 }
 
-                i++;
+                indexPosition++;
             }
 
             return true;
