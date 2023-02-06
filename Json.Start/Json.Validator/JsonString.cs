@@ -28,7 +28,7 @@ namespace Json
         {
             foreach (char c in input)
             {
-                if (Convert.ToInt32(c) < ' ')
+                if (c < ' ')
                 {
                     return false;
                 }
