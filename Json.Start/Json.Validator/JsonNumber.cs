@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 
 namespace Json
 {
@@ -7,21 +6,22 @@ namespace Json
     {
         public static bool IsJsonNumber(string input)
         {
-            return NumberHasContent(input) && IsInteger(ExtractInteger(input)) && IsFraction(ExtractFraction(input)) && IsExponent(ExtractExponent(input));
+            if (string.IsNullOrEmpty(input))
+            {
+                return false;
+            }
+
+            input = input.ToLower();
+            var exponent = input.IndexOfAny("eE".ToCharArray());
+            var dot = input.IndexOf('.');
+            return IsInteger(ExtractInteger(input, exponent, dot)) && IsFraction(ExtractFraction(input, dot)) && IsExponent(ExtractExponent(input, exponent, dot), exponent, dot);
         }
 
-        static bool NumberHasContent(string input)
+        static string ExtractInteger(string input, int indexOfExponent, int indexOfDot)
         {
-            return !string.IsNullOrEmpty(input);
-        }
-
-        static string ExtractInteger(string input)
-        {
-            var indexOfExponent = input.IndexOfAny("eE".ToCharArray());
-            var indexOfDot = input.IndexOf('.');
             if (indexOfDot != -1)
             {
-               input = input.Substring(0, indexOfDot);
+                input = input.Substring(0, indexOfDot);
             }
             else if (indexOfDot == -1 && indexOfExponent != -1)
             {
@@ -45,9 +45,8 @@ namespace Json
             return input.Length > 1 && input[0] != '0' || input.Length == 1;
         }
 
-        static string ExtractFraction(string input)
+        static string ExtractFraction(string input, int indexOfDot)
         {
-            var indexOfDot = input.IndexOf('.');
             int numberOfDots = 0;
             int containForbiddenLetters = 0;
             foreach (char c in input)
@@ -57,7 +56,7 @@ namespace Json
                     numberOfDots++;
                 }
 
-                if (char.IsLetter(c) && c != 'e' && c != 'E' && indexOfDot != -1)
+                if (char.IsLetter(c) && c != 'e' && indexOfDot != -1)
                 {
                     containForbiddenLetters++;
                 }
@@ -76,37 +75,45 @@ namespace Json
             return input.Length > 1 && input[^1] != '.' || input.Length == 1 && !input.Contains('.');
         }
 
-        static string ExtractExponent(string input)
+        static string ExtractExponent(string input, int indexOfExponent, int indexOfDot)
         {
-            var indexOfExponent = input.IndexOfAny("eE".ToCharArray());
-            var indexOfDot = input.IndexOf('.');
+            if (indexOfExponent > indexOfDot)
+            {
+                input = input.Substring(indexOfExponent, input.Length - indexOfExponent);
+            }
+
+            if (indexOfDot > indexOfExponent && indexOfExponent != -1)
+            {
+                input = input.Substring(indexOfExponent, indexOfDot);
+            }
+
+            return input;
+        }
+
+        static bool IsExponent(string input, int indexOfExponent, int indexOfDot)
+        {
+            const string sign = "-+";
             int numbersOfExponents = 0;
             int letters = 0;
             foreach (char c in input)
             {
-                if (c == 'e' || c == 'E')
-                {
-                    numbersOfExponents++;
-                }
+                    if (c == 'e')
+                    {
+                        numbersOfExponents++;
+                    }
 
-                if (char.IsLetter(c) && c != 'e' && c != 'E')
-                {
-                    letters++;
-                }
+                    if (char.IsLetter(c) && c != 'e')
+                    {
+                        letters++;
+                    }
             }
 
-            if (indexOfExponent > indexOfDot && numbersOfExponents == 1 && letters == 0)
+            if (indexOfExponent < indexOfDot && input.Contains('e'))
             {
-                return input.Substring(indexOfExponent, input.Length - indexOfExponent);
+                return false;
             }
 
-            return input.Remove(0, input.Length - indexOfDot);
-        }
-
-        static bool IsExponent(string input)
-        {
-            const string sign = "-+";
-            return input[^1] != 'e' && input[^1] != 'E' && !sign.Contains(input[^1]) && !input.Contains('.');
+            return input[^1] != 'e' && !sign.Contains(input[^1]) && numbersOfExponents <= 1 && letters == 0;
         }
     }
 }
