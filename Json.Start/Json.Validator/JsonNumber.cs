@@ -5,11 +5,9 @@ namespace Json
 {
     public static class JsonNumber
     {
-        const string Sign = "-+";
-
         public static bool IsJsonNumber(string input)
         {
-            return NumberHasContent(input) && CheckNumber(input);
+            return NumberHasContent(input) && IsInteger(ExtractInteger(input));
         }
 
         static bool NumberHasContent(string input)
@@ -17,61 +15,30 @@ namespace Json
             return !string.IsNullOrEmpty(input);
         }
 
-        static bool CheckNumber(string input)
+        static string ExtractInteger(string input)
         {
-            int numberOfDots = 0;
-            int numbersOfExponents = 0;
+            var indexOfExponent = input.IndexOfAny("eE".ToCharArray());
+            var indexOfDot = input.IndexOf('.');
+            if (indexOfDot < indexOfExponent)
+            {
+               input = input.Remove(indexOfDot, input.Length - indexOfDot);
+            }
+
             foreach (char c in input)
             {
-                if (char.IsDigit(c) && !input.Contains('.') && !IsInteger(input))
+                if (char.IsLetter(c))
                 {
-                    return false;
-                }
-
-                if (c == '.' && !IsFractional(input, c, ref numberOfDots))
-                {
-                    return false;
-                }
-
-                if (!char.IsDigit(c) && c != '.' && !IsExponential(input, c, ref numbersOfExponents))
-                {
-                    return false;
+                    var indexOfLetter = input.IndexOf(c);
+                    input = input.Remove(indexOfLetter, input.Length - indexOfLetter);
                 }
             }
 
-            return true;
+            return input;
         }
 
         static bool IsInteger(string input)
         {
-            return input.Length > 1 && input[0] != '0' || input.Contains(Sign) || input.Length == 1;
-        }
-
-        static bool IsFractional(string input, char c, ref int numberOfDots)
-        {
-            if (c == '.')
-            {
-                numberOfDots++;
-            }
-
-            if (input.Contains('e') && input.IndexOf(c) > input.IndexOf('e') || input.Contains('E') && input.IndexOf(c) > input.IndexOf('E'))
-            {
-                return false;
-            }
-
-            return input.Length > 1 && input.Contains('.') && numberOfDots == 1 && input[^1] != '.';
-        }
-
-        static bool IsExponential(string input, char c, ref int numbersOfExponents)
-        {
-            const string checkExponents = "eE+-";
-            c = char.ToLower(c);
-            if (c == 'e')
-            {
-                numbersOfExponents++;
-            }
-
-            return c == 'e' && numbersOfExponents == 1 && !checkExponents.Contains(input[^1]) || Sign.Contains(c);
+            return input.Length > 1 && input[0] != '0' || input.Length == 1;
         }
     }
 }
