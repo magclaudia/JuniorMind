@@ -1,5 +1,4 @@
-﻿
-using Xunit;
+﻿using Xunit;
 using static Json.JsonNumber;
 
 namespace Json.Facts
