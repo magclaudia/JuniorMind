@@ -81,12 +81,18 @@ namespace Json
 
         static bool IsExponent(string input)
         {
-            if (input.Length > 1 && input[1] == '-' || input.Length > 1 && input[1] == '+')
+            if (input == string.Empty)
+            {
+                return true;
+            }
+
+            input = input[1..];
+            if (input.StartsWith('-') || input.StartsWith('+'))
             {
                 input = input[1..];
             }
 
-            return input == string.Empty || IsDigits(input[1..]);
+            return IsDigits(input);
         }
 
         static bool IsDigits(string input)
@@ -100,6 +106,17 @@ namespace Json
             }
 
             return input.Length > 0;
+        }
+
+        static bool TryParse(string input, out int result)
+        {
+            if (int.TryParse(input, out result))
+            {
+                return true;
+            }
+
+            result = 0;
+            return false;
         }
     }
 }
