@@ -4,8 +4,6 @@ namespace Json
 {
     public static class JsonNumber
     {
-        const string Sign = "-+";
-
         public static bool IsJsonNumber(string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -16,22 +14,21 @@ namespace Json
             input = input.ToLower();
             var exponent = input.IndexOfAny("eE".ToCharArray());
             var dot = input.IndexOf('.');
-            var indexOfSign = input.IndexOfAny(Sign.ToCharArray());
             return IsInteger(ExtractInteger(input, exponent, dot))
-                && IsFraction(ExtractFraction(input, dot, exponent), dot, indexOfSign, exponent)
-                && IsExponent(ExtractExponent(input, exponent, dot), exponent, dot);
+                && IsFraction(ExtractFraction(input, dot, exponent))
+                && IsExponent(ExtractExponent(input, exponent));
         }
 
         static string ExtractInteger(string input, int indexOfExponent, int indexOfDot)
         {
             if (indexOfDot != -1)
             {
-                return input[0..indexOfDot];
+                return input[..indexOfDot];
             }
 
-            if (indexOfDot == -1 && indexOfExponent != -1)
+            if (indexOfExponent != -1)
             {
-                return input[0..indexOfExponent];
+                return input[..indexOfExponent];
             }
 
             return input;
@@ -39,82 +36,70 @@ namespace Json
 
         static bool IsInteger(string input)
         {
-            if (Sign.Contains(input[0]) && char.IsDigit(input[1]))
+            if (input[0] == '-')
             {
-                return true;
+                input = input[1..];
             }
 
-            return input.Length > 1 && input[0] != '0' || input.Length == 1 && char.IsDigit(input[0]);
+            if (input.Length > 1 && input[0] == '0')
+            {
+                return false;
+            }
+
+            return IsDigits(input);
         }
 
         static string ExtractFraction(string input, int indexOfDot, int indexOfExponent)
         {
-            int numberOfDots = 0;
-            int containForbiddenLetters = 0;
+            if (indexOfDot != -1 && indexOfExponent == -1)
+            {
+                return input[indexOfDot..];
+            }
+
+            if (indexOfDot != -1 && indexOfExponent != -1)
+            {
+                return input[indexOfDot..indexOfExponent];
+            }
+
+            return string.Empty;
+        }
+
+        static bool IsFraction(string input)
+        {
+            return input == string.Empty || IsDigits(input[1..]);
+        }
+
+        static string ExtractExponent(string input, int indexOfExponent)
+        {
+            if (indexOfExponent != -1)
+            {
+                return input[indexOfExponent..];
+            }
+
+            return string.Empty;
+        }
+
+        static bool IsExponent(string input)
+        {
+            if (input.Length > 1 && input[1] == '-' || input.Length > 1 && input[1] == '+')
+            {
+                input = input[1..];
+            }
+
+            return input == string.Empty || IsDigits(input[1..]);
+        }
+
+        static bool IsDigits(string input)
+        {
             foreach (char c in input)
             {
-                if (c == '.')
+                if (!char.IsDigit(c))
                 {
-                    numberOfDots++;
-                }
-
-                if (char.IsLetter(c) && c != 'e' && indexOfDot != -1)
-                {
-                    containForbiddenLetters++;
+                    return false;
                 }
             }
 
-            if (indexOfDot != -1)
-            {
-                input = numberOfDots == 1 && containForbiddenLetters == 0 ? input[indexOfDot..input.Length] : input.Remove(0, input.Length);
-            }
-
-            return input;
-        }
-
-        static bool IsFraction(string input, int indexOfDot, int indexOfSign, int indexOfExponent)
-        {
-            if (indexOfSign + 1 == indexOfExponent)
-            {
-                return false;
-            }
-
-            return input.Length > 1 && input[^1] != '.' || input.Length == 1 && !input.Contains('.');
-        }
-
-        static string ExtractExponent(string input, int indexOfExponent, int indexOfDot)
-        {
-            if (indexOfExponent > indexOfDot && !Sign.Contains(input[0]))
-            {
-                input = input[indexOfExponent..input.Length];
-            }
-
-            return input;
-        }
-
-        static bool IsExponent(string input, int indexOfExponent, int indexOfDot)
-        {
-            int numbersOfExponents = 0;
-            int letters = 0;
-            foreach (char c in input)
-            {
-                    if (c == 'e')
-                    {
-                        numbersOfExponents++;
-                    }
-
-                    if (char.IsLetter(c) && c != 'e')
-                    {
-                        letters++;
-                    }
-            }
-
-            if (indexOfExponent < indexOfDot && input.Contains('e') || letters > 0 || numbersOfExponents > 1)
-            {
-                return false;
-            }
-
-            return input[^1] != 'e' && !Sign.Contains(input[^1]);
+            return input.Length > 0;
         }
     }
 }
