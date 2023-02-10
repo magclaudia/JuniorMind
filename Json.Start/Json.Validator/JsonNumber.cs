@@ -110,13 +110,28 @@ namespace Json
 
         static bool TryParse(string input, out int result)
         {
-            if (int.TryParse(input, out result))
+            result = 0;
+
+            if (string.IsNullOrEmpty(input))
             {
-                return true;
+                return false;
             }
 
-            result = 0;
-            return false;
+            foreach (char c in input)
+            {
+                if (!char.IsDigit(c))
+                {
+                    return false;
+                }
+            }
+
+            if (long.Parse(input) > int.MaxValue || long.Parse(input) < int.MinValue)
+            {
+                return false;
+            }
+
+            result = int.Parse(input);
+            return true;
         }
     }
 }
