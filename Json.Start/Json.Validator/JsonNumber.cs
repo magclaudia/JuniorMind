@@ -111,27 +111,45 @@ namespace Json
         static bool TryParse(string input, out int result)
         {
             result = 0;
+            bool boolVerify = false;
+            const int maxValue = 2147483647;
+            const int number = 10;
 
             if (string.IsNullOrEmpty(input))
             {
                 return false;
             }
 
-            foreach (char c in input)
+            for (int i = 0; i < input.Length; i++)
             {
-                if (!char.IsDigit(c))
+                char c = input[i];
+                if (i == 0 && c == '-')
                 {
-                    return false;
+                    boolVerify = true;
+                }
+                else
+                {
+                    if (!char.IsDigit(c))
+                    {
+                        return false;
+                    }
+
+                    int digit = c - '0';
+                    if (result > (maxValue - digit) / number)
+                    {
+                        return false;
+                    }
+
+                    result = result * number + digit;
                 }
             }
 
-            if (long.Parse(input) > int.MaxValue || long.Parse(input) < int.MinValue)
+            if (input.StartsWith('-'))
             {
-                return false;
+                return boolVerify;
             }
 
-            result = int.Parse(input);
-            return true;
+            return !boolVerify;
         }
     }
 }
