@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoccerTeamsRanking", "SoccerTeamsRanking\SoccerTeamsRanking.csproj", "{99CA3B44-3F3C-4280-AECC-F5AB580D02AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamsRanking", "TeamsRanking.csproj", "{C3A27D45-4115-4E35-B292-365B428A28B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{99CA3B44-3F3C-4280-AECC-F5AB580D02AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99CA3B44-3F3C-4280-AECC-F5AB580D02AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99CA3B44-3F3C-4280-AECC-F5AB580D02AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99CA3B44-3F3C-4280-AECC-F5AB580D02AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3A27D45-4115-4E35-B292-365B428A28B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3A27D45-4115-4E35-B292-365B428A28B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3A27D45-4115-4E35-B292-365B428A28B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3A27D45-4115-4E35-B292-365B428A28B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A55A7D23-F72F-44CD-B3C6-4A6561AE0FF1}
+		SolutionGuid = {58C732DB-14B0-4439-9860-11CB06810F06}
 	EndGlobalSection
 EndGlobal
