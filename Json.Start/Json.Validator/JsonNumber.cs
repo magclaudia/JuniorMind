@@ -114,34 +114,32 @@ namespace Json
             const bool boolVerify = false;
             const int maxValue = 2147483647;
             const int number = 10;
-            int digit = 0;
+            var sign = 1;
             if (string.IsNullOrEmpty(input))
             {
                 return false;
             }
 
+            if (input.StartsWith('-'))
+            {
+                input = input[1..];
+                sign = -1;
+            }
+
             foreach (char c in input)
             {
-                if (!char.IsDigit(c) && c != '-')
+                if (!char.IsDigit(c))
                 {
                     return boolVerify;
                 }
 
-                if (char.IsDigit(c))
+                int digit = c - '0';
+                if (result > (maxValue - digit) / number)
                 {
-                    digit = c - '0';
-                    if (result > (maxValue - digit) / number)
-                    {
-                        return boolVerify;
-                    }
+                    return boolVerify;
                 }
 
-                result = result * number + digit;
-            }
-
-            if (input.StartsWith('-'))
-            {
-                return !boolVerify;
+                result = result * number + digit * sign;
             }
 
             return !boolVerify;
