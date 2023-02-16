@@ -2,29 +2,30 @@
 
 namespace TeamsRanking
 {
-    public class SoccerTeams
+    public class SoccerTeam
     {
         private readonly string teamName;
         private int points;
-        public SoccerTeams(string teamName, int points)
+
+        public SoccerTeam(string teamName, int points)
         {
             this.teamName = teamName;
             this.points = points;
         }
 
-        public void UpdateScore(int newPoints)
+        public void AddPoints(int newPoints)
         {
             points += newPoints;
         }
 
-        public bool CompareScore(SoccerTeams team2)
+        public bool ComparePoints(SoccerTeam otherTeam)
         {
-            if (team2 == null)
+            if (otherTeam == null)
             {
                 return false;
             }
 
-            return points < team2.points;
+            return points < otherTeam.points;
         }
     }
 }

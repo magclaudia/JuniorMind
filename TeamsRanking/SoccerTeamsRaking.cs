@@ -1,50 +1,49 @@
-﻿using System;
-
-namespace TeamsRanking
+﻿namespace TeamsRanking
 {
-    public class SoccerTeamsRanking
+    public class SoccerTeamRanking
     {
-        private SoccerTeams[] teams;
-        public SoccerTeamsRanking()
+        private SoccerTeam[] teams;
+
+        public SoccerTeamRanking()
         {
-            teams = new SoccerTeams[0];
+            teams = new SoccerTeam[0];
         }
 
-        public void AddNewTeams(SoccerTeams team)
+        public void Add(SoccerTeam team)
         {
             Array.Resize(ref teams, teams.Length + 1);
             teams[teams.Length - 1] = team;
         }
 
-        public int GetTotalNumberOfTeams()
+        public int TeamsNumber()
         {
             return teams.Length;
         }
 
-        public SoccerTeams GetTeamByInputPosition(int position)
+        public SoccerTeam TeamAtPosition(int position)
         {
             return teams[position];
         }
 
-        public int GetPositionOfRequiredTeam(SoccerTeams team)
+        public int PositionOf(SoccerTeam team)
         {
             return Array.IndexOf(teams, team);
         }
 
-        public void UpdateScoreAfterMatch(SoccerTeams firstTeam, SoccerTeams secondTeam, int firstTeamScore, int secondTeamScore)
+        public void Update(SoccerTeam first, SoccerTeam second, int teamHome, int awayTeam)
         {
-            if (firstTeamScore > secondTeamScore)
+            if (teamHome > awayTeam)
             {
-                firstTeam.UpdateScore(1);
+                first.AddPoints(3);
             }
-            else if (secondTeamScore > firstTeamScore)
+            else if (awayTeam > teamHome)
             {
-                secondTeam.UpdateScore(1);
+                second.AddPoints(3);
             }
             else
             {
-                firstTeam.UpdateScore(1);
-                secondTeam.UpdateScore(1);
+                first.AddPoints(1);
+                second.AddPoints(1);
             }
                
             BubbleSort();
@@ -52,19 +51,19 @@ namespace TeamsRanking
 
         private void BubbleSort()
         {
-            SoccerTeams temp;
-            bool isSorted = true;
-            while (isSorted)
+            SoccerTeam temp;
+            bool isNotSorted = true;
+            while (isNotSorted)
             {
-                isSorted = false;
+                isNotSorted = false;
                 for (int i = 0; i < teams.Length - 1; i++)
                 {
-                    if (teams[i].CompareScore(teams[i + 1]))
+                    if (teams[i].ComparePoints(teams[i + 1]))
                     {
                         temp = teams[i + 1];
                         teams[i + 1] = teams[i];
                         teams[i] = temp;
-                        isSorted = true;
+                        isNotSorted = true;
                     }
                 }
             }

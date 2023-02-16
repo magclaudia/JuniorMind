@@ -7,104 +7,103 @@ namespace TeamsRanking
         [Fact]
         public void AddTeamToRanking()
         {
-            SoccerTeams team1 = new SoccerTeams("Team1", 1);
-            SoccerTeamsRanking teamsRanking = new SoccerTeamsRanking();
-            teamsRanking.AddNewTeams(team1);
-            int number = teamsRanking.GetTotalNumberOfTeams();
-            Assert.Equal(number, teamsRanking.GetTotalNumberOfTeams());
+            SoccerTeam team1 = new("Team1", 1);
+            SoccerTeamRanking teamsRanking = new();
+            teamsRanking.Add(team1);
+            int number = teamsRanking.TeamsNumber();
+            Assert.Equal(number, teamsRanking.TeamsNumber());
         }
 
         [Fact]
         public void AddMultipleTeamsToRanking()
         {
-            SoccerTeams team1 = new SoccerTeams("Team1", 1);
-            SoccerTeams team2 = new SoccerTeams("Team2", 4);
-            SoccerTeams team3 = new SoccerTeams("Team3", 2);
-            SoccerTeams team4 = new SoccerTeams("Team4", 3);
-            SoccerTeamsRanking teamsRanking = new SoccerTeamsRanking();
-            teamsRanking.AddNewTeams(team1);
-            teamsRanking.AddNewTeams(team2);
-            teamsRanking.AddNewTeams(team3);
-            teamsRanking.AddNewTeams(team4);
-            int number = teamsRanking.GetTotalNumberOfTeams();
-            Assert.Equal(number, teamsRanking.GetTotalNumberOfTeams());
+            SoccerTeam team1 = new("Team1", 1);
+            SoccerTeam team2 = new("Team2", 4);
+            SoccerTeam team3 = new("Team3", 2);
+            SoccerTeam team4 = new("Team4", 3);
+            SoccerTeamRanking teamsRanking = new();
+            teamsRanking.Add(team1);
+            teamsRanking.Add(team2);
+            teamsRanking.Add(team3);
+            teamsRanking.Add(team4);
+            int number = teamsRanking.TeamsNumber();
+            Assert.Equal(number, teamsRanking.TeamsNumber());
         }
 
         [Fact]
         public void CorrectlyReturnATeamByInputPosition()
         {
-            SoccerTeams team1 = new SoccerTeams("Team1", 1);
-            SoccerTeams team2 = new SoccerTeams("Team2", 4);
-            SoccerTeams team3 = new SoccerTeams("Team3", 2);
-            SoccerTeams team4 = new SoccerTeams("Team4", 3);
-            SoccerTeamsRanking teamsRanking = new SoccerTeamsRanking();
-            teamsRanking.AddNewTeams(team1);
-            teamsRanking.AddNewTeams(team2);
-            teamsRanking.AddNewTeams(team3);
-            teamsRanking.AddNewTeams(team4);
-            Assert.Equal(team3, teamsRanking.GetTeamByInputPosition(2));
+            SoccerTeam team1 = new("Team1", 1);
+            SoccerTeam team2 = new("Team2", 4);
+            SoccerTeam team3 = new("Team3", 2);
+            SoccerTeam team4 = new("Team4", 3);
+            SoccerTeamRanking teamsRanking = new();
+            teamsRanking.Add(team1);
+            teamsRanking.Add(team2);
+            teamsRanking.Add(team3);
+            teamsRanking.Add(team4);
+            Assert.Equal(team3, teamsRanking.TeamAtPosition(2));
         }
 
         [Fact]
         public void CorrectlReturnATeamPosition()
         {
-            SoccerTeams team1 = new SoccerTeams("Team1", 1);
-            SoccerTeams team2 = new SoccerTeams("Team2", 4);
-            SoccerTeams team3 = new SoccerTeams("Team3", 2);
-            SoccerTeams team4 = new SoccerTeams("Team4", 3);
-            SoccerTeamsRanking teamsRanking = new SoccerTeamsRanking();
-            teamsRanking.AddNewTeams(team1);
-            teamsRanking.AddNewTeams(team2);
-            teamsRanking.AddNewTeams(team3);
-            teamsRanking.AddNewTeams(team4);
-            Assert.Equal(2, teamsRanking.GetPositionOfRequiredTeam(team3));
+            SoccerTeam team1 = new("Team1", 1);
+            SoccerTeam team2 = new("Team2", 4);
+            SoccerTeam team3 = new("Team3", 2);
+            SoccerTeam team4 = new("Team4", 3);
+            SoccerTeamRanking teamsRanking = new();
+            teamsRanking.Add(team1);
+            teamsRanking.Add(team2);
+            teamsRanking.Add(team3);
+            teamsRanking.Add(team4);
+            Assert.Equal(2, teamsRanking.PositionOf(team3));
         }
 
         [Fact]
         public void UpdatesPointsForWinningTeamAfterAMatchIfResultAreDifferent()
         {
-            SoccerTeams team1 = new SoccerTeams("Team1", 1);
-            SoccerTeams team2 = new SoccerTeams("Team2", 4);
-            SoccerTeamsRanking teamsRanking = new SoccerTeamsRanking();
-            teamsRanking.AddNewTeams(team1);
-            teamsRanking.AddNewTeams(team2);
-            teamsRanking.UpdateScoreAfterMatch(team1, team2, 1, 2);
-            Assert.Equal(0, teamsRanking.GetPositionOfRequiredTeam(team2));
-            Assert.Equal(1, teamsRanking.GetPositionOfRequiredTeam(team1));
+            SoccerTeam team1 = new("Team1", 1);
+            SoccerTeam team2 = new("Team2", 4);
+            SoccerTeamRanking teamsRanking = new();
+            teamsRanking.Add(team1);
+            teamsRanking.Add(team2);
+            teamsRanking.Update(team1, team2, 1, 2);
+            Assert.Equal(0, teamsRanking.PositionOf(team2));
+            Assert.Equal(1, teamsRanking.PositionOf(team1));
         }
 
         [Fact]
         public void UpdatesPointsForWinningTeamAfterAMatchIfResultAreEqual()
         {
-            SoccerTeams team1 = new SoccerTeams("Team1", 1);
-            SoccerTeams team2 = new SoccerTeams("Team2", 4);
-            SoccerTeamsRanking teamsRanking = new SoccerTeamsRanking();
-            teamsRanking.AddNewTeams(team1);
-            teamsRanking.AddNewTeams(team2);
-            teamsRanking.UpdateScoreAfterMatch(team1, team2, 1, 1);
-            Assert.Equal(0, teamsRanking.GetPositionOfRequiredTeam(team2));
-            Assert.Equal(1, teamsRanking.GetPositionOfRequiredTeam(team1));
+            SoccerTeam team1 = new("Team1", 1);
+            SoccerTeam team2 = new("Team2", 4);
+            SoccerTeamRanking teamsRanking = new();
+            teamsRanking.Add(team1);
+            teamsRanking.Add(team2);
+            teamsRanking.Update(team1, team2, 1, 1);
+            Assert.Equal(0, teamsRanking.PositionOf(team2));
+            Assert.Equal(1, teamsRanking.PositionOf(team1));
         }
 
         [Fact]
         public void ShouldCorrectlySortRankingAfterGames()
         {
-            SoccerTeams team1 = new SoccerTeams("Team1", 1);
-            SoccerTeams team2 = new SoccerTeams("Team2", 4);
-            SoccerTeams team3 = new SoccerTeams("Team3", 2);
-            SoccerTeams team4 = new SoccerTeams("Team4", 3);
-            SoccerTeamsRanking teamsRanking = new SoccerTeamsRanking();
-            teamsRanking.AddNewTeams(team1);
-            teamsRanking.AddNewTeams(team2);
-            teamsRanking.AddNewTeams(team3);
-            teamsRanking.AddNewTeams(team4);
-            teamsRanking.UpdateScoreAfterMatch(team1, team2, 3, 1);
-            teamsRanking.UpdateScoreAfterMatch(team3, team4, 1, 3);
-            Assert.Equal(0, teamsRanking.GetPositionOfRequiredTeam(team2));
-            Assert.Equal(1, teamsRanking.GetPositionOfRequiredTeam(team4));
-            Assert.Equal(2, teamsRanking.GetPositionOfRequiredTeam(team1));
-            Assert.Equal(3, teamsRanking.GetPositionOfRequiredTeam(team3));
+            SoccerTeam team1 = new("Team1", 1);
+            SoccerTeam team2 = new("Team2", 4);
+            SoccerTeam team3 = new("Team3", 2);
+            SoccerTeam team4 = new("Team4", 3);
+            SoccerTeamRanking teamsRanking = new();
+            teamsRanking.Add(team1);
+            teamsRanking.Add(team2);
+            teamsRanking.Add(team3);
+            teamsRanking.Add(team4);
+            teamsRanking.Update(team1, team2, 3, 1);
+            teamsRanking.Update(team3, team4, 1, 3);
+            Assert.Equal(0, teamsRanking.PositionOf(team4));
+            Assert.Equal(1, teamsRanking.PositionOf(team1));
+            Assert.Equal(2, teamsRanking.PositionOf(team2));
+            Assert.Equal(3, teamsRanking.PositionOf(team3));
         }
-
     }
 }
