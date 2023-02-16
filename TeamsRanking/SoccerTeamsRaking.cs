@@ -16,9 +16,9 @@ namespace TeamsRanking
             teams[teams.Length - 1] = team;
         }
 
-        public SoccerTeams[] GetTeams()
+        public int GetTotalNumberOfTeams()
         {
-            return teams;
+            return teams.Length;
         }
 
         public SoccerTeams GetTeamByInputPosition(int position)
@@ -31,7 +31,7 @@ namespace TeamsRanking
             return Array.IndexOf(teams, team);
         }
 
-        public void UpdateScoreAfterMatch(SoccerTeams firstTeam, SoccerTeams secondTeam, int firstTeamScore, int secondTeamScore, bool sort)
+        public void UpdateScoreAfterMatch(SoccerTeams firstTeam, SoccerTeams secondTeam, int firstTeamScore, int secondTeamScore)
         {
             if (firstTeamScore > secondTeamScore)
             {
@@ -46,12 +46,8 @@ namespace TeamsRanking
                 firstTeam.UpdateScore(1);
                 secondTeam.UpdateScore(1);
             }
-
-            if (sort == true)
-            {
-                BubbleSort();
-
-            }
+               
+            BubbleSort();
         }
 
         private void BubbleSort()

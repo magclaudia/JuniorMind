@@ -5,16 +5,16 @@ namespace TeamsRanking
     public class SoccerTeams
     {
         private readonly string teamName;
-        private int score;
-        public SoccerTeams(string teamName, int score)
+        private int points;
+        public SoccerTeams(string teamName, int points)
         {
             this.teamName = teamName;
-            this.score = score;
+            this.points = points;
         }
 
-        public void UpdateScore(int newScore)
+        public void UpdateScore(int newPoints)
         {
-            score += newScore;
+            points += newPoints;
         }
 
         public bool CompareScore(SoccerTeams team2)
@@ -24,7 +24,7 @@ namespace TeamsRanking
                 return false;
             }
 
-            return score < team2.score;
+            return points < team2.points;
         }
     }
 }
