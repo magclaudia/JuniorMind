@@ -67,9 +67,9 @@ namespace TeamsRanking
             SoccerTeamsRanking teamsRanking = new SoccerTeamsRanking();
             teamsRanking.AddNewTeams(team1);
             teamsRanking.AddNewTeams(team2);
-            teamsRanking.UpdateScoreAfterMatch(team1, team2, 1, 2);
-            Assert.Equal(1, teamsRanking.GetPositionOfRequiredTeam(team2));
+            teamsRanking.UpdateScoreAfterMatch(team1, team2, 1, 2, false);
             Assert.Equal(0, teamsRanking.GetPositionOfRequiredTeam(team1));
+            Assert.Equal(1, teamsRanking.GetPositionOfRequiredTeam(team2));
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace TeamsRanking
             SoccerTeamsRanking teamsRanking = new SoccerTeamsRanking();
             teamsRanking.AddNewTeams(team1);
             teamsRanking.AddNewTeams(team2);
-            teamsRanking.UpdateScoreAfterMatch(team1, team2, 1, 1);
+            teamsRanking.UpdateScoreAfterMatch(team1, team2, 1, 1, false);
             Assert.Equal(0, teamsRanking.GetPositionOfRequiredTeam(team1));
             Assert.Equal(1, teamsRanking.GetPositionOfRequiredTeam(team2));
         }
@@ -97,8 +97,8 @@ namespace TeamsRanking
             teamsRanking.AddNewTeams(team2);
             teamsRanking.AddNewTeams(team3);
             teamsRanking.AddNewTeams(team4);
-            teamsRanking.UpdateScoreAfterMatch(team1, team2, 3, 1);
-            teamsRanking.UpdateScoreAfterMatch(team3, team4, 1, 3);
+            teamsRanking.UpdateScoreAfterMatch(team1, team2, 3, 1, true);
+            teamsRanking.UpdateScoreAfterMatch(team3, team4, 1, 3, true);
             Assert.Equal(0, teamsRanking.GetPositionOfRequiredTeam(team2));
             Assert.Equal(1, teamsRanking.GetPositionOfRequiredTeam(team4));
             Assert.Equal(2, teamsRanking.GetPositionOfRequiredTeam(team1));

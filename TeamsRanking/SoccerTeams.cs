@@ -17,7 +17,7 @@ namespace TeamsRanking
             score += newScore;
         }
 
-        public bool CompareScoreTo(SoccerTeams team2)
+        public bool CompareScore(SoccerTeams team2)
         {
             if (team2 == null)
             {

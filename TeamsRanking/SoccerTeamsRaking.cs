@@ -31,7 +31,7 @@ namespace TeamsRanking
             return Array.IndexOf(teams, team);
         }
 
-        public void UpdateScoreAfterMatch(SoccerTeams firstTeam, SoccerTeams secondTeam, int firstTeamScore, int secondTeamScore)
+        public void UpdateScoreAfterMatch(SoccerTeams firstTeam, SoccerTeams secondTeam, int firstTeamScore, int secondTeamScore, bool sort)
         {
             if (firstTeamScore > secondTeamScore)
             {
@@ -47,7 +47,11 @@ namespace TeamsRanking
                 secondTeam.UpdateScore(1);
             }
 
-            BubbleSort();
+            if (sort == true)
+            {
+                BubbleSort();
+
+            }
         }
 
         private void BubbleSort()
@@ -59,7 +63,7 @@ namespace TeamsRanking
                 isSorted = false;
                 for (int i = 0; i < teams.Length - 1; i++)
                 {
-                    if (teams[i].CompareScoreTo(teams[i + 1]))
+                    if (teams[i].CompareScore(teams[i + 1]))
                     {
                         temp = teams[i + 1];
                         teams[i + 1] = teams[i];
@@ -69,5 +73,6 @@ namespace TeamsRanking
                 }
             }
         }
+
     }
 }
