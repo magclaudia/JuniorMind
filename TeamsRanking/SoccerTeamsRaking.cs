@@ -30,20 +30,20 @@
             return Array.IndexOf(teams, team);
         }
 
-        public void Update(SoccerTeam first, SoccerTeam second, int teamHome, int awayTeam)
+        public void Update(SoccerTeam homeTeam, SoccerTeam awayTeam, int homeTeamScore, int awayTeamScore)
         {
-            if (teamHome > awayTeam)
+            if (homeTeamScore > awayTeamScore)
             {
-                first.AddPoints(3);
+                homeTeam.AddPoints(3);
             }
-            else if (awayTeam > teamHome)
+            else if (awayTeamScore > homeTeamScore)
             {
-                second.AddPoints(3);
+                awayTeam.AddPoints(3);
             }
             else
             {
-                first.AddPoints(1);
-                second.AddPoints(1);
+                homeTeam.AddPoints(1);
+                awayTeam.AddPoints(1);
             }
                
             BubbleSort();
