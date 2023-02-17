@@ -63,7 +63,7 @@ namespace TeamsRanking
         [Fact]
         public void UpdatesPointsForWinningTeamAfterAMatchIfResultAreDifferent()
         {
-            SoccerTeam team1 = new("Team1", 1);
+            SoccerTeam team1 = new("Team1", 2);
             SoccerTeam team2 = new("Team2", 4);
             SoccerTeamRanking teamsRanking = new();
             teamsRanking.Add(team1);

@@ -1,3 +1,5 @@
+using System;
+
 namespace Classes
 {
     class Range

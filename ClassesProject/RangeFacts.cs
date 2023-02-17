@@ -36,8 +36,11 @@ namespace Classes
         public void StringIsNullOrEmpty()
         {
             Range c = new Range('a', 'f');
+            Character pattern = new('a');
             Assert.False(c.Match(null));
             Assert.False(c.Match(string.Empty));
+            Assert.False(pattern.Match(null));
+            Assert.False(pattern.Match(string.Empty));
         }
     }
 }
