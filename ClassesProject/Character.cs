@@ -2,9 +2,9 @@
 
 namespace Classes
 {
-    class Character
+    public class Character : IPattern
     {
-        readonly char pattern;
+        readonly private char pattern;
 
         public Character(char pattern)
         {

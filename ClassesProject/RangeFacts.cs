@@ -7,38 +7,38 @@ namespace Classes
         [Fact]  
         public void StringStartsWithFirstCharFromRange()
         {
-            Range c = new Range('a', 'f');
-            Assert.True(c.Match("abc"));
+            Range digit = new Range('a', 'f');
+            Assert.True(digit.Match("abc"));
         }
 
         [Fact]
         public void StringStartsWithLastCharFromRange()
         {
-            Range c = new Range('a', 'f');
-            Assert.True(c.Match("fab"));
+            Range digit = new Range('a', 'f');
+            Assert.True(digit.Match("fab"));
         }
 
         [Fact]
         public void StringStartsWithACharThatIsInRange()
         {
-            Range c = new Range('a', 'f');
-            Assert.True(c.Match("bcd"));
+            Range digit = new Range('a', 'f');
+            Assert.True(digit.Match("bcd"));
         }
 
         [Fact]
         public void StringStartsWithACharThatIsNotInRange()
         {
-            Range c = new Range('a', 'f');
-            Assert.False(c.Match("1ab"));
+            Range digit = new Range('a', 'f');
+            Assert.False(digit.Match("1ab"));
         }
 
         [Fact]
         public void StringIsNullOrEmpty()
         {
-            Range c = new Range('a', 'f');
+            Range digit = new Range('a', 'f');
             Character pattern = new('a');
-            Assert.False(c.Match(null));
-            Assert.False(c.Match(string.Empty));
+            Assert.False(digit.Match(null));
+            Assert.False(digit.Match(string.Empty));
             Assert.False(pattern.Match(null));
             Assert.False(pattern.Match(string.Empty));
         }

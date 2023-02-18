@@ -7,8 +7,8 @@ namespace Classes
         [Fact]
         public void StringStartsWithPattern()
         {
-            Character c = new Character('a');
-            Assert.True(c.Match("asd1"));
+            Character c = new Character('0');
+            Assert.True(c.Match("0sd1"));
         }
 
         [Fact]
@@ -21,7 +21,7 @@ namespace Classes
         [Fact]
         public void StringIsNullOrEmpty()
         {
-            Character c = new('a');
+            Character c = new('0');
             Assert.False(c.Match(null));
             Assert.False(c.Match(string.Empty));
         }

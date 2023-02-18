@@ -2,7 +2,7 @@ using System;
 
 namespace Classes
 {
-    class Range
+    public class Range : IPattern
     {
         private readonly char start;
         private readonly char end;
@@ -15,13 +15,17 @@ namespace Classes
 
         public bool Match(string text)
         {
-            var c = new Range('a', 'f');
             if (string.IsNullOrEmpty(text))
             {
                 return false;
             }
 
-            return c.start <= text[0] && text[0] <= c.end ? true : false;
+            if (text.StartsWith('-') && text.Length > 1)
+            {
+                text = text.Substring(1);
+            }
+
+            return start <= text[0] && text[0] <= end ? true : false;
         }
     }
 }
