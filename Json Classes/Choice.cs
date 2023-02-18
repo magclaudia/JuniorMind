@@ -1,12 +1,7 @@
 ﻿using System;
 
-namespace Classes
+namespace JsonClasses
 {
-    public interface IPattern
-    {
-        bool Match(string text);
-    }
-
     public class Choice : IPattern
     {
         private IPattern[] patterns;
@@ -16,17 +11,17 @@ namespace Classes
             this.patterns = patterns;
         }
 
-        public bool Match(string text) 
+        public IMatch Match(string text) 
         {
             foreach (var pattern in patterns)
             {
-                if (pattern.Match(text))
+                if (pattern.Match(text).Success())
                 {
-                    return true;
+                    return new Match(true, text);
                 }
             }
 
-            return false;
+            return new Match(false, text);
         }
     }
 }

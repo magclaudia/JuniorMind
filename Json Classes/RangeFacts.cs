@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Classes
+namespace JsonClasses
 {
     public class RangeFacts
     {
@@ -8,28 +8,28 @@ namespace Classes
         public void StringStartsWithFirstCharFromRange()
         {
             Range digit = new Range('a', 'f');
-            Assert.True(digit.Match("abc"));
+            Assert.True(digit.Match("abc").Success());
         }
 
         [Fact]
         public void StringStartsWithLastCharFromRange()
         {
             Range digit = new Range('a', 'f');
-            Assert.True(digit.Match("fab"));
+            Assert.True(digit.Match("fab").Success());
         }
-
-        [Fact]
+            
+        [Fact]  
         public void StringStartsWithACharThatIsInRange()
         {
             Range digit = new Range('a', 'f');
-            Assert.True(digit.Match("bcd"));
+            Assert.True(digit.Match("bcd").Success());
         }
 
         [Fact]
         public void StringStartsWithACharThatIsNotInRange()
         {
             Range digit = new Range('a', 'f');
-            Assert.False(digit.Match("1ab"));
+            Assert.False(digit.Match("1ab").Success());
         }
 
         [Fact]
@@ -37,10 +37,10 @@ namespace Classes
         {
             Range digit = new Range('a', 'f');
             Character pattern = new('a');
-            Assert.False(digit.Match(null));
-            Assert.False(digit.Match(string.Empty));
-            Assert.False(pattern.Match(null));
-            Assert.False(pattern.Match(string.Empty));
+            Assert.False(digit.Match(null).Success());
+            Assert.False(digit.Match(string.Empty).Success());
+            Assert.False(pattern.Match(null).Success());
+            Assert.False(pattern.Match(string.Empty).Success());
         }
     }
 }
