@@ -5,7 +5,7 @@ namespace JsonClasses
     public class Match : IMatch
     {
         private readonly bool succes;
-        private readonly string text;
+        private string text;
 
         public Match(bool succes, string text)
         {
@@ -13,7 +13,12 @@ namespace JsonClasses
             this.text = text;
         }
 
-        public bool Success()
+        public void SetText(string text)
+        {
+            this.text = text; 
+        }
+
+        public bool Succes()
         {
             return succes;
         }

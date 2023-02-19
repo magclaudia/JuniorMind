@@ -22,7 +22,7 @@ namespace JsonClasses
 
             if (text.StartsWith('-') && text.Length > 1)
             {
-                text = text.Substring(1);
+                text = text[1..];
             }
 
             if (start <= text[0] && text[0] <= end)

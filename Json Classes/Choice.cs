@@ -15,9 +15,9 @@ namespace JsonClasses
         {
             foreach (var pattern in patterns)
             {
-                if (pattern.Match(text).Success())
+                if (pattern.Match(text).Succes())
                 {
-                    return new Match(true, text);
+                    return new Match(true, text[1..]);
                 }
             }
 

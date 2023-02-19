@@ -20,7 +20,7 @@ namespace JsonClasses
 
             if (text[0] == pattern)
             {
-                return new Match(true, text);
+                return new Match(true, text[1..]);
             }
 
             return new Match(false, text);
