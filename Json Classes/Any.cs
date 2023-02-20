@@ -17,14 +17,11 @@ namespace JsonClasses
                 return new Match(false, text);
             }
 
-            int j = 0;
-            for (int i = 0; i < text.Length; i++)
+            foreach(var item in accepted)
             {
-                if (text[i] == accepted[0] || text[i] == accepted[1])
+                if (text[0] == item)
                 {
-                    j++;
-                    text = text[j..];
-                    return new Match(true, text);
+                    return new Match(true, text[1..]);
                 }
             }
 
