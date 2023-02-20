@@ -15,8 +15,9 @@ namespace JsonClasses
 
         public IMatch Match(string text)
         {
-            return !string.IsNullOrEmpty(text) && start <= text[0] && text[0] <= end ?
-                new Match(true, text[1..]) : new Match(false, text);
+            return !string.IsNullOrEmpty(text) && start <= text[0] && text[0] <= end 
+                ? new Match(true, text[1..])
+                : new Match(false, text);
         }
     }
 }
