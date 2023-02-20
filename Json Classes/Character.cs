@@ -13,17 +13,7 @@ namespace JsonClasses
 
         public IMatch Match(string text)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return new Match(false, text);
-            }
-
-            if (text[0] == pattern)
-            {
-                return new Match(true, text[1..]);
-            }
-
-            return new Match(false, text);
+            return !string.IsNullOrEmpty(text) && text[0] == pattern ? new Match(true, text[1..]) : new Match(false, text);
         }
     }
 }
