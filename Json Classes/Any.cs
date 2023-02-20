@@ -12,20 +12,7 @@ namespace JsonClasses
 
         public IMatch Match(string text)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return new Match(false, text);
-            }
-
-            foreach(var item in accepted)
-            {
-                if (text.Contains(item))
-                {
-                    return new Match(true, text[1..]);
-                }
-            }
-
-            return new Match(false, text);
+            return !string.IsNullOrEmpty(text) && accepted.Contains(text[0]) ? new Match(true, text[1..]) : new Match(false, text);
         }
     }
 }
