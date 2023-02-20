@@ -9,6 +9,7 @@ namespace JsonClasses
         {
             Range digit = new Range('a', 'f');
             Assert.True(digit.Match("abc").Succes());
+            Assert.Equal("bc", digit.Match("abc").RemainingText());
         }
 
         [Fact]
@@ -16,13 +17,15 @@ namespace JsonClasses
         {
             Range digit = new Range('a', 'f');
             Assert.True(digit.Match("fab").Succes());
+            Assert.Equal("ab", digit.Match("fab").RemainingText());
         }
-            
+
         [Fact]  
         public void StringStartsWithACharThatIsInRange()
         {
             Range digit = new Range('a', 'f');
             Assert.True(digit.Match("bcd").Succes());
+            Assert.Equal("cd", digit.Match("bcd").RemainingText());
         }
 
         [Fact]
@@ -30,17 +33,23 @@ namespace JsonClasses
         {
             Range digit = new Range('a', 'f');
             Assert.False(digit.Match("1ab").Succes());
+            Assert.Equal("1ab", digit.Match("1ab").RemainingText());
         }
 
         [Fact]
-        public void StringIsNullOrEmpty()
+        public void StringIsNull()
         {
             Range digit = new Range('a', 'f');
-            Character pattern = new('a');
             Assert.False(digit.Match(null).Succes());
+            Assert.Null(digit.Match(null).RemainingText());
+        }
+
+        [Fact]
+        public void StringIsEmpty()
+        {
+            Range digit = new Range('a', 'f');
             Assert.False(digit.Match(string.Empty).Succes());
-            Assert.False(pattern.Match(null).Succes());
-            Assert.False(pattern.Match(string.Empty).Succes());
+            Assert.Equal("", digit.Match("").RemainingText());
         }
     }
 }
