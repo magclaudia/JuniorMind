@@ -19,7 +19,7 @@ namespace JsonClasses
 
             foreach(var item in accepted)
             {
-                if (text[0] == item)
+                if (text.Contains(item))
                 {
                     return new Match(true, text[1..]);
                 }
