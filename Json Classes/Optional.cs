@@ -12,11 +12,6 @@ namespace JsonClasses
 
         public IMatch Match(string text)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return new Match(true, text);
-            }
-
             IMatch match = new Match(true, text);
             if (match.Succes())
             {
