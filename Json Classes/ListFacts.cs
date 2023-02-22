@@ -35,5 +35,13 @@ namespace JsonClasses
             Assert.True(a.Match("abc").Succes());
             Assert.Equal("abc", a.Match("abc").RemainingText());
         }
+
+        [Fact]
+        public void ValidString_StringhasOnlyElementsWithoutSeparator()
+        {
+            var a = new List(new Range('0', '9'), new Character(','));
+            Assert.True(a.Match("1234567").Succes());
+            Assert.Equal("234567", a.Match("1234567").RemainingText());
+        }
     }
 }
