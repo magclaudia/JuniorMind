@@ -2,7 +2,7 @@
 
 namespace JsonClasses
 {
-    public class List
+    public class List : IPattern
     {
         private readonly IPattern pattern;
         public List(IPattern element, IPattern separator)

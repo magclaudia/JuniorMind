@@ -17,7 +17,7 @@ namespace JsonClasses
             {
                 if (pattern.Match(text).Succes())
                 {
-                    return new Match(true, text[1..]);
+                    return pattern.Match(text);
                 }
             }
 
