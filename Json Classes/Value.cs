@@ -18,7 +18,7 @@ namespace JsonClasses
             var obj = new Sequence(new Character('{'), ws, members, ws, new Character('}'));
             value.Add(array);
             value.Add(obj);
-            pattern = value;
+            pattern = element;
         }
 
         public IMatch Match(string text)
