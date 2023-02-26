@@ -4,11 +4,11 @@ namespace JsonClasses
 {
     public class ChoiceFacts
     {
-        [Fact]  
-        public void ValidString_StringStartsWithRequiredChar() 
+        [Fact]
+        public void ValidString_StringStartsWithRequiredChar()
         {
             var digit = new Choice(new Character('0'), new Range('1', '9'));
-            var hex = new Choice(digit, new Range('a', 'f') , new Range('A', 'F'));
+            var hex = new Choice(digit, new Range('a', 'f'), new Range('A', 'F'));
             Assert.True(digit.Match("0").Succes());
             Assert.Equal("", digit.Match("0").RemainingText());
             Assert.True(hex.Match("a2314").Succes());
@@ -22,7 +22,7 @@ namespace JsonClasses
         public void StringInvalid_StringDoesNotStartWithRequiredChar()
         {
             var digit = new Choice(new Character('0'), new Range('1', '9'));
-            var hex = new Choice(digit, new Range('a', 'f') , new Range('A', 'F'));
+            var hex = new Choice(digit, new Range('a', 'f'), new Range('A', 'F'));
             Assert.False(digit.Match("a1247").Succes());
             Assert.Equal("a1247", digit.Match("a1247").RemainingText());
             Assert.False(hex.Match("z1245").Succes());

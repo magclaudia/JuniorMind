@@ -5,7 +5,7 @@ namespace JsonClasses
     public class TextFacts
     {
         [Fact]
-        public void ValidString_StringHasRequiredPrefix() 
+        public void ValidString_StringHasRequiredPrefix()
         {
             var prefix = new Text("true");
             Assert.True(prefix.Match("true").Succes());
@@ -45,7 +45,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void PrefixAndTextIsEmpty() 
+        public void PrefixAndTextIsEmpty()
         {
             var empty = new Text("");
             Assert.True(empty.Match("true").Succes());

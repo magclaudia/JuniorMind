@@ -15,7 +15,7 @@ namespace JsonClasses
 
         public void SetText(string text)
         {
-            this.text = text; 
+            this.text = text;
         }
 
         public bool Succes()

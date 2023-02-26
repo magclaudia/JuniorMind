@@ -5,7 +5,7 @@ namespace JsonClasses
     public class AnyFacts
     {
         [Fact]
-        public void ValidString_StringStartWithRequiredChar() 
+        public void ValidString_StringStartWithRequiredChar()
         {
             var e = new Any("eE");
             Assert.True(e.Match("ea").Succes());
@@ -15,7 +15,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void InvalidString() 
+        public void InvalidString()
         {
             var e = new Any("eE");
             Assert.False(e.Match("a").Succes());
@@ -23,7 +23,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void EmptyString() 
+        public void EmptyString()
         {
             var e = new Any("eE");
             var sign = new Any("-+");
@@ -55,7 +55,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void InvalidString_DoesNotContainRequiredSign() 
+        public void InvalidString_DoesNotContainRequiredSign()
         {
             var sign = new Any("-+");
             Assert.False(sign.Match("2").Succes());

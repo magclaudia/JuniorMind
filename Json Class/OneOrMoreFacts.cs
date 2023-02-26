@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using JsonClasses;
+using Xunit;
 
 namespace JsonClasses
 {

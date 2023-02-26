@@ -13,7 +13,7 @@ namespace JsonClasses
         public IMatch Match(string text)
         {
             IMatch match = new Match(true, text);
-            while (match.Succes()) 
+            while (match.Succes())
             {
                 match = pattern.Match(match.RemainingText());
             }

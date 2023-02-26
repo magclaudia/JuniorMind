@@ -8,7 +8,7 @@ namespace JsonClasses
 
         public Sequence(params IPattern[] patterns)
         {
-            this.patterns = patterns; 
+            this.patterns = patterns;
         }
 
         public IMatch Match(string text)

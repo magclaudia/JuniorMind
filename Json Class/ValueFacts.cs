@@ -21,7 +21,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void IsBoolean() 
+        public void IsBoolean()
         {
             var value = new Value();
             Assert.True(value.Match("true").Succes());
@@ -49,7 +49,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void IsObject() 
+        public void IsObject()
         {
             var value = new Value();
             Assert.True(value.Match("{ }").Succes());
