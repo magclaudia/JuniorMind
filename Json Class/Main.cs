@@ -9,6 +9,7 @@ namespace JsonClasses
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length == 1)
             {
+                Console.WriteLine("Make sure you entered a valid location");
                 return;
             }
 
