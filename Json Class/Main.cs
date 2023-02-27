@@ -13,16 +13,16 @@ namespace JsonClasses
                 return;
             }
 
-            string jsonValidFormat = File.ReadAllText(args[1]);
+            string jsonFormat = File.ReadAllText(args[1]);
             var value = new Value();
-            var match = value.Match(jsonValidFormat);
+            var match = value.Match(jsonFormat);
             if (match.Succes() && match.RemainingText() == "")
             {
-                Console.WriteLine("File is a Json format");
+                Console.WriteLine("File is a Json valid format");
             }
             else
             {
-                Console.WriteLine("File is not a Json format");
+                Console.WriteLine("File is not a Json valid format");
             }
         }
     }
