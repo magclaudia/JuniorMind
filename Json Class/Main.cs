@@ -14,7 +14,8 @@ namespace JsonClasses
 
             string jsonValidFormat = File.ReadAllText(args[1]);
             var value = new Value();
-            if (value.Match(jsonValidFormat).Succes() && value.Match(jsonValidFormat).RemainingText() == "")
+            var match = value.Match(jsonValidFormat);
+            if (match.Succes() && match.RemainingText() == "")
             {
                 Console.WriteLine("File is a Json format");
             }
