@@ -8,7 +8,7 @@ namespace JsonClasses
         {
             if (args.Length > 0)
             {
-                string jsonFormat = File.ReadAllText(args[0]);
+                string jsonFormat = System.IO.File.ReadAllText(args[0]);
                 var value = new Value();
                 var match = value.Match(jsonFormat);
                 if (match.Succes() && match.RemainingText() == "")
