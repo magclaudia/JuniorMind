@@ -7,6 +7,11 @@ namespace JsonClasses
         static void Main()
         {
             string[] args = Environment.GetCommandLineArgs();
+            if (args.Length == 1)
+            {
+                return;
+            }
+
             string jsonValidFormat = File.ReadAllText(args[1]);
             var value = new Value();
             if (value.Match(jsonValidFormat).Succes() && value.Match(jsonValidFormat).RemainingText() == "")
