@@ -56,36 +56,43 @@ namespace JsonClasses
         public void InvalidString_SignIsNotFollowedByADigit()
         {
             var formula = new Math();
-            Assert.False(formula.Match("( 1 + 2 ) * ( 3 - 4 ) / 5 ^ + 6 % 3 * 2 ^ 3").Succes());
-            Assert.Equal("+ 6 % 3 * 2 ^ 3", formula.Match("( 1 + 2 ) * ( 3 - 4 ) / 5 ^ + 6 % 3 * 2 ^ 3").RemainingText());
+            Assert.True(formula.Match("( 1 + 2 ) * ( 3 - 4 ) / 5 ^ + 6 % 3 * 2 ^ 3").Succes());
+            Assert.Equal(" ^ + 6 % 3 * 2 ^ 3", formula.Match("( 1 + 2 ) * ( 3 - 4 ) / 5 ^ + 6 % 3 * 2 ^ 3").RemainingText());
         }
 
         [Fact]
         public void InvalidString_TwoSignNextToEacHOther()
         {
             var formula = new Math();
-            Assert.False(formula.Match("( 2 + 4 ) * / ( 2 - 1 )").Succes());
+            Assert.True(formula.Match("( 2 + 4 ) * / ( 2 - 1 )").Succes());
+            Assert.Equal(" * / ( 2 - 1 )", formula.Match("( 2 + 4 ) * / ( 2 - 1 )").RemainingText());
+
         }
 
         [Fact]
         public void InvalidString_FromulaEndsWithSign()
         {
             var formula = new Math();
-            Assert.False(formula.Match("1.5 * 2 ^ 3 * 5 / ( 2 + 3 ) - ").Succes());
+            Assert.True(formula.Match("1.5 * 2 ^ 3 * 5 / ( 2 + 3 ) -").Succes());
+            Assert.Equal(" -", formula.Match("1.5 * 2 ^ 3 * 5 / ( 2 + 3 ) -").RemainingText());
+
         }
 
         [Fact]
         public void InvalidString_BracketsEndsWithSign()
         {
             var formula = new Math();
-            Assert.False(formula.Match("( 1 + 2 * 3 ) / ( 4 - 5 / ) * 7").Succes());
+            Assert.True(formula.Match("( 1 + 2 * 3 ) / ( 4 - 5 / ) * 7").Succes());
+            Assert.Equal(" / ( 4 - 5 / ) * 7", formula.Match("( 1 + 2 * 3 ) / ( 4 - 5 / ) * 7").RemainingText());
+
         }
 
         [Fact]
         public void InvalidString_NoEndBracket()
         {
             var formula = new Math();
-            Assert.False(formula.Match("( 2 + 3").Succes());
+            Assert.True(formula.Match("( 2 + 3").Succes());
+            Assert.Equal("( 2 + 3", formula.Match("( 2 + 3").RemainingText());
         }
     }
 }
