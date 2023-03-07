@@ -5,7 +5,7 @@ namespace JsonClasses
     public class MathFacts
     {
         [Fact]
-        public void ValidString_BracketsSimpleFormula()
+        public void ValidString_AdditionSimpleFormula()
         {
             var formula = new Math();
             Assert.True(formula.Match("( 1 + 2 )").Succes());
@@ -13,7 +13,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void ValidString_BracketsComplexFormulaWithOperationOusideOfTheBrackets()
+        public void ValidString_MultiplyingTheTwoNumbersResultingFromTheAddition()
         {
             var formula = new Math();
             Assert.True(formula.Match("( 1 + 2 ) * ( 3 - 4 )").Succes());
@@ -21,7 +21,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void ValidString_MathComplexFormala()
+        public void ValidString_PerformingComplexOperationsWithMultipleOperations()
         {
             var formula = new Math();
             Assert.True(formula.Match("( 1 + 2 ) * ( 3 - 4 ) / 5 ^ 2 + 6 % 3 * 2 ^ 3").Succes());
@@ -37,7 +37,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void ValidString_ComplexFormulaFloatDigit()
+        public void ValidString_ComplexFormulaUsingFloatDigitAndMultipleOperations()
         {
             var formula = new Math();
             Assert.True(formula.Match("1.5 * 2 ^ 3 * 5 / ( 2 + 3 ) - 2 ^ 2").Succes());
@@ -45,7 +45,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void ValidString_ComplexFormulaInBrackets()
+        public void ValidString_MultipleOperationsBetweenBrackets()
         {
             var formula = new Math();
             Assert.True(formula.Match("( 1 + 2 * 3 ) / ( 4 - 5 / 6 ) * 7").Succes());
@@ -53,7 +53,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void InvalidString_SignIsNotFollowedByADigit()
+        public void InvalidString_MathematicalOperationsAreNotSeparatedByNumbers()
         {
             var formula = new Math();
             Assert.True(formula.Match("( 1 + 2 ) * ( 3 - 4 ) / 5 ^ + 6 % 3 * 2 ^ 3").Succes());
@@ -61,7 +61,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void InvalidString_TwoSignNextToEacHOther()
+        public void InvalidString_TwoSignNextToEacHOtherBetweenBracketsOperations()
         {
             var formula = new Math();
             Assert.True(formula.Match("( 2 + 4 ) * / ( 2 - 1 )").Succes());
@@ -70,7 +70,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void InvalidString_FromulaEndsWithSign()
+        public void InvalidString_MathematicalOperationsEndsWithSign()
         {
             var formula = new Math();
             Assert.True(formula.Match("1.5 * 2 ^ 3 * 5 / ( 2 + 3 ) -").Succes());
@@ -79,7 +79,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void InvalidString_BracketsEndsWithSign()
+        public void InvalidString_MathematicalOperationsAreNotSeparatedByNumbersInsideBrackets()
         {
             var formula = new Math();
             Assert.True(formula.Match("( 1 + 2 * 3 ) / ( 4 - 5 / ) * 7").Succes());
@@ -88,7 +88,7 @@ namespace JsonClasses
         }
 
         [Fact]
-        public void InvalidString_NoEndBracket()
+        public void InvalidString_MathematicalOperationHasNotEndBracket()
         {
             var formula = new Math();
             Assert.True(formula.Match("( 2 + 3").Succes());
