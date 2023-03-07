@@ -11,12 +11,9 @@ namespace JsonClasses
             var expressionOperator = new Sequence(space, new Any("+-*/^%"), space);
             var brackets = new Optional(new Any("( )"));
             var variable = new Number();
-            var simpleMathematicalExpression = new Many(new Sequence(new Optional(expressionOperator),
-                variable));
-            var complexMathematicalExpression = new OneOrMore(
-                new Sequence(brackets, space, simpleMathematicalExpression, space, brackets));
-            pattern = new Sequence(new List(
-                new Choice(complexMathematicalExpression, simpleMathematicalExpression), expressionOperator));
+            var simpleMathematicalExpression = new Many(new Sequence(new Optional(expressionOperator), variable));
+            var complexMathematicalExpression = new OneOrMore(new Sequence(brackets, space, simpleMathematicalExpression, space, brackets));
+            pattern = new Sequence(new List(new Choice(complexMathematicalExpression, simpleMathematicalExpression), expressionOperator));
         }
 
         public IMatch Match(string text)
