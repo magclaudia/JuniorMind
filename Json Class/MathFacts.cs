@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 
 namespace JsonClasses
 {
@@ -57,7 +58,7 @@ namespace JsonClasses
         {
             var formula = new Math();
             Assert.True(formula.Match("( 1 + 2 ) * ( 3 - 4 ) / 5 ^ + 6 % 3 * 2 ^ 3").Succes());
-            Assert.Equal("+ 6 % 3 * 2 ^ 3", formula.Match("( 1 + 2 ) * ( 3 - 4 ) / 5 ^ + 6 % 3 * 2 ^ 3").RemainingText());
+            Assert.Equal(" ^ + 6 % 3 * 2 ^ 3", formula.Match("( 1 + 2 ) * ( 3 - 4 ) / 5 ^ + 6 % 3 * 2 ^ 3").RemainingText());
         }
 
         [Fact]
@@ -65,7 +66,7 @@ namespace JsonClasses
         {
             var formula = new Math();
             Assert.True(formula.Match("( 2 + 4 ) * / ( 2 - 1 )").Succes());
-            Assert.Equal("/ ( 2 - 1 )", formula.Match("( 2 + 4 ) * / ( 2 - 1 )").RemainingText());
+            Assert.Equal(" * / ( 2 - 1 )", formula.Match("( 2 + 4 ) * / ( 2 - 1 )").RemainingText());
 
         }
 
@@ -84,7 +85,6 @@ namespace JsonClasses
             var formula = new Math();
             Assert.True(formula.Match("( 1 + 2 * 3 ) / ( 4 - 5 / ) * 7").Succes());
             Assert.Equal("/ ) * 7", formula.Match("( 1 + 2 * 3 ) / ( 4 - 5 / ) * 7").RemainingText());
-
         }
 
         [Fact]
@@ -93,6 +93,30 @@ namespace JsonClasses
             var formula = new Math();
             Assert.True(formula.Match("( 2 + 3").Succes());
             Assert.Equal("( 2 + 3", formula.Match("( 2 + 3").RemainingText());
+        }
+
+        [Fact]
+        public void InvalidString_IdentifySpace()
+        {
+            var formula = new Math();
+            Assert.True(formula.Match("' '").Succes());
+            Assert.Equal("' '", formula.Match("' '").RemainingText());
+        }
+
+        [Fact]
+        public void InvalidString_IdentifyBrackets()
+        {
+            var formula = new Math();
+            Assert.True(formula.Match("( 1").Succes());
+            Assert.Equal("( 1", formula.Match("( 1").RemainingText());
+        }
+
+        [Fact]
+        public void InvalidString_SimpleMathOperation()
+        {
+            var formula = new Math();
+            Assert.True(formula.Match("2 + + 3").Succes());
+            Assert.Equal(" + + 3", formula.Match("2 + + 3").RemainingText());
         }
     }
 }
