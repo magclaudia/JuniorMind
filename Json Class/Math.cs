@@ -5,16 +5,15 @@ namespace JsonClasses
     public class Math : IPattern
     {
         private readonly IPattern pattern;
-        public Math()
 
+        public Math()
         {
             var space = new Optional(new Any(" "));
             var mathOperator = new Sequence(space, new Any("+-*/^%"), space);
             var operands = new Number();
             var simpleMathExpression = new OneOrMore(operands);
             var complexMathExpression = new OneOrMore(new Sequence(new Optional(
-                new Character('(')), space, simpleMathExpression, space,
-                     new Optional(new Character(')'))));
+                new Character('(')), space, simpleMathExpression, space, new Optional(new Character(')'))));
             pattern = new Sequence(new List(new Choice(complexMathExpression, simpleMathExpression), mathOperator));
         }
 
@@ -31,7 +30,6 @@ namespace JsonClasses
         private bool CheckParentheses(string text)
         {
             int bracketsCount = 0;
-
             foreach (char c in text)
             {
                 if (c == '(')
