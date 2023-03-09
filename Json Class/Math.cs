@@ -19,7 +19,7 @@ namespace JsonClasses
 
         public IMatch Match(string text)
         {
-            if (!CheckParentheses(text))
+            if (!CheckBrackets(text))
             {
                 return new Match(false, text);
             }
@@ -27,7 +27,7 @@ namespace JsonClasses
             return pattern.Match(text);
         }
 
-        private bool CheckParentheses(string text)
+        private bool CheckBrackets(string text)
         {
             int bracketsCount = 0;
             foreach (char c in text)
