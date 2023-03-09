@@ -14,6 +14,14 @@ namespace JsonClasses
         }
 
         [Fact]
+        public void ValidString_InvertedBrackets()
+        {
+            var formula = new Math();
+            Assert.False(formula.Match("( 1 + 2 (").Succes());
+            Assert.Equal("( 1 + 2 (", formula.Match("( 1 + 2 (").RemainingText());
+        }
+
+        [Fact]
         public void ValidString_DoubleBrackets()
         {
             var formula = new Math();
