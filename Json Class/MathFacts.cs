@@ -33,8 +33,8 @@ namespace JsonClasses
         public void ValidString_DoubleBrackets()
         {
             var formula = new Math();
-            Assert.True(formula.Match("(( 1 + 2 ) / ( 1 + 2 ) * 2)").Succes());
-            Assert.Equal("", formula.Match("( 1 + 2 )").RemainingText());
+            Assert.True(formula.Match("(( 1 + 2 - 1 )) / ( 1 + 2 ) * 2").Succes());
+            Assert.Equal("", formula.Match("(( 1 + 2 - 1 )) / ( 1 + 2 ) * 2").RemainingText());
         }
 
         [Fact]

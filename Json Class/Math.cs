@@ -9,9 +9,9 @@ namespace JsonClasses
         {
             var space = new Any(" ");
             var mathOperator = new Sequence(space, new Any("+-*/^%"), space);
-            var operands = new Number();
-            var simpleMathExpression = new List(operands, mathOperator);
-            var complexMathExpression = new Sequence(new Character('('), space, simpleMathExpression, space, new Character(')'));
+            var operand = new Number();
+            var simpleMathExpression = new List(operand, mathOperator);
+            var complexMathExpression = new Sequence(new OneOrMore(new Character('(')), space, simpleMathExpression, space, new OneOrMore(new Character(')')));
             pattern = new List(new Choice(complexMathExpression, simpleMathExpression), mathOperator);
         }
 
