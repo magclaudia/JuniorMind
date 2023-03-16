@@ -18,7 +18,13 @@ namespace JsonClasses
 
         public IMatch Match(string text)
         {
-            return pattern.Match(text);
+            IMatch match = pattern.Match(text);
+            if (match.RemainingText() == text)
+            {
+                return new Match(false, text);
+            }
+
+            return match;
         }
     }
 }

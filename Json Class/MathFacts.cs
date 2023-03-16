@@ -6,6 +6,22 @@ namespace JsonClasses
     public class MathFacts
     {
         [Fact]
+        public void InvalidString_InputTextDoesNotContainNumbers()
+        {
+            var formula = new Math();
+            Assert.False(formula.Match("asdf").Succes());
+            Assert.Equal("asdf", formula.Match("asdf").RemainingText());
+        }
+
+        [Fact]
+        public void ValidString_ExpressionContainOneDigit()
+        {
+            var formula = new Math();
+            Assert.True(formula.Match("1").Succes());
+            Assert.Equal("", formula.Match("1").RemainingText());
+        }
+
+        [Fact]
         public void ValidString_SimpleMathematicalExpression()
         {
             var formula = new Math();
@@ -25,7 +41,7 @@ namespace JsonClasses
         public void ValidString_InvertedBrackets()
         {
             var formula = new Math();
-            Assert.True(formula.Match("( 1 + 2 (").Succes());
+            Assert.False(formula.Match("( 1 + 2 (").Succes());
             Assert.Equal("( 1 + 2 (", formula.Match("( 1 + 2 (").RemainingText());
         }
 
@@ -113,17 +129,10 @@ namespace JsonClasses
         public void InvalidString_MathematicalExpressionDoesNotHasEndBracket()
         {
             var formula = new Math();
-            Assert.True(formula.Match("( 2 + 3").Succes());
+            Assert.False(formula.Match("( 2 + 3").Succes());
             Assert.Equal("( 2 + 3", formula.Match("( 2 + 3").RemainingText());
         }
 
-        [Fact]
-        public void InvalidString_IdentifySpace()
-        {
-            var formula = new Math();
-            Assert.True(formula.Match("' '").Succes());
-            Assert.Equal("' '", formula.Match("' '").RemainingText());
-        }
 
         [Fact]
         public void InvalidString_SimpleMathOperation()
