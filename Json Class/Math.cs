@@ -7,11 +7,11 @@ namespace JsonClasses
         private readonly IPattern pattern;
         public Math()
         {
-            var ws = new Many(new Any(" "));
-            var mathOperator = new Sequence(ws, new Any("+-*/^%"), ws);
+            var space = new Many(new Any(" "));
+            var mathOperator = new Sequence(space, new Any("+-*/^%"), space);
             var operand = new Choice(new Number());
             var expression = new List(operand, mathOperator);
-            var complexMathExpression = new Sequence(new Character('('), ws, expression, ws, new Character(')'));
+            var complexMathExpression = new Sequence(new Character('('), space, expression, space, new Character(')'));
             operand.Add(complexMathExpression);
             pattern = expression;
         }
