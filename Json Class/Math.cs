@@ -7,12 +7,13 @@ namespace JsonClasses
         private readonly IPattern pattern;
         public Math()
         {
-            var space = new Any(" ");
-            var mathOperator = new Sequence(space, new Any("+-*/^%"), space);
-            var operand = new Number();
-            var simpleMathExpression = new List(operand, mathOperator);
-            var complexMathExpression = new Sequence(new OneOrMore(new Character('(')), space, simpleMathExpression, space, new OneOrMore(new Character(')')));
-            pattern = new List(new Choice(complexMathExpression, simpleMathExpression), mathOperator);
+            var ws = new Many(new Any(" "));
+            var mathOperator = new Sequence(ws, new Any("+-*/^%"), ws);
+            var value = new Choice(new Number());
+            var elements = new List(value, mathOperator);
+            var array = new Sequence(new Character('('), ws, elements, ws, new Character(')'));
+            value.Add(array);
+            pattern = elements;
         }
 
         public IMatch Match(string text)
