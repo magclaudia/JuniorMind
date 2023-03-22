@@ -4,7 +4,7 @@ namespace DataCollection
 {
     class IntArray
     {
-        int[] array;
+        public int[] array;
         public IntArray()
         {
             array = new int[0];
