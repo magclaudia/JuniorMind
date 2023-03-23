@@ -52,13 +52,13 @@ namespace DataCollection
         public void Insert(int index, int element) // adaugă un nou element pe poziția dată
         {
             Array.Resize(ref array, array.Length + 1);
-            SifitingElements(index);
+            SiftingElements(index);
             SetElement(index, element);
         }
 
         public void Remove(int element) // șterge prima apariție a elementului din șir
         {
-            SifitingElements(IndexOf(element));
+            SiftingElements(IndexOf(element));
             Array.Resize(ref array, array.Length - 1);
         }
 
@@ -78,7 +78,7 @@ namespace DataCollection
             Array.Resize(ref array, array.Length - 1);
         }
 
-        private int[] SifitingElements(int index)
+        private int[] SiftingElements(int index)
         {
             if (array[^1] == 0)
             {
