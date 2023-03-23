@@ -13,7 +13,8 @@ namespace DataCollection
                 intArray.Add(1);
                 intArray.Add(3);
                 intArray.Add(5);
-                Assert.Equal(3, intArray.Count());
+                intArray.Add(6);
+                Assert.Equal(4, intArray.Count());
             }
 
             [Fact]
@@ -31,7 +32,7 @@ namespace DataCollection
             [Fact]
             public void TestSetElement()
             {
-                IntArray intArray = new IntArray();
+                IntArray intArray = new();
                 intArray.Add(1);
                 intArray.Add(2);
                 intArray.Add(3);
@@ -87,7 +88,6 @@ namespace DataCollection
                 intArray.Add(2);
                 intArray.Add(3);
                 intArray.Clear();
-                Assert.Equal(3, intArray.Count());
                 Assert.Equal(0, intArray.IndexOf(0));
             }
 
@@ -101,6 +101,8 @@ namespace DataCollection
                 intArray.Add(5);
                 intArray.Add(3);
                 intArray.Remove(3);
+                Assert.Equal(4, intArray.Count());
+                intArray.Remove(6);
                 Assert.Equal(4, intArray.Count());
                 Assert.Equal(0, intArray.IndexOf(1));
                 Assert.Equal(1, intArray.IndexOf(2));

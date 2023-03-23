@@ -5,6 +5,7 @@ namespace DataCollection
     class IntArray
     {
         private int[] array;
+
         public IntArray()
         {
             array = new int[0];
@@ -59,7 +60,6 @@ namespace DataCollection
         public void Remove(int element)
         {
             LeftShifting(IndexOf(element));
-            Array.Resize(ref array, array.Length - 1);
         }
 
         public void Clear()
@@ -70,23 +70,29 @@ namespace DataCollection
         public void RemoveAt(int index)
         {
             LeftShifting(index);
-            Array.Resize(ref array, array.Length - 1);
         }
 
         private void RightShifting(int index)
         {
-           for (int i = array.Length - 1; i > index; i--)
-           {
-               array[i] = array[i - 1];
-           }
+            for (int i = array.Length - 1; i > index; i--)
+            {
+                array[i] = array[i - 1];
+            }
         }
 
         private void LeftShifting(int index)
         {
+            if (index < 0)
+            {
+                return;
+            }
+
             for (int i = index; i < array.Length - 1; i++)
             {
                 array[i] = array[i + 1];
             }
+
+            Array.Resize(ref array, array.Length - 1);
         }
     }
 }
