@@ -26,7 +26,6 @@ namespace DataCollection
                 Assert.Equal(1, intArray.Element(0));
                 Assert.Equal(2, intArray.Element(1));
                 Assert.Equal(3, intArray.Element(2));
-                Assert.Equal(-1, intArray.Element(3));
             }
 
             [Fact]

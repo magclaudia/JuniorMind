@@ -4,7 +4,7 @@ namespace DataCollection
 {
     class IntArray
     {
-        public int[] array;
+        private int[] array;
         public IntArray()
         {
             array = new int[0];
@@ -23,26 +23,12 @@ namespace DataCollection
 
         public int Element(int index) // întoarce elementul de la indexul dat
         {
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (i == index)
-                {
-                    return array[i];
-                }
-            }
-
-            return -1;
+            return array[index];
         }
 
         public void SetElement(int index, int element) // modifică valoarea elementului de la indexul dat
         {
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (i == index)
-                {
-                    array[i] = element;
-                }
-            }
+            array[index] = element;
         }
 
         public bool Contains(int element) // întoarce true dacă elementul dat există în șir
@@ -66,12 +52,14 @@ namespace DataCollection
         public void Insert(int index, int element) // adaugă un nou element pe poziția dată
         {
             Array.Resize(ref array, array.Length + 1);
-            for (int i = array.Length - 1; i > index; i--)
-            {
-                array[i] = array[i - 1];
-            }
-
+            SfitingElements(index);
             SetElement(index, element);
+        }
+
+        public void Remove(int element) // șterge prima apariție a elementului din șir
+        {
+            SfitingElements(IndexOf(element));
+            Array.Resize(ref array, array.Length - 1);
         }
 
         public void Clear() // șterge toate elementele din șir
@@ -79,38 +67,35 @@ namespace DataCollection
             Array.Clear(array, 0, array.Length);
         }
 
-        public void Remove(int element) // șterge prima apariție a elementului din șir
+        public void RemoveAt(int index) // șterge elementul de pe poziția dată
         {
-            for (int i = 0; i < array.Length - 1; i++)
+            while (index < array.Length - 1)
             {
-                if (array[i] == element)
-                {
-                    while (i < array.Length - 1)
-                    {
-                        array[i] = array[i + 1];
-                        i++;
-                    }
-                }
+                array[index] = array[index + 1];
+                index++;
             }
 
             Array.Resize(ref array, array.Length - 1);
         }
 
-        public void RemoveAt(int index) // șterge elementul de pe poziția dată
+        private int[] SfitingElements(int index)
         {
-            for (int i = 0; i < array.Length - 1; i++)
+            if (array[^1] == 0)
             {
-                if (i == index)
+                for (int i = array.Length - 1; i > index; i--)
                 {
-                    while (i < array.Length - 1)
-                    {
-                        array[i] = array[i + 1];
-                        i++;
-                    }
+                    array[i] = array[i - 1];
+                }
+            }
+            else
+            {
+                for (int i = index; i < array.Length - 1; i++)
+                {
+                    array[i] = array[i + 1];
                 }
             }
 
-            Array.Resize(ref array, array.Length - 1);
+            return array;
         }
     }
 }
