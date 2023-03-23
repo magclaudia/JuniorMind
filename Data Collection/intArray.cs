@@ -52,13 +52,13 @@ namespace DataCollection
         public void Insert(int index, int element)
         {
             Array.Resize(ref array, array.Length + 1);
-            ShiftingElements(index);
+            RightShifting(index);
             SetElement(index, element);
         }
 
         public void Remove(int element)
         {
-            ShiftingElements(IndexOf(element));
+            LeftShifting(IndexOf(element));
             Array.Resize(ref array, array.Length - 1);
         }
 
@@ -69,25 +69,23 @@ namespace DataCollection
 
         public void RemoveAt(int index)
         {
-            ShiftingElements(index);
+            LeftShifting(index);
             Array.Resize(ref array, array.Length - 1);
         }
 
-        private void ShiftingElements(int index)
+        private void RightShifting(int index)
         {
-            if (array[^1] == 0)
+           for (int i = array.Length - 1; i > index; i--)
+           {
+               array[i] = array[i - 1];
+           }
+        }
+
+        private void LeftShifting(int index)
+        {
+            for (int i = index; i < array.Length - 1; i++)
             {
-                for (int i = array.Length - 1; i > index; i--)
-                {
-                    array[i] = array[i - 1];
-                }
-            }
-            else
-            {
-                for (int i = index; i < array.Length - 1; i++)
-                {
-                    array[i] = array[i + 1];
-                }
+                array[i] = array[i + 1];
             }
         }
     }
