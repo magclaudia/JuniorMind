@@ -10,33 +10,33 @@ namespace DataCollection
             array = new int[0];
         }
 
-        public void Add(int element) // adaugă un nou element la sfârșitul șirului 
+        public void Add(int element)
         {
             Array.Resize(ref array, array.Length + 1);
             array[^1] = element;
         }
 
-        public int Count() // întorce numărul de elemente din șir
+        public int Count()
         {
             return array.Length;
         }
 
-        public int Element(int index) // întoarce elementul de la indexul dat
+        public int Element(int index)
         {
             return array[index];
         }
 
-        public void SetElement(int index, int element) // modifică valoarea elementului de la indexul dat
+        public void SetElement(int index, int element)
         {
             array[index] = element;
         }
 
-        public bool Contains(int element) // întoarce true dacă elementul dat există în șir
+        public bool Contains(int element)
         {
             return array.Contains(element);
         }
 
-        public int IndexOf(int element) // întoarce indexul elementului sau -1 dacă elementul nu se regăsește în șir
+        public int IndexOf(int element)
         {
             for (int i = 0; i < array.Length; i++)
             {
@@ -49,36 +49,31 @@ namespace DataCollection
             return -1;
         }
 
-        public void Insert(int index, int element) // adaugă un nou element pe poziția dată
+        public void Insert(int index, int element)
         {
             Array.Resize(ref array, array.Length + 1);
             SiftingElements(index);
             SetElement(index, element);
         }
 
-        public void Remove(int element) // șterge prima apariție a elementului din șir
+        public void Remove(int element)
         {
             SiftingElements(IndexOf(element));
             Array.Resize(ref array, array.Length - 1);
         }
 
-        public void Clear() // șterge toate elementele din șir
+        public void Clear()
         {
             Array.Clear(array, 0, array.Length);
         }
 
-        public void RemoveAt(int index) // șterge elementul de pe poziția dată
+        public void RemoveAt(int index)
         {
-            while (index < array.Length - 1)
-            {
-                array[index] = array[index + 1];
-                index++;
-            }
-
+            SiftingElements(index);
             Array.Resize(ref array, array.Length - 1);
         }
 
-        private int[] SiftingElements(int index)
+        private void SiftingElements(int index)
         {
             if (array[^1] == 0)
             {
@@ -94,8 +89,6 @@ namespace DataCollection
                     array[i] = array[i + 1];
                 }
             }
-
-            return array;
         }
     }
 }
