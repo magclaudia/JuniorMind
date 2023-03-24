@@ -59,9 +59,10 @@ namespace DataCollection
 
         public void Remove(int element)
         {
-            if (Contains(element))
+            var index = IndexOf(element);
+            if (index >= 0)
             {
-                RemoveAt(IndexOf(element));
+                RemoveAt(index);
             }
         }
 
