@@ -59,7 +59,11 @@ namespace DataCollection
 
         public void Remove(int element)
         {
-            LeftShifting(IndexOf(element));
+            if (Contains(element))
+            {
+                LeftShifting(IndexOf(element));
+                ResizeIfNeeded();
+            }
         }
 
         public void Clear()
@@ -70,7 +74,14 @@ namespace DataCollection
         public void RemoveAt(int index)
         {
             LeftShifting(index);
+            ResizeIfNeeded();
         }
+
+        private void ResizeIfNeeded()
+        {
+            Array.Resize(ref array, array.Length - 1);
+        }
+
 
         private void RightShifting(int index)
         {
@@ -82,17 +93,10 @@ namespace DataCollection
 
         private void LeftShifting(int index)
         {
-            if (index < 0)
-            {
-                return;
-            }
-
             for (int i = index; i < array.Length - 1; i++)
             {
                 array[i] = array[i + 1];
             }
-
-            Array.Resize(ref array, array.Length - 1);
         }
     }
 }
