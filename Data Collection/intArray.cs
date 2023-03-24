@@ -5,21 +5,24 @@ namespace DataCollection
     class IntArray
     {
         private int[] array;
-
+        private int capacity;
+        private int size;
         public IntArray()
         {
-            array = new int[0];
+            capacity = 4;
+            size = 0;
+            array = new int[capacity];
         }
 
         public void Add(int element)
         {
-            Array.Resize(ref array, array.Length + 1);
-            array[^1] = element;
+            ResizeIfIsNeeded();
+            array[size++] = element;
         }
 
         public int Count()
         {
-            return array.Length;
+            return size;
         }
 
         public int Element(int index)
@@ -52,9 +55,10 @@ namespace DataCollection
 
         public void Insert(int index, int element)
         {
-            Array.Resize(ref array, array.Length + 1);
+            ResizeIfIsNeeded();
             RightShifting(index);
             SetElement(index, element);
+            size++;
         }
 
         public void Remove(int element)
@@ -68,13 +72,23 @@ namespace DataCollection
 
         public void Clear()
         {
-            Array.Clear(array, 0, array.Length);
+            Array.Clear(array, 0, size);
+            size = 0;
         }
 
         public void RemoveAt(int index)
         {
             LeftShifting(index);
-            Array.Resize(ref array, array.Length - 1);
+            size--;
+        }
+
+        private void ResizeIfIsNeeded()
+        {
+            if (size == capacity)
+            {
+                capacity *= 2;
+                Array.Resize(ref array, capacity);
+            }
         }
 
         private void RightShifting(int index)
