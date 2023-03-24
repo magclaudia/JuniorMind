@@ -61,8 +61,7 @@ namespace DataCollection
         {
             if (Contains(element))
             {
-                LeftShifting(IndexOf(element));
-                ResizeIfNeeded();
+                RemoveAt(IndexOf(element));
             }
         }
 
@@ -74,14 +73,8 @@ namespace DataCollection
         public void RemoveAt(int index)
         {
             LeftShifting(index);
-            ResizeIfNeeded();
-        }
-
-        private void ResizeIfNeeded()
-        {
             Array.Resize(ref array, array.Length - 1);
         }
-
 
         private void RightShifting(int index)
         {
