@@ -40,7 +40,7 @@ namespace DataCollection
 
         public int IndexOf(int element)
         {
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i <= size; i++)
             {
                 if (array[i] == element)
                 {
@@ -90,7 +90,7 @@ namespace DataCollection
 
         private void RightShifting(int index)
         {
-            for (int i = array.Length - 1; i > index; i--)
+            for (int i = size; i >= index; i--)
             {
                 array[i] = array[i - 1];
             }
@@ -98,7 +98,7 @@ namespace DataCollection
 
         private void LeftShifting(int index)
         {
-            for (int i = index; i < array.Length - 1; i++)
+            for (int i = index; i <= size - 1; i++)
             {
                 array[i] = array[i + 1];
             }
