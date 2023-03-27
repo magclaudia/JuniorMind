@@ -5,13 +5,11 @@ namespace DataCollection
     class IntArray
     {
         private int[] array;
-        private int capacity;
         private int size;
         public IntArray()
         {
-            capacity = 4;
             size = 0;
-            array = new int[capacity];
+            array = new int[4];
         }
 
         public void Add(int element)
@@ -84,10 +82,9 @@ namespace DataCollection
 
         private void ResizeIfIsNeeded()
         {
-            if (size == capacity)
+            if (size == array.Length)
             {
-                capacity *= 2;
-                Array.Resize(ref array, capacity);
+                Array.Resize(ref array, array.Length * 2);
             }
         }
 
