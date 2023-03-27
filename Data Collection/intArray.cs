@@ -35,7 +35,15 @@ namespace DataCollection
 
         public bool Contains(int element)
         {
-            return array.Contains(element);
+            for (int i = 0; i < size; i++)
+            {
+                if (array[i] == element)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public int IndexOf(int element)
