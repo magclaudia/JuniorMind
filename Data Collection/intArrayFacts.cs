@@ -33,13 +33,13 @@ namespace DataCollection
                 intArray.Add(3);
                 intArray.Add(5);
                 intArray.Add(6);
-                Assert.Equal(1, intArray.Element(0));
-                Assert.Equal(2, intArray.Element(1));
-                Assert.Equal(3, intArray.Element(2));
-                Assert.Equal(1, intArray.Element(3));
-                Assert.Equal(3, intArray.Element(4));
-                Assert.Equal(5, intArray.Element(5));
-                Assert.Equal(6, intArray.Element(6));
+                Assert.Equal(1, intArray[0]);
+                Assert.Equal(2, intArray[1]);
+                Assert.Equal(3, intArray[2]);
+                Assert.Equal(1, intArray[3]);
+                Assert.Equal(3, intArray[4]);
+                Assert.Equal(5, intArray[5]);
+                Assert.Equal(6, intArray[6]);
             }
 
             [Fact]
@@ -49,8 +49,8 @@ namespace DataCollection
                 intArray.Add(1);
                 intArray.Add(2);
                 intArray.Add(3);
-                intArray.SetElement(1, 4);
-                Assert.Equal(4, intArray.Element(1));
+                intArray[1] = 4;
+                Assert.Equal(4, intArray[1]);
             }
 
             [Fact]
