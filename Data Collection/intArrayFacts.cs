@@ -19,7 +19,7 @@ namespace DataCollection
                 intArray.Add(6);
                 intArray.Add(2);
                 intArray.Add(7);
-                Assert.Equal(9, intArray.Count());
+                Assert.Equal(9, intArray.Count);
             }
 
             [Fact]
@@ -94,7 +94,7 @@ namespace DataCollection
                 intArray.Add(7);
                 intArray.Add(8);
                 intArray.Insert(1, 10);
-                Assert.Equal(9, intArray.Count());
+                Assert.Equal(9, intArray.Count);
                 Assert.Equal(0, intArray.IndexOf(1));
                 Assert.Equal(1, intArray.IndexOf(10));
                 Assert.Equal(2, intArray.IndexOf(2));
@@ -128,9 +128,9 @@ namespace DataCollection
                 intArray.Add(5);
                 intArray.Add(3);
                 intArray.Remove(3);
-                Assert.Equal(4, intArray.Count());
+                Assert.Equal(4, intArray.Count);
                 intArray.Remove(6);
-                Assert.Equal(4, intArray.Count());
+                Assert.Equal(4, intArray.Count);
                 Assert.Equal(0, intArray.IndexOf(1));
                 Assert.Equal(1, intArray.IndexOf(2));
                 Assert.Equal(2, intArray.IndexOf(5));
@@ -147,7 +147,7 @@ namespace DataCollection
                 intArray.Add(4);
                 intArray.Add(3);
                 intArray.RemoveAt(4);
-                Assert.Equal(4, intArray.Count());
+                Assert.Equal(4, intArray.Count);
                 Assert.Equal(0, intArray.IndexOf(1));
                 Assert.Equal(1, intArray.IndexOf(2));
                 Assert.Equal(2, intArray.IndexOf(3));

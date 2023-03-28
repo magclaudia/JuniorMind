@@ -5,22 +5,18 @@ namespace DataCollection
     class IntArray
     {
         private int[] array;
-        private int size;
+
         public IntArray()
         {
-            size = 0;
             array = new int[4];
         }
+
+        public int Count { get; private set; } = 0;
 
         public void Add(int element)
         {
             ResizeIfIsNeeded();
-            array[size++] = element;
-        }
-
-        public int Count()
-        {
-            return size;
+            array[Count++] = element;
         }
 
         public int Element(int index)
@@ -40,7 +36,7 @@ namespace DataCollection
 
         public int IndexOf(int element)
         {
-            for (int i = 0; i <= size; i++)
+            for (int i = 0; i <= Count; i++)
             {
                 if (array[i] == element)
                 {
@@ -56,7 +52,7 @@ namespace DataCollection
             ResizeIfIsNeeded();
             RightShifting(index);
             SetElement(index, element);
-            size++;
+            Count++;
         }
 
         public void Remove(int element)
@@ -70,19 +66,19 @@ namespace DataCollection
 
         public void Clear()
         {
-            Array.Clear(array, 0, size);
-            size = 0;
+            Array.Clear(array, 0, Count);
+            Count = 0;
         }
 
         public void RemoveAt(int index)
         {
             LeftShifting(index);
-            size--;
+            Count--;
         }
 
         private void ResizeIfIsNeeded()
         {
-            if (size == array.Length)
+            if (Count == array.Length)
             {
                 Array.Resize(ref array, array.Length * 2);
             }
@@ -90,7 +86,7 @@ namespace DataCollection
 
         private void RightShifting(int index)
         {
-            for (int i = size; i >= index; i--)
+            for (int i = Count; i >= index; i--)
             {
                 array[i] = array[i - 1];
             }
@@ -98,7 +94,7 @@ namespace DataCollection
 
         private void LeftShifting(int index)
         {
-            for (int i = index; i <= size - 1; i++)
+            for (int i = index; i <= Count - 1; i++)
             {
                 array[i] = array[i + 1];
             }
