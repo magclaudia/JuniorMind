@@ -4,7 +4,7 @@ namespace DataCollection
 {
     class IntArray
     {
-        private int[] array;
+        protected int[] array;
 
         public IntArray()
         {
@@ -12,13 +12,13 @@ namespace DataCollection
         }
 
         public int Count { get; private set; } = 0;
-        public int this[int index]
+        public virtual int this[int index]
         {
             get => array[index];
             set => array[index] = value;
         }
 
-        public void Add(int element)
+        public virtual void Add(int element)
         {
             ResizeIfIsNeeded();
             array[Count++] = element;
@@ -83,7 +83,7 @@ namespace DataCollection
         {
             for (int i = Count; i >= index; i--)
             {
-                array[i] = array[i - 1];
+                array[i + 1] = array[i];
             }
         }
 
