@@ -12,7 +12,6 @@ namespace DataCollection
 
         public override int this[int index]
         {
-            get => base[index];
             set
             {
                 if (CheckIndexToBeCorrect(index, value))
