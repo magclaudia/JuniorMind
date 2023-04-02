@@ -4,14 +4,14 @@ namespace DataCollection
 {
     class IntArray
     {
-        protected int[] array;
+        private int[] array;
 
         public IntArray()
         {
             array = new int[4];
         }
 
-        public int Count { get; private set; } = 0;
+        public int Count { get; protected set; } = 0;
         public virtual int this[int index]
         {
             get => array[index];
@@ -42,7 +42,7 @@ namespace DataCollection
             return -1;
         }
 
-        public void Insert(int index, int element)
+        public virtual void Insert(int index, int element)
         {
             ResizeIfIsNeeded();
             RightShifting(index);
@@ -81,7 +81,7 @@ namespace DataCollection
 
         private void RightShifting(int index)
         {
-            for (int i = Count; i >= index; i--)
+            for (int i = Count - 1; i >= index; i--)
             {
                 array[i + 1] = array[i];
             }

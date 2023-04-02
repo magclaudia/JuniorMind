@@ -7,7 +7,7 @@ namespace DataCollection
         public class IntArrayTests
         {
             [Fact]
-            public void TestxAddAndCount()
+            public void TestAddAndCount()
             {
                 IntArray intArray = new IntArray();
                 intArray.Add(1);
@@ -95,15 +95,15 @@ namespace DataCollection
                 intArray.Add(8);
                 intArray.Insert(1, 10);
                 Assert.Equal(9, intArray.Count);
-                Assert.Equal(0, intArray.IndexOf(1));
-                Assert.Equal(1, intArray.IndexOf(10));
-                Assert.Equal(2, intArray.IndexOf(2));
-                Assert.Equal(3, intArray.IndexOf(3));
-                Assert.Equal(4, intArray.IndexOf(4));
-                Assert.Equal(5, intArray.IndexOf(5));
-                Assert.Equal(6, intArray.IndexOf(6));
-                Assert.Equal(7, intArray.IndexOf(7));
-                Assert.Equal(8, intArray.IndexOf(8));
+                Assert.Equal(1, intArray[0]);
+                Assert.Equal(10, intArray[1]);
+                Assert.Equal(2, intArray[2]);
+                Assert.Equal(3, intArray[3]);
+                Assert.Equal(4, intArray[4]);
+                Assert.Equal(5, intArray[5]);
+                Assert.Equal(6, intArray[6]);
+                Assert.Equal(7, intArray[7]);
+                Assert.Equal(8, intArray[8]);
 
             }
 
@@ -115,7 +115,7 @@ namespace DataCollection
                 intArray.Add(2);
                 intArray.Add(3);
                 intArray.Clear();
-                Assert.Equal(0, intArray.IndexOf(0));
+                Assert.Equal(0, intArray[0]);
             }
 
             [Fact]
@@ -131,10 +131,10 @@ namespace DataCollection
                 Assert.Equal(4, intArray.Count);
                 intArray.Remove(6);
                 Assert.Equal(4, intArray.Count);
-                Assert.Equal(0, intArray.IndexOf(1));
-                Assert.Equal(1, intArray.IndexOf(2));
-                Assert.Equal(2, intArray.IndexOf(5));
-                Assert.Equal(3, intArray.IndexOf(3));
+                Assert.Equal(1, intArray[0]);
+                Assert.Equal(2, intArray[1]);
+                Assert.Equal(5, intArray[2]);
+                Assert.Equal(3, intArray[3]);
             }
 
             [Fact]
@@ -148,10 +148,10 @@ namespace DataCollection
                 intArray.Add(3);
                 intArray.RemoveAt(4);
                 Assert.Equal(4, intArray.Count);
-                Assert.Equal(0, intArray.IndexOf(1));
-                Assert.Equal(1, intArray.IndexOf(2));
-                Assert.Equal(2, intArray.IndexOf(3));
-                Assert.Equal(3, intArray.IndexOf(4));
+                Assert.Equal(1, intArray[0]);
+                Assert.Equal(2, intArray[1]);
+                Assert.Equal(3, intArray[2]);
+                Assert.Equal(4, intArray[3]);
             }
         }
     }

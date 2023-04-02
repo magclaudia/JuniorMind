@@ -4,7 +4,7 @@ namespace DataCollection
 {
     class SortedIntArray : IntArray
     {
-        public SortedIntArray() 
+        public SortedIntArray()
             : base()
         {
 
@@ -13,7 +13,13 @@ namespace DataCollection
         public override int this[int index]
         {
             get => base[index];
-            set => base[index] = value;
+            set
+            {
+                if (CheckIndexToBeCorrect(index, value))
+                {
+                    base[index] = value;
+                }
+            }
         }
 
         public override void Add(int element)
@@ -22,7 +28,15 @@ namespace DataCollection
             ArraySort();
         }
 
-        public void ArraySort()
+        public override void Insert(int index, int element)
+        {
+            if (CheckIndexToBeCorrect(index, element))
+            {
+                base.Insert(index, element);
+            }
+        }
+
+        private void ArraySort()
         {
             int temp;
             bool arrayIsSort = true;
@@ -31,15 +45,25 @@ namespace DataCollection
                 arrayIsSort = false;
                 for (int i = 0; i < base.Count - 1; i++)
                 {
-                    if (base.array[i] > base.array[i + 1])
+                    if (base[i] > base[i + 1])
                     {
-                        temp = base.array[i + 1];
-                        base.array[i + 1] = base.array[i];
-                        base.array[i] = temp;
+                        temp = base[i + 1];
+                        base[i + 1] = base[i];
+                        base[i] = temp;
                         arrayIsSort = true;
                     }
                 }
             }
+        }
+
+        private bool CheckIndexToBeCorrect(int index, int element)
+        {
+            if (index == 0 && element < base[index + 1] || element < base[index + 1] && element > base[index - 1])
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
