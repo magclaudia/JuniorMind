@@ -14,7 +14,7 @@ namespace DataCollection
         {
             set
             {
-                if (CheckIndexToBeCorrect(index, value))
+                if (index >= 0 && index < Count && CheckIndexToBeCorrect(index, value))
                 {
                     base[index] = value;
                 }
@@ -29,7 +29,7 @@ namespace DataCollection
 
         public override void Insert(int index, int element)
         {
-            if (CheckIndexToBeCorrect(index, element))
+            if (index >= 0 && index <= Count && CheckIndexToBeCorrect(index, element))
             {
                 base.Insert(index, element);
             }
@@ -57,12 +57,8 @@ namespace DataCollection
 
         private bool CheckIndexToBeCorrect(int index, int element)
         {
-            if (index == 0 && element < base[index + 1] || element < base[index + 1] && element > base[index - 1])
-            {
-                return true;
-            }
-
-            return false;
+            return index == 0 && element < base[index + 1] || element < base[index + 1] && element > base[index - 1]
+                || index == Count && element > base[index - 1];
         }
     }
 }
