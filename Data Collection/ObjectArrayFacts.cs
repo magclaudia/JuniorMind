@@ -115,7 +115,7 @@ namespace DataCollection
             objArray.Add(6.501);
             objArray.Add('/');
             objArray.Clear();
-            Assert.Equal(null, objArray[0]);
+            Assert.Null(objArray[0]);
         }
 
         [Fact]
