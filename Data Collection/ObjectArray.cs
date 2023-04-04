@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace DataCollection
 {
-    class ObjectArray
+    class ObjectArray : IEnumerable
     {
         private object[] array;
 
@@ -12,10 +14,16 @@ namespace DataCollection
         }
 
         public int Count { get; protected set; } = 0;
+
         public object this[int index]
         {
             get => array[index];
             set => array[index] = value;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return new ObjIEnumerator(this);
         }
 
         public void Add(object element)
