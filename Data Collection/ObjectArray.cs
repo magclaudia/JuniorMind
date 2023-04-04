@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace DataCollection
 {
@@ -21,7 +20,12 @@ namespace DataCollection
             set => array[index] = value;
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public ObjIEnumerator GetEnumerator()
         {
             return new ObjIEnumerator(this);
         }

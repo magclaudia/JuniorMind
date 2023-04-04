@@ -20,7 +20,7 @@ namespace DataCollection
             Assert.True(enumerator.MoveNext());
             Assert.Equal(154.545, enumerator.Current);
             Assert.False(enumerator.MoveNext());
-            Assert.Equal(null, enumerator.Current);
+            Assert.Null(enumerator.Current);
         }
     }
 }
