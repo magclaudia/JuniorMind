@@ -22,12 +22,10 @@ namespace DataCollection
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
-        }
-
-        public ObjIEnumerator GetEnumerator()
-        {
-            return new ObjIEnumerator(this);
+            for (int i = 0; i < Count; i++)
+            {
+                yield return this[i];
+            }
         }
 
         public void Add(object element)
