@@ -14,7 +14,7 @@ namespace DataCollection
 
         public int Count { get; protected set; } = 0;
 
-        public T this[int index]
+        public virtual T this[int index]
         {
             get => array[index];
             set => array[index] = value;
@@ -33,7 +33,7 @@ namespace DataCollection
             }
         }
 
-        public void Add(T element)
+        public virtual void Add(T element)
         {
             Capacity();
             array[Count++] = element;
@@ -57,7 +57,7 @@ namespace DataCollection
             return -1;
         }
 
-        public void Insert(int index, T element)
+        public virtual void Insert(int index, T element)
         {
             Capacity();
             RightShifting(index);
