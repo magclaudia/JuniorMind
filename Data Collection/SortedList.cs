@@ -59,8 +59,9 @@ namespace DataCollection
 
         private bool CheckIndexToBeCorrect(int leftIndex, int rightIndex, T element)
         {
-            return leftIndex == -1 && element.CompareTo(base[rightIndex]) <= 0 || element.CompareTo(base[rightIndex]) <= 0 && element.CompareTo(base[leftIndex]) >= 0
-                || rightIndex == Count && element.CompareTo(base[leftIndex]) > 0;
+            return leftIndex == -1 && element.CompareTo(base[rightIndex]) <= 0 ||
+                element.CompareTo(base[rightIndex]) <= 0 && element.CompareTo(base[leftIndex]) >= 0 || 
+                rightIndex == Count && element.CompareTo(base[leftIndex]) > 0;
         }
     }
 }
