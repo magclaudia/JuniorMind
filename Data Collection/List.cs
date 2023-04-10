@@ -4,20 +4,39 @@ using System.Collections.Generic;
 
 namespace DataCollection
 {
-    class List<T> : IEnumerable<T>
+    class List<T> : IList<T>
     {
-        private T[] array;
+        private T[] list;
         public List()
         {
-            array = new T[4];
+            list = new T[4];
         }
 
         public int Count { get; protected set; } = 0;
 
+        public bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public virtual T this[int index]
         {
-            get => array[index];
-            set => array[index] = value;
+            get => list[index];
+            set => list[index] = value;
+        }
+
+        public void CopyTo(T[] array, int index)
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (array != null && index > 0 && Count < array.Length - index)
+                {
+                    array[index + i] = this[i];
+                }
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -33,22 +52,22 @@ namespace DataCollection
             }
         }
 
-        public virtual void Add(T element)
+        public virtual void Add(T item)
         {
             Capacity();
-            array[Count++] = element;
+            list[Count++] = item;
         }
 
-        public bool Contains(T element)
+        public bool Contains(T item)
         {
-            return IndexOf(element) > -1;
+            return IndexOf(item) > -1;
         }
 
-        public int IndexOf(T element)
+        public int IndexOf(T item)
         {
             for (int i = 0; i < Count; i++)
             {
-                if (array[i].Equals(element))
+                if (list[i].Equals(item))
                 {
                     return i;
                 }
@@ -57,28 +76,32 @@ namespace DataCollection
             return -1;
         }
 
-        public virtual void Insert(int index, T element)
+        public virtual void Insert(int index, T item)
         {
             Capacity();
             RightShifting(index);
-            array[index] = element;
+            list[index] = item;
             Count++;
         }
 
-        public void Remove(object element)
+        public bool Remove(T item)
         {
+            bool removedItem = false;
             for (int i = 0; i < Count; i++)
             {
-                if (array[i].Equals(element))
+                if (list[i].Equals(item))
                 {
                     RemoveAt(i);
+                    removedItem = true;
                 }
             }
+
+            return removedItem;
         }
 
         public void Clear()
         {
-            Array.Clear(array);
+            Array.Clear(list);
             Count = 0;
         }
 
@@ -90,9 +113,9 @@ namespace DataCollection
 
         private void Capacity()
         {
-            if (Count == array.Length)
+            if (Count == list.Length)
             {
-                Array.Resize(ref array, array.Length * 2);
+                Array.Resize(ref list, list.Length * 2);
             }
         }
 
@@ -100,7 +123,7 @@ namespace DataCollection
         {
             for (int i = Count - 1; i >= index; i--)
             {
-                array[i + 1] = array[i];
+                list[i + 1] = list[i];
             }
         }
 
@@ -108,9 +131,8 @@ namespace DataCollection
         {
             for (int i = index; i <= Count - 1; i++)
             {
-                array[i] = array[i + 1];
+                list[i] = list[i + 1];
             }
         }
-
     }
 }

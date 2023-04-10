@@ -157,5 +157,24 @@ namespace DataCollection
             Assert.Equal(6.501, list[3]);
             Assert.Equal('/', list[4]);
         }
+
+        [Fact]
+        public void TestCopyTo()
+        {
+            var list = new List<object>();
+            object[] array = { 0, 2, 8, 6, "5", '8', 4, 7 };
+            list.Add(1);
+            list.Add("sgsdhgjd");
+            list.Add(-5);
+            list.Add(3);
+            list.CopyTo(array, 1);
+            Assert.Equal(new object[] { 0, 1, "sgsdhgjd", -5, 3, '8', 4, 7 }, array);
+            object[] newArray1 = { 0, 2, 8, 6, "5", '8', 4, 7 };
+            list.CopyTo(newArray1, 3);
+            Assert.Equal(new object[] { 0, 2, 8, 1, "sgsdhgjd", -5, 3, 7 }, newArray1);
+            object[] newArray2 = { 0, 2, 8, 6, "5", '8', 4, 7 };
+            list.CopyTo(newArray2, 6);
+            Assert.Equal(new object[] { 0, 2, 8, 6, "5", '8', 4, 7 }, newArray2);
+        }
     }
 }
