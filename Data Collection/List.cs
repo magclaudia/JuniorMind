@@ -24,8 +24,24 @@ namespace DataCollection
 
         public virtual T this[int index]
         {
-            get => list[index];
-            set => list[index] = value;
+            get
+            {
+                if (index < 0 || index > list.Length - 1)
+                {
+                    throw new ArgumentOutOfRangeException("Index is negative or bigger than list length.");
+                }
+
+                return list[index];
+            }
+            set
+            {
+                if (index < 0 || index > list.Length - 1)
+                {
+                    throw new ArgumentOutOfRangeException("Index is negative or bigger than list length.");
+                }
+
+                list[index] = value;
+            }
         }
 
         public void CopyTo(T[] array, int index)
