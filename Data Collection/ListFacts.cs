@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 
 namespace DataCollection
 {
@@ -172,9 +173,46 @@ namespace DataCollection
             object[] newArray1 = { 0, 2, 8, 6, "5", '8', 4, 7 };
             list.CopyTo(newArray1, 3);
             Assert.Equal(new object[] { 0, 2, 8, 1, "sgsdhgjd", -5, 3, 7 }, newArray1);
-            object[] newArray2 = { 0, 2, 8, 6, "5", '8', 4, 7 };
-            list.CopyTo(newArray2, 6);
-            Assert.Equal(new object[] { 0, 2, 8, 6, "5", '8', 4, 7 }, newArray2);
+        }
+
+        [Fact]
+        public void TestCopyToForArgumentNullExceptiont()
+        {
+            var list = new List<object>();
+            object[] array = null;
+            list.Add(1);
+            list.Add("sgsdhgjd");
+            list.Add(-5);
+            list.Add(3);
+            Assert.Throws<ArgumentNullException>(() => list.CopyTo(array, 1));
+        }
+
+        [Fact]
+        public void TestCopyToForArgumentOutOfRangeException()
+        {
+            var list1 = new List<object>();
+            object[] array = { 0, 2, 8, 6, "5", '8', 4, 7 };
+            list1.Add(1);
+            list1.Add("sgsdhgjd");
+            list1.Add(-5);
+            list1.Add(3);
+            Assert.Throws<ArgumentOutOfRangeException>(() => list1.CopyTo(array, -2));
+            var list2 = new List<object>();
+            object[] array1 = { 0, 2, 8 };
+            list2.Add(7);
+            Assert.Throws<ArgumentOutOfRangeException>(() => list2.CopyTo(array1, 4));
+        }
+
+        [Fact]
+        public void TestCopyToForArgumentException()
+        {
+            var list = new List<object>();
+            object[] array = { 0, 8, 6, "5", 7 };
+            list.Add(1);
+            list.Add("sgsdhgjd");
+            list.Add(-5);
+            list.Add(3);
+            Assert.Throws<ArgumentException>(() => list.CopyTo(array, 4));
         }
     }
 }

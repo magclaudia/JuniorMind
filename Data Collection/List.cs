@@ -48,10 +48,22 @@ namespace DataCollection
         {
             for (int i = 0; i < Count; i++)
             {
-                if (array != null && index > 0 && Count < array.Length - index)
+                if (array == null)
                 {
-                    array[index + i] = this[i];
+                    throw new ArgumentNullException("Array can`t be null.");
                 }
+
+                if (index < 0 || index > Count)
+                {
+                    throw new ArgumentOutOfRangeException("Index is negativ or bigger then number of elements in the list.");
+                }
+
+                if (Count >= array.Length - index)
+                {
+                    throw new ArgumentException("Number of elements from the list is greater than available space from index to the end of the destination array. ");
+                }
+
+                array[index + i] = this[i];
             }
         }
 
