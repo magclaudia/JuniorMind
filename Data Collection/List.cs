@@ -14,13 +14,7 @@ namespace DataCollection
 
         public int Count { get; protected set; } = 0;
 
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReadOnly { get; private set; } = false;
 
         public virtual T this[int index]
         {
@@ -34,6 +28,12 @@ namespace DataCollection
                 VerifyForArgumentOutOfRangeException(index);
                 list[index] = value;
             }
+        }
+
+        public ReadOnlyList<T> ToReadOnly()
+        {
+            IsReadOnly = true;
+            return new ReadOnlyList<T>(this);
         }
 
         public void CopyTo(T[] array, int index)

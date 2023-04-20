@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace DataCollection
@@ -173,6 +174,18 @@ namespace DataCollection
             object[] newArray1 = { 0, 2, 8, 6, "5", '8', 4, 7 };
             list.CopyTo(newArray1, 3);
             Assert.Equal(new object[] { 0, 2, 8, 1, "sgsdhgjd", -5, 3, 7 }, newArray1);
+        }
+
+        [Fact]
+        public void TestReadOnly()
+        {
+            var list = new List<object>();
+            list.Add(1);
+            list.Add("sgsdhgjd");
+            list.Add(-5);
+            list.Add(3);
+            ReadOnlyList<int> readonlyList = list.ToReadOnly();
+            Assert.Throws<NotSupportedException>(() => readonlyList.Add(4));
         }
 
         [Fact]
