@@ -224,6 +224,18 @@ namespace DataCollection
         }
 
         [Fact]
+        public void VerifyIfReturnTrueForReadonlyList()
+        {
+            var list = new List<object>();
+            list.Add(1);
+            list.Add("sgsdhgjd");
+            list.Add(-5);
+            var readonlyList = list.ToReadOnly();
+            Assert.True(readonlyList.IsReadOnly);
+        }
+
+
+        [Fact]
         public void TestIndexArgumentOutOfRangeException()
         {
             var list = new List<object>();

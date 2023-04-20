@@ -38,7 +38,7 @@ namespace DataCollection
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return originalList.GetEnumerator();
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -48,6 +48,7 @@ namespace DataCollection
                 yield return this[i];
             }
         }
+
 
         public void Add(T item)
         {
