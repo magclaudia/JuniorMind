@@ -185,7 +185,7 @@ namespace DataCollection
             list.Add(6.501);
             list.Add('/');
             Assert.Throws<ArgumentOutOfRangeException>(() => list[-1]);
-            Assert.Throws<ArgumentOutOfRangeException>(() => list[5]);
+            Assert.Throws<ArgumentOutOfRangeException>(() => list[6]);
         }
 
         [Fact]

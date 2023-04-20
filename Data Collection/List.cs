@@ -26,20 +26,12 @@ namespace DataCollection
         {
             get
             {
-                if (index < 0 || index > Count - 1 && Count > 0)
-                {
-                    throw new ArgumentOutOfRangeException("Index is negative or bigger than list length.");
-                }
-
+                VerifyForArgumentOutOfRangeException(index);
                 return list[index];
             }
             set
             {
-                if (index < 0 || index > Count - 1)
-                {
-                    throw new ArgumentOutOfRangeException("Index is negative or bigger than list length.");
-                }
-
+                VerifyForArgumentOutOfRangeException(index);
                 list[index] = value;
             }
         }
@@ -48,21 +40,9 @@ namespace DataCollection
         {
             for (int i = 0; i < Count; i++)
             {
-                if (array == null)
-                {
-                    throw new ArgumentNullException("Array can`t be null.");
-                }
-
-                if (index < 0 || index > Count)
-                {
-                    throw new ArgumentOutOfRangeException("Index is negativ or bigger then number of elements in the list.");
-                }
-
-                if (Count >= array.Length - index)
-                {
-                    throw new ArgumentException("Number of elements from the list is greater than available space from index to the end of the destination array. ");
-                }
-
+                VerifyForArgumentNullException(array);
+                VerifyForArgumentOutOfRangeException(index);
+                VerifyForArgumentException(array, index);
                 array[index + i] = this[i];
             }
         }
@@ -82,11 +62,7 @@ namespace DataCollection
 
         public virtual void Add(T item)
         {
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException("The list is read-only.");
-            }
-
+            VerifyForNotSupportedException();
             Capacity();
             list[Count++] = item;
         }
@@ -111,21 +87,8 @@ namespace DataCollection
 
         public virtual void Insert(int index, T item)
         {
-            if (index < 0 || index > Count)
-            {
-                throw new ArgumentOutOfRangeException("Index is negativ or bigger then number of elements in the list.");
-            }
-
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException("The list is read-only.");
-            }
-
-            if (item == null)
-            {
-                throw new ArgumentNullException("Array can`t be null.");
-            }
-
+            VerifyForArgumentOutOfRangeException(index);
+            VerifyForNotSupportedException();
             Capacity();
             RightShifting(index);
             list[index] = item;
@@ -135,12 +98,7 @@ namespace DataCollection
         public bool Remove(T item)
         {
             bool removedItem = false;
-
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException("The list is read-only.");
-            }
-
+            VerifyForNotSupportedException();
             for (int i = 0; i < Count; i++)
             {
                 if (list[i].Equals(item))
@@ -155,29 +113,49 @@ namespace DataCollection
 
         public void Clear()
         {
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException("The list is read-only.");
-            }
-
+            VerifyForNotSupportedException();
             Array.Clear(list);
             Count = 0;
         }
 
         public void RemoveAt(int index)
         {
-            if (index < 0 || index > Count)
-            {
-                throw new ArgumentOutOfRangeException("Index is negativ or bigger then number of elements in the list.");
-            }
+            VerifyForArgumentOutOfRangeException(index);
+            VerifyForNotSupportedException();
+            LeftShifting(index);
+            Count--;
+        }
 
+        private void VerifyForNotSupportedException()
+        {
             if (IsReadOnly)
             {
                 throw new NotSupportedException("The list is read-only.");
             }
+        }
 
-            LeftShifting(index);
-            Count--;
+        private void VerifyForArgumentNullException(T[] array)
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException("Array can`t be null.");
+            }
+        }
+
+        private void VerifyForArgumentOutOfRangeException(int index)
+        {
+            if (index < 0 || index > Count)
+            {
+                throw new ArgumentOutOfRangeException("Index is negative or bigger than list length.");
+            }
+        }
+
+        private void VerifyForArgumentException(T[] array, int index)
+        {
+            if (Count >= array.Length - index)
+            {
+                throw new ArgumentException("Number of elements from the list is greater than available space from index to the end of the destination array. ");
+            }
         }
 
         private void Capacity()
