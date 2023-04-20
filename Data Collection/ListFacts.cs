@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace DataCollection
@@ -177,15 +176,51 @@ namespace DataCollection
         }
 
         [Fact]
-        public void TestReadOnly()
+        public void TestReadOnlyForAddNewElement()
         {
             var list = new List<object>();
             list.Add(1);
             list.Add("sgsdhgjd");
             list.Add(-5);
             list.Add(3);
-            ReadOnlyList<int> readonlyList = list.ToReadOnly();
-            Assert.Throws<NotSupportedException>(() => readonlyList.Add(4));
+            var readonlyList = list.ToReadOnly();
+            Assert.Throws<NotSupportedException>(() => readonlyList.Add(2));
+        }
+
+        [Fact]
+        public void TestReadOnlyForInsertAnItemOnExistingPossition()
+        {
+            var list = new List<object>();
+            list.Add(1);
+            list.Add("sgsdhgjd");
+            list.Add(-5);
+            list.Add(3);
+            var readonlyList = list.ToReadOnly();
+            Assert.Throws<NotSupportedException>(() => readonlyList.Insert(2, 0));
+        }
+
+        [Fact]
+        public void TestReadOnlyForRemoveAnItem()
+        {
+            var list = new List<object>();
+            list.Add(1);
+            list.Add("sgsdhgjd");
+            list.Add(-5);
+            list.Add(3);
+            var readonlyList = list.ToReadOnly();
+            Assert.Throws<NotSupportedException>(() => readonlyList.Remove(1));
+        }
+
+        [Fact]
+        public void TestReadOnlyForCleareAnItem()
+        {
+            var list = new List<object>();
+            list.Add(1);
+            list.Add("sgsdhgjd");
+            list.Add(-5);
+            list.Add(3);
+            var readonlyList = list.ToReadOnly();
+            Assert.Throws<NotSupportedException>(() => readonlyList.Clear());
         }
 
         [Fact]
