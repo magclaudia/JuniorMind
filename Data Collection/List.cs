@@ -26,7 +26,7 @@ namespace DataCollection
         {
             get
             {
-                if (index < 0 || index > list.Length - 1)
+                if (index < 0 || index > Count - 1 && Count > 0)
                 {
                     throw new ArgumentOutOfRangeException("Index is negative or bigger than list length.");
                 }
@@ -35,7 +35,7 @@ namespace DataCollection
             }
             set
             {
-                if (index < 0 || index > list.Length - 1)
+                if (index < 0 || index > Count - 1)
                 {
                     throw new ArgumentOutOfRangeException("Index is negative or bigger than list length.");
                 }
@@ -82,6 +82,11 @@ namespace DataCollection
 
         public virtual void Add(T item)
         {
+            if (IsReadOnly)
+            {
+                throw new NotSupportedException("The list is read-only.");
+            }
+
             Capacity();
             list[Count++] = item;
         }
@@ -106,6 +111,21 @@ namespace DataCollection
 
         public virtual void Insert(int index, T item)
         {
+            if (index < 0 || index > Count)
+            {
+                throw new ArgumentOutOfRangeException("Index is negativ or bigger then number of elements in the list.");
+            }
+
+            if (IsReadOnly)
+            {
+                throw new NotSupportedException("The list is read-only.");
+            }
+
+            if (item == null)
+            {
+                throw new ArgumentNullException("Array can`t be null.");
+            }
+
             Capacity();
             RightShifting(index);
             list[index] = item;
@@ -115,6 +135,12 @@ namespace DataCollection
         public bool Remove(T item)
         {
             bool removedItem = false;
+
+            if (IsReadOnly)
+            {
+                throw new NotSupportedException("The list is read-only.");
+            }
+
             for (int i = 0; i < Count; i++)
             {
                 if (list[i].Equals(item))
@@ -129,12 +155,27 @@ namespace DataCollection
 
         public void Clear()
         {
+            if (IsReadOnly)
+            {
+                throw new NotSupportedException("The list is read-only.");
+            }
+
             Array.Clear(list);
             Count = 0;
         }
 
         public void RemoveAt(int index)
         {
+            if (index < 0 || index > Count)
+            {
+                throw new ArgumentOutOfRangeException("Index is negativ or bigger then number of elements in the list.");
+            }
+
+            if (IsReadOnly)
+            {
+                throw new NotSupportedException("The list is read-only.");
+            }
+
             LeftShifting(index);
             Count--;
         }

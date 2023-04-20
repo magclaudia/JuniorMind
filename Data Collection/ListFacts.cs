@@ -176,6 +176,19 @@ namespace DataCollection
         }
 
         [Fact]
+        public void TestIndexArgumentOutOfRangeException()
+        {
+            var list = new List<object>();
+            list.Add(1);
+            list.Add("sgsdhgjd");
+            list.Add(-5);
+            list.Add(6.501);
+            list.Add('/');
+            Assert.Throws<ArgumentOutOfRangeException>(() => list[-1]);
+            Assert.Throws<ArgumentOutOfRangeException>(() => list[5]);
+        }
+
+        [Fact]
         public void TestCopyToForArgumentNullExceptiont()
         {
             var list = new List<object>();
