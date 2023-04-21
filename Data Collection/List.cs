@@ -61,7 +61,6 @@ namespace DataCollection
 
         public virtual void Add(T item)
         {
-            VerifyForNotSupportedException();
             Capacity();
             list[Count++] = item;
         }
@@ -87,7 +86,6 @@ namespace DataCollection
         public virtual void Insert(int index, T item)
         {
             VerifyForArgumentOutOfRangeException(index);
-            VerifyForNotSupportedException();
             Capacity();
             RightShifting(index);
             list[index] = item;
@@ -97,7 +95,6 @@ namespace DataCollection
         public bool Remove(T item)
         {
             bool removedItem = false;
-            VerifyForNotSupportedException();
             for (int i = 0; i < Count; i++)
             {
                 if (list[i].Equals(item))
@@ -112,7 +109,6 @@ namespace DataCollection
 
         public void Clear()
         {
-            VerifyForNotSupportedException();
             Array.Clear(list);
             Count = 0;
         }
@@ -120,17 +116,8 @@ namespace DataCollection
         public void RemoveAt(int index)
         {
             VerifyForArgumentOutOfRangeException(index);
-            VerifyForNotSupportedException();
             LeftShifting(index);
             Count--;
-        }
-
-        private void VerifyForNotSupportedException()
-        {
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException("The list is read-only.");
-            }
         }
 
         private void VerifyForArgumentNullException(T[] array)
