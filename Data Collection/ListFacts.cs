@@ -63,11 +63,11 @@ namespace DataCollection
             list.Add(-5);
             list.Add(6.501);
             list.Add('/');
-            Assert.True(list.Contains(1));
-            Assert.True(list.Contains("sgsdhgjd"));
-            Assert.True(list.Contains(-5));
-            Assert.True(list.Contains(6.501));
-            Assert.True(list.Contains('/'));
+            Assert.Contains(1, list);
+            Assert.Contains("sgsdhgjd", list);
+            Assert.Contains(-5, list);
+            Assert.Contains(6.501, list);
+            Assert.Contains('/', list);
         }
 
         [Fact]
@@ -131,7 +131,7 @@ namespace DataCollection
             list.Add('/');
             list.Remove(3);
             Assert.Equal(5, list.Count);
-            list.Remove(6);
+            list.Remove(2);
             Assert.Equal(5, list.Count);
             Assert.Equal(1, list[0]);
             Assert.Equal("sgsdhgjd", list[1]);

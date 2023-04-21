@@ -18,7 +18,11 @@ namespace DataCollection
             get { return originalList.Count; }
         }
 
-        public bool IsReadOnly => originalList.IsReadOnly;
+        public bool IsReadOnly
+        {
+            get { return true; }
+        }
+
         public T this[int index]
         {
             get
@@ -43,12 +47,8 @@ namespace DataCollection
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (int i = 0; i < Count; i++)
-            {
-                yield return this[i];
-            }
+            return originalList.GetEnumerator();
         }
-
 
         public void Add(T item)
         {

@@ -32,7 +32,6 @@ namespace DataCollection
 
         public ReadOnlyList<T> ToReadOnly()
         {
-            IsReadOnly = true;
             return new ReadOnlyList<T>(this);
         }
 
