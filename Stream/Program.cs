@@ -6,7 +6,7 @@ namespace ReadAndWriteProject
 {
     class Program
     {
-        static void Main(string[] args) 
+        static void Main(string[] args)
         {
             bool gzipped = true;
             bool encrypted = true;
@@ -17,7 +17,7 @@ namespace ReadAndWriteProject
             Console.WriteLine(result);
         }
 
-        public static void WriteToStream(MemoryStream stream, bool gzipped, bool encrypted)
+        public static void WriteToStream(Stream stream, bool gzipped, bool encrypted)
         {
             byte[] buffer = Encoding.UTF8.GetBytes("input text");
             if (gzipped)
@@ -27,7 +27,7 @@ namespace ReadAndWriteProject
                 gzipStream.Write(buffer, 0, buffer.Length);
                 outputStream.ToArray();
             }
-             
+
             if (encrypted)
             {
                 using var encrypt = Aes.Create();
@@ -41,7 +41,7 @@ namespace ReadAndWriteProject
             }
         }
 
-        public static string ReadFromStream(MemoryStream stream, bool gzipped, bool encrypted)
+        public static string ReadFromStream(Stream stream, bool gzipped, bool encrypted)
         {
             byte[] buffer = Encoding.UTF8.GetBytes("input text");
 
