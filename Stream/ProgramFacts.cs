@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Stream
+namespace StreamProj
 {
     public class ProgramFacts
     {
@@ -12,7 +12,7 @@ namespace Stream
             bool encrypted = false;
             using MemoryStream stream = new();
             var byteInput = Program.WriteToStream(stream, inputText, gzipped, encrypted);
-            string cipherText = Convert.ToBase64String(byteInput);
+            string cipherText = BitConverter.ToString(byteInput);
             stream.Seek(0, SeekOrigin.Begin);
             var result = Program.ReadFromStream(byteInput, inputText, gzipped, encrypted);
             Assert.Equal(inputText, result);
@@ -26,7 +26,7 @@ namespace Stream
             bool encrypted = false;
             using MemoryStream stream = new();
             var byteInput = Program.WriteToStream(stream, inputText, gzipped, encrypted);
-            string cipherText = Convert.ToBase64String(byteInput);
+            string cipherText = BitConverter.ToString(byteInput);
             stream.Seek(0, SeekOrigin.Begin);
             var result = Program.ReadFromStream(byteInput, inputText, gzipped, encrypted);
             Assert.Equal(inputText, result);
@@ -40,7 +40,7 @@ namespace Stream
             bool encrypted = true;
             using MemoryStream stream = new();
             var byteInput = Program.WriteToStream(stream, inputText, gzipped, encrypted);
-            string cipherText = Convert.ToBase64String(byteInput);
+            string cipherText = BitConverter.ToString(byteInput);
             stream.Seek(0, SeekOrigin.Begin);
             var result = Program.ReadFromStream(byteInput, inputText, gzipped, encrypted);
             Assert.Equal(inputText, result);
@@ -54,7 +54,7 @@ namespace Stream
             bool encrypted = true;
             using MemoryStream stream = new();
             var byteInput = Program.WriteToStream(stream, inputText, gzipped, encrypted);
-            string cipherText = Convert.ToBase64String(byteInput);
+            string cipherText = BitConverter.ToString(byteInput);
             stream.Seek(0, SeekOrigin.Begin);
             var result = Program.ReadFromStream(byteInput, inputText, gzipped, encrypted);
             Assert.Equal(inputText, result);
