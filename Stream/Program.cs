@@ -2,30 +2,17 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ReadAndWriteProject
+namespace Stream
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static byte[] WriteToStream(MemoryStream stream, string inputText, bool gzipped, bool encrypted)
         {
-            bool gzipped = true;
-            bool encrypted = true;
-            using MemoryStream stream = new();
-            WriteToStream(stream, gzipped, encrypted);
-            stream.Seek(0, SeekOrigin.Begin);
-            var result = ReadFromStream(stream, gzipped, encrypted);
-            Console.WriteLine(result);
-        }
-
-        public static void WriteToStream(Stream stream, bool gzipped, bool encrypted)
-        {
-            byte[] buffer = Encoding.UTF8.GetBytes("input text");
             if (gzipped)
             {
-                using var outputStream = new MemoryStream();
-                using var gzipStream = new GZipStream(outputStream, CompressionMode.Compress);
-                gzipStream.Write(buffer, 0, buffer.Length);
-                outputStream.ToArray();
+                using var gzipStream = new GZipStream(stream, CompressionMode.Compress, true);
+                using var writer = new StreamWriter(gzipStream, Encoding.UTF8);
+                writer.Write(inputText);
             }
 
             if (encrypted)
@@ -34,35 +21,35 @@ namespace ReadAndWriteProject
                 encrypt.GenerateKey();
                 encrypt.GenerateIV();
                 ICryptoTransform encryptor = encrypt.CreateEncryptor(encrypt.Key, encrypt.IV);
-                using MemoryStream msEncrypt = new MemoryStream();
-                using CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write);
-                csEncrypt.Write(buffer, 0, buffer.Length);
-                buffer = msEncrypt.ToArray();
+                using CryptoStream csEncrypt = new CryptoStream(stream, encryptor, CryptoStreamMode.Write, true);
+                using var wrEncrypt = new StreamWriter(csEncrypt, Encoding.UTF8);
+                wrEncrypt.Write(inputText);
             }
+
+            byte[] array = stream.ToArray();
+            return array;
         }
 
-        public static string ReadFromStream(Stream stream, bool gzipped, bool encrypted)
+        public static string ReadFromStream(byte[] initialData, string inputText, bool gzipped, bool encrypted)
         {
-            byte[] buffer = Encoding.UTF8.GetBytes("input text");
-
+            using var ms = new MemoryStream(initialData);
             if (gzipped)
             {
-                using var inputStream = new MemoryStream(buffer);
-                using var outputStream = new MemoryStream();
-                using var gzipStream = new GZipStream(inputStream, CompressionMode.Decompress);
-                outputStream.ToArray();
+                using var gzipStream = new GZipStream(ms, CompressionMode.Decompress, true);
+                using var reader = new StreamReader(gzipStream);
+                reader.ReadToEnd();
             }
 
             if (encrypted)
             {
                 using var aes = Aes.Create();
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                using var msDecrypt = new MemoryStream(buffer);
-                using var cryptoStream = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
+                using var cryptoStream = new CryptoStream(ms, decryptor, CryptoStreamMode.Read, true);
                 using var reader = new StreamReader(cryptoStream);
+                reader.ReadToEnd();
             }
 
-            return Encoding.UTF8.GetString(buffer);
+            return inputText;
         }
     }
 }
