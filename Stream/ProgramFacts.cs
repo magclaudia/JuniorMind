@@ -8,13 +8,10 @@ namespace StreamProj
         public void ReturnInputTextIfInputTextIsNotGzipOrEncrypt()
         {
             string inputText = "jhjhj";
-            bool gzipped = false;
-            bool encrypted = false;
             using MemoryStream stream = new();
-            Program.WriteToStream(stream, inputText, gzipped, encrypted);
-            //string cipherText = BitConverter.ToString(byteInput);
+            Program.WriteToStream(stream, inputText);
             stream.Seek(0, SeekOrigin.Begin);
-            var result = Program.ReadFromStream(stream, inputText, gzipped, encrypted);
+            var result = Program.ReadFromStream(stream);
             Assert.Equal(inputText, result);
         }
 
@@ -22,27 +19,24 @@ namespace StreamProj
         public void ReturnInputTextIfInputTextIsGzipAndIsNotEncrypt()
         {
             string inputText = "jhjhj";
-            bool gzipped = true;
-            bool encrypted = false;
+            bool gzipped;
             using MemoryStream stream = new();
-            Program.WriteToStream(stream, inputText, gzipped, encrypted);
-            //string cipherText = BitConverter.ToString(byteInput);
+            Program.WriteToStream(stream, inputText, gzipped = true);
             stream.Seek(0, SeekOrigin.Begin);
-            var result = Program.ReadFromStream(stream, inputText, gzipped, encrypted);
+            var result = Program.ReadFromStream(stream, gzipped = true);
             Assert.Equal(inputText, result);
         }
 
-        /*[Fact]
+        [Fact]
         public void ReturnInputTextIfInputTextIsNotGzipAndIsEncrypt()
         {
             string inputText = "jhjhj";
-            bool gzipped = false;
-            bool encrypted = true;
+            bool gzipped;
+            bool encrypted;
             using MemoryStream stream = new();
-            var byteInput = Program.WriteToStream(stream, inputText, gzipped, encrypted);
-            string cipherText = BitConverter.ToString(byteInput);
             stream.Seek(0, SeekOrigin.Begin);
-            var result = Program.ReadFromStream(byteInput, inputText, gzipped, encrypted);
+            Program.WriteToStream(stream, inputText, gzipped = false, encrypted = true);
+            var result = Program.ReadFromStream(stream, gzipped = false, encrypted = true);
             Assert.Equal(inputText, result);
         }
 
@@ -50,14 +44,13 @@ namespace StreamProj
         public void ReturnInputTextIfInputTextIsGzipAndIsEncrypt()
         {
             string inputText = "jhjhj";
-            bool gzipped = true;
-            bool encrypted = true;
+            bool gzipped;
+            bool encrypted;
             using MemoryStream stream = new();
-            var byteInput = Program.WriteToStream(stream, inputText, gzipped, encrypted);
-            string cipherText = BitConverter.ToString(byteInput);
+            Program.WriteToStream(stream, inputText, gzipped = true, encrypted = true);   
             stream.Seek(0, SeekOrigin.Begin);
-            var result = Program.ReadFromStream(byteInput, inputText, gzipped, encrypted);
+            var result = Program.ReadFromStream(stream,  gzipped = true, encrypted = true);
             Assert.Equal(inputText, result);
-        }*/
+        }
     }
 }
