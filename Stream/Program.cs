@@ -51,7 +51,9 @@ namespace StreamProj
             }
 
             reader = new StreamReader(decoded);
-            return reader.ReadToEnd();
+            string result = reader.ReadToEnd();
+            reader.Close(); 
+            return result;
         }
     }
 }
