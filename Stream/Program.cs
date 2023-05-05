@@ -32,7 +32,6 @@ namespace StreamProj
             writer = new StreamWriter(cipherStream);
             writer.Write(inputText);
             writer.Flush();
-            stream.Seek(0, SeekOrigin.Begin);
         }
 
         public static string ReadFromStream(Stream stream, bool gzipped = false, bool encrypted = false)
@@ -49,7 +48,6 @@ namespace StreamProj
             {
                 using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
                 var crypto = new CryptoStream(decoded, decryptor, CryptoStreamMode.Read);
-                crypto.FlushFinalBlock();
             }
 
             reader = new StreamReader(decoded);

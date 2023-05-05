@@ -10,6 +10,7 @@ namespace StreamProj
             string inputText = "jhjhj";
             using MemoryStream stream = new();
             Program.WriteToStream(stream, inputText);
+            stream.Seek(0, SeekOrigin.Begin);
             var result = Program.ReadFromStream(stream);
             Assert.Equal(inputText, result);
         }
@@ -21,6 +22,7 @@ namespace StreamProj
             bool gzipped;
             using MemoryStream stream = new();
             Program.WriteToStream(stream, inputText, gzipped = true);
+            stream.Seek(0, SeekOrigin.Begin);
             var result = Program.ReadFromStream(stream, gzipped = true);
             Assert.Equal(inputText, result);
         }
@@ -33,6 +35,7 @@ namespace StreamProj
             bool encrypted;
             using MemoryStream stream = new();
             Program.WriteToStream(stream, inputText, gzipped = false, encrypted = true);
+            stream.Seek(0, SeekOrigin.Begin);
             var result = Program.ReadFromStream(stream, gzipped = false, encrypted = true);
             Assert.Equal(inputText, result);
         }
@@ -45,6 +48,7 @@ namespace StreamProj
             bool encrypted;
             using MemoryStream stream = new();
             Program.WriteToStream(stream, inputText, gzipped = true, encrypted = true);   
+            stream.Seek(0, SeekOrigin.Begin);
             var result = Program.ReadFromStream(stream,  gzipped = true, encrypted = true);
             Assert.Equal(inputText, result);
         }
