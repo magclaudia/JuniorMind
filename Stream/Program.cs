@@ -16,29 +16,32 @@ namespace StreamProj
 
         public static void WriteToStream(Stream stream, string inputText, bool gzipped = false, bool encrypted = false)
         {
-            var writer = new StreamWriter(stream);
             Stream cipherStream = stream;
+            var writer = new StreamWriter(stream);
             if (gzipped)
             {
-               cipherStream = new GZipStream(stream, CompressionMode.Compress);
-            }
-
-            if (encrypted)
-            {
-                using ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-                var crypto = new CryptoStream(cipherStream, encryptor, CryptoStreamMode.Write);
+                cipherStream = new GZipStream(stream, CompressionMode.Compress);
             }
 
             writer = new StreamWriter(cipherStream);
-            writer.Write(inputText);
-            writer.Flush();
+            if (encrypted)
+            {
+                using ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                cipherStream = new CryptoStream(cipherStream, encryptor, CryptoStreamMode.Write);
+                writer.Write(inputText);
+                ((CryptoStream)cipherStream).FlushFinalBlock();
+            }
+            else
+            {
+                writer.Write(inputText);
+                writer.Flush();
+            }
         }
 
         public static string ReadFromStream(Stream stream, bool gzipped = false, bool encrypted = false)
         {
             var reader = new StreamReader(stream);
             Stream decoded = stream;
-
             if (gzipped)
             {
                 decoded = new GZipStream(stream, CompressionMode.Decompress);
@@ -47,13 +50,13 @@ namespace StreamProj
             if (encrypted)
             {
                 using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                var crypto = new CryptoStream(decoded, decryptor, CryptoStreamMode.Read);
+                decoded = new CryptoStream(decoded, decryptor, CryptoStreamMode.Read);
             }
 
             reader = new StreamReader(decoded);
-            string result = reader.ReadToEnd();
-            reader.Close(); 
-            return result;
+            string convertedString = reader.ReadToEnd();
+            reader.Close();
+            return convertedString;
         }
     }
 }
