@@ -6,7 +6,7 @@ namespace StreamProj
 {
     public class Program
     {
-        private static Aes aes;
+        private static readonly Aes aes;
         static Program()
         {
             aes = Aes.Create();
@@ -17,30 +17,28 @@ namespace StreamProj
         public static void WriteToStream(Stream stream, string inputText, bool gzipped = false, bool encrypted = false)
         {
             Stream cipherStream = stream;
-            var writer = new StreamWriter(stream);
             if (gzipped)
             {
                 cipherStream = new GZipStream(stream, CompressionMode.Compress);
             }
 
-            writer = new StreamWriter(cipherStream);
             if (encrypted)
             {
-                using ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
                 cipherStream = new CryptoStream(cipherStream, encryptor, CryptoStreamMode.Write);
-                writer.Write(inputText);
-                ((CryptoStream)cipherStream).FlushFinalBlock();
             }
-            else
+
+            var writer = new StreamWriter(cipherStream);
+            writer.Write(inputText);
+            writer.Flush();
+            if (encrypted) 
             {
-                writer.Write(inputText);
-                writer.Flush();
+                ((CryptoStream)cipherStream).FlushFinalBlock();
             }
         }
 
         public static string ReadFromStream(Stream stream, bool gzipped = false, bool encrypted = false)
         {
-            var reader = new StreamReader(stream);
             Stream decoded = stream;
             if (gzipped)
             {
@@ -49,11 +47,11 @@ namespace StreamProj
 
             if (encrypted)
             {
-                using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
                 decoded = new CryptoStream(decoded, decryptor, CryptoStreamMode.Read);
             }
 
-            reader = new StreamReader(decoded);
+            var reader = new StreamReader(decoded);
             string convertedString = reader.ReadToEnd();
             reader.Close();
             return convertedString;

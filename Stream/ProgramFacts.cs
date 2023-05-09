@@ -19,11 +19,10 @@ namespace StreamProj
         public void ReturnInputTextIfInputTextIsGzipAndIsNotEncrypt()
         {
             string inputText = "jhjhj";
-            bool gzipped;
             using MemoryStream stream = new();
-            Program.WriteToStream(stream, inputText, gzipped = true);
+            Program.WriteToStream(stream, inputText, true);
             stream.Seek(0, SeekOrigin.Begin);
-            var result = Program.ReadFromStream(stream, gzipped = true);
+            var result = Program.ReadFromStream(stream, true);
             Assert.Equal(inputText, result);
         }
 
@@ -31,12 +30,10 @@ namespace StreamProj
         public void ReturnInputTextIfInputTextIsNotGzipAndIsEncrypt()
         {
             string inputText = "jhjhj";
-            bool gzipped;
-            bool encrypted;
             using MemoryStream stream = new();
-            Program.WriteToStream(stream, inputText, gzipped = false, encrypted = true);
+            Program.WriteToStream(stream, inputText, false, true);
             stream.Seek(0, SeekOrigin.Begin);
-            var result = Program.ReadFromStream(stream, gzipped = false, encrypted = true);
+            var result = Program.ReadFromStream(stream, false, true);
             Assert.Equal(inputText, result);
         }
 
@@ -44,12 +41,10 @@ namespace StreamProj
         public void ReturnInputTextIfInputTextIsGzipAndIsEncrypt()
         {
             string inputText = "jhjhj";
-            bool gzipped;
-            bool encrypted;
             using MemoryStream stream = new();
-            Program.WriteToStream(stream, inputText, gzipped = true, encrypted = true);   
+            Program.WriteToStream(stream, inputText, true, true);   
             stream.Seek(0, SeekOrigin.Begin);
-            var result = Program.ReadFromStream(stream,  gzipped = true, encrypted = true);
+            var result = Program.ReadFromStream(stream,  true, true);
             Assert.Equal(inputText, result);
         }
     }
