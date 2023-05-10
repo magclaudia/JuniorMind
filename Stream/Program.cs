@@ -14,26 +14,27 @@ namespace StreamProj
             aes.GenerateIV();
         }
 
-        public static void WriteToStream(Stream stream, string inputText, bool gzipped = false, bool encrypted = false)
+        public static void WriteToStream(Stream stream, string data, bool gzipped = false, bool encrypted = false)
         {
-            Stream cipherStream = stream;
+            Stream dataStream = stream;
             if (gzipped)
             {
-                cipherStream = new GZipStream(stream, CompressionMode.Compress);
+                dataStream = new GZipStream(stream, CompressionMode.Compress);
             }
 
             if (encrypted)
             {
                 ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-                cipherStream = new CryptoStream(cipherStream, encryptor, CryptoStreamMode.Write);
+                dataStream = new CryptoStream(dataStream, encryptor, CryptoStreamMode.Write);
             }
 
-            var writer = new StreamWriter(cipherStream);
-            writer.Write(inputText);
+            var writer = new StreamWriter(dataStream);
+            writer.Write(data);
             writer.Flush();
-            if (encrypted) 
+           
+            if (dataStream is CryptoStream cryptoStream) 
             {
-                ((CryptoStream)cipherStream).FlushFinalBlock();
+                cryptoStream.FlushFinalBlock();
             }
         }
 
