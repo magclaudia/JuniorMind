@@ -18,7 +18,7 @@ namespace StreamProj
             Stream dataStream = stream;
             if (gzipped)
             {
-                dataStream = new GZipStream(dataStream, CompressionMode.Compress, leaveOpen: true);
+                dataStream = new GZipStream(dataStream, CompressionMode.Compress);
             }
 
             if (encrypted)
@@ -36,7 +36,7 @@ namespace StreamProj
 
             if (gzipped)
             {
-                dataStream = new GZipStream(dataStream, CompressionMode.Decompress, leaveOpen: true);
+                dataStream = new GZipStream(dataStream, CompressionMode.Decompress);
             }
 
             if (encrypted)
