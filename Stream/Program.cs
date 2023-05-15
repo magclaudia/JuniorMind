@@ -1,38 +1,37 @@
 ﻿using System.IO.Compression;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace StreamProj
 {
+    public interface IStreamBuilder
+    {
+        Stream CreateWriteStream(Stream stream, bool gzipped, bool encrypted);
+        Stream CreateReadStream(Stream stream, bool gzipped, bool encrypted);
+    }
+
     public class Program
     {
         private static readonly Aes aes;
+        private static readonly IStreamBuilder streamFactory;
+
         static Program()
         {
             aes = Aes.Create();
             aes.GenerateKey();
             aes.GenerateIV();
+            streamFactory = new StreamFactory(aes);
         }
 
         public static void WriteToStream(Stream stream, string data, bool gzipped = false, bool encrypted = false)
         {
-            Stream dataStream = stream;
-            if (gzipped)
-            {
-                dataStream = new GZipStream(stream, CompressionMode.Compress);
-            }
-
-            if (encrypted)
-            {
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-                dataStream = new CryptoStream(dataStream, encryptor, CryptoStreamMode.Write);
-            }
-
+            var dataStream = streamFactory.CreateWriteStream(stream, gzipped, encrypted);
             var writer = new StreamWriter(dataStream);
             writer.Write(data);
             writer.Flush();
-           
-            if (dataStream is CryptoStream cryptoStream) 
+
+            if (dataStream is CryptoStream cryptoStream)
             {
                 cryptoStream.FlushFinalBlock();
             }
@@ -40,18 +39,7 @@ namespace StreamProj
 
         public static string ReadFromStream(Stream stream, bool gzipped = false, bool encrypted = false)
         {
-            Stream decoded = stream;
-            if (gzipped)
-            {
-                decoded = new GZipStream(stream, CompressionMode.Decompress);
-            }
-
-            if (encrypted)
-            {
-                var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                decoded = new CryptoStream(decoded, decryptor, CryptoStreamMode.Read);
-            }
-
+            var decoded = streamFactory.CreateReadStream(stream, gzipped, encrypted);
             var reader = new StreamReader(decoded);
             string convertedString = reader.ReadToEnd();
             reader.Close();
