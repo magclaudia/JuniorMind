@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StreamProj
 {
-    public interface IStreamBuilder
+    public interface IStreamFactory
     {
         Stream CreateWriteStream(Stream stream, bool gzipped, bool encrypted);
         Stream CreateReadStream(Stream stream, bool gzipped, bool encrypted);
@@ -14,7 +14,7 @@ namespace StreamProj
     public class Program
     {
         private static readonly Aes aes;
-        private static readonly IStreamBuilder streamFactory;
+        private static readonly IStreamFactory streamFactory;
 
         static Program()
         {
