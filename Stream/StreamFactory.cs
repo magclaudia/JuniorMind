@@ -13,7 +13,7 @@ namespace StreamProj
             this.aes = aes;
         }
 
-        public Stream CreateWriteStream(Stream stream, bool gzipped, bool encrypted)
+        public Stream CreateWriteStream(Stream stream, bool gzipped = false, bool encrypted = false)
         {
             Stream dataStream = stream;
             if (gzipped)
@@ -30,7 +30,7 @@ namespace StreamProj
             return dataStream;
         }
 
-        public Stream CreateReadStream(Stream stream, bool gzipped, bool encrypted)
+        public Stream CreateReadStream(Stream stream, bool gzipped = false, bool encrypted = false)
         {
             Stream dataStream = stream;
 

@@ -7,26 +7,13 @@ namespace StreamProj
 {
     public interface IStreamFactory
     {
-        Stream CreateWriteStream(Stream stream, bool gzipped, bool encrypted);
-        Stream CreateReadStream(Stream stream, bool gzipped, bool encrypted);
+        Stream CreateWriteStream(Stream stream, bool gzipped = false, bool encrypted = false);
+        Stream CreateReadStream(Stream stream, bool gzipped = false, bool encrypted = false);
     }
-
     public class Program
     {
-        private static readonly Aes aes;
-        private static readonly IStreamFactory streamFactory;
-
-        static Program()
+        public static void WriteToStream(Stream dataStream, string data, bool gzipped = false, bool encrypted = false)
         {
-            aes = Aes.Create();
-            aes.GenerateKey();
-            aes.GenerateIV();
-            streamFactory = new StreamFactory(aes);
-        }
-
-        public static void WriteToStream(Stream stream, string data, bool gzipped = false, bool encrypted = false)
-        {
-            var dataStream = streamFactory.CreateWriteStream(stream, gzipped, encrypted);
             var writer = new StreamWriter(dataStream);
             writer.Write(data);
             writer.Flush();
@@ -37,9 +24,8 @@ namespace StreamProj
             }
         }
 
-        public static string ReadFromStream(Stream stream, bool gzipped = false, bool encrypted = false)
+        public static string ReadFromStream(Stream decoded, bool gzipped = false, bool encrypted = false)
         {
-            var decoded = streamFactory.CreateReadStream(stream, gzipped, encrypted);
             var reader = new StreamReader(decoded);
             string convertedString = reader.ReadToEnd();
             reader.Close();
