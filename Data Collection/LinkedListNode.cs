@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Data_Collection
+namespace DataCollection
 {
-    internal class LinkedListNode
+    public sealed class LinkedListNode<T>
     {
+        public LinkedList<T> List { get; set; }
+        public LinkedListNode<T> Next { get; set; }
+        public LinkedListNode<T> Previous { get; set; }
+        public T Value { get; set; }
     }
 }
