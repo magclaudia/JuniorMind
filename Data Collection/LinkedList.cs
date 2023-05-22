@@ -56,14 +56,13 @@ namespace DataCollection
 
         public void AddBefore(LinkedListNode<T> node, LinkedListNode<T> newNode)
         {
+            ExceptionNodeIsNotInTheCurrentList(node);
             AddAfter(node.Previous, newNode);
         }
 
         public void AddBefore(LinkedListNode<T> node, T value)
         {
-            ExceptionNodeIsNotInTheCurrentList(node);
-            var newNode = new LinkedListNode<T>(value);
-            AddBefore(node, newNode);
+            AddBefore(node, new LinkedListNode<T>(value));
         }
 
         public void AddFirst(LinkedListNode<T> node)
