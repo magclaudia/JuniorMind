@@ -96,7 +96,7 @@ namespace DataCollection
 
         public LinkedListNode<T> Find(T value)
         {
-            for (LinkedListNode<T> node = sentinel.Next; node != sentinel; node = node.Next)
+            for (var node = sentinel.Next; node != sentinel; node = node.Next)
             {
                 if (node.Value.Equals(value))
                 {
@@ -114,7 +114,7 @@ namespace DataCollection
 
         public LinkedListNode<T> FindLast(T value)
         {
-            for (LinkedListNode<T> node = sentinel.Previous; node != sentinel; node = node.Previous)
+            for (var node = sentinel.Previous; node != sentinel; node = node.Previous)
             {
                 if (node.Value.Equals(value))
                 {
@@ -165,29 +165,28 @@ namespace DataCollection
             Remove(sentinel.Previous);
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(T[] array, int index)
         {
             if (array == null)
             {
                 throw new ArgumentNullException("Array is empty.");
             }
 
-            if (arrayIndex < 0)
+            if (index < 0)
             {
                 throw new IndexOutOfRangeException("Index is not valid");
             }
 
-            if (Count > (array.Length - arrayIndex))
+            if (Count > (array.Length - index))
             {
                 throw new ArgumentException("Number of elements should  not be bigger then available space.");
             }
 
-            arrayIndex = 0;
-            LinkedListNode<T> node = First;
-            for (int i = 0; i < Count; i++)
+            index = 0;
+            for (var node = sentinel.Next; node != sentinel; node = node.Next)
             {
-                array[arrayIndex + i] = node.Value;
-                node = node.Next;
+                array[index] = node.Value;
+                index++;
             }
         }
 
