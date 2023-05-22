@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Xml.Linq;
 
 namespace DataCollection
 {
@@ -15,7 +13,6 @@ namespace DataCollection
             sentinel = new LinkedListNode<T>(default);
             sentinel.Next = sentinel;
             sentinel.Previous = sentinel;
-            sentinel.List = this;
         }
 
         public int Count { get; protected set; } = 0;
@@ -23,7 +20,7 @@ namespace DataCollection
         {
             get
             {
-                return sentinel.Next;
+                return Count == 0 ? null : sentinel.Next;
             }
         }
 
@@ -31,7 +28,7 @@ namespace DataCollection
         {
             get
             {
-                return sentinel.Previous;
+                return Count == 0 ? null : sentinel.Previous;
             }
         }
 
@@ -48,7 +45,6 @@ namespace DataCollection
             node.Next.Previous = newNode;
             node.Next = newNode;
             newNode.List = this;
-
             Count++;
         }
 
@@ -60,8 +56,6 @@ namespace DataCollection
 
         public void AddBefore(LinkedListNode<T> node, LinkedListNode<T> newNode)
         {
-            ExceptionArgumentNullExceptionNode(node);
-            ExceptionArgumentNullExceptionNewNode(newNode);
             AddAfter(node.Previous, newNode);
         }
 
@@ -69,19 +63,18 @@ namespace DataCollection
         {
             ExceptionNodeIsNotInTheCurrentList(node);
             var newNode = new LinkedListNode<T>(value);
-            AddAfter(node.Previous, newNode);
+            AddBefore(node, newNode);
         }
 
         public void AddFirst(LinkedListNode<T> node)
         {
-            ExceptionArgumentNullExceptionNode(node);
             AddAfter(sentinel, node);
         }
 
         public void AddFirst(T value)
         {
             var newNode = new LinkedListNode<T>(value);
-            AddAfter(sentinel, newNode);
+            AddFirst(newNode);
         }
 
         public void AddLast(LinkedListNode<T> node)
@@ -93,7 +86,7 @@ namespace DataCollection
         public void AddLast(T value)
         {
             var newNode = new LinkedListNode<T>(value);
-            AddBefore(sentinel, newNode);
+            AddLast(newNode);
         }
 
         public void Add(T value)
@@ -103,7 +96,7 @@ namespace DataCollection
 
         public LinkedListNode<T> Find(T value)
         {
-            for (var node = First; node != sentinel; node = node.Next)
+            for (LinkedListNode<T> node = sentinel.Next; node != sentinel; node = node.Next)
             {
                 if (node.Value.Equals(value))
                 {
@@ -121,7 +114,7 @@ namespace DataCollection
 
         public LinkedListNode<T> FindLast(T value)
         {
-            for (var node = Last; node != sentinel; node = node.Previous)
+            for (LinkedListNode<T> node = sentinel.Previous; node != sentinel; node = node.Previous)
             {
                 if (node.Value.Equals(value))
                 {
@@ -134,6 +127,8 @@ namespace DataCollection
 
         public void Clear()
         {
+            sentinel.Next = sentinel;
+            sentinel.Previous = sentinel;
             Count = 0;
         }
 
@@ -148,9 +143,10 @@ namespace DataCollection
 
         public bool Remove(T value)
         {
-            if (Find(value) != null)
+            var element = Find(value);
+            if (element != null)
             {
-                Remove(Find(value));
+                Remove(element);
                 return true;
             }
 
@@ -193,7 +189,6 @@ namespace DataCollection
                 array[arrayIndex + i] = node.Value;
                 node = node.Next;
             }
-
         }
 
         public IEnumerator<T> GetEnumerator()
