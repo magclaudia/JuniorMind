@@ -21,6 +21,7 @@ namespace DataCollection
             Assert.Equal(4, linkedListNodeToAdd.Next.Value);
         }
 
+
         [Fact]
         public void TestAddFirst()
         {
@@ -49,6 +50,15 @@ namespace DataCollection
             Assert.Equal(5, list.Count);
             Assert.Equal(2, linkedListNodeToAdd.Previous.Value);
             Assert.Equal(4, linkedListNodeToAdd.Next.Value);
+        }
+
+        [Fact]
+        public void TestAddBeforeExceptionNodeIsNotInTheCurrentList()
+        {
+             var list = new LinkedList<int>();
+             var newNode = new LinkedListNode<int>(2);
+             var exception = Assert.Throws<ArgumentNullException>(() => list.AddBefore(null, newNode));
+            Assert.Equal("Value cannot be null. (Parameter 'Node is null')", exception.Message);
         }
 
         [Fact]

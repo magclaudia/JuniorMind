@@ -37,9 +37,9 @@ namespace DataCollection
         public void AddAfter(LinkedListNode<T> node, LinkedListNode<T> newNode)
         {
             ExceptionArgumentNullExceptionNode(node);
-            ExceptionArgumentNullExceptionNewNode(newNode);
-            ExceptionNewNodeBelongsToAnotherList(newNode);
+            ExceptionArgumentNullExceptionNode(newNode);
             ExceptionNodeIsNotInTheCurrentList(node);
+            ExceptionNodeBelongsToAnotherList(newNode);
             newNode.Next = node.Next;
             newNode.Previous = node;
             node.Next.Previous = newNode;
@@ -50,13 +50,12 @@ namespace DataCollection
 
         public void AddAfter(LinkedListNode<T> node, T value)
         {
-            var newNode = new LinkedListNode<T>(value);
-            AddAfter(node, newNode);
+            AddAfter(node, new LinkedListNode<T>(value));
         }
 
         public void AddBefore(LinkedListNode<T> node, LinkedListNode<T> newNode)
         {
-            ExceptionNodeIsNotInTheCurrentList(node);
+            ExceptionArgumentNullExceptionNode(node);
             AddAfter(node.Previous, newNode);
         }
 
@@ -72,20 +71,17 @@ namespace DataCollection
 
         public void AddFirst(T value)
         {
-            var newNode = new LinkedListNode<T>(value);
-            AddFirst(newNode);
+            AddFirst(new LinkedListNode<T>(value));
         }
 
         public void AddLast(LinkedListNode<T> node)
         {
-            ExceptionArgumentNullExceptionNode(node);
             AddBefore(sentinel, node);
         }
 
         public void AddLast(T value)
         {
-            var newNode = new LinkedListNode<T>(value);
-            AddLast(newNode);
+            AddLast(new LinkedListNode<T>(value));
         }
 
         public void Add(T value)
@@ -135,6 +131,11 @@ namespace DataCollection
         {
             ExceptionArgumentNullExceptionNode(node);
             ExceptionNodeIsNotInTheCurrentList(node);
+            if (node == sentinel)
+            {
+                throw new InvalidOperationException("Cannot remove sentinel node.");
+            }
+
             node.Previous.Next = node.Next;
             node.Next.Previous = node.Previous;
             Count--;
@@ -206,37 +207,29 @@ namespace DataCollection
         {
             if (node is null)
             {
-                throw new ArgumentNullException(nameof(node), " is null");
-            }
-        }
-
-        private void ExceptionArgumentNullExceptionNewNode(LinkedListNode<T> newNode)
-        {
-            if (newNode is null)
-            {
-                throw new ArgumentNullException(nameof(newNode), " is null");
+                throw new ArgumentNullException("Node is null");
             }
         }
 
         private void ExceptionNodeIsNotInTheCurrentList(LinkedListNode<T> node)
         {
-            if (node == null)
+            if (node == null && node.List != this)
             {
                 throw new InvalidOperationException("Node is not in the current LinkedList<T>.");
             }
         }
 
-        private void ExceptionNewNodeBelongsToAnotherList(LinkedListNode<T> node)
+        private void ExceptionNodeBelongsToAnotherList(LinkedListNode<T> node)
         {
-            if (node.Previous != null || node.Next != null)
+            if (node.List != this && node.Previous != null || node.Next != null)
             {
-                throw new InvalidOperationException("New node belongs to another LinkedList<T>.");
+                throw new InvalidOperationException("Node belongs to another LinkedList<T>.");
             }
         }
 
         private void ExceptionInvalidOperationException()
         {
-            if (sentinel.Previous == sentinel.Next)
+            if (sentinel.Previous == sentinel || sentinel.Next == sentinel)
             {
                 throw new InvalidOperationException("List is empty.");
             }
