@@ -17,7 +17,7 @@ namespace DataCollection
         }
 
         public int Count { get; protected set; } = 0;
-        internal LinkedListNode<T> First
+        public LinkedListNode<T> First
         {
             get
             {
@@ -25,7 +25,7 @@ namespace DataCollection
             }
         }
 
-        internal LinkedListNode<T> Last
+        public LinkedListNode<T> Last
         {
             get
             {
