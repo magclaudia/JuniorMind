@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace DataCollection
 {
@@ -13,10 +14,11 @@ namespace DataCollection
             sentinel = new LinkedListNode<T>(default);
             sentinel.Next = sentinel;
             sentinel.Previous = sentinel;
+            sentinel.List = this;
         }
 
         public int Count { get; protected set; } = 0;
-        public LinkedListNode<T> First
+        internal LinkedListNode<T> First
         {
             get
             {
@@ -24,7 +26,7 @@ namespace DataCollection
             }
         }
 
-        public LinkedListNode<T> Last
+        internal LinkedListNode<T> Last
         {
             get
             {
@@ -213,7 +215,7 @@ namespace DataCollection
 
         private void ExceptionNodeIsNotInTheCurrentList(LinkedListNode<T> node)
         {
-            if (node == null && node.List != this)
+            if (node.List == null || node.List != this)
             {
                 throw new InvalidOperationException("Node is not in the current LinkedList<T>.");
             }
@@ -221,7 +223,7 @@ namespace DataCollection
 
         private void ExceptionNodeBelongsToAnotherList(LinkedListNode<T> node)
         {
-            if (node.List != this && node.Previous != null || node.Next != null)
+            if (node.List != null && node.List != this)
             {
                 throw new InvalidOperationException("Node belongs to another LinkedList<T>.");
             }

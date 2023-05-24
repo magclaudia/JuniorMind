@@ -55,9 +55,9 @@ namespace DataCollection
         [Fact]
         public void TestAddBeforeExceptionNodeIsNotInTheCurrentList()
         {
-             var list = new LinkedList<int>();
-             var newNode = new LinkedListNode<int>(2);
-             var exception = Assert.Throws<ArgumentNullException>(() => list.AddBefore(null, newNode));
+            var list = new LinkedList<int>();
+            var newNode = new LinkedListNode<int>(2);
+            var exception = Assert.Throws<ArgumentNullException>(() => list.AddBefore(null, newNode));
             Assert.Equal("Value cannot be null. (Parameter 'Node is null')", exception.Message);
         }
 
@@ -75,8 +75,8 @@ namespace DataCollection
             Assert.Equal(6, node.Previous.Previous.Value);
         }
 
-        [Fact] 
-        public void TestFind() 
+        [Fact]
+        public void TestFind()
         {
             var list = new LinkedList<int>();
             var node = new LinkedListNode<int>(1);
@@ -90,10 +90,10 @@ namespace DataCollection
             Assert.Null(list.Find(10));
         }
 
-        [Fact] 
-        public void TestContains() 
+        [Fact]
+        public void TestContains()
         {
-            var list = new LinkedList<int>() { 1, 2, 3};
+            var list = new LinkedList<int>() { 1, 2, 3 };
             Assert.True(list.Contains(1));
             Assert.False(list.Contains(4));
         }
@@ -138,7 +138,7 @@ namespace DataCollection
         }
 
         [Fact]
-        public void TestRemoveFirst() 
+        public void TestRemoveFirst()
         {
             var list = new LinkedList<int>();
             var node = new LinkedListNode<int>(1);
@@ -151,7 +151,7 @@ namespace DataCollection
         }
 
         [Fact]
-        public void TestRemoveLast() 
+        public void TestRemoveLast()
         {
             var list = new LinkedList<int>();
             var node = new LinkedListNode<int>(1);
@@ -166,9 +166,9 @@ namespace DataCollection
         [Fact]
         public void TestCopyTo()
         {
-            var list = new LinkedList<int>() { 1, 2, 3};
+            var list = new LinkedList<int>() { 1, 2, 3 };
             int[] array = new int[5];
-            list.CopyTo(array, 0); 
+            list.CopyTo(array, 0);
             string result = array[0].ToString() + array[1].ToString() + array[2].ToString() + array[3].ToString() + array[4].ToString();
             Assert.Equal(5, array.Length);
             Assert.Equal("12300", result);
