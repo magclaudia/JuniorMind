@@ -125,6 +125,7 @@ namespace DataCollection
         {
             sentinel.Next = sentinel;
             sentinel.Previous = sentinel;
+            sentinel.List = null;
             Count = 0;
         }
 
@@ -139,6 +140,7 @@ namespace DataCollection
 
             node.Previous.Next = node.Next;
             node.Next.Previous = node.Previous;
+            node.List = null;
             Count--;
         }
 
@@ -214,7 +216,7 @@ namespace DataCollection
 
         private void ExceptionNodeIsNotInTheCurrentList(LinkedListNode<T> node)
         {
-            if (node.List == null || node.List != this)
+            if (node.List != this)
             {
                 throw new InvalidOperationException("Node is not in the current LinkedList<T>.");
             }
