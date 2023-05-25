@@ -123,6 +123,16 @@ namespace DataCollection
 
         public void Clear()
         {
+            var head = sentinel.Next;
+            var temp = new LinkedListNode<T>(default);
+            while (head != sentinel)
+            {
+                temp = head;
+                head = head.Next;
+                temp.Previous = null;
+                temp.Next = null;
+            }
+
             sentinel.Next = sentinel;
             sentinel.Previous = sentinel;
             sentinel.List = null;
