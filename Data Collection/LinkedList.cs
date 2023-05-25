@@ -234,7 +234,7 @@ namespace DataCollection
 
         private void ExceptionNodeBelongsToAnotherList(LinkedListNode<T> node)
         {
-            if (node.List != null && node.List != this)
+            if (node.List != null)
             {
                 throw new InvalidOperationException("Node belongs to another LinkedList<T>.");
             }
