@@ -131,6 +131,7 @@ namespace DataCollection
                 head = head.Next;
                 temp.Previous = null;
                 temp.Next = null;
+                temp.List = null;
             }
 
             sentinel.Next = sentinel;
