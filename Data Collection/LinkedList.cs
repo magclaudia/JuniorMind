@@ -136,7 +136,6 @@ namespace DataCollection
 
             sentinel.Next = sentinel;
             sentinel.Previous = sentinel;
-            sentinel.List = null;
             Count = 0;
         }
 
