@@ -8,77 +8,123 @@ namespace DataCollection
     public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         private Element<TKey, TValue>[] elements;
-        private int[] bucket;
-        //private int count = 0;
+        private int[] buckets;
         private int freeIndex = -1;
         private int capacity;
 
-        public Dictionary() 
+        public Dictionary(int maxCapacity)
         {
-            capacity = capacity;
-            bucket = new int[capacity];
+            capacity = maxCapacity;
+            buckets = new int[capacity];
+            Array.Fill(buckets, -1);
             elements = new Element<TKey, TValue>[capacity];
         }
+
         public TValue this[TKey key]
         {
             get
             {
-                if (key == null)
-                {
-                    throw new ArgumentNullException("Key is null.");
-                }
-
-                if (!TryGetValue(key, out TValue value))
-                {
-                    throw new KeyNotFoundException("Key is not found.");
-                }
-
-                return value;
+                ExceptionArgumentNullException(key);
+                ExceptionKeyNotFoundException(key);
+                int index = FindPositionOfKeyInElements(key);
+                return elements[index].Value;
             }
             set
             {
-                if (FindPosition(key, out var element))
+                ExceptionNotSupportedException();
+                int index = FindPositionOfKeyInElements(key);
+                if (index == -1)
                 {
-                    element.Value = value;
+                    Add(key, value);
                 }
                 else
                 {
-                    Add(key, value);
+                    elements[index].Value = value;
                 }
             }
         }
 
-        public ICollection<TKey> Keys => throw new NotImplementedException();
+        public ICollection<TKey> Keys
+        {
+            get
+            {
+                var keys = new List<TKey>();
+                foreach (var element in elements)
+                {
+                    keys.Add(element.Key);
+                }
 
-        public ICollection<TValue> Values => throw new NotImplementedException();
+                return keys;
+            }
+        }
 
-        public int Count => throw new NotImplementedException();
+        public ICollection<TValue> Values
+        {
+            get
+            {
+                var values = new List<TValue>();
+                foreach (var element in elements)
+                {
+                    values.Add(element.Value);
+                }
 
-        public bool IsReadOnly => throw new NotImplementedException();
+                return values;
+            }
+        }
+
+        public int Count { get; set; } = 0;
+
+        public bool IsReadOnly { get; }
 
         public void Add(TKey key, TValue value)
         {
-            throw new NotImplementedException();
+            ExceptionArgumentNullException(key);
+            ExceptionArgumentException(key);
+            ExceptionNotSupportedException();
+            var pair = new Element<TKey, TValue>();
+            pair.Key = key;
+            pair.Value = value;
+            int bucket = GetBucketPosition(key);
+            if (freeIndex == -1)
+            {
+                elements[Count] = pair;
+                pair.Next = buckets[bucket];
+                buckets[bucket] = Count;
+            }
+            else
+            {
+                int nextFreeIndex = elements[freeIndex].Next;
+                elements[freeIndex] = pair;
+                buckets[bucket] = freeIndex;
+                freeIndex = nextFreeIndex;
+                pair.Next = freeIndex;
+            }
+
+            Count++;
         }
 
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            throw new NotImplementedException();
+            Add(item.Key, item.Value);
         }
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            Count = 0;
+            Array.Clear(elements);
+            Array.Clear(buckets);
+            Array.Fill(buckets, -1);
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            throw new NotImplementedException();
+            ExceptionArgumentNullException(item.Key);
+
         }
 
         public bool ContainsKey(TKey key)
         {
-            throw new NotImplementedException();
+           
         }
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
@@ -111,9 +157,71 @@ namespace DataCollection
             throw new NotImplementedException();
         }
 
-        private bool FindPosition(TKey key, out object element)
+        private void ExceptionArgumentNullException(TKey key)
         {
-            throw new NotImplementedException();
+            if (key == null)
+            {
+                throw new ArgumentNullException("Key is null.");
+            }
+        }
+
+        private void ExceptionKeyNotFoundException(TKey key)
+        {
+            if (!TryGetValue(key, out TValue value))
+            {
+                throw new KeyNotFoundException("Key is not found.");
+            }
+        }
+
+        private void ExceptionNotSupportedException()
+        {
+            if (!IsReadOnly)
+            {
+                return;
+            }
+
+            throw new NotSupportedException();
+        }
+
+        private void ExceptionArgumentException(TKey key)
+        {
+            int countKeys = 0;
+            var keys = new List<TKey>();
+            foreach (var keyElem in keys)
+            {
+                if (keyElem.Equals(key))
+                {
+                    countKeys++;
+                }
+
+                if (countKeys >= 1)
+                {
+                    throw new ArgumentException("An element with the same key already exists in the IDictionary<TKey,TValue>.");
+                }
+            }
+        }
+
+        private int FindPositionOfKeyInElements(TKey key)
+        {
+            int bucketIndex = buckets[GetBucketPosition(key)];
+            int prevBucket = -1;
+            while (bucketIndex != -1)
+            {
+                if (elements[bucketIndex].Key.Equals(key))
+                {
+                    return bucketIndex;
+                }
+
+                prevBucket = bucketIndex;
+                bucketIndex = elements[bucketIndex].Next;
+            }
+
+            return -1;
+        }
+
+        private int GetBucketPosition(TKey key)
+        {
+            return Math.Abs(key.GetHashCode() % capacity);
         }
     }
 }
