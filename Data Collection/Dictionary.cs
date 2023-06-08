@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace DataCollection
 {
@@ -119,42 +118,122 @@ namespace DataCollection
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             ExceptionArgumentNullException(item.Key);
+            var bucketValue = FindPositionOfKeyInElements(item.Key);
+            if (bucketValue == -1)
+            {
+                return false;
+            }
 
+            var element = elements[bucketValue];
+            if (element.Key.Equals(item.Key))
+            {
+                return true;
+            }
+
+            return true;
         }
 
         public bool ContainsKey(TKey key)
         {
-           
+            ExceptionArgumentNullException(key);
+            var element = elements[buckets[GetBucketPosition(key)]];
+            if (!key.Equals(element.Key))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            if (array is null)
+            {
+                throw new ArgumentNullException("Array is null.");
+            }
+
+            if (arrayIndex < 0 || arrayIndex > array.Length)
+            {
+                throw new ArgumentException("Index is less than zero");
+            }
+
+            if (Count > (array.Length - arrayIndex))
+            {
+                throw new ArgumentException("The number of elements in the source DictionaryBase" +
+                    " is greater than the available space from index to the end" +
+                    " of the destination array.");
+            }
+
+            for (int i = 0; i < Count; i++)
+            {
+                if (elements[i].Next >= -1)
+                {
+                    var element = new KeyValuePair<TKey, TValue>(elements[i].Key, elements[i].Value);
+                    array[i + arrayIndex] = element;                
+                }
+            }
         }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            KeyValuePair<TKey, TValue>[] items = new KeyValuePair<TKey, TValue>[Count];
+            for (int i = 0; i < Count; i++)
+            {
+                var element = new KeyValuePair<TKey, TValue>(elements[i].Key, elements[i].Value);
+                items[i] = element;
+                yield return items[i];
+            }
+
         }
 
         public bool Remove(TKey key)
         {
-            throw new NotImplementedException();
+            ExceptionArgumentNullException(key);
+            ExceptionNotSupportedException();
+            int bucketIndex = FindPositionOfKeyInElements(key, out int previous);
+            if (bucketIndex == -1)
+            {
+                return false;
+            }
+
+            if (previous == -1)
+            {
+                buckets[GetBucketPosition(key)] = elements[bucketIndex].Next;
+            }
+            else
+            {
+                elements[previous].Next = elements[bucketIndex].Next;
+            }
+
+            elements[bucketIndex].Key = default;
+            elements[bucketIndex].Value = default;
+            elements[bucketIndex].Next = freeIndex;
+            freeIndex = bucketIndex;
+            Count--;
+            return true;
         }
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            throw new NotImplementedException();
+            return Remove(item.Key);
         }
 
-        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
+        public bool TryGetValue(TKey key, out TValue value)
         {
-            throw new NotImplementedException();
+            ExceptionArgumentNullException(key);
+            if (FindPositionOfKeyInElements(key) == -1)
+            {
+                value = default;
+                return false;
+            }
+
+            value = this[key];
+            return true;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return this.GetEnumerator();
         }
 
         private void ExceptionArgumentNullException(TKey key)
@@ -201,10 +280,11 @@ namespace DataCollection
             }
         }
 
-        private int FindPositionOfKeyInElements(TKey key)
+        private int FindPositionOfKeyInElements(TKey key, out int previous)
         {
-            int bucketIndex = buckets[GetBucketPosition(key)];
-            int prevBucket = -1;
+            int bucketValue = GetBucketPosition(key);
+            int bucketIndex = buckets[bucketValue];
+            previous = -1;
             while (bucketIndex != -1)
             {
                 if (elements[bucketIndex].Key.Equals(key))
@@ -212,11 +292,16 @@ namespace DataCollection
                     return bucketIndex;
                 }
 
-                prevBucket = bucketIndex;
+                previous = bucketIndex;
                 bucketIndex = elements[bucketIndex].Next;
             }
 
             return -1;
+        }
+
+        private int FindPositionOfKeyInElements(TKey key)
+        {
+            return FindPositionOfKeyInElements(key, out int previous);
         }
 
         private int GetBucketPosition(TKey key)
