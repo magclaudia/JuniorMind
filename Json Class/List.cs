@@ -10,7 +10,7 @@ namespace JsonClasses
             pattern = new Optional(new Sequence(element, new Many(new Sequence(separator, element))));
         }
 
-        public IMatch Match(string text)
+        public IMatch Match(StringWrapper text)
         {
             return pattern.Match(text);
         }

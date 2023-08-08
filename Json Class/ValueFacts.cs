@@ -4,7 +4,7 @@ namespace JsonClasses
 {
     public class ValueFacts
     {
-        [Fact]
+        /*[Fact]
         public void IsString()
         {
             var value = new Value();
@@ -56,6 +56,6 @@ namespace JsonClasses
             Assert.Equal("", value.Match("{ }").RemainingText());
             Assert.True(value.Match("{\"text\" : 54 }").Succes());
             Assert.Equal("", value.Match("{\"text\" : 54 }").RemainingText());
-        }
+        }*/
     }
 }

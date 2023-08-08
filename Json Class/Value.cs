@@ -21,7 +21,7 @@ namespace JsonClasses
             pattern = element;
         }
 
-        public IMatch Match(string text)
+        public IMatch Match(StringWrapper text)
         {
             return pattern.Match(text);
         }

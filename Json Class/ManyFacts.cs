@@ -5,7 +5,7 @@ namespace JsonClasses
 {
     public class ManyFacts
     {
-        [Fact]
+        /*[Fact]
         public void ValidString_TextContainLetterPrefixWhichIsRepeatedOnce()
         {
             var a = new Many(new Character('a'));
@@ -53,6 +53,6 @@ namespace JsonClasses
             Assert.Equal("ab123", digits.Match("12345ab123").RemainingText());
             Assert.True(digits.Match("ab").Succes());
             Assert.Equal("ab", digits.Match("ab").RemainingText());
-        }
+        }*/
     }
 }

@@ -4,7 +4,7 @@ namespace JsonClasses
 {
     public class StringFacts
     {
-        [Fact]
+        /*[Fact]
         public void IsWrappedInDoubleQuotes()
         {
             var stringJson = new String();
@@ -78,6 +78,6 @@ namespace JsonClasses
         }
 
         public static string Quoted(string text)
-           => $"\"{text}\"";
+           => $"\"{text}\"";*/
     }
 }

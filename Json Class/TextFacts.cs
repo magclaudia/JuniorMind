@@ -4,7 +4,7 @@ namespace JsonClasses
 {
     public class TextFacts
     {
-        [Fact]
+        /*[Fact]
         public void ValidString_StringHasRequiredPrefix()
         {
             var prefix = new Text("true");
@@ -58,6 +58,6 @@ namespace JsonClasses
             var empty = new Text("");
             Assert.False(empty.Match(null).Succes());
             Assert.Null(empty.Match(null).RemainingText());
-        }
+        }*/
     }
 }

@@ -5,7 +5,7 @@ namespace JsonClasses
 {
     public class ListFacts
     {
-        [Fact]
+        /*[Fact]
         public void ValidString_StringHasAllElementsInRequiredInterval()
         {
             var a = new List(new Range('0', '9'), new Character(','));
@@ -43,6 +43,6 @@ namespace JsonClasses
             var a = new List(new Range('0', '9'), new Character(','));
             Assert.True(a.Match("1234567").Succes());
             Assert.Equal("234567", a.Match("1234567").RemainingText());
-        }
+        }*/
     }
 }

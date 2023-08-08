@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace JsonClasses
 {
@@ -14,17 +15,25 @@ namespace JsonClasses
 
             if (args.Length > 0)
             {
-                string jsonFormat = System.IO.File.ReadAllText(args[0]);
+                var time = new Stopwatch();
+                time.Start();
+                var path = "D:\\Github\\JuniorMind\\Json Class\\jsonFormat.txt";
+                string jsonFormat = System.IO.File.ReadAllText(path);
                 var value = new Value();
-                var match = value.Match(jsonFormat);
-                if (match.Succes() && match.RemainingText() == "")
+                var text = new StringWrapper(jsonFormat);
+                var actualResult = value.Match(text);
+                int finalPosition = jsonFormat.Length;
+                if (actualResult.Succes() && actualResult.RemainingText().GetPosition() == finalPosition)
                 {
-                    Console.WriteLine("File is a Json valid format");
+                    Console.WriteLine("File is a Json valid format: YES");
                 }
                 else
                 {
-                    Console.WriteLine("File is not a Json valid format");
+                    Console.WriteLine("File is not a Json valid format: NO");
                 }
+
+                time.Stop();
+                Console.WriteLine("Time needed to verify {0} milliseconds", time.ElapsedMilliseconds);
             }
         }
     }

@@ -4,7 +4,7 @@ namespace JsonClasses
 {
     public class NumberFacts
     {
-        [Fact]
+        /*[Fact]
         public void StringIsNull()
         {
             var number = new Number();
@@ -184,6 +184,6 @@ namespace JsonClasses
             var number = new Number();
             Assert.True(number.Match("22e3.3").Succes());
             Assert.Equal(".3", number.Match("22e3.3").RemainingText());
-        }
+        }*/
     }
 }

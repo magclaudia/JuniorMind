@@ -10,18 +10,18 @@ namespace JsonClasses
             this.operationSign = operationSign;
         }
 
-        public IMatch Match(string text)
+        public IMatch Match(StringWrapper text)
         {
             IMatch match = new Match(true, text);
-            if (match.RemainingText().Length >= 2)
+            if (match.RemainingText().GetText().Length >= 2)
             {
-                if (operationSign.Contains(text[0]) && operationSign.Contains(text[2]))
+                if (operationSign.Contains(text.CharPosition()) && operationSign.Contains(text.CharPosition()))
                 {
                     return new Match(false, match.RemainingText());
                 }
             }
 
-            return new Match(true, text[1..]);
+            return new Match(true, text.NextPosition());
         }
     }
 }

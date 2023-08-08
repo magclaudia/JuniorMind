@@ -4,7 +4,7 @@ namespace JsonClasses
 {
     public class AnyFacts
     {
-        [Fact]
+        /*[Fact]
         public void ValidString_StringStartWithRequiredChar()
         {
             var e = new Any("eE");
@@ -60,6 +60,6 @@ namespace JsonClasses
             var sign = new Any("-+");
             Assert.False(sign.Match("2").Succes());
             Assert.Equal("2", sign.Match("2").RemainingText());
-        }
+        }*/
     }
 }

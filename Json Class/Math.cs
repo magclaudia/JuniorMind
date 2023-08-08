@@ -16,7 +16,7 @@ namespace JsonClasses
             pattern = expression;
         }
 
-        public IMatch Match(string text)
+        public IMatch Match(StringWrapper text)
         {
             IMatch match = pattern.Match(text);
             if (match.RemainingText() == text)

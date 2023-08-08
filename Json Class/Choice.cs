@@ -11,16 +11,16 @@ namespace JsonClasses
             this.patterns = patterns;
         }
 
-        public IMatch Match(string text)
+        public IMatch Match(StringWrapper text)
         {
             foreach (var pattern in patterns)
             {
-                if (pattern.Match(text).Succes())
+                var match = pattern.Match(text);
+                if (match.Succes())
                 {
-                    return pattern.Match(text);
+                    return match;
                 }
             }
-
             return new Match(false, text);
         }
 

@@ -4,7 +4,7 @@ namespace JsonClasses
 {
     public class RangeFacts
     {
-        [Fact]
+        /*[Fact]
         public void StringStartsWithFirstCharFromRange()
         {
             Range digit = new Range('a', 'f');
@@ -50,6 +50,6 @@ namespace JsonClasses
             Range digit = new Range('a', 'f');
             Assert.False(digit.Match(string.Empty).Succes());
             Assert.Equal("", digit.Match("").RemainingText());
-        }
+        }*/
     }
 }

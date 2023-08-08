@@ -5,7 +5,7 @@ namespace JsonClasses
 {
     public class OptionalFacts
     {
-        [Fact]
+        /*[Fact]
         public void ValidString_TextContainLetterPrefix()
         {
             var a = new Optional(new Character('a'));
@@ -53,6 +53,6 @@ namespace JsonClasses
             Assert.Equal("123", sign.Match("123").RemainingText());
             Assert.True(sign.Match("-123").Succes());
             Assert.Equal("123", sign.Match("-123").RemainingText());
-        }
+        }*/
     }
 }

@@ -10,11 +10,14 @@ namespace JsonClasses
             this.accepted = accepted;
         }
 
-        public IMatch Match(string text)
+        public IMatch Match(StringWrapper text)
         {
-            return !string.IsNullOrEmpty(text) && accepted.Contains(text[0])
-                ? new Match(true, text[1..])
-                : new Match(false, text);
+            if (text.IsNullOrEmpty() || text.FinalPosition() || !accepted.Contains(text.CharPosition()))
+            {
+                return new Match(false, text);
+            }
+
+            return new Match(true, text.NextPosition());
         }
     }
 }

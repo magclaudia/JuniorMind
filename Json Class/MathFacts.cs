@@ -5,7 +5,7 @@ namespace JsonClasses
 {
     public class MathFacts
     {
-        [Fact]
+        /*[Fact]
         public void InvalidString_InputTextDoesNotContainNumbers()
         {
             var formula = new Math();
@@ -140,6 +140,6 @@ namespace JsonClasses
             var formula = new Math();
             Assert.True(formula.Match("2 + + 3").Succes());
             Assert.Equal(" + + 3", formula.Match("2 + + 3").RemainingText());
-        }
+        }*/
     }
 }

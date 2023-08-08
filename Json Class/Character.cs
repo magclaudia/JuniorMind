@@ -11,11 +11,14 @@ namespace JsonClasses
             this.pattern = pattern;
         }
 
-        public IMatch Match(string text)
+        public IMatch Match(StringWrapper text)
         {
-            return !string.IsNullOrEmpty(text) && text[0] == pattern
-                ? new Match(true, text[1..])
-                : new Match(false, text);
+            if (!text.IsNullOrEmpty() && !text.FinalPosition() && text.CharPosition() == pattern)
+            {
+                return new Match(true, text.NextPosition());
+            }
+
+            return new Match(false, text);
         }
     }
 }

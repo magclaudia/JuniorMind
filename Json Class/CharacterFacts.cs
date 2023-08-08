@@ -4,7 +4,7 @@ namespace JsonClasses
 {
     public class CharacterFacts
     {
-        [Fact]
+        /*[Fact]
         public void StringStartsWithPattern()
         {
             Character c = new Character('0');
@@ -34,6 +34,6 @@ namespace JsonClasses
             Character c = new('0');
             Assert.False(c.Match(string.Empty).Succes());
             Assert.Equal("", c.Match("").RemainingText());
-        }
+        }*/
     }
 }

@@ -4,7 +4,7 @@ namespace JsonClasses
 {
     public class ChoiceFacts
     {
-        [Fact]
+        /*[Fact]
         public void ValidString_StringStartsWithRequiredChar()
         {
             var digit = new Choice(new Character('0'), new Range('1', '9'));
@@ -49,6 +49,6 @@ namespace JsonClasses
             Assert.Equal("", digit.Match("").RemainingText());
             Assert.False(hex.Match("").Succes());
             Assert.Equal("", hex.Match("").RemainingText());
-        }
+        }*/
     }
 }

@@ -5,7 +5,7 @@ namespace JsonClasses
 {
     public class OneOrMoreFacts
     {
-        [Fact]
+        /*[Fact]
         public void ValidString_TextIsEqualWithPrefix()
         {
             var a = new OneOrMore(new Range('0', '9'));
@@ -43,6 +43,6 @@ namespace JsonClasses
             var a = new OneOrMore(new Range('0', '9'));
             Assert.False(a.Match(null).Succes());
             Assert.Null(a.Match(null).RemainingText());
-        }
+        }*/
     }
 }

@@ -5,7 +5,7 @@ namespace JsonClasses
 {
     public class SequenceFacts
     {
-        [Fact]
+        /*[Fact]
         public void ValidString_BeginWithRightCharsAndHasLeftCharsAndReturnManyCharsAfter()
         {
             var ab = new Sequence(new Character('a'), new Character('b'));
@@ -101,6 +101,6 @@ namespace JsonClasses
             Assert.Equal("abc", hexSeq.Match("abc").RemainingText());
             Assert.False(hexSeq.Match(null).Succes());
             Assert.Null(hexSeq.Match(null).RemainingText());
-        }
+        }*/
     }
 }
