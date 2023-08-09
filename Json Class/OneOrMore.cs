@@ -11,7 +11,7 @@ namespace JsonClasses
             this.pattern = new Sequence(pattern, new Many(pattern));
         }
 
-        public IMatch Match(StringWrapper text)
+        public IMatch Match(StringSpan text)
         {
             return pattern.Match(text);
         }

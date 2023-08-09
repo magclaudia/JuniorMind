@@ -10,7 +10,7 @@ namespace JsonClasses
             this.pattern = pattern;
         }
 
-        public IMatch Match(StringWrapper text)
+        public IMatch Match(StringSpan text)
         {
             IMatch match = pattern.Match(text);
             while (match.Succes())

@@ -20,10 +20,10 @@ namespace JsonClasses
                 var path = "D:\\Github\\JuniorMind\\Json Class\\jsonFormat.txt";
                 string jsonFormat = System.IO.File.ReadAllText(path);
                 var value = new Value();
-                var text = new StringWrapper(jsonFormat);
+                var text = new StringSpan(jsonFormat);
                 var actualResult = value.Match(text);
-                int finalPosition = jsonFormat.Length;
-                if (actualResult.Succes() && actualResult.RemainingText().GetPosition() == finalPosition)
+                var expectedResult = new StringSpan(jsonFormat, jsonFormat.Length);
+                if (expectedResult.CheckIfEqualTo(actualResult.RemainingText()))
                 {
                     Console.WriteLine("File is a Json valid format: YES");
                 }

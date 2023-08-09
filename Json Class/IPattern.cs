@@ -4,6 +4,6 @@ namespace JsonClasses
 {
     public interface IPattern
     {
-        IMatch Match(StringWrapper text);
+        IMatch Match(StringSpan text);
     }
 }

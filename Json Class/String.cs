@@ -19,7 +19,7 @@ namespace JsonClasses
             pattern = new Sequence(quote, characters, quote);
         }
 
-        public IMatch Match(StringWrapper text)
+        public IMatch Match(StringSpan text)
         {
             return pattern.Match(text);
         }

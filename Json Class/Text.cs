@@ -11,19 +11,14 @@ namespace JsonClasses
             this.prefix = prefix;
         }
 
-        public IMatch Match(StringWrapper text)
+        public IMatch Match(StringSpan text)
         {
-            if (text.IsNullOrEmpty() || text.FinalPosition() || !text.GetText().StartsWith(prefix))
+            if (text.IsNullOrEmpty() || !text.StartsWith(prefix))
             {
                 return new Match(false, text);
             }
 
-            for (int i = 0; i < prefix.Length; i++)
-            {
-                text.NextPosition();
-            }
-
-            return new Match(true, text);
+            return new Match(true, text.Advance(prefix.Length));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace JsonClasses
             this.patterns = patterns;
         }
 
-        public IMatch Match(StringWrapper text)
+        public IMatch Match(StringSpan text)
         {
             IMatch match = new Match(true, text);
             foreach (var pattern in patterns)

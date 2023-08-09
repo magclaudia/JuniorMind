@@ -5,6 +5,6 @@ namespace JsonClasses
     public interface IMatch
     {
         bool Succes();
-        StringWrapper RemainingText();
+        StringSpan RemainingText();
     }
 }

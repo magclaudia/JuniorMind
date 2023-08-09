@@ -20,7 +20,7 @@ namespace JsonClasses
             pattern = new Sequence(integer, fraction, exponent);
         }
 
-        public IMatch Match(StringWrapper text)
+        public IMatch Match(StringSpan text)
         {
             return pattern.Match(text);
         }

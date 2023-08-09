@@ -5,15 +5,15 @@ namespace JsonClasses
     public class Match : IMatch
     {
         private readonly bool succes;
-        private StringWrapper text;
+        private StringSpan text;
 
-        public Match(bool succes, StringWrapper text)
+        public Match(bool succes, StringSpan text)
         {
             this.succes = succes;
             this.text = text;
         }
 
-        public void SetText(StringWrapper text)
+        public void SetText(StringSpan text)
         {
             this.text = text;
         }
@@ -23,7 +23,7 @@ namespace JsonClasses
             return succes;
         }
 
-        public StringWrapper RemainingText()
+        public StringSpan RemainingText()
         {
             return text;
         }
