@@ -4,60 +4,81 @@ namespace JsonClasses
 {
     public class TextFacts
     {
-        /*[Fact]
+        [Fact]
         public void ValidString_StringHasRequiredPrefix()
         {
             var prefix = new Text("true");
-            Assert.True(prefix.Match("true").Succes());
-            Assert.Equal("", prefix.Match("true").RemainingText());
+            var text = new StringSpan("true");
+            var actualResult = prefix.Match(text);
+            var expectedResult = new StringSpan("true", 4);
+            Assert.True(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void ValidString_StringHasRequiredPrefixAndRemainigText()
         {
             var prefix = new Text("true");
-            Assert.True(prefix.Match("trueX").Succes());
-            Assert.Equal("X", prefix.Match("trueX").RemainingText());
+            var text = new StringSpan("trueX");
+            var actualResult = prefix.Match(text);
+            var expectedResult = new StringSpan("trueX", 4);
+            Assert.True(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void InvalidString_StringHasRequiredPrefixAndRemainigText()
         {
             var prefix = new Text("true");
-            Assert.False(prefix.Match("false").Succes());
-            Assert.Equal("false", prefix.Match("false").RemainingText());
+            var text = new StringSpan("false");
+            var actualResult = prefix.Match(text);
+            var expectedResult = new StringSpan("false", 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringIsEmptyString()
         {
             var prefix = new Text("true");
-            Assert.False(prefix.Match("").Succes());
-            Assert.Equal("", prefix.Match("").RemainingText());
+            var text = new StringSpan("");
+            var actualResult = prefix.Match(text);
+            var expectedResult = new StringSpan("", 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringIsNull()
         {
             var prefix = new Text("true");
-            Assert.False(prefix.Match(null).Succes());
-            Assert.Null(prefix.Match(null).RemainingText());
+            var text = new StringSpan(null);
+            var actualResult = prefix.Match(text);
+            var expectedResult = new StringSpan(null, 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void PrefixAndTextIsEmpty()
         {
             var empty = new Text("");
-            Assert.True(empty.Match("true").Succes());
-            Assert.Equal("true", empty.Match("true").RemainingText());
+            var text = new StringSpan("true");
+            var actualResult = empty.Match(text);
+            var expectedResult = new StringSpan("true", 0);
+            Assert.True(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void PrefixAndTextIsNull()
         {
             var empty = new Text("");
-            Assert.False(empty.Match(null).Succes());
-            Assert.Null(empty.Match(null).RemainingText());
-        }*/
+            var text = new StringSpan(null);
+            var actualResult = empty.Match(text);
+            var expectedResult = new StringSpan(null, 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
+        }
     }
 }

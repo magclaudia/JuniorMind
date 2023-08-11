@@ -4,52 +4,70 @@ namespace JsonClasses
 {
     public class RangeFacts
     {
-        /*[Fact]
+        [Fact]
         public void StringStartsWithFirstCharFromRange()
         {
             Range digit = new Range('a', 'f');
-            Assert.True(digit.Match("abc").Succes());
-            Assert.Equal("bc", digit.Match("abc").RemainingText());
+            var text = new StringSpan("abc");
+            var actualResult = digit.Match(text);
+            var expectedResult = new StringSpan("abc", 1);
+            Assert.True(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringStartsWithLastCharFromRange()
         {
             Range digit = new Range('a', 'f');
-            Assert.True(digit.Match("fab").Succes());
-            Assert.Equal("ab", digit.Match("fab").RemainingText());
+            var text = new StringSpan("fab");
+            var actualResult = digit.Match(text);
+            var expectedResult = new StringSpan("fab", 1);
+            Assert.True(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringStartsWithACharThatIsInRange()
         {
             Range digit = new Range('a', 'f');
-            Assert.True(digit.Match("bcd").Succes());
-            Assert.Equal("cd", digit.Match("bcd").RemainingText());
+            var text = new StringSpan("bcd");
+            var actualResult = digit.Match(text);
+            var expectedResult = new StringSpan("bcd", 1);
+            Assert.True(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringStartsWithACharThatIsNotInRange()
         {
             Range digit = new Range('a', 'f');
-            Assert.False(digit.Match("1ab").Succes());
-            Assert.Equal("1ab", digit.Match("1ab").RemainingText());
+            var text = new StringSpan("1ab");
+            var actualResult = digit.Match(text);
+            var expectedResult = new StringSpan("1ab", 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringIsNull()
         {
             Range digit = new Range('a', 'f');
-            Assert.False(digit.Match(null).Succes());
-            Assert.Null(digit.Match(null).RemainingText());
+            var text = new StringSpan(null);
+            var actualResult = digit.Match(text);
+            var expectedResult = new StringSpan(null, 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringIsEmpty()
         {
             Range digit = new Range('a', 'f');
-            Assert.False(digit.Match(string.Empty).Succes());
-            Assert.Equal("", digit.Match("").RemainingText());
-        }*/
+            var text = new StringSpan("");
+            var actualResult = digit.Match(text);
+            var expectedResult = new StringSpan("", 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
+        }
     }
 }

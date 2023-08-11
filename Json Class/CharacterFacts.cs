@@ -4,36 +4,48 @@ namespace JsonClasses
 {
     public class CharacterFacts
     {
-        /*[Fact]
+        [Fact]
         public void StringStartsWithPattern()
         {
             Character c = new Character('0');
-            Assert.True(c.Match("0sd1").Succes());
-            Assert.Equal("sd1", c.Match("0sd1").RemainingText());
+            var text = new StringSpan("0sd1");
+            var actualResult = c.Match(text);
+            var expectedResult = new StringSpan("0sd1", 1);
+            Assert.True(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringDoesntStartsWithPattern()
         {
             Character c = new Character('1');
-            Assert.False(c.Match("dgahdg").Succes());
-            Assert.Equal("dgahdg", c.Match("dgahdg").RemainingText());
+            var text = new StringSpan("dgahdg");
+            var actualResult = c.Match(text);
+            var expectedResult = new StringSpan("dgahdg", 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringIsNull()
         {
             Character c = new('0');
-            Assert.False(c.Match(null).Succes());
-            Assert.Null(c.Match(null).RemainingText());
+            var text = new StringSpan(null);
+            var actualResult = c.Match(text);
+            var expectedResult = new StringSpan(null, 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
         [Fact]
         public void StringIsEmpty()
         {
             Character c = new('0');
-            Assert.False(c.Match(string.Empty).Succes());
-            Assert.Equal("", c.Match("").RemainingText());
-        }*/
+            var text = new StringSpan("");
+            var actualResult = c.Match(text);
+            var expectedResult = new StringSpan("", 0);
+            Assert.False(actualResult.Succes());
+            Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
+        }
     }
 }
