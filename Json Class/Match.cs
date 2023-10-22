@@ -19,7 +19,7 @@ namespace JsonClasses
             }
         }
 
-        public static void UpdateFailPosition(int position)
+        public void UpdateFailPosition(int position)
         {
             if (position > failPosition)
             {
@@ -30,7 +30,6 @@ namespace JsonClasses
         public static (int line, int column) GetLineAndColumnFromPosition(string text)
         {
             int line = 1, column = 0;
-
             for (int i = 0; i < failPosition; i++)
             {
                 var a = text[i];
