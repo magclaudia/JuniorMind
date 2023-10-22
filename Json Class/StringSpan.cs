@@ -42,5 +42,10 @@
         {
            return text == expectedResult.text && position == expectedResult.position;
         }
+
+        public int Position()
+        {
+            return position;
+        }
     }
 }

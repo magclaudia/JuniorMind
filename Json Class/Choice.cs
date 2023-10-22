@@ -21,6 +21,7 @@ namespace JsonClasses
                     return match;
                 }
             }
+
             return new Match(false, text);
         }
 
