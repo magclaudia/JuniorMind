@@ -30,7 +30,7 @@ namespace JsonClasses
                 }
                 else
                 {
-                    var (line, column) = Match.GetLineAndColumnFromPosition(jsonFormat);
+                    var (line, column) = actualResult.RemainingText().GetLineAndColumnOfPosition();
                     Console.WriteLine("File is not a valid Json format: NO. Failed at line and column ({0}, {1}).", line, column);
                 }
 

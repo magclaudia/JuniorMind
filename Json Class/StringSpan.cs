@@ -8,10 +8,9 @@
         public StringSpan(string text)
         {
             this.text = text;
-            position = 0;
         }
 
-        public StringSpan(string text, int position) 
+        public StringSpan(string text, int position)
         {
             this.text = text;
             this.position = position;
@@ -23,9 +22,9 @@
         }
 
         public char CharPeek()
-        {       
+        {
             return text[position];
-        }
+        } 
 
         public StringSpan Advance(int nextPosition = 1)
         {
@@ -40,12 +39,32 @@
 
         public bool CheckIfEqualTo(StringSpan expectedResult)
         {
-           return text == expectedResult.text && position == expectedResult.position;
+            return text == expectedResult.text && position == expectedResult.position;
         }
 
-        public int Position()
+        public (int line, int column) GetLineAndColumnOfPosition()
         {
-            return position;
+            int line = 1;
+            int column = 1;
+
+            for (int i = 0; i < position; i++)
+            {
+                if (text[i] == '\n')
+                {
+                    line++;
+                    column = 1;
+                }
+                else if (text[i] == '\r')
+                {
+                    column = 1;
+                }
+                else
+                {
+                    column++;
+                }
+            }
+
+            return (line, column);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace JsonClasses
                 match = pattern.Match(match.RemainingText());
                 if (!match.Succes())
                 {
-                    return new Match(false, text);
+                    return new Match(false, match.RemainingText());
                 }
             }
 

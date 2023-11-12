@@ -13,12 +13,10 @@ namespace JsonClasses
             var element = new Sequence(ws, value, ws);
             var elements = new List(element, new Character(','));
             var array = new Sequence(new Character('['), ws, elements, ws, new Character(']'));
-            var member = new Sequence(ws, new String(), ws, new Character(':'), element);
+            var member = new Sequence(ws, value, ws, new Character(':'), ws, new Choice(element, array));
             var members = new List(member, new Character(','));
             var obj = new Sequence(new Character('{'), ws, members, ws, new Character('}'));
-            value.Add(array);
-            value.Add(obj);
-            pattern = element;
+            pattern = new Sequence(obj, ws);
         }
 
         public IMatch Match(StringSpan text)
