@@ -104,7 +104,7 @@ namespace JsonClasses
             Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
 
-        public static string Quoted(string text)
+        public static string Quoted(string? text)
            => $"\"{text}\"";
     }
 }

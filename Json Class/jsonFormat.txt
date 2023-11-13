@@ -1,4 +1,4 @@
 {     
     "fruit": "Apple",
-    size": "Large"
+    "size": "Large"
 }

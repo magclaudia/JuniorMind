@@ -2,15 +2,15 @@
 {
     public class StringSpan
     {
-        private readonly string text;
+        private readonly string? text;
         private readonly int position;
 
-        public StringSpan(string text)
+        public StringSpan(string? text)
         {
             this.text = text;
         }
 
-        public StringSpan(string text, int position)
+        public StringSpan(string? text, int position)
         {
             this.text = text;
             this.position = position;
@@ -23,7 +23,7 @@
 
         public char CharPeek()
         {
-            return text[position];
+            return text![position];
         } 
 
         public StringSpan Advance(int nextPosition = 1)
@@ -34,7 +34,7 @@
 
         public bool StartsWith(string prefix)
         {
-            return text.StartsWith(prefix);
+            return text!.StartsWith(prefix);
         }
 
         public bool CheckIfEqualTo(StringSpan expectedResult)
@@ -49,7 +49,7 @@
 
             for (int i = 0; i < position; i++)
             {
-                if (text[i] == '\n')
+                if (text![i] == '\n')
                 {
                     line++;
                     column = 1;
