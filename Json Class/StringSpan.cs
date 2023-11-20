@@ -8,6 +8,7 @@
         public StringSpan(string? text)
         {
             this.text = text;
+            position = 0;
         }
 
         public StringSpan(string? text, int position)
@@ -34,12 +35,35 @@
 
         public bool StartsWith(string prefix)
         {
-            return text!.StartsWith(prefix);
+            if (text?.Length - position < prefix.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < prefix.Length; i++)  
+            {
+                if (text?[position + i] != prefix[i]) 
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public bool CheckIfEqualTo(StringSpan expectedResult)
         {
             return text == expectedResult.text && position == expectedResult.position;
+        }
+
+        public int Position()
+        {
+            return position;
+        }
+
+        public string? GetText()
+        {
+            return text;
         }
 
         public (int line, int column) GetLineAndColumnOfPosition()

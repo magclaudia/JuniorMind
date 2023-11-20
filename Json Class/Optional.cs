@@ -12,11 +12,7 @@ namespace JsonClasses
 
         public IMatch Match(StringSpan text)
         {
-            IMatch match = new Match(true, text);
-            if (match.Succes())
-            {
-                match = pattern.Match(match.RemainingText());
-            }
+            IMatch match = pattern.Match(text);
 
             return new Match(true, match.RemainingText());
         }

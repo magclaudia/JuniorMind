@@ -13,16 +13,23 @@ namespace JsonClasses
 
         public IMatch Match(StringSpan text)
         {
+            var maxPosition = 0;
             foreach (var pattern in patterns)
             {
                 var match = pattern.Match(text);
+                if (match.RemainingText().Position() > maxPosition)
+                {
+                    maxPosition = match.RemainingText().Position();
+                }
+
                 if (match.Succes())
                 {
                     return match;
                 }
+
             }
 
-            return new Match(false, text);
+            return new Match(false, new StringSpan(text.GetText(), maxPosition));
         }
 
         public void Add(IPattern pattern)

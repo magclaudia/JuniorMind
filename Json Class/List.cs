@@ -4,15 +4,45 @@ namespace JsonClasses
 {
     public class List : IPattern
     {
-        private readonly IPattern pattern;
+        private readonly IPattern element;
+        private readonly IPattern separator;
         public List(IPattern element, IPattern separator)
         {
-            pattern = new Optional(new Sequence(element, new Many(new Sequence(separator, element))));
+            this.element = element;
+            this.separator = separator;
         }
 
         public IMatch Match(StringSpan text)
         {
-            return pattern.Match(text);
+            IMatch currentMatch = element.Match(text);
+            if (!currentMatch.Succes())
+            {
+                return new Match(false, currentMatch.RemainingText());
+            }
+
+            IMatch lastMatch = currentMatch;
+            text = currentMatch.RemainingText();
+
+            while (true)
+            {
+                currentMatch = separator.Match(text);
+                if (!currentMatch.Succes())
+                {
+                    break;
+                }
+
+                text = currentMatch.RemainingText();
+                currentMatch = element.Match(text);
+                if (!currentMatch.Succes())
+                {
+                    return new Match(false, currentMatch.RemainingText());
+                }
+
+                lastMatch = currentMatch;
+                text = currentMatch.RemainingText();
+            }
+
+            return new Match(true, lastMatch.RemainingText());
         }
     }
 }
