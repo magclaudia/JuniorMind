@@ -17,9 +17,7 @@ namespace JsonClasses
             {
                 var time = new Stopwatch();
                 time.Start();
-                //var path = "D:\\Github\\JuniorMind\\Json Class\\jsonFormat.txt";
                 string jsonFormat = System.IO.File.ReadAllText(args[0]);
-                //string jsonFormat = System.IO.File.ReadAllText(path);
                 var value = new Value();
                 var text = new StringSpan(jsonFormat);
                 var actualResult = value.Match(text);

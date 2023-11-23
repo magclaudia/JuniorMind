@@ -19,12 +19,16 @@ namespace JsonClasses
             var member = new Sequence(ws, new String(), ws, new Character(':'), ws, element);
             var members = new List(member, new Character(','));
             var obj = new Sequence(new Character('{'), ws, members, ws, new Character('}'));
+            var arrayObjValue = new Sequence(ws, obj, ws);
+            var arrayObjList = new List(arrayObjValue, new Character(','));
+            var arrayObj = new Sequence(new Character('['), ws, arrayObjList, ws, new Character(']'));
             var emptyObj = new Sequence(new Character('{'), ws, new Character('}'));
             var emptyArray = new Sequence(new Character('['), ws, new Character(']'));
             value.Add(array);
             value.Add(obj);
             value.Add(emptyObj);
             value.Add(emptyArray);
+            value.Add(arrayObj);
             pattern = element;
         }
 
