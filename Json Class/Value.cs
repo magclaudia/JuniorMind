@@ -10,24 +10,16 @@ namespace JsonClasses
             var value = new Choice(new String(), new Number(),
                 new Text("true"), new Text("false"), new Text("null"));
             var ws = new Many(new Any(" \n\r\t"));
-            var arrayValue = new Choice(new String(), new String(), new Number(),
-                new Text("true"), new Text("false"), new Text("null"));
-            var arrayElement = new Sequence(ws, arrayValue, ws);
-            var arrayElements = new List(arrayElement, new Character(','));
-            var array = new Sequence(new Character('['), ws, arrayElements, ws, new Character(']'));
             var element = new Sequence(ws, value, ws);
             var member = new Sequence(ws, new String(), ws, new Character(':'), ws, element);
             var members = new List(member, new Character(','));
+            var array = new Sequence(new Character('['), ws, members, ws, new Character(']'));
             var obj = new Sequence(new Character('{'), ws, members, ws, new Character('}'));
             var arrayObjValue = new Sequence(ws, obj, ws);
             var arrayObjList = new List(new Choice(arrayObjValue, element), new Character(','));
             var arrayObj = new Sequence(new Character('['), ws, arrayObjList, ws, new Character(']'));
-            var emptyObj = new Sequence(new Character('{'), ws, new Character('}'));
-            var emptyArray = new Sequence(new Character('['), ws, new Character(']'));
             value.Add(array);
             value.Add(obj);
-            value.Add(emptyObj);
-            value.Add(emptyArray);
             value.Add(arrayObj);
             pattern = element;
         }
