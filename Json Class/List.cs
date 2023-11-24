@@ -6,6 +6,7 @@ namespace JsonClasses
     {
         private readonly IPattern element;
         private readonly IPattern separator;
+
         public List(IPattern element, IPattern separator)
         {
             this.element = element;
@@ -17,7 +18,7 @@ namespace JsonClasses
             IMatch currentMatch = element.Match(text);
             if (!currentMatch.Succes())
             {
-                return new Match(false, currentMatch.RemainingText());
+                return new Match(true, currentMatch.RemainingText());
             }
 
             IMatch lastMatch = currentMatch;

@@ -5,6 +5,7 @@ namespace JsonClasses
     public class Value : IPattern
     {
         private readonly IPattern pattern;
+
         public Value()
         {
             var value = new Choice(new String(), new Number(),
