@@ -16,9 +16,15 @@ namespace JsonClasses
         public IMatch Match(StringSpan text)
         {
             IMatch currentMatch = element.Match(text);
+            
             if (!currentMatch.Succes())
             {
-                return new Match(true, currentMatch.RemainingText());
+                if (text.Position() == text.GetText()?.Length - 1)
+                {
+                    return new Match(true, text);
+                }
+                
+                return new Match(false, currentMatch.RemainingText());
             }
 
             IMatch lastMatch = currentMatch;
@@ -31,7 +37,7 @@ namespace JsonClasses
                 {
                     break;
                 }
-
+                
                 text = currentMatch.RemainingText();
                 currentMatch = element.Match(text);
                 if (!currentMatch.Succes())
