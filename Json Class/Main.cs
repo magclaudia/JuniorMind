@@ -22,7 +22,7 @@ namespace JsonClasses
                 var text = new StringSpan(jsonFormat);
                 var actualResult = value.Match(text);
                 var expectedResult = new StringSpan(jsonFormat, jsonFormat.Length);
-                if (expectedResult.CheckIfEqualTo(actualResult.RemainingText()))
+                if (expectedResult.CheckIfEqualTo(actualResult.RemainingText()) && actualResult.Succes())
                 {
                     Console.WriteLine("File is a Json valid format: YES");
                 }

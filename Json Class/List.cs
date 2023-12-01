@@ -15,17 +15,20 @@ namespace JsonClasses
 
         public IMatch Match(StringSpan text)
         {
+            var initialPositon = text.Position();
             IMatch currentMatch = element.Match(text);
-            
-            if (!currentMatch.Succes())
+            var positionAfterMatch = currentMatch.RemainingText().Position();
+
+            if(!currentMatch.Succes())
             {
-                if (text.Position() == text.GetText()?.Length - 1)
+                if (text.IsNullOrEmpty() || (initialPositon == positionAfterMatch))
                 {
                     return new Match(true, text);
                 }
-                
+
                 return new Match(false, currentMatch.RemainingText());
             }
+            
 
             IMatch lastMatch = currentMatch;
             text = currentMatch.RemainingText();
