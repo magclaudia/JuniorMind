@@ -59,5 +59,17 @@ namespace JsonClasses
             Assert.True(actualResult.Succes());
             Assert.True(expectedResult.CheckIfEqualTo(actualResult.RemainingText()));
         }
+        
+        [Fact]
+        public void TestListDoNotConsume()
+        {
+            var element = new String();
+            var separator = new Character(',');
+            var list = new List(element, separator);
+            var text = new StringSpan(" ");
+            var actualResult = list.Match(text);
+            Assert.True(actualResult.Succes());
+            Assert.True(text.CheckIfEqualTo(actualResult.RemainingText()));
+        }
     }
 }

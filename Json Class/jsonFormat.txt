@@ -1,11 +1,1 @@
-{
-  "company": "ABC Corporation",
-  "location": "Cityville",
-  "employees": [
-    {"id": 101, "name": "Alice", "position": "Software Engineer"},
-    {"id": 102, "name": "Bob", "position": "Data Analyst"},
-    {"id": 103, "name": "Charlie", "position": "UI/UX Designer"},
-    {"id": 199, "name": "Zara", "position": "Marketing Specialist"},
-    {"id": 200, "name": "Xavier", "position": "HR Manager"}
-  ],
-}
+{ "d" }
