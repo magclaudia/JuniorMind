@@ -9,7 +9,7 @@ namespace LinqFacts
         [Fact]
         public void Method_All_Return_ArgumentNullException()
         {
-            var elements = new[] { 2, -5, 31 };
+            var elements = new [] { 2, -5, 31 };
             Assert.Throws<ArgumentNullException>(() => LinqMethods.All<int>(null, element => element.Equals(20)));
             Assert.Throws<ArgumentNullException>(() => LinqMethods.All(elements, null));
         }
@@ -145,8 +145,6 @@ namespace LinqFacts
             Assert.NotEqual(verification, newElements);
         }
 
-
-
         [Fact]
         public void Method_ToDictionary_ReturnArgumentNullExcetion()
         {
@@ -187,6 +185,28 @@ namespace LinqFacts
             var second = new List<string> { "unu", "doi", "trei", "patru" };
             var resultExpected = new List<string> { "1 unu", "2 doi", "3 trei", "4 patru" };
             Assert.Equal(resultExpected, LinqMethods.Zip(first, second, (firstSeq, secondSeq) => firstSeq + " " + secondSeq));
+        }
+
+        [Fact]
+        public void Method_Aggregate_ReturnArgumentNullExcetion()
+        {
+            var elements = new List<int> { 2, 3, 8, 4 };
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Aggregate<int, int>(null, 1, (a, b) => a + b));
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Aggregate(elements, 1, null));
+        }
+
+        [Fact]
+        public void Method_Aggregate_ReturnTrueIfElementFulfillTheRequirement()
+        {
+            var elements = new List<int> { 2, -4, 10, 15 };
+            Assert.Equal(25, LinqMethods.Aggregate(elements, 2, (a, b) => a + b));
+        }
+
+        [Fact]
+        public void Method_Aggregate_ReturnFalseIfElementDontFulfillTheRequirement()
+        {
+            var elements = new List<int> { 2, 7, -1, 6 };
+            Assert.NotEqual(14, LinqMethods.Aggregate(elements, 1, (a, b) => a + b));
         }
     }
 

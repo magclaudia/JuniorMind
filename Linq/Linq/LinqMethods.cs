@@ -8,14 +8,11 @@ namespace Linq
         {
             ThrowArgumentNullException(source);
             ThrowArgumentNullException(predicate);
-            if (source != null && predicate != null)
+            foreach (var item in source!)
             {
-                foreach (var item in source)
+                if (!predicate!(item))
                 {
-                    if (!predicate(item))
-                    {
-                        return false;
-                    }
+                   return false;
                 }
             }
 
@@ -26,14 +23,11 @@ namespace Linq
         {
             ThrowArgumentNullException(source);
             ThrowArgumentNullException(predicate);
-            if (source != null && predicate != null)
+            foreach (var item in source!)
             {
-                foreach (var item in source)
+                if (predicate!(item))
                 {
-                    if (predicate(item))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 
@@ -44,14 +38,11 @@ namespace Linq
         {
             ThrowArgumentNullException(source);
             ThrowArgumentNullException(predicate);
-            if (source != null && predicate != null)
+            foreach (var item in source!)
             {
-                foreach (var item in source)
+                if (predicate!(item))
                 {
-                    if (predicate(item))
-                    {
-                        return item;
-                    }
+                    return item;
                 }
             }
 
@@ -62,12 +53,9 @@ namespace Linq
         {
             ThrowArgumentNullException(source);
             ThrowArgumentNullException(selector);
-            if (source != null && selector != null)
+            foreach (var item in source!)
             {
-                foreach (var item in source)
-                {
-                    yield return selector(item);
-                }
+                yield return selector!(item);
             }
         }
 
@@ -75,14 +63,11 @@ namespace Linq
         {
             ThrowArgumentNullException(source);
             ThrowArgumentNullException(selector);
-            if (source != null && selector != null)
+            foreach (var item in source!)
             {
-                foreach (var item in source)
+                foreach (var result in selector!(item))
                 {
-                    foreach (var result in selector(item))
-                    {
-                        yield return result;
-                    }
+                    yield return result;
                 }
             }
         }
@@ -91,14 +76,11 @@ namespace Linq
         {
             ThrowArgumentNullException(source);
             ThrowArgumentNullException(predicate);
-            if (source != null && predicate != null)
+            foreach (var item in source!)
             {
-                foreach (var item in source)
+                if (predicate!(item))
                 {
-                    if (predicate(item))
-                    {
-                        yield return item;
-                    }
+                   yield return item;
                 }
             }
         }
@@ -109,25 +91,22 @@ namespace Linq
             ThrowArgumentNullException(keySelector);
             ThrowArgumentNullException (elementSelector);
             var dictionary = new Dictionary<TKey, TElement>();
-            if (source != null && keySelector != null && elementSelector != null)
+            foreach (var item in source!)
             {
-                foreach (var item in source)
+                var key = keySelector!(item);
+                if (key == null)
                 {
-                    var key = keySelector(item);
-                    if (key == null)
-                    {
-                        ThrowArgumentNullException(key);
+                    ThrowArgumentNullException(key);
 
-                    }
+                }
 
-                    try
-                    {
-                        dictionary.Add(keySelector(item), elementSelector(item));
-                    }
-                    catch
-                    {
-                        throw new ArgumentException("Source contains one or more duplicate keys.");
-                    }
+                try
+                {
+                     dictionary.Add(keySelector(item), elementSelector!(item));
+                }
+                catch
+                {
+                     throw new ArgumentException("Source contains one or more duplicate keys.");
                 }
             }
 
@@ -138,22 +117,31 @@ namespace Linq
         {
             ThrowArgumentNullException(first);
             ThrowArgumentNullException(second);
-            if (first != null && second != null)
+            using (var firstEnumerator = first!.GetEnumerator())
             {
-                using (var firstEnumerator = first.GetEnumerator())
+                using (var secondEnumerator = second!.GetEnumerator())
                 {
-                    using (var secondEnumerator = second.GetEnumerator())
+                    while (firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
                     {
-                        while (firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
-                        {
-                            yield return resultSelector(firstEnumerator.Current, secondEnumerator.Current);
-                        }
+                          yield return resultSelector(firstEnumerator.Current, secondEnumerator.Current);
                     }
                 }
             }
         }
 
-        private static void ThrowArgumentNullException<T>(T? item)
+        public static TAccumulate Aggregate<TSource, TAccumulate>( this IEnumerable<TSource>? source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate>? func)
+        {
+            ThrowArgumentNullException(source);
+            ThrowArgumentNullException(func);
+            foreach (var item in source!) 
+            {
+                seed = func!(seed, item);
+            }
+
+            return seed;
+        }
+
+        private static void ThrowArgumentNullException<T>(T item)
         {
             if (item == null)
             {
