@@ -141,6 +141,26 @@ namespace Linq
             return seed;
         }
 
+        public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector,
+            Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+        {
+            ThrowArgumentNullException (outer);
+            ThrowArgumentNullException(inner);
+            ThrowArgumentNullException(outerKeySelector);
+            ThrowArgumentNullException(innerKeySelector);
+            ThrowArgumentNullException(resultSelector);
+            foreach (var outerElement in outer) 
+            {
+                foreach (var innerElement in inner)
+                {
+                    if(outerKeySelector(outerElement).Equals(innerKeySelector(innerElement)))
+                    {
+                        yield return resultSelector(outerElement, innerElement);
+                    }
+                }
+            }
+        }
+
         private static void ThrowArgumentNullException<T>(T item)
         {
             if (item == null)

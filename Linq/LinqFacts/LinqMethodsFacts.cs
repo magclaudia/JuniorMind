@@ -208,12 +208,66 @@ namespace LinqFacts
             var elements = new List<int> { 2, 7, -1, 6 };
             Assert.NotEqual(14, LinqMethods.Aggregate(elements, 1, (a, b) => a + b));
         }
-    }
+
+        [Fact]
+        public void Method_Join_ReturnArgumentNullExcetion()
+        {
+            var outer = new List<Employee> { new Employee { SerialNumber = 124, Name = "Pop Ioan", Occupation = "Manager" },
+                { new Employee { SerialNumber = 154, Name = "Doru Mihai", Occupation = "Hr"} }};
+            var inner = new List<Salary> { new Salary { SerialNumber = 124, MonthlySalary = 1200 }, new Salary { SerialNumber = 154, MonthlySalary = 800 } };
+
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>(null, inner,
+                employee => employee.SerialNumber, salary => salary.SerialNumber, (employee, salary) => employee.Name + " => " + salary.MonthlySalary).GetEnumerator().MoveNext());
+            
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>
+                (outer, null, employee => employee.SerialNumber, salary => salary.SerialNumber, 
+                (employee, salary) =>  employee.Name + " => " + salary.MonthlySalary ).GetEnumerator().MoveNext());
+            
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>
+                (outer, inner, null, salary => salary.SerialNumber, (employee, salary) => employee.Name + " => " + salary.MonthlySalary).GetEnumerator().MoveNext());
+           
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>
+                (outer, inner, employee => employee.SerialNumber, null, (employee, salary) => employee.Name + " => " + salary.MonthlySalary).GetEnumerator().MoveNext());
+            
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>
+                (outer, inner, employee => employee.SerialNumber, salary => salary.SerialNumber, null).GetEnumerator().MoveNext());
+        }
+
+        [Fact]
+        public void Method_Join_ReturnTrueIfElementFulfillTheRequirement()
+        {
+            var outer = new List<Employee> { new Employee { SerialNumber = 124, Name = "Pop Ioan", Occupation = "Manager" },
+                { new Employee { SerialNumber = 154, Name = "Doru Mihai", Occupation = "Hr"} }};
+            var inner = new List<Salary> { new Salary { SerialNumber = 124, MonthlySalary = 1200 }, new Salary { SerialNumber = 154, MonthlySalary = 800 } };
+
+            var resultExpected = new [] { "Pop Ioan => 1200", "Doru Mihai => 800" };
+                Assert.Equal(resultExpected, LinqMethods.Join<Employee, Salary, int, string>(outer, inner,
+                employee => employee.SerialNumber, salary => salary.SerialNumber, (employee, salary) => employee.Name + " => " + salary.MonthlySalary));
+        }
+
+        [Fact]
+        public void Method_Join_ReturnFalseIfElementDontFulfillTheRequirement()
+        {
+            var outer = new List<Employee> { new Employee { SerialNumber = 124, Name = "Pop Ioan", Occupation = "Manager" },
+                { new Employee { SerialNumber = 154, Name = "Doru Mihai", Occupation = "Hr"} }};
+            var inner = new List<Salary> { new Salary { SerialNumber = 100, MonthlySalary = 1200 }, new Salary { SerialNumber = 154, MonthlySalary = 800 } };
+
+            var resultExpected = new[] { "Pop Ioan => 1200", "Doru Mihai => 800" };
+            Assert.NotEqual(resultExpected, LinqMethods.Join<Employee, Salary, int, string>(outer, inner,
+            employee => employee.SerialNumber, salary => salary.SerialNumber, (employee, salary) => employee.Name + " => " + salary.MonthlySalary));
+        }
+    } 
 
     public class Employee
     {
         public int SerialNumber { get; set; }
         public string? Name { get; set; }
         public string? Occupation { get; set; }
+    }
+
+    public class Salary
+    {
+        public int SerialNumber { get; set; }
+        public int MonthlySalary { get; set; }
     }
 }
