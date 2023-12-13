@@ -161,6 +161,19 @@ namespace Linq
             }
         }
 
+        public static IEnumerable<TSource> Distinct<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
+        {
+            ThrowArgumentNullException(source);
+            var hash = new HashSet<TSource>(comparer);
+            foreach (var item in source) 
+            {
+                if (hash.Add(item))
+                {
+                    yield return item;
+                }
+            }
+        }
+
         private static void ThrowArgumentNullException<T>(T item)
         {
             if (item == null)

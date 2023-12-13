@@ -9,7 +9,7 @@ namespace LinqFacts
         [Fact]
         public void Method_All_Return_ArgumentNullException()
         {
-            var elements = new [] { 2, -5, 31 };
+            var elements = new[] { 2, -5, 31 };
             Assert.Throws<ArgumentNullException>(() => LinqMethods.All<int>(null, element => element.Equals(20)));
             Assert.Throws<ArgumentNullException>(() => LinqMethods.All(elements, null));
         }
@@ -218,17 +218,17 @@ namespace LinqFacts
 
             Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>(null, inner,
                 employee => employee.SerialNumber, salary => salary.SerialNumber, (employee, salary) => employee.Name + " => " + salary.MonthlySalary).GetEnumerator().MoveNext());
-            
+
             Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>
-                (outer, null, employee => employee.SerialNumber, salary => salary.SerialNumber, 
-                (employee, salary) =>  employee.Name + " => " + salary.MonthlySalary ).GetEnumerator().MoveNext());
-            
+                (outer, null, employee => employee.SerialNumber, salary => salary.SerialNumber,
+                (employee, salary) => employee.Name + " => " + salary.MonthlySalary).GetEnumerator().MoveNext());
+
             Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>
                 (outer, inner, null, salary => salary.SerialNumber, (employee, salary) => employee.Name + " => " + salary.MonthlySalary).GetEnumerator().MoveNext());
-           
+
             Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>
                 (outer, inner, employee => employee.SerialNumber, null, (employee, salary) => employee.Name + " => " + salary.MonthlySalary).GetEnumerator().MoveNext());
-            
+
             Assert.Throws<ArgumentNullException>(() => LinqMethods.Join<Employee, Salary, int, string>
                 (outer, inner, employee => employee.SerialNumber, salary => salary.SerialNumber, null).GetEnumerator().MoveNext());
         }
@@ -240,9 +240,9 @@ namespace LinqFacts
                 { new Employee { SerialNumber = 154, Name = "Doru Mihai", Occupation = "Hr"} }};
             var inner = new List<Salary> { new Salary { SerialNumber = 124, MonthlySalary = 1200 }, new Salary { SerialNumber = 154, MonthlySalary = 800 } };
 
-            var resultExpected = new [] { "Pop Ioan => 1200", "Doru Mihai => 800" };
-                Assert.Equal(resultExpected, LinqMethods.Join<Employee, Salary, int, string>(outer, inner,
-                employee => employee.SerialNumber, salary => salary.SerialNumber, (employee, salary) => employee.Name + " => " + salary.MonthlySalary));
+            var resultExpected = new[] { "Pop Ioan => 1200", "Doru Mihai => 800" };
+            Assert.Equal(resultExpected, LinqMethods.Join<Employee, Salary, int, string>(outer, inner,
+            employee => employee.SerialNumber, salary => salary.SerialNumber, (employee, salary) => employee.Name + " => " + salary.MonthlySalary));
         }
 
         [Fact]
@@ -255,6 +255,19 @@ namespace LinqFacts
             var resultExpected = new[] { "Pop Ioan => 1200", "Doru Mihai => 800" };
             Assert.NotEqual(resultExpected, LinqMethods.Join<Employee, Salary, int, string>(outer, inner,
             employee => employee.SerialNumber, salary => salary.SerialNumber, (employee, salary) => employee.Name + " => " + salary.MonthlySalary));
+        }
+
+        [Fact]
+        public void Method_Distinct_ReturnArgumentNullExcetion()
+        {
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Distinct<int>(null, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+        }
+
+        [Fact]
+        public void Method_Distinct_ReturnTrueIfElementFulfillTheRequirement()
+        {
+            var list = new List<int> { 1, 2, 3, 1, 8, 2, -4 };
+            Assert.True(LinqMethods.Distinct<int>(list, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
         }
     } 
 
