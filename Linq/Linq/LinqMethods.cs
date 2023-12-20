@@ -173,24 +173,11 @@ namespace Linq
             ThrowArgumentNullException(first, nameof(first));
             ThrowArgumentNullException(second, nameof(second));
             var hash = new HashSet<TSource>(comparer);
-            foreach (var firstListElements in first)
+            foreach (var element in first.Concat(second))
             {
-                if (hash.Add(firstListElements))
+                if (hash.Add(element))
                 {
-                    yield return firstListElements;
-                }
-
-                if (firstListElements.Equals(first.Last()))
-                {
-                    foreach (var secondListElements in second)
-                    {
-                        if (hash.Add(secondListElements))
-                        {
-                            yield return secondListElements;
-                        }
-                    }
-
-                    break;
+                   yield return element;
                 }
             }
         }
