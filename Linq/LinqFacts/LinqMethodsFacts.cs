@@ -5,7 +5,6 @@ namespace LinqFacts
 {
     public class LinqMethodsFacts
     {
-
         [Fact]
         public void Method_All_Return_ArgumentNullException()
         {
@@ -269,18 +268,72 @@ namespace LinqFacts
             var list = new List<int> { 1, 2, 3, 1, 8, 2, -4 };
             Assert.True(LinqMethods.Distinct<int>(list, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
         }
-    } 
 
-    public class Employee
-    {
-        public int SerialNumber { get; set; }
-        public string? Name { get; set; }
-        public string? Occupation { get; set; }
-    }
+        [Fact]
+        public void Method_Union_ReturnArgumentNullExcetion()
+        {
+            int[] first = { 5, 3, 9, 7, 5, 9, 3, 7 };
+            int[] second = { 8, 3, 6, 4, 4, 9, 1, 0 };
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Union<int>(null, second, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Union<int>(first, null, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+        }
 
-    public class Salary
-    {
-        public int SerialNumber { get; set; }
-        public int MonthlySalary { get; set; }
+        [Fact]
+        public void Method_Union_ReturnTrueIfElementFulfillTheRequirement()
+        {
+            int[] first = { 5, 3, 9, 7, 5, 9, 3, 7 };
+            int[] second = { 8, 3, 6, 4, 4, 9, 1, 0 };
+            int[] resultExpected = { 5, 3, 9, 7, 8, 6, 4, 1, 0 };
+            Assert.Equal(resultExpected, LinqMethods.Union<int>(first, second, EqualityComparer<int>.Default));
+        }
+
+        [Fact]
+        public void Method_Intersect_ReturnArgumentNullExcetion()
+        {
+            int[] first = { 5, 5, 1, 6, 7 };
+            int[] second = { 8, 7, 1, 8, -1 };
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Intersect<int>(null, second, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Intersect<int>(first, null, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+        }
+
+        [Fact]
+        public void Method_Intersect_ReturnTrueIfElementFulfillTheRequirement()
+        {
+            int[] first = { 5, -1, 5, 2, 6 };
+            int[] second = { 8, -1, 7, 1, 2 };
+            int[] result = { -1, 2 };
+            Assert.Equal(result, LinqMethods.Intersect<int>(first, second, EqualityComparer<int>.Default));
+        }
+
+        [Fact]
+        public void Method_Except_ReturnArgumentNullExcetion()
+        {
+            int[] first = { 5, 1, 8, 20 };
+            int[] second = { 5, 8, -2, 20 };
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Except<int>(null, second, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.Except<int>(first, null, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+        }
+
+        [Fact]
+        public void Method_Except_ReturnTrueIfElementFulfillTheRequirement()
+        {
+            int[] first = { 5, 1, 4, 2, 6 };
+            int[] second = { 5, 1, 2 };
+            int[] result = { 4, 6 };
+            Assert.Equal(result, LinqMethods.Except<int>(first, second, EqualityComparer<int>.Default));
+        }
+
+        public class Employee
+        {
+            public int SerialNumber { get; set; }
+            public string? Name { get; set; }
+            public string? Occupation { get; set; }
+        }
+
+        public class Salary
+        {
+            public int SerialNumber { get; set; }
+            public int MonthlySalary { get; set; }
+        }
     }
 }
