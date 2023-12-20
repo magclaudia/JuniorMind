@@ -186,14 +186,12 @@ namespace Linq
         {
             ThrowArgumentNullException(first, nameof(first));
             ThrowArgumentNullException(second, nameof(second));
-            foreach (var firstListElements in first)
+            var hash = new HashSet<TSource>(second, comparer);
+            foreach (var element in first)
             {
-                foreach(var secondListElements in second)
+                if (hash.Remove(element))
                 {
-                    if (comparer.Equals(firstListElements, secondListElements))
-                    {
-                        yield return firstListElements;
-                    }
+                    yield return element;
                 }
             }
         }
