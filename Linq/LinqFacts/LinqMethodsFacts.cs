@@ -323,6 +323,43 @@ namespace LinqFacts
             Assert.Equal(result, LinqMethods.Except<int>(first, second, EqualityComparer<int>.Default));
         }
 
+        [Fact]
+        public void Method_GroupBy_ReturnArgumentNullExcetion()
+        {
+            var list = new List<Salary> { new Salary { SerialNumber = 101, MonthlySalary = 1200}, new Salary { SerialNumber = 201, MonthlySalary = 850},
+            new Salary{ SerialNumber = 101, MonthlySalary = 400}, new Salary { SerialNumber = 301, MonthlySalary = 660},
+                new Salary{ SerialNumber = 201, MonthlySalary = 965} };
+
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.GroupBy<Salary, int, int, string>(null, keySelector => keySelector.SerialNumber,
+                elementSelector => elementSelector.MonthlySalary, (keySelector, elementSelector)
+                => keySelector + " => " + elementSelector, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.GroupBy<Salary, int, int, string>(list, null,
+                elementSelector => elementSelector.MonthlySalary, (keySelector, elementSelector)
+                => keySelector + " => " + elementSelector, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.GroupBy<Salary, int, int, string>(list, keySelector => keySelector.SerialNumber,
+               null, (keySelector, elementSelector)
+               => keySelector + " => " + elementSelector, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.GroupBy<Salary, int, int, string>(list, keySelector => keySelector.SerialNumber,
+                elementSelector => elementSelector.MonthlySalary, null, EqualityComparer<int>.Default).GetEnumerator().MoveNext());
+        }
+
+        [Fact]
+        public void Method_GroupBy_ReturnTrueIfElementFulfillTheRequirement()
+        {
+            var list = new List<Salary> { new Salary { SerialNumber = 101, MonthlySalary = 1200}, new Salary { SerialNumber = 201, MonthlySalary = 850},
+            new Salary{ SerialNumber = 101, MonthlySalary = 400}, new Salary { SerialNumber = 301, MonthlySalary = 660},
+                new Salary{ SerialNumber = 201, MonthlySalary = 965} };
+            var resultExpected = new List<string> { "101 => 1200, 400", "201 => 850, 965", "301 => 660" };
+
+            Assert.Equal(resultExpected, LinqMethods.GroupBy<Salary, int, int, string>(list, keySelector => keySelector.SerialNumber,
+                elementSelector => elementSelector.MonthlySalary, (keySelector, elementSelector)
+                => keySelector + " => " + string.Join(", ", elementSelector), EqualityComparer<int>.Default));
+        }
+
+
         public class Employee
         {
             public int SerialNumber { get; set; }
