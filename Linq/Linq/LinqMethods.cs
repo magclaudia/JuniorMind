@@ -6,8 +6,8 @@ namespace Linq
     {
         public static bool All<TSource>(this IEnumerable<TSource>? source, Func<TSource, bool>? predicate)
         {
-            ThrowArgumentNullException(source, "source");
-            ThrowArgumentNullException(predicate, "predicate");
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(predicate, nameof(predicate));
             foreach (var item in source!)
             {
                 if (!predicate!(item))
@@ -21,8 +21,8 @@ namespace Linq
 
         public static bool Any<TSource>(this IEnumerable<TSource>? source, Func<TSource, bool>? predicate)
         {
-            ThrowArgumentNullException(source, "source");
-            ThrowArgumentNullException(predicate, "predicate");
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(predicate, nameof(predicate));
             foreach (var item in source!)
             {
                 if (predicate!(item))
@@ -36,8 +36,8 @@ namespace Linq
 
         public static TSource First<TSource>(this IEnumerable<TSource>? source, Func<TSource, bool>? predicate)
         {
-            ThrowArgumentNullException(source, "source");
-            ThrowArgumentNullException(predicate, "predicate");
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(predicate, nameof(predicate));
             foreach (var item in source!)
             {
                 if (predicate!(item))
@@ -51,8 +51,8 @@ namespace Linq
 
         public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource>? source, Func<TSource, TResult>? selector)
         {
-            ThrowArgumentNullException(source, "source");
-            ThrowArgumentNullException(selector, "selector");
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(selector, nameof(selector));
             foreach (var item in source!)
             {
                 yield return selector!(item);
@@ -61,8 +61,8 @@ namespace Linq
 
         public static IEnumerable<TResult> SelectMany<TSource, TResult>(this IEnumerable<TSource>? source, Func<TSource, IEnumerable<TResult>>? selector)
         {
-            ThrowArgumentNullException(source, "source");
-            ThrowArgumentNullException(selector, "selector");
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(selector, nameof(selector));
             foreach (var item in source!)
             {
                 foreach (var result in selector!(item))
@@ -74,8 +74,8 @@ namespace Linq
 
         public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource>? source, Func<TSource, bool>? predicate)
         {
-            ThrowArgumentNullException(source, "source");
-            ThrowArgumentNullException(predicate, "predicate");
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(predicate, nameof(predicate));
             foreach (var item in source!)
             {
                 if (predicate!(item))
@@ -87,9 +87,9 @@ namespace Linq
 
         public static Dictionary<TKey, TElement> ToDictionary<TSource, TKey, TElement>(this IEnumerable<TSource>? source, Func<TSource, TKey>? keySelector, Func<TSource, TElement>? elementSelector)
         {
-            ThrowArgumentNullException(source, "source");
-            ThrowArgumentNullException(keySelector, "keySelector");
-            ThrowArgumentNullException(elementSelector, "elementSelector");
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(keySelector, nameof(keySelector));
+            ThrowArgumentNullException(elementSelector, nameof(elementSelector));
             var dictionary = new Dictionary<TKey, TElement>();
             foreach (var item in source!)
             {
@@ -108,8 +108,8 @@ namespace Linq
 
         public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst>? first, IEnumerable<TSecond>? second, Func<TFirst, TSecond, TResult> resultSelector)
         {
-            ThrowArgumentNullException(first, "first");
-            ThrowArgumentNullException(second, "second");
+            ThrowArgumentNullException(first, nameof(first));
+            ThrowArgumentNullException(second, nameof(second));
             using (var firstEnumerator = first!.GetEnumerator())
             {
                 using (var secondEnumerator = second!.GetEnumerator())
@@ -124,8 +124,8 @@ namespace Linq
 
         public static TAccumulate Aggregate<TSource, TAccumulate>(this IEnumerable<TSource>? source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate>? func)
         {
-            ThrowArgumentNullException(source, "source");
-            ThrowArgumentNullException(func, "func");
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(func, nameof(func));
             var accumulate = seed;
             foreach (var item in source!)
             {
@@ -138,11 +138,11 @@ namespace Linq
         public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector,
             Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
         {
-            ThrowArgumentNullException(outer, "outer");
-            ThrowArgumentNullException(inner, "inner");
-            ThrowArgumentNullException(outerKeySelector, "outerKeySelector");
-            ThrowArgumentNullException(innerKeySelector, "innerKeySelector");
-            ThrowArgumentNullException(resultSelector, "resultSelector");
+            ThrowArgumentNullException(outer, nameof(outer));
+            ThrowArgumentNullException(inner, nameof(inner));
+            ThrowArgumentNullException(outerKeySelector, nameof(outerKeySelector));
+            ThrowArgumentNullException(innerKeySelector, nameof(innerKeySelector));
+            ThrowArgumentNullException(resultSelector, nameof(resultSelector));
             foreach (var outerElement in outer)
             {
                 foreach (var innerElement in inner)
@@ -157,7 +157,7 @@ namespace Linq
 
         public static IEnumerable<TSource> Distinct<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
         {
-            ThrowArgumentNullException(source, "source");
+            ThrowArgumentNullException(source, nameof(source));
             var hash = new HashSet<TSource>(comparer);
             foreach (var item in source)
             {
@@ -170,8 +170,8 @@ namespace Linq
 
         public static IEnumerable<TSource> Union<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
         {
-            ThrowArgumentNullException(first, "first");
-            ThrowArgumentNullException(second, "second");
+            ThrowArgumentNullException(first, nameof(first));
+            ThrowArgumentNullException(second, nameof(second));
             var hash = new HashSet<TSource>(comparer);
             foreach (var firstListElements in first)
             {
@@ -197,8 +197,8 @@ namespace Linq
 
         public static IEnumerable<TSource> Intersect<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
         {
-            ThrowArgumentNullException(first, "first");
-            ThrowArgumentNullException(second, "second");
+            ThrowArgumentNullException(first, nameof(first));
+            ThrowArgumentNullException(second, nameof(second));
             foreach (var firstListElements in first)
             {
                 foreach(var secondListElements in second)
@@ -213,8 +213,8 @@ namespace Linq
 
         public static IEnumerable<TSource> Except<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
         {
-            ThrowArgumentNullException(first, "first");
-            ThrowArgumentNullException(second, "second");
+            ThrowArgumentNullException(first, nameof(first));
+            ThrowArgumentNullException(second, nameof(second));
             foreach (var firstListElements in first)
             {
                 if (!second.Contains(firstListElements))
