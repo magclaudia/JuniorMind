@@ -317,10 +317,11 @@ namespace LinqFacts
         [Fact]
         public void Method_Except_ReturnTrueIfElementFulfillTheRequirement()
         {
-            int[] first = { 5, 1, 4, 2, 6 };
+            int[] first = { 5, 1, 4, 6, 4 };
             int[] second = { 5, 1, 2 };
-            int[] result = { 4, 6 };
-            Assert.Equal(result, LinqMethods.Except<int>(first, second, EqualityComparer<int>.Default));
+            int[] expectedResult = { 4, 6 };
+            var actualResult = LinqMethods.Except<int>(first, second, EqualityComparer<int>.Default);
+            Assert.Equal(expectedResult, actualResult);
         }
 
         [Fact]

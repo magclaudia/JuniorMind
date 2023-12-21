@@ -211,9 +211,9 @@ namespace Linq
             var hash = new HashSet<TSource>(second, comparer);
             foreach (var element in first)
             {
-                if (!hash.Remove(element))
+                if (hash.Add(element))
                 {
-                   yield return element;
+                    yield return element;
                 }
             }
         }
