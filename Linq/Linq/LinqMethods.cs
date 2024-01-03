@@ -230,14 +230,15 @@ namespace Linq
             {
                 var key = keySelector(element);
                 var value = elementSelector(element);
-                if (dictionary.ContainsKey(key))
+
+                if (dictionary.TryGetValue(key, out var list))
                 {
-                    dictionary[key].Add(value);
+                    list.Add(value);
                 }
                 else
                 {
                     dictionary.Add(key, new List<TElement>() { value });
-                }
+                }   
             }
 
             foreach (var element in dictionary)
