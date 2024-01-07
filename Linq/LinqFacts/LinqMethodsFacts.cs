@@ -360,6 +360,21 @@ namespace LinqFacts
                 => keySelector + " => " + string.Join(", ", elementSelector), EqualityComparer<int>.Default));
         }
 
+        [Fact]
+        public void Method_OrderBy_ReturnArgumentNullExcetion()
+        {
+            var list = new List<int> { 20, 1, 10, 2, 8, 3 };
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.OrderBy<int, int>(null, keySelector => keySelector, Comparer<int>.Default).GetEnumerator().MoveNext());
+            Assert.Throws<ArgumentNullException>(() => LinqMethods.OrderBy<int, int>(list, null, Comparer<int>.Default).GetEnumerator().MoveNext());
+        }
+
+        [Fact]
+        public void Method_OrderBy_ReturnTrueIfElementFulfillTheRequirement()
+        {
+            var list = new List<int> { 20, 1, 10, 2, 8, 3};
+            var resultExpected = new List<int> { 1, 2, 3, 8, 10, 20};
+            Assert.Equal(resultExpected, LinqMethods.OrderBy(list, keySelector => keySelector, Comparer<int>.Default));
+        }
 
         public class Employee
         {

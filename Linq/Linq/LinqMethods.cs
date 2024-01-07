@@ -247,6 +247,13 @@ namespace Linq
             }
         }
 
+        public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(keySelector, nameof(keySelector));
+            return new OrderedEnumerable<TSource, TKey>(source, keySelector, comparer);
+        }
+
         private static void ThrowArgumentNullException<T>(T item, string parameterName)
         {
             if (item == null)
