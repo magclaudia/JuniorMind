@@ -1,7 +1,7 @@
 using Linq;
 using Xunit;
 
-namespace LinqFacts
+namespace Linq
 {
     public class LinqMethodsFacts
     {
@@ -376,17 +376,73 @@ namespace LinqFacts
             Assert.Equal(resultExpected, LinqMethods.OrderBy(list, keySelector => keySelector, Comparer<int>.Default));
         }
 
+        [Fact]
+        public void Method_ThenBy_ReturnTrueIfElementFulfillTheRequirement()
+        {
+            var list = new List<Salary> { new Salary { SerialNumber = 101, MonthlySalary = 1200}, 
+                                          new Salary { SerialNumber = 201, MonthlySalary = 850},
+                                          new Salary{ SerialNumber = 101, MonthlySalary = 400}, 
+                                          new Salary { SerialNumber = 301, MonthlySalary = 660},
+                                          new Salary{ SerialNumber = 201, MonthlySalary = 965} 
+                                         };
+            
+            var resultExpected = new List<Salary> { new Salary { SerialNumber = 101, MonthlySalary = 400}, 
+                                                    new Salary { SerialNumber = 101, MonthlySalary = 1200},
+                                                    new Salary{ SerialNumber = 201, MonthlySalary = 850}, 
+                                                    new Salary { SerialNumber = 201, MonthlySalary = 965},
+                                                    new Salary{ SerialNumber = 301, MonthlySalary = 660} 
+                                                  };
+            
+            var result = LinqMethods.OrderBy(list, element => element.SerialNumber, Comparer<int>.Default).ThenBy(element => element.MonthlySalary, Comparer<int>.Default);
+            Assert.Equal(resultExpected, result);
+        }
+
+        [Fact]
+        public void Method_ThenBy_ReturnTrueIfElementFulfillTheRequirement_TryWithManyThenBy()
+        {
+            var list = new List<Employee> { new Employee { SerialNumber = 100, Name = "Ana", Occupation = "HR"}, 
+                                            new Employee { SerialNumber = 600, Name = "Ionela Maria", Occupation = "Manager"},
+                                            new Employee { SerialNumber = 100, Name = "Ovidiu", Occupation = "Assistant" },
+                                            new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police Man"},
+                                            new Employee { SerialNumber = 600, Name = "Mariana", Occupation = "Journalist"}, 
+                                            new Employee { SerialNumber = 100, Name = "Maria", Occupation = "HR"},
+                                            new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police"} 
+                                           };
+            
+            var resultExpected = new List<Employee> { new Employee { SerialNumber = 100, Name = "Ana", Occupation = "HR" },
+                                                      new Employee { SerialNumber = 100, Name = "Maria", Occupation = "HR" },
+                                                      new Employee { SerialNumber = 100, Name = "Ovidiu", Occupation = "Assistant"}, 
+                                                      new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police"},
+                                                      new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police Man"},
+                                                      new Employee { SerialNumber = 600, Name = "Mariana", Occupation = "Journalist" },
+                                                      new Employee { SerialNumber = 600, Name = "Ionela Maria", Occupation = "Manager"} 
+                                                    };
+
+            Assert.Equal(resultExpected, LinqMethods.OrderBy(list, element => element.SerialNumber, Comparer<int>.Default).ThenBy(element => element.Name.Length, Comparer<int>.Default).
+                                                     ThenBy(element => element.Occupation.Length, Comparer<int>.Default));
+        }
+
         public class Employee
         {
             public int SerialNumber { get; set; }
             public string? Name { get; set; }
             public string? Occupation { get; set; }
+
+            public override bool Equals(object? obj)
+            {
+                return obj is Employee other && SerialNumber == other.SerialNumber && Name == other.Name && Occupation == other.Occupation;
+            }
         }
 
         public class Salary
         {
             public int SerialNumber { get; set; }
             public int MonthlySalary { get; set; }
+
+            public override bool Equals(object? obj)
+            {
+                return obj is Salary other && SerialNumber == other.SerialNumber && MonthlySalary == other.MonthlySalary;
+            }
         }
     }
 }

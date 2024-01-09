@@ -6,21 +6,20 @@ using System.Text;
 
 namespace Linq
 {
-    public class OrderedEnumerable<TSource, TKey> : IOrderedEnumerable<TSource>
+    public class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
     {
         private readonly IEnumerable<TSource> source;
-        private readonly Func<TSource, TKey> keySelector;
-        private readonly IComparer<TKey> comparer;
-        public OrderedEnumerable(IEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer) 
+        private readonly IComparer<TSource> comparer;
+       
+        public OrderedEnumerable(IEnumerable<TSource> source, IComparer<TSource> comparer) 
         {
             this.source = source;
-            this.keySelector = keySelector;
             this.comparer = comparer;
         }
         
         public IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer, bool descending)
         {
-            return new OrderedEnumerable<TSource, TKey>(source, keySelector, comparer);
+            return new OrderedEnumerable<TSource>(source, new CombinedComparers<TSource>(this.comparer, new SourceComparer<TSource, TKey>(comparer, keySelector)));
         }
 
         public IEnumerator<TSource> GetEnumerator()
@@ -54,9 +53,7 @@ namespace Linq
             int i = lowIndex - 1; 
             for (int j = lowIndex; j < hightIndex; j++)
             {
-                var a = keySelector(list[j]);
-                var b = keySelector(list[pivot]);
-                if (comparer.Compare(keySelector(list[j]), keySelector(list[pivot])) < 0)
+                if (comparer.Compare(list[j], list[pivot]) < 0)
                 {
                     i++;
                     Swap(list, i, j);

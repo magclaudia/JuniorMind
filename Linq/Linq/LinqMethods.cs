@@ -251,7 +251,15 @@ namespace Linq
         {
             ThrowArgumentNullException(source, nameof(source));
             ThrowArgumentNullException(keySelector, nameof(keySelector));
-            return new OrderedEnumerable<TSource, TKey>(source, keySelector, comparer);
+            return new OrderedEnumerable<TSource>(source, new SourceComparer<TSource, TKey>(comparer, keySelector));
+        }
+
+        public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(this IOrderedEnumerable<TSource> source, 
+            Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            ThrowArgumentNullException(source, nameof(source));
+            ThrowArgumentNullException(keySelector, nameof(keySelector));
+            return source.CreateOrderedEnumerable(keySelector, comparer, false);
         }
 
         private static void ThrowArgumentNullException<T>(T item, string parameterName)
