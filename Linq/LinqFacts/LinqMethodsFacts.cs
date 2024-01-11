@@ -417,7 +417,6 @@ namespace Linq
                                                       new Employee { SerialNumber = 600, Name = "Mariana", Occupation = "Journalist" },
                                                       new Employee { SerialNumber = 600, Name = "Ionela Maria", Occupation = "Manager"} 
                                                     };
-
             Assert.Equal(resultExpected, LinqMethods.OrderBy(list, element => element.SerialNumber, Comparer<int>.Default).ThenBy(element => element.Name.Length, Comparer<int>.Default).
                                                      ThenBy(element => element.Occupation.Length, Comparer<int>.Default));
         }

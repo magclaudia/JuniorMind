@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LinqStack
+namespace LinqStock
 {
-    public class Stack
+    public class Stock
     {
-        public Stack() 
+        public Stock() 
         {
 
         }
