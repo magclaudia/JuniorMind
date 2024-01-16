@@ -400,25 +400,26 @@ namespace Linq
         [Fact]
         public void Method_ThenBy_ReturnTrueIfElementFulfillTheRequirement_TryWithManyThenBy()
         {
-            var list = new List<Employee> { new Employee { SerialNumber = 100, Name = "Ana", Occupation = "HR"}, 
-                                            new Employee { SerialNumber = 600, Name = "Ionela Maria", Occupation = "Manager"},
-                                            new Employee { SerialNumber = 100, Name = "Ovidiu", Occupation = "Assistant" },
-                                            new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police Man"},
-                                            new Employee { SerialNumber = 600, Name = "Mariana", Occupation = "Journalist"}, 
-                                            new Employee { SerialNumber = 100, Name = "Maria", Occupation = "HR"},
-                                            new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police"} 
+            var list = new List<Employee> { new Employee { SerialNumber = 100, Name = "AnaMa", Occupation = "HR", NumberOfEmployee = 4}, 
+                                            new Employee { SerialNumber = 600, Name = "Ionela Maria", Occupation = "Manager", NumberOfEmployee = 2},
+                                            new Employee { SerialNumber = 100, Name = "Ovidiu", Occupation = "Assistant", NumberOfEmployee = 1 },
+                                            new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police Man", NumberOfEmployee = 7},
+                                            new Employee { SerialNumber = 600, Name = "Mariana", Occupation = "Journalist", NumberOfEmployee = 3}, 
+                                            new Employee { SerialNumber = 100, Name = "Maria", Occupation = "HR", NumberOfEmployee = 2},
+                                            new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police", NumberOfEmployee = 9} 
                                            };
             
-            var resultExpected = new List<Employee> { new Employee { SerialNumber = 100, Name = "Ana", Occupation = "HR" },
-                                                      new Employee { SerialNumber = 100, Name = "Maria", Occupation = "HR" },
-                                                      new Employee { SerialNumber = 100, Name = "Ovidiu", Occupation = "Assistant"}, 
-                                                      new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police"},
-                                                      new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police Man"},
-                                                      new Employee { SerialNumber = 600, Name = "Mariana", Occupation = "Journalist" },
-                                                      new Employee { SerialNumber = 600, Name = "Ionela Maria", Occupation = "Manager"} 
+            var resultExpected = new List<Employee> { new Employee { SerialNumber = 100, Name = "Maria", Occupation = "HR", NumberOfEmployee = 2},
+                                                      new Employee { SerialNumber = 100, Name = "AnaMa", Occupation = "HR", NumberOfEmployee = 4 },
+                                                      new Employee { SerialNumber = 100, Name = "Ovidiu", Occupation = "Assistant", NumberOfEmployee = 1}, 
+                                                      new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police", NumberOfEmployee = 9},
+                                                      new Employee { SerialNumber = 304, Name = "Paul", Occupation = "Police Man", NumberOfEmployee = 7},
+                                                      new Employee { SerialNumber = 600, Name = "Mariana", Occupation = "Journalist", NumberOfEmployee = 3},
+                                                      new Employee { SerialNumber = 600, Name = "Ionela Maria", Occupation = "Manager", NumberOfEmployee = 2} 
                                                     };
             Assert.Equal(resultExpected, LinqMethods.OrderBy(list, element => element.SerialNumber, Comparer<int>.Default).ThenBy(element => element.Name.Length, Comparer<int>.Default).
-                                                     ThenBy(element => element.Occupation.Length, Comparer<int>.Default));
+                                                     ThenBy(element => element.Occupation.Length, Comparer<int>.Default).
+                                                     ThenBy(element => element.NumberOfEmployee, Comparer<int>.Default));
         }
 
         public class Employee
@@ -426,6 +427,7 @@ namespace Linq
             public int SerialNumber { get; set; }
             public string? Name { get; set; }
             public string? Occupation { get; set; }
+            public int NumberOfEmployee { get; set; }
 
             public override bool Equals(object? obj)
             {

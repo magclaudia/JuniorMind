@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Linq
 {
-    public class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
+    public class OrderedEnumerable<TSource, TKey> : IOrderedEnumerable<TSource>
     {
         private readonly IEnumerable<TSource> source;
         private readonly IComparer<TSource> comparer;
@@ -16,10 +16,21 @@ namespace Linq
             this.source = source;
             this.comparer = comparer;
         }
-        
+
         public IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer, bool descending)
         {
-            return new OrderedEnumerable<TSource>(source, new CombinedComparers<TSource>(this.comparer, new SourceComparer<TSource, TKey>(comparer, keySelector)));
+            var newComparer = Comparer<TSource>.Create((x, y) =>
+            {
+                var firstComparison = this.comparer.Compare(x, y);
+                if (firstComparison != 0)
+                {
+                    return firstComparison;
+                }
+
+                return comparer.Compare(keySelector(x), keySelector(y));
+            });
+
+            return new OrderedEnumerable<TSource, TKey>(source, newComparer);
         }
 
         public IEnumerator<TSource> GetEnumerator()
