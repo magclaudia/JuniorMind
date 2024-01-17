@@ -28,6 +28,22 @@ namespace LinqStock
             return productList.Any(item => item.ProductName == product.ProductName);
         }
 
+        public int CurrentQantityOfProduct(Product product)
+        {
+            return productList[FindIndexOfProduct(product.ProductName)].Quantity;
+        }
 
+        private int FindIndexOfProduct(string name)
+        {
+            for (int i = 0; i < productList.Count; i++)
+            {
+                if (productList[i].ProductName == name)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
     }
 }
