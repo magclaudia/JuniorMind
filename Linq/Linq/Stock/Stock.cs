@@ -17,13 +17,13 @@ namespace LinqStock
         {
             if (productList.Contains(product))
             {
-                throw new ArgumentException("This product exist in stock.");
+                throw new ArgumentException($"This product: '{product.ProductName}' exist in stock.");
             }
 
             productList.Add(product);
         }
 
-        public bool Contains(Product product)
+        public bool ContainsProduct(Product product)
         {
             return productList.Any(item => item.ProductName == product.ProductName);
         }
@@ -31,6 +31,22 @@ namespace LinqStock
         public int CurrentQantityOfProduct(Product product)
         {
             return productList[FindIndexOfProduct(product.ProductName)].Quantity;
+        }
+
+        public void Sell(Product product, int quantityToSell)
+        {
+            if (!ContainsProduct(product))
+            {
+                throw new ArgumentException($"This product: '{product.ProductName}' don`t exist in stock.");
+            }
+
+            if ((product.Quantity - quantityToSell) < 0)
+            {
+                throw new ArgumentException($"Not enough quantity of this product: '{product.ProductName}' in stock. " +
+                    $"After sale quantity of this product will be: '{product.Quantity - quantityToSell}'.");
+            }
+
+            productList[FindIndexOfProduct(product.ProductName)].Quantity = productList[FindIndexOfProduct(product.ProductName)].Quantity - quantityToSell;
         }
 
         private int FindIndexOfProduct(string name)
