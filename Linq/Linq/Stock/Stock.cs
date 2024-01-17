@@ -23,5 +23,11 @@ namespace LinqStock
             productList.Add(product);
         }
 
+        public bool Contains(Product product)
+        {
+            return productList.Any(item => item.ProductName == product.ProductName);
+        }
+
+
     }
 }
