@@ -8,6 +8,8 @@ namespace LinqStock
     public class Stock
     {
         private readonly List<Product> productList;
+        internal Action<Product, int> callBack;
+
         public Stock() 
         {
             productList = new List<Product>();
@@ -28,11 +30,6 @@ namespace LinqStock
             return productList.Any(item => item.ProductName == product.ProductName);
         }
 
-        public int CurrentQantityOfProduct(Product product)
-        {
-            return productList[FindIndexOfProduct(product.ProductName)].Quantity;
-        }
-
         public void Sell(Product product, int quantityToSell)
         {
             if (!ContainsProduct(product))
@@ -47,6 +44,27 @@ namespace LinqStock
             }
 
             productList[FindIndexOfProduct(product.ProductName)].Quantity = productList[FindIndexOfProduct(product.ProductName)].Quantity - quantityToSell;
+            callBack = UpdateQuantityAfBterSell;
+            callBack(product, product.Quantity);
+        }
+
+        public void UpdateQuantityAfBterSell(Product product, int quantity)
+        {
+            string message;
+            if (product.Quantity < 10 && product.Quantity > 5)
+            {
+                message = $"Quantity of product: '{product.ProductName}' is under 10 pieces, it remaind {product.Quantity} products of this type.";
+            }
+
+            if (product.Quantity < 5 && product.Quantity > 2)
+            {
+                message = $"Quantity of product: '{product.ProductName}' is under 5 pieces, it remaind {product.Quantity} products of this type.";
+            }
+
+            if (product.Quantity < 2)
+            {
+                message = $"Quantity of product: '{product.ProductName}' is under 2 pieces, it remaind {product.Quantity} products of this type.";
+            }
         }
 
         private int FindIndexOfProduct(string name)
