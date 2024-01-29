@@ -8,11 +8,17 @@ namespace LinqStock
     public class Stock
     {
         private readonly List<Product> productList;
+        private int[] alertThresholds = { 2, 5, 10 };
         internal Action<Product, int> callBack;
 
-        public Stock() 
+        public Stock()
         {
             productList = new List<Product>();
+        }
+
+        public void CallRegistration(Action<Product, int> action)
+        {
+            callBack = action;
         }
 
         public void Add(Product product)
@@ -44,27 +50,29 @@ namespace LinqStock
             }
 
             productList[FindIndexOfProduct(product.ProductName)].Quantity = productList[FindIndexOfProduct(product.ProductName)].Quantity - quantityToSell;
-            callBack = UpdateQuantityAfBterSell;
-            callBack(product, product.Quantity);
+
+            if (CheckIfNumberOfProductsIsUnderAlertThresholds(product))
+            {
+                CallBackNotification(product);
+            }
         }
 
-        public void UpdateQuantityAfBterSell(Product product, int quantity)
+        public bool CheckIfNumberOfProductsIsUnderAlertThresholds(Product product)
         {
-            string message;
-            if (product.Quantity < 10 && product.Quantity > 5)
+            foreach (var threshold in alertThresholds) 
             {
-                message = $"Quantity of product: '{product.ProductName}' is under 10 pieces, it remaind {product.Quantity} products of this type.";
+                if(product.Quantity < threshold)
+                {
+                    return true;
+                }
             }
 
-            if (product.Quantity < 5 && product.Quantity > 2)
-            {
-                message = $"Quantity of product: '{product.ProductName}' is under 5 pieces, it remaind {product.Quantity} products of this type.";
-            }
+            return false;
+        }
 
-            if (product.Quantity < 2)
-            {
-                message = $"Quantity of product: '{product.ProductName}' is under 2 pieces, it remaind {product.Quantity} products of this type.";
-            }
+        public void CallBackNotification(Product product)
+        {
+            callBack(product, product.Quantity);
         }
 
         private int FindIndexOfProduct(string name)

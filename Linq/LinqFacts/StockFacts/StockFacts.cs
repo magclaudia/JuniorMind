@@ -56,6 +56,7 @@ namespace LinqStock
         public void Check_UpdateQuantityAfterSellMethod_Under_10Products()
         {
             var stock = new Stock();
+            string message = "";
             var productType = new List<Product>()
             {
                 new Product("bicicleta", 50),
@@ -66,17 +67,24 @@ namespace LinqStock
             stock.Add(productType[0]);
             stock.Add(productType[1]);
             stock.Add(productType[2]);
+            bool receiveNotification = false;
+            Action<Product, int> action = (product, quantity) =>
+            {
+                receiveNotification = true;
+                message = $"Quantity of product: '{product.ProductName}' is under 10 pieces, it remaind {quantity} products of this type.";
+            };
 
+            stock.CallRegistration(action);
             stock.Sell(productType[1], 1);
-
-            Action<Product, int> callback = stock.UpdateQuantityAfBterSell;
-            Assert.NotNull(callback);
+            Assert.True(receiveNotification);
+            Assert.Equal("Quantity of product: 'papusa' is under 10 pieces, it remaind 9 products of this type.", message);
         }
 
         [Fact]
         public void Check_UpdateQuantityAfterSellMethod_Under_5Products()
         {
             var stock = new Stock();
+            string message = "";
             var productType = new List<Product>()
             {
                 new Product("bicicleta", 50),
@@ -87,17 +95,24 @@ namespace LinqStock
             stock.Add(productType[0]);
             stock.Add(productType[1]);
             stock.Add(productType[2]);
+            bool receiveNotification = false;
+            Action<Product, int> action = (product, quantity) =>
+            {
+                receiveNotification = true;
+                message = $"Quantity of product: '{product.ProductName}' is under 5 pieces, it remaind {quantity} products of this type.";
+            };
 
+            stock.CallRegistration(action);
             stock.Sell(productType[0], 46);
-
-            Action<Product, int> callback = stock.UpdateQuantityAfBterSell;
-            Assert.NotNull(callback);
+            Assert.True(receiveNotification);
+            Assert.Equal("Quantity of product: 'bicicleta' is under 5 pieces, it remaind 4 products of this type.", message);
         }
 
         [Fact]
         public void Check_UpdateQuantityAfterSellMethod_Under_2Products()
         {
             var stock = new Stock();
+            string message = string.Empty;
             var productType = new List<Product>()
             {
                 new Product("bicicleta", 50),
@@ -108,11 +123,45 @@ namespace LinqStock
             stock.Add(productType[0]);
             stock.Add(productType[1]);
             stock.Add(productType[2]);
+            bool receiveNotification = false;
+            Action<Product, int> action = (product, quantity) =>
+            {
+                receiveNotification = true;
+                message = $"Quantity of product: '{product.ProductName}' is under 2 pieces, it remaind {quantity} products of this type.";
+            };
 
+            stock.CallRegistration(action);
             stock.Sell(productType[2], 14);
+            Assert.True(receiveNotification);
+            Assert.Equal("Quantity of product: 'minge' is under 2 pieces, it remaind 1 products of this type.", message);
+        }
 
-            Action<Product, int> callback = stock.UpdateQuantityAfBterSell;
-            Assert.NotNull(callback);
+        [Fact]
+        public void Products_Sell_But_Dont_Cross_The_Threshold()
+        {
+            var stock = new Stock();
+            string message = string.Empty;
+            var productType = new List<Product>()
+            {
+                new Product("bicicleta", 50),
+                new Product("papusa", 10),
+                new Product("minge", 15),
+            };
+
+            stock.Add(productType[0]);
+            stock.Add(productType[1]);
+            stock.Add(productType[2]);
+            bool receiveNotification = false;
+            Action<Product, int> action = (product, quantity) =>
+            {
+                receiveNotification = true;
+                message = $"Quantity of product: '{product.ProductName}' is under 2 pieces, it remaind {quantity} products of this type.";
+            };
+
+            stock.CallRegistration(action);
+            stock.Sell(productType[2], 5);
+            Assert.False(receiveNotification);
+            Assert.Equal("", message);
         }
     }
 }
