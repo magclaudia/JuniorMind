@@ -49,25 +49,28 @@ namespace LinqStock
                     $"After sale quantity of this product will be: '{product.Quantity - quantityToSell}'.");
             }
 
+            int initialQuantity = product.Quantity;
             productList[FindIndexOfProduct(product.ProductName)].Quantity = productList[FindIndexOfProduct(product.ProductName)].Quantity - quantityToSell;
 
-            if (CheckIfNumberOfProductsIsUnderAlertThresholds(product))
+            if (CheckIfNumberOfProductsIsUnderAlertThresholds(product, initialQuantity))
             {
                 CallBackNotification(product);
             }
         }
 
-        public bool CheckIfNumberOfProductsIsUnderAlertThresholds(Product product)
+        public bool CheckIfNumberOfProductsIsUnderAlertThresholds(Product product, int initialQuantity)
         {
-            foreach (var threshold in alertThresholds) 
+            bool checkTreshole = false;
+            for (int i = alertThresholds.Length - 1; i >= 0; i--)
             {
-                if(product.Quantity < threshold)
+                if (alertThresholds[i] <= initialQuantity && product.Quantity < alertThresholds[i])
                 {
-                    return true;
+                    checkTreshole = alertThresholds.Any(threshold => threshold > product.Quantity);
                 }
+
             }
 
-            return false;
+            return checkTreshole;
         }
 
         public void CallBackNotification(Product product)
