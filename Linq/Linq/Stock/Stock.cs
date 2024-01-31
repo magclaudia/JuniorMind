@@ -8,7 +8,7 @@ namespace LinqStock
     public class Stock
     {
         private readonly List<Product> productList;
-        private int[] alertThresholds = { 2, 5, 10 };
+        private int[] alertThresholds = { 10, 5, 2 };
         internal Action<Product, int> callBack;
 
         public Stock()
@@ -60,17 +60,8 @@ namespace LinqStock
 
         public bool CheckIfNumberOfProductsIsUnderAlertThresholds(Product product, int initialQuantity)
         {
-            bool checkTreshole = false;
-            for (int i = alertThresholds.Length - 1; i >= 0; i--)
-            {
-                if (alertThresholds[i] <= initialQuantity && product.Quantity < alertThresholds[i])
-                {
-                    checkTreshole = alertThresholds.Any(threshold => threshold > product.Quantity);
-                }
-
-            }
-
-            return checkTreshole;
+           bool checkTreshole;
+           return checkTreshole = alertThresholds.Any(threshold => threshold <= initialQuantity && product.Quantity < threshold);
         }
 
         public void CallBackNotification(Product product)

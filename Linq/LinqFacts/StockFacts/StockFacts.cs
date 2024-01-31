@@ -198,5 +198,110 @@ namespace LinqStock
             Assert.False(receiveNotification);
             Assert.Equal("", message);
         }
+
+        [Fact]
+        public void Check_If_We_Had_Three_Crosses_Under_Threshold_And_Notification_Should_Be_Received_Twice()
+        {
+            var stock = new Stock();
+            string message = string.Empty;
+            var productType = new List<Product>()
+            {
+                new Product("bicicleta", 50),
+                new Product("papusa", 10),
+                new Product("minge", 15),
+            };
+
+            stock.Add(productType[0]);
+            stock.Add(productType[1]);
+            stock.Add(productType[2]);
+            bool receiveNotification = false;
+            Action<Product, int> action = (product, quantity) =>
+            {
+                receiveNotification = true;
+                message = $"Quantity of product: '{product.ProductName}' is under 10 pieces, it remaind {quantity} products of this type.";
+            };
+
+            stock.CallRegistration(action);
+            stock.Sell(productType[1], 1);
+            Assert.True(receiveNotification);
+            Assert.Equal("Quantity of product: 'papusa' is under 10 pieces, it remaind 9 products of this type.", message);
+
+            receiveNotification = false;
+            message = string.Empty;
+            stock.Sell(productType[1], 2);
+            Assert.False(receiveNotification);
+            Assert.Equal("", message);
+
+            receiveNotification = false;
+            message = string.Empty;
+            action = (product, quantity) => { receiveNotification = true; message = $"Quantity of product: '{product.ProductName}' is under 5 pieces, it remaind {quantity} products of this type."; };
+            stock.CallRegistration(action);
+            stock.Sell(productType[1], 3);
+            Assert.True(receiveNotification);
+            Assert.Equal("Quantity of product: 'papusa' is under 5 pieces, it remaind 4 products of this type.", message);
+        }
+
+        [Fact]
+        public void Check_If_We_Have_Multiple_Situations_When_We_Must_Receive_Notification_And_When_We_Dont()
+        {
+            var stock = new Stock();
+            string message = string.Empty;
+            var productType = new List<Product>()
+            {
+                new Product("bicicleta", 50),
+                new Product("papusa", 10),
+                new Product("minge", 15),
+            };
+
+            stock.Add(productType[0]);
+            stock.Add(productType[1]);
+            stock.Add(productType[2]);
+            bool receiveNotification = false;
+            Action<Product, int> action = (product, quantity) =>
+            {
+                receiveNotification = true;
+                message = $"Quantity of product: '{product.ProductName}' is under 10 pieces, it remaind {quantity} products of this type.";
+            };
+
+            stock.CallRegistration(action);
+            stock.CallRegistration(action);
+            stock.Sell(productType[1], 1);
+            Assert.True(receiveNotification);
+            Assert.Equal("Quantity of product: 'papusa' is under 10 pieces, it remaind 9 products of this type.", message);
+
+            receiveNotification = false;
+            message = string.Empty;
+            stock.Sell(productType[1], 2);
+            Assert.False(receiveNotification);
+            Assert.Equal("", message);
+
+            receiveNotification = false;
+            message = string.Empty;
+            action = (product, quantity) => { receiveNotification = true; message = $"Quantity of product: '{product.ProductName}' is under 5 pieces, it remaind {quantity} products of this type."; };
+            stock.CallRegistration(action);
+            stock.Sell(productType[1], 3);
+            Assert.True(receiveNotification);
+            Assert.Equal("Quantity of product: 'papusa' is under 5 pieces, it remaind 4 products of this type.", message);
+
+            receiveNotification = false;
+            message = string.Empty;
+            stock.Sell(productType[1], 1);
+            Assert.False(receiveNotification);
+            Assert.Equal("", message);
+
+            receiveNotification = false;
+            message = string.Empty;
+            stock.Sell(productType[1], 1);
+            Assert.False(receiveNotification);
+            Assert.Equal("", message);
+
+            receiveNotification = false;
+            message = string.Empty;
+            action = (product, quantity) => { receiveNotification = true; message = $"Quantity of product: '{product.ProductName}' is under 2 pieces, it remaind {quantity} products of this type."; };
+            stock.CallRegistration(action);
+            stock.Sell(productType[1], 1);
+            Assert.True(receiveNotification);
+            Assert.Equal("Quantity of product: 'papusa' is under 2 pieces, it remaind 1 products of this type.", message);
+        }
     }
 }
