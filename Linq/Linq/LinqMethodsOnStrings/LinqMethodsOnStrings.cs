@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Linq;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace LinqLinqMethodsOnStrings
@@ -9,21 +9,9 @@ namespace LinqLinqMethodsOnStrings
     {
         public static (int, int) VowelsAndConsonants(string text)
         {
-            char[] isVowels = { 'a', 'e', 'i', 'o', 'u'};
-            int countVowels = 0;
-            int countConsonants = 0;
-            foreach (char c in text) 
-            {
-                if (char.IsLetter(c) && isVowels.Contains(c))
-                {
-                    countVowels++;
-                }
-                else if (char.IsLetter(c))
-                {
-                    countConsonants++;
-                }
-            }
-
+            char[] isVowels = { 'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U' };
+            int countVowels = text.Count(c => char.IsLetter(c) && isVowels.Contains(c));
+            int countConsonants = text.Count(c => char.IsLetter(c) && !isVowels.Contains(c));
             return (countConsonants, countVowels);
         }
     }

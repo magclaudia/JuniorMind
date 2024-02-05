@@ -11,10 +11,15 @@ namespace LinqLinqMethodsOnStrings
         [Fact]
         public void Identify_Vowels_And_Consonants()
         {
-            string text = "zaeiout1";
-            (int, int) result = LinqMethodsOnStrings.VowelsAndConsonants(text);
-            (int, int) expectedResult = (2, 5); 
-            Assert.Equal(expectedResult, result);
+            string text1 = "zaeiout1";
+            (int, int) result1 = LinqMethodsOnStrings.VowelsAndConsonants(text1);
+            (int, int) expectedResult1 = (2, 5); 
+            Assert.Equal(expectedResult1, result1);
+
+            string text2 = "AEDFSW@$>Q EASDQasr";
+            (int, int) result2 = LinqMethodsOnStrings.VowelsAndConsonants(text2);
+            (int, int) expectedResult2 = (10, 5);
+            Assert.Equal(expectedResult2, result2);
         }
     }
 }
