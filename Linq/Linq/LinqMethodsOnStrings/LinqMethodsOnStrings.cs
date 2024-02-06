@@ -1,18 +1,19 @@
-﻿using Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace LinqLinqMethodsOnStrings
 {
     public class LinqMethodsOnStrings
     {
-        public static (int, int) VowelsAndConsonants(string text)
+        public static (int consonants, int vowels) VowelsAndConsonants(string text)
         {
-            char[] isVowels = { 'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U' };
-            int countVowels = text.Count(c => char.IsLetter(c) && isVowels.Contains(c));
-            int countConsonants = text.Count(c => char.IsLetter(c) && !isVowels.Contains(c));
-            return (countConsonants, countVowels);
+            string isVowels = "aeiouAEIOU";
+            int vowels = 0;
+            int consonants = 0;
+            return text.Aggregate((consonants, vowels), (count, c) => char.IsLetter(c) ? 
+            (isVowels.Contains(c) ? (count.consonants, count.vowels + 1) : (count.consonants + 1, count.vowels)) : count);
         }
     }
 }
