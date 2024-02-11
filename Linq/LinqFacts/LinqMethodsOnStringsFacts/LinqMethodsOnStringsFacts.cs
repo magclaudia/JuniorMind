@@ -21,5 +21,14 @@ namespace LinqLinqMethodsOnStrings
             (int, int) expectedResult2 = (10, 5);
             Assert.Equal(expectedResult2, result2);
         }
+
+        [Fact]
+        public void FirstNonRepeatingCharacter()
+        {
+            string text = "aakkb33lpb00";
+            var result = LinqMethodsOnStrings.FirstNonRepeatingCharacter(text);
+            var expectedResult = 'l';
+            Assert.Equal(expectedResult, result);
+        }
     }
 }
