@@ -16,19 +16,7 @@ namespace LinqLinqMethodsOnStrings
 
         public static char FirstNonRepeatingCharacter(string text)
         {
-            char letter = ' ';
-            for (var i = 0; i < text.Length; i++)
-            {
-                letter = text[i];
-                var count = text.Count(c => c == letter);
-                
-                if (count == 1)
-                {
-                    break;
-                }
-            }
-
-            return letter;
+            return text.GroupBy(element => element).First(element => element.Count() == 1).Key;
         }
     }
 }
