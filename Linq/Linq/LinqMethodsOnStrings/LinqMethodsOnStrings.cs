@@ -18,5 +18,16 @@ namespace LinqLinqMethodsOnStrings
         {
             return text.GroupBy(element => element).First(element => element.Count() == 1).Key;
         }
+
+        public static int StringToInt(string text)
+        {
+            bool value = int.TryParse(text, out var integer);
+            if (value == false)
+            {
+                throw new ArgumentException("Input text is not a digit");
+            }
+
+            return integer;
+        }
     }
 }

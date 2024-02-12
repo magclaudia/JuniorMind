@@ -30,5 +30,22 @@ namespace LinqLinqMethodsOnStrings
             var expectedResult = 'l';
             Assert.Equal(expectedResult, result);
         }
+
+        [Fact]
+        public void StringToInt()
+        {
+            string text = "1214";
+            var result = LinqMethodsOnStrings.StringToInt(text);
+            var expectedResult = 1214;
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void StringToInt2() 
+        {
+            string text1 = "232d3";
+            var expectedResult1 = Assert.Throws<ArgumentException>(() => LinqMethodsOnStrings.StringToInt(text1));
+            Assert.Equal("Input text is not a digit", expectedResult1.Message);
+        }
     }
 }
