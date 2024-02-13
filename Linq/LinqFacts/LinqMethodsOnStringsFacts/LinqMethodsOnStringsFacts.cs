@@ -32,7 +32,7 @@ namespace LinqLinqMethodsOnStrings
         }
 
         [Fact]
-        public void StringToInt()
+        public void StringToInt_CorrectlyConvertStringToInteger()
         {
             string text = "1214";
             var result = LinqMethodsOnStrings.StringToInt(text);
@@ -41,11 +41,20 @@ namespace LinqLinqMethodsOnStrings
         }
 
         [Fact]
-        public void StringToInt2() 
+        public void StringToInt_ItsNotDigit() 
         {
             string text1 = "232d3";
             var expectedResult1 = Assert.Throws<ArgumentException>(() => LinqMethodsOnStrings.StringToInt(text1));
             Assert.Equal("Input text is not a digit", expectedResult1.Message);
+        }
+
+        [Fact]
+        public void StingToInt_ItsNegative() 
+        {
+            string text = "-1245";
+            var result = LinqMethodsOnStrings.StringToInt(text);
+            var expectedResult = -1245;
+            Assert.Equal(expectedResult, result);   
         }
     }
 }

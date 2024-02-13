@@ -21,12 +21,18 @@ namespace LinqLinqMethodsOnStrings
 
         public static int StringToInt(string text)
         {
-            if (!text.All(char.IsDigit))
+            int posibleNevative = 1;
+            if (!text.All(char.IsDigit) && !text.StartsWith('-'))
             {
                 throw new ArgumentException("Input text is not a digit");
             }
+            else if (text.StartsWith('-'))
+            {
+                posibleNevative = -1;
+                text = text.Substring(1);
+            }
 
-            return text.Aggregate(0, (integer, character) => integer = integer * 10  + (int)char.GetNumericValue(character));
+            return text.Aggregate(0, (integer, character) => integer = integer * 10  + (int)char.GetNumericValue(character)) * posibleNevative;
         }
     }
 }
