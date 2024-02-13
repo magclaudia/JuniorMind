@@ -21,13 +21,12 @@ namespace LinqLinqMethodsOnStrings
 
         public static int StringToInt(string text)
         {
-            bool value = int.TryParse(text, out var integer);
-            if (value == false)
+            if (!text.All(char.IsDigit))
             {
                 throw new ArgumentException("Input text is not a digit");
             }
 
-            return integer;
+            return text.Aggregate(0, (integer, character) => integer = integer * 10  + (int)char.GetNumericValue(character));
         }
     }
 }
