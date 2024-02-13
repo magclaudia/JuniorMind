@@ -56,5 +56,14 @@ namespace LinqLinqMethodsOnStrings
             var expectedResult = -1245;
             Assert.Equal(expectedResult, result);   
         }
+
+        [Fact]
+        public void MaxNumberOfOccurencesOfACharInString()
+        {
+            string text = "sadaada";
+            var result = LinqMethodsOnStrings.CharacterWithMaximumNumberOfOccurrences(text);
+            var expectedResult = 'a';
+            Assert.Equal(expectedResult, result);
+        }
     }
 }
