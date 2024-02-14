@@ -22,7 +22,11 @@ namespace LinqLinqMethodsOnStrings
         public static int StringToInt(string text)
         {
             int integerSign = 1;
-            
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new ArgumentNullException();
+            }
+
             if (text.StartsWith('-'))
             {
                 integerSign = -1;
@@ -38,7 +42,8 @@ namespace LinqLinqMethodsOnStrings
 
         public static char CharacterWithMaximumNumberOfOccurrences(string text)
         {
-            return text.GroupBy(element => element).OrderBy(elem => elem.Count()).Last().Key;
+            return text.GroupBy(element => element).Aggregate((currentCharacter, nextCharacter)
+                => nextCharacter.Count() > currentCharacter.Count() ? nextCharacter : currentCharacter).Key;
         }
     }
 }

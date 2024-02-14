@@ -58,12 +58,63 @@ namespace LinqLinqMethodsOnStrings
         }
 
         [Fact]
+        public void StingToInt_LargeNumber()
+        {
+            string text = "214748364";
+            var result = LinqMethodsOnStrings.StringToInt(text);
+            var expectedResult = 214748364;
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void StingToInt_InputTextEmptyString()
+        {
+            string text = string.Empty;
+            Assert.Throws<ArgumentNullException>(() => LinqMethodsOnStrings.StringToInt(text));
+        }
+
+        [Fact]
+        public void StingToInt_InputTextIsNull()
+        {
+            string text = null;
+            Assert.Throws<ArgumentNullException>(() => LinqMethodsOnStrings.StringToInt(text));
+        }
+
+        [Fact]
+        public void StingToInt_InputTextIsOneDigit() 
+        {
+            string text = "1";
+            var result = LinqMethodsOnStrings.StringToInt(text);
+            var expected = 1;
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void StingToInt_InputTextStartWithZero()
+        {
+            string text = "0123";
+            var result = LinqMethodsOnStrings.StringToInt(text);
+            var expected = 123;
+            Assert.Equal(expected, result);
+        }
+
+
+        [Fact]
         public void MaxNumberOfOccurencesOfACharInString()
         {
             string text = "sadaada";
             var result = LinqMethodsOnStrings.CharacterWithMaximumNumberOfOccurrences(text);
             var expectedResult = 'a';
             Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void MaxNumberOfOccurencesOfACharInString_EqualMaxCount()
+        {
+            string text = "dlloppfd";
+            var result = LinqMethodsOnStrings.CharacterWithMaximumNumberOfOccurrences(text);
+            var expected = 'd';
+            Assert.Equal(expected, result);
         }
     }
 }
