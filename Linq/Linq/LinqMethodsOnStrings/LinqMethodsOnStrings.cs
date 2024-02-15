@@ -42,8 +42,7 @@ namespace LinqLinqMethodsOnStrings
 
         public static char CharacterWithMaximumNumberOfOccurrences(string text)
         {
-            return text.GroupBy(element => element).Aggregate((currentCharacter, nextCharacter)
-                => nextCharacter.Count() > currentCharacter.Count() ? nextCharacter : currentCharacter).Key;
+            return text.GroupBy(element => element).MaxBy(element => element.Count())!.Key;
         }
     }
 }
