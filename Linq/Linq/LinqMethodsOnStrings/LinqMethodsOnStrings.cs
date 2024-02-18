@@ -44,5 +44,31 @@ namespace LinqLinqMethodsOnStrings
         {
             return text.GroupBy(element => element).MaxBy(element => element.Count())!.Key;
         }
+
+        public static IEnumerable<string> Palindorme(string text)
+        {
+            List<string> list = new List<string>();
+            string element = string.Empty;
+            char[] verification;
+            for (int i = 0; i < text.Length; i++) 
+            {
+                element += text[i];
+                list.Add(element);
+                for (int j = i + 1; j < text.Length; j++)
+                {
+                    element += text[j];
+                    verification = element.ToCharArray();
+                    Array.Reverse(verification);
+                    if (element == new string(verification))
+                    {
+                        list.Add(element);
+                    }
+                }
+
+                element = string.Empty;
+            }
+
+            return list;
+        }
     }
 }
