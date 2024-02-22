@@ -47,13 +47,15 @@ namespace LinqLinqMethodsOnStrings
 
         public static IEnumerable<string> Palindrome(string text)
         {
-            return text.SelectMany((character, startIndex) => GetSubstrings(text, startIndex).Where(IsPalindrome));
+            return text.SelectMany((character, startIndex) => GetSubstrings(text, startIndex)).Where(IsPalindrome);
         }
 
         private static IEnumerable<string> GetSubstrings(string text, int startIndex)
         {
-            return text.Substring(startIndex).Select((character, length) => text.Substring(startIndex, length + 1));
+            int maxLength = text.Length - startIndex;
+            return text.Substring(startIndex, maxLength).Select((character, length) => text.Substring(startIndex, length + 1));
         }
+
         private static bool IsPalindrome(string substring)
         {
             return substring.SequenceEqual(substring.Reverse());
