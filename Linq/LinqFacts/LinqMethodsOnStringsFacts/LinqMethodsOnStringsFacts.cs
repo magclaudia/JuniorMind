@@ -121,7 +121,7 @@ namespace LinqLinqMethodsOnStrings
         public void Palindrome()
         {
             string text = "aabaac";
-            var result = LinqMethodsOnStrings.Palindorme(text);
+            var result = LinqMethodsOnStrings.Palindrome(text);
             var expected = new List<string> { "a", "aa", "aabaa", "a", "aba", "b", "a", "aa", "a", "c" };
             Assert.Equal(expected, result);
         }
