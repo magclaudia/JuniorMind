@@ -52,8 +52,10 @@ namespace LinqLinqMethodsOnStrings
 
         private static IEnumerable<string> GetSubstrings(string text)
         {
-            return Enumerable.Range(0, text.Length).SelectMany(startIndex => Enumerable.Range(1, text.Length - startIndex)
-            .Select(length => text.Substring(startIndex, length)));
+            IEnumerable<string> SubstringsFromIndex(int i)
+             => Enumerable.Range(i + 1, text.Length - i).Select(j => text[i..j]);
+
+            return Enumerable.Range(0, text.Length).SelectMany(SubstringsFromIndex);
         }
 
         private static bool IsPalindrome(string substring)
