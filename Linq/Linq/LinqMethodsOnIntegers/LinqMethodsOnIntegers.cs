@@ -12,15 +12,12 @@ namespace LinqMethodsOnIntegers
             return GetSublists(integers).Where(sublist => sublist.Sum() <= k);
         }
 
+
         private static IEnumerable<IEnumerable<int>> GetSublists(int[] integers)
         {
-            for (int i = 0; i < integers.Length; i++)
-            {
-                for (int j = i + 1; j <= integers.Length; j++)
-                {
-                    yield return integers[i..j];
-                }
-            }
+            IEnumerable<IEnumerable<int>> SublistsIndex(int i) =>
+                Enumerable.Range(i + 1, integers.Length - i).Select(j => integers[i..j]);
+            return Enumerable.Range(0, integers.Length).SelectMany(SublistsIndex);
         }
     }
 }
