@@ -50,11 +50,11 @@ namespace LinqMethods
             return GetSubsequences(text.ToCharArray()).Where(IsPalindrome).Select(sub => new string(sub.ToArray()));
         }
 
-        public static IEnumerable<IEnumerable<T>> GetSubsequences<T>(IEnumerable<T> sequence)
+        public static IEnumerable<IEnumerable<T>> GetSubsequences<T>(T[] sequence)
         {
             IEnumerable<IEnumerable<T>> SubsequencesFromIndex(int i)
-                => Enumerable.Range(i + 1, sequence.Count() - i).Select(j => sequence.Skip(i).Take(j - i));
-            return Enumerable.Range(0, sequence.Count()).SelectMany(SubsequencesFromIndex);
+                => Enumerable.Range(i + 1, sequence.Length - i).Select(j => sequence[i..j]);
+            return Enumerable.Range(0, sequence.Length).SelectMany(SubsequencesFromIndex);
         }
 
         private static bool IsPalindrome(IEnumerable<char> sub)
