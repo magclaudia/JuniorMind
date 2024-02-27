@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace LinqMethodsOnIntegers
+namespace LinqMethods
 {
     public class LinqMethodsOnIntegersFacts
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace LinqLinqMethodsOnStrings
+namespace LinqMethods
 {
     public class LinqMethodsOnStrings
     {
@@ -47,20 +47,21 @@ namespace LinqLinqMethodsOnStrings
 
         public static IEnumerable<string> Palindrome(string text)
         {
-            return GetSubstrings(text).Where(IsPalindrome);
+            return GetSubsequences(text.ToCharArray()).Where(IsPalindrome).Select(sub => new string(sub.ToArray()));
         }
 
-        private static IEnumerable<string> GetSubstrings(string text)
+        public static IEnumerable<IEnumerable<T>> GetSubsequences<T>(IEnumerable<T> sequence)
         {
-            IEnumerable<string> SubstringsFromIndex(int i)
-             => Enumerable.Range(i + 1, text.Length - i).Select(j => text[i..j]);
-
-            return Enumerable.Range(0, text.Length).SelectMany(SubstringsFromIndex);
+            IEnumerable<IEnumerable<T>> SubsequencesFromIndex(int i)
+                => Enumerable.Range(i + 1, sequence.Count() - i).Select(j => sequence.Skip(i).Take(j - i));
+            return Enumerable.Range(0, sequence.Count()).SelectMany(SubsequencesFromIndex);
         }
 
-        private static bool IsPalindrome(string substring)
+        private static bool IsPalindrome(IEnumerable<char> sub)
         {
-            return substring.SequenceEqual(substring.Reverse());
+            return sub.SequenceEqual(sub.Reverse());
         }
     }
+
+    
 }
