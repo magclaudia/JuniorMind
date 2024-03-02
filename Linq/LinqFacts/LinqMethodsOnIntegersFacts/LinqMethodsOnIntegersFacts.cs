@@ -90,5 +90,41 @@ namespace LinqMethods
 
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void CombinationFirstTry()
+        {
+            int n = 4;
+            int k = 0;
+            var result = LinqMethodsOnIntegers.Combinations(n, k);
+            var expected = new List<List<int>>
+            {
+               new List<int> { 1, -2, -3, 4 },
+               new List<int> { -1, 2, 3, -4 },
+            };
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CombinationSecondTry()
+        {
+            int n = 7;
+            int k = 2;
+            var result = LinqMethodsOnIntegers.Combinations(n, k);
+            var expected = new List<List<int>>
+            {
+               new List<int> { 1, 2, 3, 4, 5, -6, -7 },
+               new List<int> { 1, 2, -3, -4, 5, -6, 7 },
+               new List<int> { 1, -2, 3, 4, -5, -6, 7 },
+               new List<int> { 1, -2, 3, -4, 5, 6, -7 },
+               new List<int> { -1, 2, 3, 4, -5, 6, -7 },
+               new List<int> { -1, 2, -3, -4, -5, 6, 7 },
+               new List<int> { -1, -2, 3, -4, 5, -6, 7 },
+               new List<int> { -1, -2, -3, 4, 5, 6, -7 }
+            };
+
+            Assert.Equal(expected, result);
+        }
     }
 }
