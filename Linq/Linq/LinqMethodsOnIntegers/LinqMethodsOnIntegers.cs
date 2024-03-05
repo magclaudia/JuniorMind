@@ -12,28 +12,25 @@ namespace LinqMethods
         {
             return LinqMethodsOnStrings.GetSubsequences(integers).Where(sublist => sublist.Sum() <= k);
         }
-        
+
         public static IEnumerable<IEnumerable<int>> Combinations(int n, int k)
         {
-            var resultList = new List<List<int>>();
-            GetCombinations(n, k, new List<int>(), resultList);
-            return resultList;
+            var combinations = new List<List<int>>()
+            {
+                new List<int>()
+            };
+
+            return GetCombinations(n, combinations).Where(combination => combination.Sum() == k);
         }
 
-        private static void GetCombinations(int n, int k, List<int> combinations, List<List<int>> resultList)
+        private static IEnumerable<IEnumerable<int>> GetCombinations(int n, IEnumerable<IEnumerable<int>> combinations)
         {
-            if (combinations.Count == n)
-            {
-                if (combinations.Sum() == k)
+            return Enumerable.Range(1, n).Aggregate(combinations, (x, number) => x.SelectMany(comb => new[]
                 {
-                    resultList.Add(new List<int>(combinations));
+                    comb.Concat(new[] { number }),
+                    comb.Concat(new[] { -number })
                 }
-
-                return;
-            }
-
-            GetCombinations(n, k, combinations.Concat(new int[] { combinations.Count + 1 }).ToList(), resultList);
-            GetCombinations(n, k, combinations.Concat(new int[] { -(combinations.Count + 1)}).ToList(), resultList);
+            ));
         }
     }
 }
