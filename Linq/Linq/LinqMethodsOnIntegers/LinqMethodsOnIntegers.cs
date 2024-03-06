@@ -15,10 +15,7 @@ namespace LinqMethods
 
         public static IEnumerable<IEnumerable<int>> Combinations(int n, int k)
         {
-            var combinations = new List<List<int>>()
-            {
-                new List<int>()
-            };
+            var combinations = new[] { Enumerable.Empty<int>() };
 
             return GetCombinations(n, combinations).Where(combination => combination.Sum() == k);
         }
@@ -27,8 +24,8 @@ namespace LinqMethods
         {
             return Enumerable.Range(1, n).Aggregate(combinations, (x, number) => x.SelectMany(comb => new[]
                 {
-                    comb.Concat(new[] { number }),
-                    comb.Concat(new[] { -number })
+                    comb.Append(number),
+                    comb.Append(-number)
                 }
             ));
         }
