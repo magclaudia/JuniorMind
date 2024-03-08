@@ -29,5 +29,22 @@ namespace LinqMethods
                 }
             ));
         }
+
+        public static IEnumerable<IEnumerable<int>> PythagoreanTheorem(int[] randomNumbers)
+        {
+            var pairs = randomNumbers.SelectMany((number1, index1) => randomNumbers.Skip(index1 + 1)
+                       .SelectMany((number2, index2) => randomNumbers.Skip(index1 + index2 + 2)
+                                 .Select(number3 => new[] { number1, number2, number3 })));
+
+
+            var pythagoreanCombinations = pairs.Where(combinations =>
+            {
+                var orderCombinations = combinations.OrderBy(p => p).ToArray();
+                return orderCombinations[0] * orderCombinations[0] + orderCombinations[1] * orderCombinations[1] == orderCombinations[2] * orderCombinations[2];
+
+            });
+
+            return pythagoreanCombinations.Select(triplet => triplet.OrderBy(x => x));
+        }
     }
 }
