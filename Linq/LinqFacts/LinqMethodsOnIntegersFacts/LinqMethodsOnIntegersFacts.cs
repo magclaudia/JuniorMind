@@ -132,10 +132,10 @@ namespace LinqMethods
         {
             int[] randomNumbers = { 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             var result = LinqMethodsOnIntegers.PythagoreanTheorem(randomNumbers);
-            var expected = new List<List<int>>
+            var expected = new List<(int, int, int)>
             {
-                new List<int> { 3, 4, 5 },
-                new List<int> { 6, 8, 10 }
+                (3, 4, 5),
+                (6, 8, 10)
             };
 
             Assert.Equal(expected, result);
@@ -146,9 +146,9 @@ namespace LinqMethods
         {
             int[] randomNumbers = { 5, 1, 17, 2, 13, 21, 12, };
             var result = LinqMethodsOnIntegers.PythagoreanTheorem(randomNumbers);
-            var expected = new List<List<int>>
+            var expected = new List<(int, int, int)>
             {
-                new List<int> { 5, 12, 13 }
+                (5, 12, 13)
             };
 
             Assert.Equal(expected, result);

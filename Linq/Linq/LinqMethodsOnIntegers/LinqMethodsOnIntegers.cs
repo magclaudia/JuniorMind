@@ -30,21 +30,20 @@ namespace LinqMethods
             ));
         }
 
-        public static IEnumerable<IEnumerable<int>> PythagoreanTheorem(int[] randomNumbers)
+        public static IEnumerable<(int a, int b, int c)> PythagoreanTheorem(int[] randomNumbers)
         {
-            var pairs = randomNumbers.SelectMany((number1, index1) => randomNumbers.Skip(index1 + 1)
-                       .SelectMany((number2, index2) => randomNumbers.Skip(index1 + index2 + 2)
-                                 .Select(number3 => new[] { number1, number2, number3 })));
+            var sortedNumbers = randomNumbers.Select(x => x).OrderBy(x => x);
+            return sortedNumbers.SelectMany((a, i) => sortedNumbers.Skip(i + 1)
+                       .SelectMany((b, j) => sortedNumbers.Skip(i + j + 2)
+                            .Where(c => OrderTuple(a, b, c))
+                                 .Select(c => (a, b, c))));
+        }
 
-
-            var pythagoreanCombinations = pairs.Where(combinations =>
-            {
-                var orderCombinations = combinations.OrderBy(p => p).ToArray();
-                return orderCombinations[0] * orderCombinations[0] + orderCombinations[1] * orderCombinations[1] == orderCombinations[2] * orderCombinations[2];
-
-            });
-
-            return pythagoreanCombinations.Select(triplet => triplet.OrderBy(x => x));
+        private static bool OrderTuple(int a, int b, int c)
+        {
+            return a * a + b * b == c * c ||
+                   b * b + c * c == a * a ||
+                   a * a + c * c == b * b;
         }
     }
 }
