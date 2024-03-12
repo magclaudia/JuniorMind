@@ -12,8 +12,7 @@ namespace LinqProduct
     {
         public static IEnumerable<Product> AtLeastOneFeature(Product[] productsList, Feature[] featuresList)
         {
-            return productsList.Where(product => product.Features.Any(productFeature => featuresList
-                               .Contains(productFeature)));
+            return productsList.Where(product => product.Features.Intersect(featuresList).Any());
         }
 
         public static IEnumerable<Product> AllFeatures(Product[] productsList, Feature[] featuresList)
