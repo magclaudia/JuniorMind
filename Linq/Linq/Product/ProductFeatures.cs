@@ -17,16 +17,7 @@ namespace LinqProduct
 
         public static IEnumerable<Product> AllFeatures(List<Product> productsList, List<Feature> featuresList)
         {
-            var list = new List<Product>();
-            foreach (Product product in productsList)
-            {
-                    if (featuresList.All(elements => product.Features.Contains(elements)))
-                    {
-                        list.Add(product);
-                    }
-            }
-
-            return list;
+            return productsList.FindAll(product => featuresList.All(feature => product.Features.Contains(feature)));
         }
 
         public static IEnumerable<Product> NotEvenOneFeature(List<Product> productsList, List<Feature> featuresList)
