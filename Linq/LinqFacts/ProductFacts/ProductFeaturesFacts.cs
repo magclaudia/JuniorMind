@@ -20,23 +20,23 @@ namespace LinqProduct
             var nineCode = new Feature { Id = 9124 };
             var sixeCode = new Feature { Id = 6801 };
             
-            var features = new List<Feature>()
+            var features = new[]
             {
                 treeCode, fourCode, fiveCode, sixCode
             };
 
-            var minge = new Product { Name = "minge", Features = new List<Feature>() { oneCode, treeCode } };
-            var papusa = new Product { Name = "papusa", Features = new List<Feature>() { treeCode } };
-            var bile = new Product { Name = "bile", Features = new List<Feature>() { sixeCode, oneCode} };
-            var urs = new Product { Name = "urs", Features = new List<Feature>() { fiveCode, nineCode } };
+            var minge = new Product { Name = "minge", Features = new[] { oneCode, treeCode } };
+            var papusa = new Product { Name = "papusa", Features = new[] { treeCode } };
+            var bile = new Product { Name = "bile", Features = new[] { sixeCode, oneCode } };
+            var urs = new Product { Name = "urs", Features = new[] { fiveCode, nineCode } };
             
-            var products = new List<Product>()
+            var products = new[]
             {
                 minge, papusa, bile, urs
             };
 
             var result = ProductFeatures.AtLeastOneFeature(products, features);
-            var expectedResult = new List<Product>()
+            var expectedResult = new[]
             {
                 minge, papusa, urs
             };
@@ -55,23 +55,23 @@ namespace LinqProduct
             var nineCode = new Feature { Id = 9124 };
             var sixeCode = new Feature { Id = 6801 };
 
-            var features = new List<Feature>()
+            var features = new[]
             {
                 treeCode, fourCode, fiveCode, sixCode
             };
 
-            var minge = new Product { Name = "minge", Features = new List<Feature>() { fiveCode, treeCode, fourCode, sixCode } };
-            var papusa = new Product { Name = "papusa", Features = new List<Feature>() { treeCode } };
-            var bile = new Product { Name = "bile", Features = new List<Feature>() { sixeCode, oneCode } };
-            var urs = new Product { Name = "urs", Features = new List<Feature>() { fiveCode, nineCode } };
+            var minge = new Product { Name = "minge", Features = new[] { fiveCode, treeCode, fourCode, sixCode } };
+            var papusa = new Product { Name = "papusa", Features = new[] { treeCode } };
+            var bile = new Product { Name = "bile", Features = new[] { sixeCode, oneCode } };
+            var urs = new Product { Name = "urs", Features = new[] { fiveCode, nineCode } };
 
-            var products = new List<Product>()
+            var products = new[]
             {
                 minge, papusa, bile, urs
             };
 
             var result = ProductFeatures.AllFeatures(products, features);
-            var expectedResult = new List<Product>()
+            var expectedResult = new[]
             {
                 minge
             };
@@ -90,23 +90,23 @@ namespace LinqProduct
             var nineCode = new Feature { Id = 9124 };
             var sixeCode = new Feature { Id = 6801 };
 
-            var features = new List<Feature>()
+            var features = new[]
             {
                 treeCode, fourCode, fiveCode, sixCode
             };
 
-            var minge = new Product { Name = "minge", Features = new List<Feature>() { fiveCode, treeCode, fourCode, sixCode } };
-            var papusa = new Product { Name = "papusa", Features = new List<Feature>() { treeCode } };
-            var bile = new Product { Name = "bile", Features = new List<Feature>() { sixeCode, oneCode } };
-            var urs = new Product { Name = "urs", Features = new List<Feature>() { fiveCode, nineCode } };
+            var minge = new Product { Name = "minge", Features = new[] { fiveCode, treeCode, fourCode, sixCode } };
+            var papusa = new Product { Name = "papusa", Features = new[] { treeCode } };
+            var bile = new Product { Name = "bile", Features = new[] { sixeCode, oneCode } };
+            var urs = new Product { Name = "urs", Features = new[] { fiveCode, nineCode } };
 
-            var products = new List<Product>()
+            var products = new[]
             {
                 minge, papusa, bile, urs
             };
 
             var result = ProductFeatures.NotEvenOneFeature(products, features);
-            var expectedResult = new List<Product>()
+            var expectedResult = new[]
             {
                 bile
             };

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LinqStock;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +10,20 @@ namespace LinqProduct
 {
     public class ProductFeatures
     {
-        public static IEnumerable<Product> AtLeastOneFeature(List<Product> productsList, List<Feature> featuresList)
+        public static IEnumerable<Product> AtLeastOneFeature(Product[] productsList, Feature[] featuresList)
         {
-            return productsList.FindAll(product => product.Features.Any(productFeature => featuresList
-                                .Any(feature => feature.Id == productFeature.Id)));   
+            return productsList.Where(product => product.Features.Any(productFeature => featuresList
+                               .Contains(productFeature)));
         }
 
-        public static IEnumerable<Product> AllFeatures(List<Product> productsList, List<Feature> featuresList)
+        public static IEnumerable<Product> AllFeatures(Product[] productsList, Feature[] featuresList)
         {
-            return productsList.FindAll(product => featuresList.All(feature => product.Features.Contains(feature)));
+            return productsList.Where(product => featuresList.All(feature => product.Features.Contains(feature)));
         }
 
-        public static IEnumerable<Product> NotEvenOneFeature(List<Product> productsList, List<Feature> featuresList)
+        public static IEnumerable<Product> NotEvenOneFeature(Product[] productsList, Feature[] featuresList)
         {
-            return productsList.FindAll(product => featuresList.All(feature => !product.Features.Contains(feature)));
+            return productsList.Where(product => featuresList.All(feature => !product.Features.Contains(feature)));
         }
     }
 }
