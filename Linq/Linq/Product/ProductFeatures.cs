@@ -24,5 +24,19 @@ namespace LinqProduct
 
             return list;
         }
+
+        public static IEnumerable<Product> AllFeatures(List<Product> productsList, List<Feature> featuresList)
+        {
+            var list = new List<Product>();
+            foreach (Product product in productsList)
+            {
+                    if (featuresList.All(elements => product.Features.Contains(elements)))
+                    {
+                        list.Add(product);
+                    }
+            }
+
+            return list;
+        }
     }
 }
