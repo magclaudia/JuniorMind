@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,19 +11,8 @@ namespace LinqProduct
     {
         public static IEnumerable<Product> AtLeastOneFeature(List<Product> productsList, List<Feature> featuresList)
         {
-            var list = new List<Product>();
-            foreach (Product product in productsList) 
-            {
-                foreach (Feature feature in featuresList)
-                {
-                    if (product.Features.Any(element => element.Id == feature.Id))
-                    {
-                        list.Add(product);
-                    }
-                }
-            }
-
-            return list;
+            return productsList.FindAll(product => product.Features.Any(productFeature => featuresList
+                                .Any(feature => feature.Id == productFeature.Id)));   
         }
 
         public static IEnumerable<Product> AllFeatures(List<Product> productsList, List<Feature> featuresList)
