@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LinqProduct
 {
-    public struct ProductList
+    public struct ProductWithQuantity
     {
         public string Name;
         public int Quantity;
 
-        public ProductList(string name, int quantity)
+        public ProductWithQuantity(string name, int quantity)
         {
             Name = name;
             Quantity = quantity;

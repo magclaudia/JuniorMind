@@ -17,21 +17,21 @@ namespace LinqProduct
 
         public static IEnumerable<Product> AllFeatures(Product[] productsList, Feature[] featuresList)
         {
-            return productsList.Where(product => featuresList.All(feature => product.Features.Contains(feature)));
+            return productsList.Where(product => product.Features.Intersect(featuresList).Count() == featuresList.Length);
         }
 
         public static IEnumerable<Product> NotEvenOneFeature(Product[] productsList, Feature[] featuresList)
         {
-            return productsList.Where(product => featuresList.All(feature => !product.Features.Contains(feature)));
+            return productsList.Where(product => product.Features.Intersect(featuresList).Count() == 0);
         }
 
-        public static IEnumerable<ProductList> AllProductsAppearsOnlyOnceAndGenerateTotalIfDuplicates(ProductList[] firstList, ProductList[] secondList)
+        public static IEnumerable<ProductWithQuantity> AllProductsAppearsOnlyOnceAndGenerateTotalIfDuplicates(ProductWithQuantity[] firstList, ProductWithQuantity[] secondList)
         {
             var checkContainDouplicates = firstList.Where(first => secondList.Any(second => first.Name == second.Name))
                 .Select(first =>
                 {
                     var totalQuantity = first.Quantity + secondList.First(second => second.Name == first.Name).Quantity;
-                    return new ProductList { Name = first.Name, Quantity = totalQuantity };
+                    return new ProductWithQuantity { Name = first.Name, Quantity = totalQuantity };
                 });
 
             var returnSeparateElements = firstList.Union(secondList).GroupBy(x => x.Name).Where(x => x.Count() == 1).Select(x => x.FirstOrDefault());
