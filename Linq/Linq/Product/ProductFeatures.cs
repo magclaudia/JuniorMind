@@ -24,5 +24,19 @@ namespace LinqProduct
         {
             return productsList.Where(product => featuresList.All(feature => !product.Features.Contains(feature)));
         }
+
+        public static IEnumerable<ProductList> AllProductsAppearsOnlyOnceAndGenerateTotalIfDuplicates(ProductList[] firstList, ProductList[] secondList)
+        {
+            var checkContainDouplicates = firstList.Where(first => secondList.Any(second => first.Name == second.Name))
+                .Select(first =>
+                {
+                    var totalQuantity = first.Quantity + secondList.First(second => second.Name == first.Name).Quantity;
+                    return new ProductList { Name = first.Name, Quantity = totalQuantity };
+                });
+
+            var returnSeparateElements = firstList.Union(secondList).GroupBy(x => x.Name).Where(x => x.Count() == 1).Select(x => x.FirstOrDefault());
+
+            return checkContainDouplicates.Concat(returnSeparateElements);
+        }
     }
 }
