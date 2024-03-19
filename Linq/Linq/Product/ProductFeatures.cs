@@ -27,16 +27,12 @@ namespace LinqProduct
 
         public static IEnumerable<ProductWithQuantity> AllProductsAppearsOnlyOnceAndGenerateTotalIfDuplicates(ProductWithQuantity[] firstList, ProductWithQuantity[] secondList)
         {
-            var checkContainDouplicates = firstList.Where(first => secondList.Any(second => first.Name == second.Name))
-                .Select(first =>
+            return firstList.Union(secondList).GroupBy(key => key.Name)
+                .Select(group => 
                 {
-                    var totalQuantity = first.Quantity + secondList.First(second => second.Name == first.Name).Quantity;
-                    return new ProductWithQuantity { Name = first.Name, Quantity = totalQuantity };
+                    var totalQuantity = group.Sum(product => product.Quantity);
+                    return new ProductWithQuantity { Name = group.Key, Quantity = totalQuantity };
                 });
-
-            var returnSeparateElements = firstList.Union(secondList).GroupBy(x => x.Name).Where(x => x.Count() == 1).Select(x => x.FirstOrDefault());
-
-            return checkContainDouplicates.Concat(returnSeparateElements);
         }
     }
 }

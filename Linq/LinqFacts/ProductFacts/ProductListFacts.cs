@@ -35,13 +35,12 @@ namespace LinqProduct
                 new ProductWithQuantity { Name = "minge", Quantity = 35 },
                 new ProductWithQuantity { Name = "bile", Quantity = 15 },
                 new ProductWithQuantity { Name = "biciclete", Quantity = 25 },
-                new ProductWithQuantity { Name = "palarie", Quantity = 46 },
                 new ProductWithQuantity { Name = "papusa", Quantity = 2 },
+                new ProductWithQuantity { Name = "palarie", Quantity = 46 },
                 new ProductWithQuantity { Name = "fluture", Quantity = 12 },
             };
 
             Assert.Equal(expected, result);
         }
-
     }
 }
