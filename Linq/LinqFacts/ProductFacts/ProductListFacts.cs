@@ -20,7 +20,7 @@ namespace LinqProduct
             var biciclete1 = new ProductWithQuantity { Name = "biciclete", Quantity = 7 };
             var palarie = new ProductWithQuantity { Name = "palarie", Quantity = 34 };
             var fluture = new ProductWithQuantity { Name = "fluture", Quantity = 12 };
-            var minge1 = new ProductWithQuantity { Name = "minge", Quantity = 5 };
+            var minge1 = new ProductWithQuantity { Name = "minge", Quantity = 30 };
             var palarie1 = new ProductWithQuantity { Name = "palarie", Quantity = 12 };
 
             // papusa,  fluture
@@ -32,7 +32,7 @@ namespace LinqProduct
             var result = ProductFeatures.AllProductsAppearsOnlyOnceAndGenerateTotalIfDuplicates(productList1, productList2);
             var expected = new ProductWithQuantity[]
             {
-                new ProductWithQuantity { Name = "minge", Quantity = 35 },
+                new ProductWithQuantity { Name = "minge", Quantity = 60 },
                 new ProductWithQuantity { Name = "bile", Quantity = 15 },
                 new ProductWithQuantity { Name = "biciclete", Quantity = 25 },
                 new ProductWithQuantity { Name = "papusa", Quantity = 2 },
