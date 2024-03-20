@@ -14,7 +14,7 @@ namespace TestResultsLinq
 
         public static IEnumerable<TestResults> HighestScore(IEnumerable<TestResults> list)
         {
-
+            return list.GroupBy(key => key.FamilyId).Select(group => group.MaxBy(x => x.Score));
         }
     }
 }

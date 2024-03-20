@@ -30,7 +30,22 @@ namespace TestResultsLinq
                 new TestResults { Id = "32", FamilyId = "62", Score = 101 }
             };
 
-            Assert.Equal(expected, result);
+            List<TestResults> returnList = result.ToList();
+            bool checkValue = false;
+            for (int i = 0; i < returnList.Count; i++)
+            {
+                if (returnList[i].Id == expected[i].Id && returnList[i].FamilyId == expected[i].FamilyId && returnList[i].Score == expected[i].Score)
+                {
+                    checkValue = true; 
+                }
+                else
+                {
+                    checkValue = false;
+                    break;
+                }
+            }
+
+            Assert.True(checkValue);
         }
     }
 }
