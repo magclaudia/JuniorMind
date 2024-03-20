@@ -12,40 +12,25 @@ namespace TestResultsLinq
         [Fact]
         public void FamilyResult()
         {
+            var a = new TestResults { Id = "202", FamilyId = "500", Score = 30 };
+            var b = new TestResults { Id = "102", FamilyId = "200", Score = 10 };
+            var c = new TestResults { Id = "202", FamilyId = "500", Score = 30 };
+            var d = new TestResults { Id = "32", FamilyId = "62", Score = 101 };
+            var e = new TestResults { Id = "230", FamilyId = "200", Score = 455 };
+            var f = new TestResults { Id = "10", FamilyId = "500", Score = 101 };
+
             var list = new List<TestResults>
             {
-                new TestResults { Id = "202", FamilyId = "500", Score = 30 },
-                new TestResults { Id = "102", FamilyId = "200", Score = 10 },
-                new TestResults { Id = "202", FamilyId = "500", Score = 30 },
-                new TestResults { Id = "32", FamilyId = "62", Score = 101 },
-                new TestResults { Id = "230", FamilyId = "200", Score = 455 },
-                new TestResults { Id = "10", FamilyId = "500", Score = 101 }
+               a,b,c,d,e,f
             };
 
             var result = TestResults.HighestScore(list);
             var expected = new List<TestResults>
             {
-                new TestResults { Id = "10", FamilyId = "500", Score = 101 },
-                new TestResults { Id = "230", FamilyId = "200", Score = 455 },
-                new TestResults { Id = "32", FamilyId = "62", Score = 101 }
+                f,e,d 
             };
 
-            List<TestResults> returnList = result.ToList();
-            bool checkValue = false;
-            for (int i = 0; i < returnList.Count; i++)
-            {
-                if (returnList[i].Id == expected[i].Id && returnList[i].FamilyId == expected[i].FamilyId && returnList[i].Score == expected[i].Score)
-                {
-                    checkValue = true; 
-                }
-                else
-                {
-                    checkValue = false;
-                    break;
-                }
-            }
-
-            Assert.True(checkValue);
+            Assert.Equal(expected,result);
         }
     }
 }
