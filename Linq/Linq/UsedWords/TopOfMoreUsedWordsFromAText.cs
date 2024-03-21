@@ -10,7 +10,7 @@ namespace UsedWords
     {
         public static IEnumerable<(string text, int numerOfElements)> MoreUsedWords(string text, int numberOfWords)
         {
-            return text.Split().GroupBy(key => key).OrderByDescending(group => group.Count()).Take(numberOfWords).Select(x => (x.Key, x.Count()));
+            return text.Split().GroupBy(key => key).Select(x => (Word: x.Key, Count: x.Count())).OrderByDescending(group => group.Count);
         }
     }
 }
