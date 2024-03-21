@@ -8,9 +8,9 @@ namespace UsedWords
 {
     public class TopOfMoreUsedWordsFromAText
     {
-        public static IEnumerable<string> MoreUsedWords(string text)
+        public static IEnumerable<(string text, int numerOfElements)> MoreUsedWords(string text, int numberOfWords)
         {
-            return text.Split().GroupBy(key => key).OrderByDescending(group => group.Count()).Select(x => x.Key);
+            return text.Split().GroupBy(key => key).OrderByDescending(group => group.Count()).Take(numberOfWords).Select(x => (x.Key, x.Count()));
         }
     }
 }

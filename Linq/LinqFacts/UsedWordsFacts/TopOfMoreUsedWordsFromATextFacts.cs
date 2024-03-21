@@ -13,10 +13,14 @@ namespace UsedWords
         public void MoreUsedWords()
         {
             var text = "Ana are mere verzi pe care i le vinde lui Ovidiu care are mere galbene pe care i le vinde Anei pentru ca ea nu are .";
-            var result = TopOfMoreUsedWordsFromAText.MoreUsedWords(text);
+            int numberOfWords = text.Length;
+            var result = TopOfMoreUsedWordsFromAText.MoreUsedWords(text, numberOfWords);
             
-            var expected = new List<string> { "are", "care", "mere", "pe", "i", "le", "vinde", "Ana", "verzi", "lui", 
-                "Ovidiu", "galbene", "Anei", "pentru", "ca", "ea", "nu", "."};
+            List<(string, int)> expected = new() 
+            {
+                ("are", 3), ("care", 3), ("mere", 2), ("pe", 2), ("i", 2), ("le", 2), ("vinde", 2), ("Ana", 1), ("verzi", 1), ("lui", 1), 
+                ("Ovidiu", 1), ("galbene", 1),  ("Anei", 1), ("pentru", 1), ("ca", 1), ("ea", 1), ("nu",1), (".", 1) 
+            };
             
             Assert.Equal(expected, result);
         }
