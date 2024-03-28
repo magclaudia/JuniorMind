@@ -12,25 +12,24 @@ namespace SudokuLinq
     {
         public static bool IsValidSudoku(int[,] sudokuBoard)
         {
-           return Enumerable.Range(0, 9).All(j => Line(sudokuBoard, j) && Column(sudokuBoard, j) && Block(sudokuBoard, j));
+            var concatenatedElements = Lines(sudokuBoard).Concat(Columns(sudokuBoard)).Concat(Blocks(sudokuBoard));
+            return concatenatedElements.All(elements => elements.Distinct().Count() == 9);
         }
 
-        public static bool Line(int[,] sudokuBoard, int j)
+        public static IEnumerable<IEnumerable<int>> Lines(int[,] sudokuBoard)
         {
-            return Enumerable.Range(0, 9).Select(i => sudokuBoard[j, i]).GroupBy(key => key).All(group => group.Count() == 1);
+            return Enumerable.Range(0, 9).Select(i => Enumerable.Range(0, 9).Select(j => sudokuBoard[i, j]));
         }
            
-        private static bool Column(int[,] sudokuBoard, int j)
+        private static IEnumerable<IEnumerable<int>> Columns(int[,] sudokuBoard)
         {
-            return Enumerable.Range(0, 9).Select(i => sudokuBoard[i, j]).GroupBy(key => key).All(group => group.Count() == 1);
+            return Enumerable.Range(0, 9).Select(i => Enumerable.Range(0, 9).Select(j => sudokuBoard[i, j]));
         }
 
-        private static bool Block(int[,] sudokuBoard, int position)
+        private static IEnumerable<IEnumerable<int>> Blocks(int[,] sudokuBoard)
         {
-            var line = Enumerable.Range(position / 3 * 3, 3);
-            var column = Enumerable.Range(position % 3 * 3, 3);
-            var block = line.SelectMany(j => column, (i, j) => sudokuBoard[i, j]);
-            return block.GroupBy(key => key).All(group => group.Count() == 1);
+            return Enumerable.Range(0, 9).Select(i => Enumerable.Range(0, 9)
+            .Select(j => sudokuBoard[i / 3 * 3 + j / 3, i % 3 * 3 + j % 3]));
         }
     }
 }
