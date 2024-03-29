@@ -13,7 +13,7 @@ namespace SudokuLinq
         public static bool IsValidSudoku(int[,] sudokuBoard)
         {
             var concatenatedElements = Lines(sudokuBoard).Concat(Columns(sudokuBoard)).Concat(Blocks(sudokuBoard));
-            return concatenatedElements.All(elements => elements.Distinct().Count() == 9 && elements.GroupBy(key => key).All(x => x.Key >= 1 && x.Key <= 9));
+            return concatenatedElements.All(elements => Enumerable.Range(1, 9).Intersect(elements).Count() == 9);
         }
 
         public static IEnumerable<IEnumerable<int>> Lines(int[,] sudokuBoard)

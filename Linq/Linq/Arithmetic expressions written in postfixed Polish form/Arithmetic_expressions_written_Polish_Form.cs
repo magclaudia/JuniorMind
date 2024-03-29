@@ -8,5 +8,6 @@ namespace ArithmeticExpressionsPolishForm
 {
     public class ArithmeticExpressions
     {
+
     }
 }

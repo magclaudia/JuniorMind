@@ -9,5 +9,10 @@ namespace ArithmeticExpressionsPolishForm
 {
     public class ArithmeticExpressionsFacts
     {
+        [Fact]
+        public void ArithmeticExpressionsPolishForm()
+        {
+
+        }
     }
 }
