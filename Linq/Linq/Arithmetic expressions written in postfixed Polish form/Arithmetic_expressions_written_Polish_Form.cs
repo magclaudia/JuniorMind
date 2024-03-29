@@ -8,6 +8,9 @@ namespace ArithmeticExpressionsPolishForm
 {
     public class ArithmeticExpressions
     {
+        public static int CalculateReversePolishNotation(string expression)
+        {
 
+        }
     }
 }
