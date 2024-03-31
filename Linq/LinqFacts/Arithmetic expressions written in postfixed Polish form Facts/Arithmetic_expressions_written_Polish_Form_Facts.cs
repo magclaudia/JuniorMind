@@ -17,5 +17,12 @@ namespace ArithmeticExpressionsPolishForm
             var expected = 37;
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void ArithmeticExpressionsPolishForm1_InvalidOperator()
+        {
+            var mathExpression = "5, 6, 2, a, +, *, 12, 4, /, -";
+            Assert.Throws<ArgumentException>(() => ArithmeticExpressions.CalculateReversePolishNotation(mathExpression));
+        }
     }
 }
