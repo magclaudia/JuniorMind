@@ -11,24 +11,25 @@ namespace ArithmeticExpressionsPolishForm
         public static int CalculateReversePolishNotation(string expression)
         {
             var mathExpressionSplit = expression.Split(',').Select(x => x.Trim());
-            var list = new List<int>();
-            foreach (var element in mathExpressionSplit)
+            var list = mathExpressionSplit.Aggregate(new List<int>(), (accumulator, element) =>
             {
                 if (int.TryParse(element, out int result))
                 {
-                    list.Add(result);
+                    accumulator.Add(result);
                 }
                 else
                 {
-                    var a = list[list.Count - 2];
-                    var b = list[list.Count - 1];
-                    list.Add(Calculation(element, a, b));
-                    list.Remove(a);
-                    list.Remove(b);
+                    var a = accumulator[^2];
+                    var b = accumulator[^1];
+                    accumulator.Add(Calculation(element, a, b));
+                    accumulator.Remove(a);
+                    accumulator.Remove(b);
                 }
-            }
+
+                return accumulator;
+            });
             
-            return list[list.Count - 1];
+            return list[^1];
         }
 
         private static int Calculation(string operator1, int previousElement, int nextElement)
@@ -44,7 +45,7 @@ namespace ArithmeticExpressionsPolishForm
                 case "/":
                     return previousElement / nextElement;
                 default:
-                    throw new ArgumentException($"Input element: {0} is not an operator", operator1);
+                    throw new ArgumentException($"Input element: '{operator1}' is not an valid operator");
             }
         }
     }
