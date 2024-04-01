@@ -12,10 +12,9 @@ namespace ArithmeticExpressionsPolishForm
         {
             var mathExpressionSplit = expression.Split(',').Select(x => x.Trim());
             var list = mathExpressionSplit.Aggregate(Enumerable.Empty<double>(), (accumulator, element) =>
-            {
-                return double.TryParse(element, out double result) ? accumulator.Append(result) :
-                       accumulator.SkipLast(2).Append(Calculation(element, accumulator.TakeLast(2)));
-            });
+                  double.TryParse(element, out double result) 
+                      ? accumulator.Append(result)
+                        : accumulator.SkipLast(2).Append(Calculation(element, accumulator.TakeLast(2))));
             
             return list.Last();
         }
