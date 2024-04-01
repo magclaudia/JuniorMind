@@ -8,45 +8,38 @@ namespace ArithmeticExpressionsPolishForm
 {
     public class ArithmeticExpressions
     {
-        public static int CalculateReversePolishNotation(string expression)
+        public static double CalculateReversePolishNotation(string expression)
         {
             var mathExpressionSplit = expression.Split(',').Select(x => x.Trim());
-            var list = mathExpressionSplit.Aggregate(new List<int>(), (accumulator, element) =>
+            var list = mathExpressionSplit.Aggregate(Enumerable.Empty<double>(), (accumulator, element) =>
             {
-                if (int.TryParse(element, out int result))
+                if (double.TryParse(element, out double result))
                 {
-                    accumulator.Add(result);
+                    accumulator = accumulator.Append(result);
                 }
                 else
                 {
-                    var a = accumulator[^2];
-                    var b = accumulator[^1];
-                    accumulator.Add(Calculation(element, a, b));
-                    accumulator.Remove(a);
-                    accumulator.Remove(b);
+                    var a = accumulator.ElementAt(accumulator.Count() - 2);
+                    var b = accumulator.ElementAt(accumulator.Count() - 1);
+                    accumulator = accumulator.Append(Calculation(element, a, b)).Where(index => index != b && index != a);
                 }
 
                 return accumulator;
             });
             
-            return list[^1];
+            return list.Last();
         }
 
-        private static int Calculation(string operator1, int previousElement, int nextElement)
+        private static double Calculation(string operator1, double previousElement, double nextElement)
         {
-            switch(operator1)
+            return operator1 switch
             {
-                case "+":
-                    return previousElement + nextElement;
-                case "-":
-                    return previousElement - nextElement;
-                case "*":
-                    return previousElement * nextElement;
-                case "/":
-                    return previousElement / nextElement;
-                default:
-                    throw new ArgumentException($"Input element: '{operator1}' is not an valid operator");
-            }
+                "+" => previousElement + nextElement,
+                "-" => previousElement - nextElement,
+                "*" => previousElement * nextElement,
+                "/" => previousElement / nextElement,
+                _ => throw new ArgumentException($"Input element: '{operator1}' is not an valid operator"),
+            };
         }
     }
 }
