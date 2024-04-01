@@ -24,5 +24,14 @@ namespace ArithmeticExpressionsPolishForm
             var mathExpression = "5, 6, 2, a, +, *, 12, 4, /, -";
             Assert.Throws<ArgumentException>(() => ArithmeticExpressions.CalculateReversePolishNotation(mathExpression));
         }
+
+        [Fact]
+        public void ArithmeticExpressionsPolishForm_CheckIfItWorksForDouble()
+        {
+            var mathExpression = "5.01, 6, 2.24, +, *, 12.25, 4, /, -";
+            var result = ArithmeticExpressions.CalculateReversePolishNotation(mathExpression);
+            var expected = 38.2199;
+            Assert.Equal(expected, result);
+        }
     }
 }
