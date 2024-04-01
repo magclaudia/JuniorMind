@@ -19,6 +19,15 @@ namespace ArithmeticExpressionsPolishForm
         }
 
         [Fact]
+        public void ArithmeticExpressionsPolishForm_CheckIfItWorksWithDuplicatesValues()
+        {
+            var mathExpression = "5, 6, 2, +, *, 40, 40, /, -";
+            var result = ArithmeticExpressions.CalculateReversePolishNotation(mathExpression);
+            var expected = 39;
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
         public void ArithmeticExpressionsPolishForm1_InvalidOperator()
         {
             var mathExpression = "5, 6, 2, a, +, *, 12, 4, /, -";

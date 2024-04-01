@@ -19,9 +19,8 @@ namespace ArithmeticExpressionsPolishForm
                 }
                 else
                 {
-                    var a = accumulator.SkipLast(1).Last();
-                    var b = accumulator.Last();
-                    accumulator = accumulator.Append(Calculation(element, a, b)).Where(index => index != b && index != a);
+                    var a = accumulator.TakeLast(2);
+                    accumulator = accumulator.SkipLast(2).Append(Calculation(element, a));
                 }
 
                 return accumulator;
@@ -30,15 +29,17 @@ namespace ArithmeticExpressionsPolishForm
             return list.Last();
         }
 
-        private static double Calculation(string operator1, double previousElement, double nextElement)
+        private static double Calculation(string operators, IEnumerable<double> elements)
         {
-            return operator1 switch
+            double previousElement = elements.First();
+            double nextElement = elements.Last();
+            return operators switch
             {
                 "+" => previousElement + nextElement,
                 "-" => previousElement - nextElement,
                 "*" => previousElement * nextElement,
                 "/" => previousElement / nextElement,
-                _ => throw new ArgumentException($"Input element: '{operator1}' is not an valid operator"),
+                _ => throw new ArgumentException($"Input element: '{operators}' is not an valid operator"),
             };
         }
     }
