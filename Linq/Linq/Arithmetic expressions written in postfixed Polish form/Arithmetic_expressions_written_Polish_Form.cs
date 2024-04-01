@@ -13,17 +13,8 @@ namespace ArithmeticExpressionsPolishForm
             var mathExpressionSplit = expression.Split(',').Select(x => x.Trim());
             var list = mathExpressionSplit.Aggregate(Enumerable.Empty<double>(), (accumulator, element) =>
             {
-                if (double.TryParse(element, out double result))
-                {
-                    accumulator = accumulator.Append(result);
-                }
-                else
-                {
-                    var a = accumulator.TakeLast(2);
-                    accumulator = accumulator.SkipLast(2).Append(Calculation(element, a));
-                }
-
-                return accumulator;
+                return double.TryParse(element, out double result) ? accumulator.Append(result) :
+                       accumulator.SkipLast(2).Append(Calculation(element, accumulator.TakeLast(2)));
             });
             
             return list.Last();
