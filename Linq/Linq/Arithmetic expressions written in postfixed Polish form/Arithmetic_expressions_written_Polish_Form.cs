@@ -19,8 +19,8 @@ namespace ArithmeticExpressionsPolishForm
                 }
                 else
                 {
-                    var a = accumulator.ElementAt(accumulator.Count() - 2);
-                    var b = accumulator.ElementAt(accumulator.Count() - 1);
+                    var a = accumulator.SkipLast(1).Last();
+                    var b = accumulator.Last();
                     accumulator = accumulator.Append(Calculation(element, a, b)).Where(index => index != b && index != a);
                 }
 
