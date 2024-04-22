@@ -16,10 +16,10 @@ namespace GitClient
 
         static LibGit2Wrapper()
         {
-            PlatformType();
+            LoadLibrary();
         }
 
-        private static void PlatformType()
+        private static void LoadLibrary()
         {
             string libName;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -38,6 +38,13 @@ namespace GitClient
             {
                 throw new PlatformNotSupportedException("Platform not supported.");
             }
+
+            string libPath = Path.Combine(AppContext.BaseDirectory, libName);
+            IntPtr libHandle = NativeLibrary.Load(libPath);
+            if (libHandle == IntPtr.Zero)
+            {
+                throw new FileNotFoundException($"Failed to load {libName} from {libPath}.");
+            }
         }
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
@@ -45,7 +52,7 @@ namespace GitClient
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_repository_open(out IntPtr repo, string path);
-        
+
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern void git_repository_free(IntPtr repo);
 
@@ -60,7 +67,7 @@ namespace GitClient
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_commit_lookup(out IntPtr commit, IntPtr repo, GitOid id);
-        
+
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr git_commit_author(IntPtr commit);
 
