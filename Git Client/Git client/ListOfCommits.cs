@@ -29,7 +29,7 @@ namespace GitClient
                             string dateAndTime = GetDateAndTime(commitPtr);
                             Console.WriteLine(dateAndTime);
 
-                            string message = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr));
+                            string message = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!;
                             Console.WriteLine($"   {message}");
                             LibGit2Wrapper.git_commit_free(commitPtr);
                         }
@@ -77,8 +77,8 @@ namespace GitClient
             string commitAuthor = "";
             try
             {
-                authorName = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(signaturePtr));
-                authorEmail = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(signaturePtr + IntPtr.Size));
+                authorName = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(signaturePtr))!;
+                authorEmail = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(signaturePtr + IntPtr.Size))!;
             }
             finally
             {

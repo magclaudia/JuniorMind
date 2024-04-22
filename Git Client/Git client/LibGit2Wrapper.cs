@@ -12,40 +12,68 @@ namespace GitClient
 
     public class LibGit2Wrapper
     {
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        private const string libgit2 = "git2";
+
+        static LibGit2Wrapper()
+        {
+            PlatformType();
+        }
+
+        private static void PlatformType()
+        {
+            string libName;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                libName = $"{libgit2}.dll";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                libName = $"lib{libgit2}.so";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                libName = $"lib{libgit2}.dylib";
+            }
+            else
+            {
+                throw new PlatformNotSupportedException("Platform not supported.");
+            }
+        }
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_libgit2_init();
 
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_repository_open(out IntPtr repo, string path);
         
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern void git_repository_free(IntPtr repo);
 
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_revwalk_new(out IntPtr walker, IntPtr repo);
 
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_revwalk_push_head(IntPtr walker);
 
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_revwalk_next(out GitOid id, IntPtr walker);
 
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_commit_lookup(out IntPtr commit, IntPtr repo, GitOid id);
         
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr git_commit_author(IntPtr commit);
 
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern long git_commit_time(IntPtr commit);
 
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr git_commit_message(IntPtr commit);
 
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern void git_commit_free(IntPtr commit);
 
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern void git_revwalk_free(IntPtr walker);
     }
 }

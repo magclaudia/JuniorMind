@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿using System.IO;
 
 namespace GitClient
 {
@@ -29,38 +28,47 @@ namespace GitClient
 
         private static void AccessRepository()
         {
-            Console.WriteLine("\nPlease add your repository path here, and then press \"ENTER\":\n");
-            var repoPath = Console.ReadLine();
-            
-            LibGit2Wrapper.git_libgit2_init();
-            
-            bool repoFound = false;
-            IntPtr repo = IntPtr.Zero;
-            while (repoFound == false)
-            {
-                if (repoPath == "e")
-                {
-                    break;
-                }
-                
-                try
-                {
-                    if (LibGit2Wrapper.git_repository_open(out repo, repoPath) != 0)
-                    {
-                        throw new Exception("Fail to open the repository.");
-                    }
+            var repoPath = FindDirectoryContainingGitFolder(Environment.CurrentDirectory);
 
-                    ListOfCommits.GetAllCommits(repo);
-                    repoFound = true;
-                }
-                catch
+            if (repoPath == null)
+            {
+                Console.WriteLine("\nCould not find a Git repository in any directory.");
+                return;
+            }
+
+            LibGit2Wrapper.git_libgit2_init();
+
+            IntPtr repo = IntPtr.Zero;
+            try
+            {
+                if (LibGit2Wrapper.git_repository_open(out repo, repoPath) != 0)
                 {
-                    Console.WriteLine("\nFailed to open the repository.Please input a new path.");
-                    repoPath = Console.ReadLine();
+                    throw new Exception("Failed to open the repository.");
                 }
+
+                ListOfCommits.GetAllCommits(repo);
+            }
+            catch
+            {
+                Console.WriteLine("\nFailed to open the repository.Please input a new path.");
             }
 
             LibGit2Wrapper.git_repository_free(repo);
+        }
+
+        private static string? FindDirectoryContainingGitFolder(string directory)
+        {
+            if (directory == null)
+            {
+                return null;
+            }
+
+            if (Directory.Exists(Path.Combine(directory, ".git")))
+            {
+                return directory;
+            }
+
+            return FindDirectoryContainingGitFolder(Directory.GetParent(directory)!.FullName);
         }
     }
 }
