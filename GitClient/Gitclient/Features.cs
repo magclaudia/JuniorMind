@@ -6,23 +6,7 @@ namespace GitClient
     {
         public static void DisplayFeatures()
         {
-            var command = Console.ReadLine();
-            while (command != "e")
-            {
-                if (command == "1")
-                {
-                    AccessRepository();
-                    break;
-                }
-
-                Console.WriteLine("\nYou entered a wrong command, please try again.");
-                command = Console.ReadLine();
-                if (command == "e")
-                {
-                    break;
-                }
-            }
-
+            AccessRepository();
             Console.WriteLine("\nThe application is closed.");
         }
 

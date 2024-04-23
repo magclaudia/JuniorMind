@@ -10,6 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="libgit2.so" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="libgit2.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CMake" Version="3.5.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -20,10 +30,7 @@
   <ItemGroup>
     <None Update="git2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="libs\git2.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+      </None>
   </ItemGroup>
 
 </Project>
