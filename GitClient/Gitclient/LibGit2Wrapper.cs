@@ -66,7 +66,7 @@ namespace GitClient
         public static extern int git_revwalk_next(out GitOid id, IntPtr walker);
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_commit_lookup(out IntPtr commit, IntPtr repo, GitOid id);
+        public static extern int git_commit_lookup(out IntPtr commit, IntPtr repo, ref GitOid id);
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr git_commit_author(IntPtr commit);

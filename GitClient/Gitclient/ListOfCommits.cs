@@ -18,7 +18,7 @@ namespace GitClient
                 {
                     while (LibGit2Wrapper.git_revwalk_next(out id, walker) == 0)
                     {
-                        if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, id) == 0)
+                        if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref id) == 0)
                         {
                             string commitId = GetCommitId(id);
                             Console.WriteLine(commitId);
