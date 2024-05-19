@@ -7,7 +7,6 @@ namespace GitClient
         public static void DisplayFeatures()
         {
             AccessRepository();
-            Console.WriteLine("\nThe application is closed.");
         }
 
         private static void AccessRepository()
