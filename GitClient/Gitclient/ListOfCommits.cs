@@ -230,7 +230,8 @@ namespace GitClient
 
         private static void UpdateCursorPosition(int cursorPosition, List<string> completeList, int index)
         {
-            Console.SetCursorPosition(Console.WindowWidth - 1, cursorPosition);
+            int indicatorPosition = (index * (Console.WindowHeight - 2)) / completeList.Count;
+            Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + 1);
             DisplayCustomCursor(cursorPosition, ConsoleColor.DarkBlue, completeList, index);
         }
 
