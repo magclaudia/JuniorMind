@@ -130,7 +130,7 @@ namespace GitClient
                 var commitRow = completeList[index].Split(" ");
 
                 Console.Write($"{commitRow[0]} ", Console.ForegroundColor = ConsoleColor.Magenta);
-                Console.Write($"{commitRow[1]} ", Console.ForegroundColor = ConsoleColor.Cyan);
+                Console.Write($"{commitRow[1],-10} ", Console.ForegroundColor = ConsoleColor.Cyan);
                 Console.Write($"{commitRow[2],-20}", Console.ForegroundColor = ConsoleColor.Green);
                 Console.ResetColor();
                 var message = "";
@@ -139,7 +139,7 @@ namespace GitClient
                 
                 if (completeMessage + firstThreeColumns > Console.WindowWidth - 2)
                 {
-                    message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1);
+                    message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1).TrimStart();
                 }
                 else
                 {
@@ -252,7 +252,7 @@ namespace GitClient
             var commitRow = completeList[index].Split(" ");
 
             Console.Write($"{commitRow[0]} ");
-            Console.Write($"{commitRow[1]} ");
+            Console.Write($"{commitRow[1],-10} ");
             Console.Write($"{commitRow[2],-20}");
             var message = "";
             var firstThreeColumns = $"{commitRow[0]} ".Length + $"{commitRow[1]} ".Length + $"{commitRow[2],-20}".Length;
@@ -260,7 +260,7 @@ namespace GitClient
             var completeMessage = completeList[index].Length - firstThreeColumns;
             if (completeMessage + firstThreeColumns > Console.WindowWidth - 2)
             {
-                message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1);
+                message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1).TrimStart();
             }
             else
             {
