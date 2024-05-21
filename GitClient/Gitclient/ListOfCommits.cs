@@ -130,7 +130,7 @@ namespace GitClient
                 var commitRow = completeList[index].Split(" ");
 
                 Console.Write($"{commitRow[0]} ", Console.ForegroundColor = ConsoleColor.Magenta);
-                Console.Write($"{commitRow[1],-10} ", Console.ForegroundColor = ConsoleColor.Cyan);
+                Console.Write($"{commitRow[1]} ", Console.ForegroundColor = ConsoleColor.Cyan);
                 Console.Write($"{commitRow[2],-20}", Console.ForegroundColor = ConsoleColor.Green);
                 Console.ResetColor();
                 var message = "";
@@ -139,7 +139,7 @@ namespace GitClient
                 
                 if (completeMessage + firstThreeColumns > Console.WindowWidth - 2)
                 {
-                    message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1).TrimStart();
+                    message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1);
                 }
                 else
                 {
@@ -170,7 +170,6 @@ namespace GitClient
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
-
                         if (i <= completeList.Count && i > 0)
                         {
                             if (cursorPosition == 1 && upOrDownOneStep == 0)
@@ -180,7 +179,7 @@ namespace GitClient
 
                             cursorPosition--;
                             upOrDownOneStep--;
-
+                            
                             if (cursorPosition < 1)
                             {
                                 cursorPosition = 1;
@@ -197,7 +196,7 @@ namespace GitClient
                         break;
 
                     case ConsoleKey.DownArrow:
-                        if (i < completeList.Count && i > 0)
+                        if (upOrDownOneStep < completeList.Count - 1)
                         {
                             if (i < 0)
                             {
@@ -209,7 +208,7 @@ namespace GitClient
                             {
                                 Console.Clear();
                                 DrawBox(Console.WindowWidth - 1, Console.WindowHeight - 1);
-                                i = 0;
+                                i = start;
                                 cursorPosition++;
                                 PrintColumns(cursorPosition, list, commitNumber, totalNumberOfCommits, start, upOrDownOneStep, i, j, k, completeList);
                             }
@@ -227,6 +226,7 @@ namespace GitClient
                 }
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
+
 
         private static void UpdateCursorPosition(int cursorPosition, List<string> completeList, int index)
         {
@@ -252,7 +252,7 @@ namespace GitClient
             var commitRow = completeList[index].Split(" ");
 
             Console.Write($"{commitRow[0]} ");
-            Console.Write($"{commitRow[1],-10} ");
+            Console.Write($"{commitRow[1]} ");
             Console.Write($"{commitRow[2],-20}");
             var message = "";
             var firstThreeColumns = $"{commitRow[0]} ".Length + $"{commitRow[1]} ".Length + $"{commitRow[2],-20}".Length;
@@ -260,7 +260,7 @@ namespace GitClient
             var completeMessage = completeList[index].Length - firstThreeColumns;
             if (completeMessage + firstThreeColumns > Console.WindowWidth - 2)
             {
-                message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1).TrimStart();
+                message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1);
             }
             else
             {
@@ -269,8 +269,8 @@ namespace GitClient
 
             Console.Write($"{message}");
             Console.ResetColor();
-
         }
+
 
         private static void ReturnCommitNumber(List<string> list, List<string> completeList, int index,  int upOrDownOneStep, int commitNumber, int totalNumberOfCommits)
         {
