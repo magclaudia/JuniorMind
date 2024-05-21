@@ -35,8 +35,7 @@ namespace GitClient
                             string message = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!;
                             count++;
                             var lineList = $"{count} {commitId}";
-                            var line = $"{commitId} {dateAndTime} {commitAuhor,-20} {message}";
-
+                            var line = $"{commitId} {dateAndTime} {commitAuhor} {message}";
                             list.Add(lineList);
                             completeList.Add(line);
 
@@ -123,23 +122,25 @@ namespace GitClient
         private static void PrintColumns(int cursorPosition, List<string> list, int commitNumber, int totalNumberOfCommits, int start, int upOrDownOneStep, int index, int rightCursor, int k, List<string> completeList)
         {
             ReturnCommitNumber(list, completeList, index, upOrDownOneStep, commitNumber, totalNumberOfCommits);
-            
+
             while (k < Console.WindowHeight - 2 && index < list.Count && index >= 0)
             {
                 Console.SetCursorPosition(1, k + 1);
                 var commitRow = completeList[index].Split(" ");
 
-                Console.Write($"{commitRow[0]} ", Console.ForegroundColor = ConsoleColor.Magenta);
-                Console.Write($"{commitRow[1]} ", Console.ForegroundColor = ConsoleColor.Cyan);
+                Console.Write($"{commitRow[0],-7} ", Console.ForegroundColor = ConsoleColor.Magenta);
+                Console.Write($"{commitRow[1],-10} ", Console.ForegroundColor = ConsoleColor.Cyan);
                 Console.Write($"{commitRow[2],-20}", Console.ForegroundColor = ConsoleColor.Green);
                 Console.ResetColor();
+
                 var message = "";
-                var firstThreeColumns = $"{commitRow[0]} ".Length + $"{commitRow[1]} ".Length + $"{commitRow[2],-20}".Length;
+                var firstThreeColumns = $"{commitRow[0]} ".Length + $"{commitRow[1]} ".Length + $"{commitRow[2]} ".Length;
+                var columnsStandardDimentions = $"{commitRow[0],-7} ".Length + $"{commitRow[1],-10} ".Length + $"{commitRow[2],-20} ".Length;
                 var completeMessage = completeList[index].Length - firstThreeColumns;
-                
-                if (completeMessage + firstThreeColumns > Console.WindowWidth - 2)
+
+                if (completeMessage + columnsStandardDimentions > Console.WindowWidth - 2)
                 {
-                    message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1);
+                    message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - columnsStandardDimentions);
                 }
                 else
                 {
@@ -179,7 +180,7 @@ namespace GitClient
 
                             cursorPosition--;
                             upOrDownOneStep--;
-                            
+
                             if (cursorPosition < 1)
                             {
                                 cursorPosition = 1;
@@ -251,16 +252,17 @@ namespace GitClient
             Console.ForegroundColor = ConsoleColor.White;
             var commitRow = completeList[index].Split(" ");
 
-            Console.Write($"{commitRow[0]} ");
-            Console.Write($"{commitRow[1]} ");
+            Console.Write($"{commitRow[0],-7} ");
+            Console.Write($"{commitRow[1],-10} ");
             Console.Write($"{commitRow[2],-20}");
             var message = "";
-            var firstThreeColumns = $"{commitRow[0]} ".Length + $"{commitRow[1]} ".Length + $"{commitRow[2],-20}".Length;
-
+            var firstThreeColumns = $"{commitRow[0]} ".Length + $"{commitRow[1]} ".Length + $"{commitRow[2]} ".Length;
+            var columnsStandardDimentions = $"{commitRow[0],-7} ".Length + $"{commitRow[1],-10} ".Length + $"{commitRow[2],-20} ".Length;
             var completeMessage = completeList[index].Length - firstThreeColumns;
-            if (completeMessage + firstThreeColumns > Console.WindowWidth - 2)
+            
+            if (completeMessage + columnsStandardDimentions > Console.WindowWidth - 2)
             {
-                message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - firstThreeColumns - 1);
+                message = completeList[index].Substring(firstThreeColumns, Console.WindowWidth - 2 - columnsStandardDimentions);
             }
             else
             {
@@ -272,7 +274,7 @@ namespace GitClient
         }
 
 
-        private static void ReturnCommitNumber(List<string> list, List<string> completeList, int index,  int upOrDownOneStep, int commitNumber, int totalNumberOfCommits)
+        private static void ReturnCommitNumber(List<string> list, List<string> completeList, int index, int upOrDownOneStep, int commitNumber, int totalNumberOfCommits)
         {
             var a = list[upOrDownOneStep].Split(" ");
             var b = completeList[upOrDownOneStep].Split(" ");
@@ -298,7 +300,7 @@ namespace GitClient
             Console.SetCursorPosition(width, height);
             Console.Write("┘");
 
-            for (int i = 1; i <  width; i++)
+            for (int i = 1; i < width; i++)
             {
                 Console.SetCursorPosition(i, 0);
                 Console.Write("─");
