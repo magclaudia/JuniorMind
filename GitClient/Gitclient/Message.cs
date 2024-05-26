@@ -9,21 +9,33 @@ namespace Gitclient
 {
     public class Message
     {
-        public static void ReturnMessage(List<string> listOfCommits, int index)
+        public static void ReturnMessage(List<string> listOfCommits, int index, string timeDateLength)
         {
-            string message = "";
+            string message;
             int firstIndex = 0;
             int comparationLength = 0;
             int borderWidths = 2;
             int leftBorderWidth = 1;
-            int standardColumnsWidth = 30;
-            string completeMessage = listOfCommits[index][standardColumnsWidth..];
+            int standardColumnsWidthIfTime = 28;
+            int standardColumnsWidthIfDate = 30;
+            int timeStandardLength = 8;
+            string completeMessage;
+            
+            
+            if (timeDateLength.Length == timeStandardLength)
+            {
+                completeMessage = listOfCommits[index][standardColumnsWidthIfTime..];
+            }
+            else
+            {
+                completeMessage = listOfCommits[index][standardColumnsWidthIfDate..];
+            }
 
             for (int i = 1; i < Console.WindowHeight / 2 - borderWidths; i++)
             {
                 if (completeMessage.Length - comparationLength > Console.WindowWidth / 2 - borderWidths)
                 {
-                    message = completeMessage.Substring(firstIndex, Console.WindowWidth / 2 - borderWidths);
+                    message = completeMessage.Substring(firstIndex, Console.WindowWidth / 2 - borderWidths).TrimStart();
                     firstIndex++;
                 }
                 else

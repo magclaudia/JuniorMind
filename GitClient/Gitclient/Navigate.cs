@@ -14,7 +14,6 @@ namespace Gitclient
             {
                 keyInfo = Console.ReadKey(true);
                 cursorPosition = 0;
-                bool returnFullLine = true;
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
@@ -74,11 +73,13 @@ namespace Gitclient
                     case ConsoleKey.Enter:
                         {
                             int numberOfFiles = 0;
+                            var split = listOfCommits[upOrDownOneStep].Split(' ');
                             Console.Clear();
                             DrawPanel.Panel();
                             HeaderPanel.Header(numberOfFiles);
                             Console.SetCursorPosition(Console.WindowWidth / 2 + 1, 1);
-                            Message.ReturnMessage(listOfCommits, upOrDownOneStep);
+                            Message.ReturnMessage(listOfCommits, upOrDownOneStep, split[1]);
+                        
                         }
                         break;
 

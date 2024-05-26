@@ -83,7 +83,7 @@ namespace GitClient
             }
 
             string authorName = "";
-            string commitAuthor = "";
+            string commitAuthor;
             try
             {
                 authorName = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(signaturePtr))!;
