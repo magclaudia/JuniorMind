@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Gitclient
 {
-    public class DrawExternalBox
+    public class DrawExternalBorder
     {
         public static void DrawBox()
         {

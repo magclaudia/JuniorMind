@@ -43,7 +43,7 @@ namespace GitClient
                     }
 
                     
-                    DrawExternalBox.DrawBox();
+                    DrawExternalBorder.DrawBox();
                     if (index < Console.WindowHeight - 2)
                     {
                         Commits.PrintColumns(heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);

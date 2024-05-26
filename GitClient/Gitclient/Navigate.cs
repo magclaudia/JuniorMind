@@ -14,6 +14,7 @@ namespace Gitclient
             {
                 keyInfo = Console.ReadKey(true);
                 cursorPosition = 0;
+                bool returnFullLine = true;
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
@@ -36,7 +37,7 @@ namespace Gitclient
                             }
 
                             Console.Clear();
-                            DrawExternalBox.DrawBox();
+                            DrawExternalBorder.DrawBox();
                             i = cursorPosionBiggerThenHeight;
                             Commits.PrintColumns(heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
                         }
@@ -54,7 +55,7 @@ namespace Gitclient
                             if (heightPosition < Console.WindowHeight - 2)
                             {
                                 Console.Clear();
-                                DrawExternalBox.DrawBox();
+                                DrawExternalBorder.DrawBox();
                                 i = cursorPosionBiggerThenHeight;
                                 heightPosition++;
                                 Commits.PrintColumns(heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
@@ -62,11 +63,22 @@ namespace Gitclient
                             else
                             {
                                 Console.Clear();
-                                DrawExternalBox.DrawBox();
+                                DrawExternalBorder.DrawBox();
                                 cursorPosionBiggerThenHeight++;
                                 i = cursorPosionBiggerThenHeight;
                                 Commits.PrintColumns(heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
                             }
+                        }
+                        break;
+
+                    case ConsoleKey.Enter:
+                        {
+                            int numberOfFiles = 0;
+                            Console.Clear();
+                            DrawPanel.Panel();
+                            HeaderPanel.Header(numberOfFiles);
+                            Console.SetCursorPosition(Console.WindowWidth / 2 + 1, 1);
+                            Message.ReturnMessage(listOfCommits, upOrDownOneStep);
                         }
                         break;
 
