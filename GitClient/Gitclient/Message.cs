@@ -13,12 +13,12 @@ namespace Gitclient
         {
             string message;
             int firstIndex = 0;
-            int comparationLength = 0;
+            int lengthForNow = 0;
             int borderWidths = 2;
             int leftBorderWidth = 1;
             int standardColumnsWidthIfTime = 28;
             int standardColumnsWidthIfDate = 30;
-            int timeStandardLength = 8;
+            const int timeStandardLength = 8;
             string completeMessage;
             
             
@@ -33,22 +33,22 @@ namespace Gitclient
 
             for (int i = 1; i < Console.WindowHeight / 2 - borderWidths; i++)
             {
-                if (completeMessage.Length - comparationLength > Console.WindowWidth / 2 - borderWidths)
+                if (completeMessage.Length - lengthForNow > Console.WindowWidth / 2 - 10 - borderWidths)
                 {
-                    message = completeMessage.Substring(firstIndex, Console.WindowWidth / 2 - borderWidths).TrimStart();
+                    message = completeMessage.Substring(firstIndex, Console.WindowWidth - Console.WindowWidth / 2  - 10 - borderWidths).TrimStart();
                     firstIndex++;
                 }
                 else
                 {
-                    message = completeMessage.Substring(firstIndex, completeMessage.Length -  comparationLength);
+                    message = completeMessage.Substring(firstIndex, completeMessage.Length - lengthForNow - 1);
                 }
 
-                comparationLength += message.Length;
-                Console.SetCursorPosition(Console.WindowWidth / 2 + leftBorderWidth, i);
+                lengthForNow += message.Length;
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 11, i);
                 Console.Write(message);
                 firstIndex += message.Length - 1;
 
-                if (comparationLength == completeMessage.Length)
+                if (lengthForNow == completeMessage.Length)
                 {
                     break;
                 }

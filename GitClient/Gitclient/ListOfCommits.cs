@@ -44,9 +44,10 @@ namespace GitClient
 
                     
                     DrawExternalBorder.DrawBox();
+                    bool displayPanel = false;
                     if (index < Console.WindowHeight - 2)
                     {
-                        Commits.PrintColumns(heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
+                        Commits.PrintCommits(displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
                     }
                 }
                 else

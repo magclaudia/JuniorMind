@@ -10,9 +10,9 @@ namespace Gitclient
     {
         public static void Header(int numberOfFiles)
         {
-            Console.SetCursorPosition(Console.WindowWidth / 2 + 1, 0);
+            Console.SetCursorPosition(Console.WindowWidth / 2 + 11, 0);
             Console.Write("Message ");
-            Console.SetCursorPosition(Console.WindowWidth / 2 + 1, Console.WindowHeight / 2 + 1);
+            Console.SetCursorPosition(Console.WindowWidth / 2 + 11, Console.WindowHeight / 2 + 1);
             Console.Write($"Files: {numberOfFiles} ");
         }
     }

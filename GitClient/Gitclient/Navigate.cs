@@ -9,6 +9,7 @@ namespace Gitclient
     {
         public static void NavigateThroughConsole(int heightPosition, List<string> listOfCommits, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int i, int j, int cursorPosition)
         {
+            bool displayPanel = false;
             ConsoleKeyInfo keyInfo;
             do
             {
@@ -38,7 +39,7 @@ namespace Gitclient
                             Console.Clear();
                             DrawExternalBorder.DrawBox();
                             i = cursorPosionBiggerThenHeight;
-                            Commits.PrintColumns(heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                            Commits.PrintCommits(displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
                         }
                         break;
 
@@ -57,7 +58,7 @@ namespace Gitclient
                                 DrawExternalBorder.DrawBox();
                                 i = cursorPosionBiggerThenHeight;
                                 heightPosition++;
-                                Commits.PrintColumns(heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                                Commits.PrintCommits(displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
                             }
                             else
                             {
@@ -65,7 +66,7 @@ namespace Gitclient
                                 DrawExternalBorder.DrawBox();
                                 cursorPosionBiggerThenHeight++;
                                 i = cursorPosionBiggerThenHeight;
-                                Commits.PrintColumns(heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                                Commits.PrintCommits(displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
                             }
                         }
                         break;
@@ -73,13 +74,15 @@ namespace Gitclient
                     case ConsoleKey.Enter:
                         {
                             int numberOfFiles = 0;
+                            displayPanel = true;
                             var split = listOfCommits[upOrDownOneStep].Split(' ');
                             Console.Clear();
                             DrawPanel.Panel();
                             HeaderPanel.Header(numberOfFiles);
-                            Console.SetCursorPosition(Console.WindowWidth / 2 + 1, 1);
+                            Console.SetCursorPosition(Console.WindowWidth / 2 + 11, 1);
                             Message.ReturnMessage(listOfCommits, upOrDownOneStep, split[1]);
-                        
+                            Commits.PrintCommits(displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+
                         }
                         break;
 
