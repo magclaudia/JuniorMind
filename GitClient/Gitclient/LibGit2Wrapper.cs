@@ -4,11 +4,45 @@ using System.Runtime.InteropServices;
 
 namespace GitClient
 {
+    [StructLayout(LayoutKind.Sequential)]
     public struct GitOid
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
         public byte[] Id;
     }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct GitDiffDelta
+    {
+        public GitDelta status;
+        public GitDiffFile old_file;
+        public GitDiffFile new_file;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct GitDiffFile
+    {
+        public IntPtr path;
+        public ulong size;
+        public uint flags;
+        public uint mode;
+    }
+
+    public enum GitDelta
+    {
+        GIT_DELTA_UNMODIFIED,
+        GIT_DELTA_ADDED,
+        GIT_DELTA_DELETED,
+        GIT_DELTA_MODIFIED,
+        GIT_DELTA_RENAMED,
+        GIT_DELTA_COPIED,
+        GIT_DELTA_IGNORED,
+        GIT_DELTA_UNTRACKED,
+        GIT_DELTA_TYPECHANGE,
+        GIT_DELTA_UNREADABLE,
+        GIT_DELTA_CONFLICTED
+    }
+
 
     public class LibGit2Wrapper
     {
@@ -82,5 +116,30 @@ namespace GitClient
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern void git_revwalk_free(IntPtr walker);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint git_commit_parentcount(IntPtr commit);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_commit_parent(out IntPtr parent, IntPtr commit, uint n);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_commit_tree(out IntPtr treeOut, IntPtr commit);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void git_tree_free(IntPtr tree);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_diff_tree_to_tree(out IntPtr diff, IntPtr repo, IntPtr oldTree, IntPtr newTree, IntPtr opts);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_diff_num_deltas(IntPtr diff);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr git_diff_get_delta(IntPtr diff, int id);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void git_diff_free(IntPtr diff);
+
     }
 }

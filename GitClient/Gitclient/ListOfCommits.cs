@@ -47,7 +47,7 @@ namespace GitClient
                     bool displayPanel = false;
                     if (index < Console.WindowHeight - 2)
                     {
-                        Commits.PrintCommits(displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
+                        Commits.PrintCommits(repo, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
                     }
                 }
                 else
