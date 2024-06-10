@@ -79,7 +79,7 @@ namespace GitClient
                             Console.Clear();
                             DrawPanel.MessagePanel();
                             HeaderPanel.Header();
-                            Message.ReturnMessage(listOfCommits, upOrDownOneStep, split[0]);
+                            Message.ReturnMessage(listOfCommits, upOrDownOneStep, split[1]);
                             Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1);
                             var commitOid = listOfIds[upOrDownOneStep];
                             if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref commitOid) == 0)
