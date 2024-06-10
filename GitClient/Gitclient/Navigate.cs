@@ -1,16 +1,15 @@
-﻿using GitClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
-namespace Gitclient
+namespace GitClient
 {
     public class Navigate
     {
-        public static void NavigateThroughConsole(IntPtr repo, IntPtr commitPtr, int heightPosition, List<string> listOfCommits,  int cursorPosionBiggerThenHeight, int upOrDownOneStep, int i, int j, int cursorPosition)
+        public static void NavigateThroughConsole(IntPtr repo, List<GitOid> listOfIds, IntPtr commitPtr, int heightPosition, List<string> listOfCommits, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int i, int j, int cursorPosition)
         {
             bool displayPanel = false;
+            var size = new DrawPanel.FilesBox();
             ConsoleKeyInfo keyInfo;
             do
             {
@@ -40,7 +39,7 @@ namespace Gitclient
                             Console.Clear();
                             DrawExternalBorder.DrawBox();
                             i = cursorPosionBiggerThenHeight;
-                            Commits.PrintCommits(repo, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                            Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
                         }
                         break;
 
@@ -59,7 +58,7 @@ namespace Gitclient
                                 DrawExternalBorder.DrawBox();
                                 i = cursorPosionBiggerThenHeight;
                                 heightPosition++;
-                                Commits.PrintCommits(repo, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                                Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
                             }
                             else
                             {
@@ -67,24 +66,28 @@ namespace Gitclient
                                 DrawExternalBorder.DrawBox();
                                 cursorPosionBiggerThenHeight++;
                                 i = cursorPosionBiggerThenHeight;
-                                Commits.PrintCommits(repo, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                                Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
                             }
                         }
                         break;
 
                     case ConsoleKey.Enter:
                         {
-                            int numberOfFiles = 0;
                             displayPanel = true;
+                            int index = 1;
                             var split = listOfCommits[upOrDownOneStep].Split(' ');
                             Console.Clear();
-                            DrawPanel.Panel();
-                            HeaderPanel.Header(numberOfFiles);
-                            Console.SetCursorPosition(Console.WindowWidth / 2 + 11, 1);
-                            Message.ReturnMessage(listOfCommits, upOrDownOneStep, split[1]);
-                            Console.SetCursorPosition(Console.WindowWidth / 2 + 11, Console.WindowHeight / 2 + 2);
-                            Files.GetFilesAffectedByCommit(repo, commitPtr);
-                            Commits.PrintCommits(repo, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                            DrawPanel.MessagePanel();
+                            HeaderPanel.Header();
+                            Message.ReturnMessage(listOfCommits, upOrDownOneStep, split[0]);
+                            Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1);
+                            var commitOid = listOfIds[upOrDownOneStep];
+                            if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref commitOid) == 0)
+                            {
+                                Files.GetFilesAffectedByCommit(repo, commitPtr, index);
+                            }
+
+                            Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
                         }
                         break;
 

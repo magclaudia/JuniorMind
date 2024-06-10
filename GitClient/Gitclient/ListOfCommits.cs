@@ -1,5 +1,4 @@
-﻿using Gitclient;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 
 namespace GitClient
@@ -12,6 +11,7 @@ namespace GitClient
             IntPtr commitPtr = IntPtr.Zero;
             GitOid id = new GitOid();
 
+            var listOfIds = new List<GitOid>();
             var listOfCommits = new List<string>();
             int index = 0;
             int rightCursor = 1;
@@ -34,6 +34,7 @@ namespace GitClient
                             string message = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!;
                             var line = $"{commitId} {dateAndTime} {commitAuhor} {message}";
                             listOfCommits.Add(line);
+                            listOfIds.Add(id);
                             LibGit2Wrapper.git_commit_free(commitPtr);
                         }
                         else
@@ -47,7 +48,7 @@ namespace GitClient
                     bool displayPanel = false;
                     if (index < Console.WindowHeight - 2)
                     {
-                        Commits.PrintCommits(repo, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
+                       Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
                     }
                 }
                 else

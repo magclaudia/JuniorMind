@@ -1,17 +1,13 @@
-﻿using GitClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
+using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Gitclient
+namespace GitClient
 {
     public class Files
     {
-        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr)
+        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index)
         {
             IntPtr parentCommitPtr = IntPtr.Zero;
             IntPtr parentTreePtr = IntPtr.Zero;
@@ -35,41 +31,24 @@ namespace Gitclient
                 }
             }
 
-            IntPtr diffPtr = IntPtr.Zero;
-            if (LibGit2Wrapper.git_diff_tree_to_tree(out diffPtr, repo, parentTreePtr, treePtr, IntPtr.Zero) != 0)
+            IntPtr diff = IntPtr.Zero;
+            var position = new DrawPanel.FilesBox();
+            var options = new LibGit2Wrapper.GitDiffOptions();
+
+            if (LibGit2Wrapper.git_diff_tree_to_tree(out diff, repo, parentTreePtr, treePtr, ref options) != 0)
             {
                 throw new Exception("Failed to get the diff.");
             }
 
-            int numDeltas = LibGit2Wrapper.git_diff_num_deltas(diffPtr);
-            for (int i = 0; i < numDeltas; i++)
-            {
-                IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diffPtr, i);
-                var delta = Marshal.PtrToStructure<GitDiffDelta>(deltaPtr);
+            UIntPtr numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
+            Console.SetCursorPosition(position.edgeOneX + 1, position.edgeOneY);
+            Console.WriteLine($"Files: {numDeltas} ");
 
-                string oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
-                string newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
+            PrintAllFiles.PrintAllFilesAffectedByCommit(numDeltas, diff, index);
+            LibGit2Wrapper.git_diff_free(diff);
 
-                switch (delta.status)
-                {
-                    case GitDelta.GIT_DELTA_ADDED:
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"+  {newFilePath}");
-                        break;
-                    case GitDelta.GIT_DELTA_MODIFIED:
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine($"M  {newFilePath}");
-                        break;
-                    case GitDelta.GIT_DELTA_DELETED:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"-  {oldFilePath}");
-                        break;
-                }
-
-                Console.ResetColor();
-            }
-
-            LibGit2Wrapper.git_diff_free(diffPtr);
+            Marshal.FreeHGlobal(options.old_prefix);
+            Marshal.FreeHGlobal(options.new_prefix);
 
             if (commitPtr != IntPtr.Zero)
             {
@@ -93,5 +72,3 @@ namespace Gitclient
         }
     }
 }
-
-

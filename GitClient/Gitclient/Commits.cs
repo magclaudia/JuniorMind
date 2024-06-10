@@ -1,29 +1,28 @@
-﻿using GitClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Gitclient
+namespace GitClient
 {
     public class Commits
     {
-        public static void PrintCommits(IntPtr repo, IntPtr commitPtr, bool displayPanel, int heightPosition, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, List<string> listOfCommits)
+        public static void PrintCommits(IntPtr repo, List<GitOid> listofIds, IntPtr commitPtr, bool displayPanel, int heightPosition, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, List<string> listOfCommits)
         {
             CommitNumber.ReturnCommitNumber(listOfCommits, upOrDownOneStep);
 
             if (displayPanel == false) 
             {
-                DisplayCommitsOnEntireConsole(repo, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
+                DisplayCommitsOnEntireConsole(repo, listofIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
             }
             else
             {
                 index = index - (Console.WindowHeight - 2);
-                DisplayCommitsWithPanel(repo, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
+                DisplayCommitsWithPanel(repo, listofIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
             }
         }
 
-        private static void DisplayCommitsOnEntireConsole(IntPtr repo, IntPtr commitPtr, bool displayPanel, int heightPosition, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, List<string> listOfCommits)
+        private static void DisplayCommitsOnEntireConsole(IntPtr repo, List<GitOid> listofIds, IntPtr commitPtr, bool displayPanel, int heightPosition, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, List<string> listOfCommits)
         {
             while (cursorPosition < Console.WindowHeight - 2 && index < listOfCommits.Count && index >= 0)
             {
@@ -72,10 +71,10 @@ namespace Gitclient
             rightCursor = index;
             Cursor.UpdateCursorPosition(displayPanel, heightPosition, listOfCommits, upOrDownOneStep);
             Console.ResetColor();
-            Navigate.NavigateThroughConsole(repo, commitPtr, heightPosition, listOfCommits, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition);
+            Navigate.NavigateThroughConsole(repo, listofIds, commitPtr, heightPosition, listOfCommits, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition);
         }
 
-        private static void DisplayCommitsWithPanel(IntPtr repo, IntPtr commitPtr, bool displayPanel, int heightPosition, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, List<string> listOfCommits)
+        private static void DisplayCommitsWithPanel(IntPtr repo, List<GitOid> listofIds, IntPtr commitPtr, bool displayPanel, int heightPosition, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, List<string> listOfCommits)
         {
             while (cursorPosition < Console.WindowHeight - 2 && index < listOfCommits.Count && index >= 0)
             {
@@ -154,7 +153,7 @@ namespace Gitclient
             rightCursor = index;
             Cursor.UpdateCursorPosition(displayPanel, heightPosition, listOfCommits, upOrDownOneStep);
             Console.ResetColor();
-            Navigate.NavigateThroughConsole(repo, commitPtr, heightPosition, listOfCommits, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition);
+            Navigate.NavigateThroughConsole(repo, listofIds, commitPtr, heightPosition, listOfCommits, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition);
         }
     }
 }
