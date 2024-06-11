@@ -28,6 +28,7 @@ namespace GitClient
                 completeMessage = listOfCommits[index][standardColumnsWidthIfDate..];
             }
 
+            
             for (int i = 1; i < size.height; i++)
             {
                 if (completeMessage.Length - lengthForNow > Console.WindowWidth / 2 - 10 - borders)
@@ -45,7 +46,7 @@ namespace GitClient
                 Console.Write(message);
                 firstIndex += message.Length - 1;
 
-                if (lengthForNow == completeMessage.Length)
+                if (lengthForNow == completeMessage.Length - 1)
                 {
                     break;
                 }

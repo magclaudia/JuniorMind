@@ -9,6 +9,7 @@ namespace GitClient
     {
         public static void UpdateCursorPosition(bool displayPanel, int heightPosition, List<string> listOfCommits, int index)
         {
+            Console.CursorVisible = false;
             int indicatorPosition = (index * (Console.WindowHeight - 2)) / listOfCommits.Count;
             if (displayPanel == false)
             {
