@@ -7,9 +7,15 @@ namespace GitClient
 {
     public class BlueBackground
     {
-        public static void DisplayBlueBox(int heightPosition, int index, List<string> listOfCommits)
+        public static void DisplayBlueBox(int blueBoxPosition, int index, List<string> listOfCommits)
         {
-            Console.SetCursorPosition(1, heightPosition);
+            var position = new DrawPanel.CommitsPanel();
+            if (blueBoxPosition > position.height)
+            {
+                blueBoxPosition = position.height;
+            }
+
+            Console.SetCursorPosition(1, blueBoxPosition);
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.ForegroundColor = ConsoleColor.White;
             var commitRow = listOfCommits[index].Split(" ");
