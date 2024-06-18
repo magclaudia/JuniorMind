@@ -7,158 +7,153 @@ namespace GitClient
 {
     public class Commits
     {
-        public static void PrintCommits(IntPtr repo, List<GitOid> listofIds, IntPtr commitPtr, bool displayPanel, int heightPosition, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, List<string> listOfCommits)
+        public struct Elements
         {
+            public string Id;
+            public string DateTime;
+            public string Author;
+            public string Message;
+        }
+
+        public static void PrintCommits(IntPtr repo, bool panelAlreadyDisplayed, bool displayPanel, int heightPosition, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, ListOfCommits.CommitElements listOfCommits)
+        {
+            var addList = new List<string>();
             CommitNumber.ReturnCommitNumber(listOfCommits, upOrDownOneStep);
             var position = new DrawPanel.CommitsPanel();
-            if (displayPanel == false) 
+            
+            if (displayPanel == false)
             {
                 if (heightPosition > position.height)
                 {
                     index = heightPosition - position.height;
                 }
 
-                DisplayCommitsOnEntireConsole(repo, listofIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
+                DisplayCommitsOnEntireConsole(repo, panelAlreadyDisplayed, addList, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
             }
             else
             {
-                index = index - (Console.WindowHeight - 2);
-                DisplayCommitsWithPanel(repo, listofIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
+                DisplayCommitsWithPanel(repo, panelAlreadyDisplayed, addList, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
             }
         }
 
-        private static void DisplayCommitsOnEntireConsole(IntPtr repo, List<GitOid> listofIds, IntPtr commitPtr, bool displayPanel, int commitNumber, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, List<string> listOfCommits)
+        private static void DisplayCommitsOnEntireConsole(IntPtr repo, bool panelAlreadyDisplayed, List<string> addList, bool displayPanel, int commitNumber, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, ListOfCommits.CommitElements listOfCommits)
         {
-            while (cursorPosition < Console.WindowHeight - 2 && index < listOfCommits.Count && index >= 0)
+            var element = new Elements();
+
+            while (cursorPosition < Console.WindowHeight - 2 && index < listOfCommits.Id.Count && index >= 0)
             {
                 Console.SetCursorPosition(1, cursorPosition + 1);
-                var commitRow = listOfCommits[index].Split(" ");
+                element.Id = $"{listOfCommits.Id[index]} ";
+                Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
-                const int commitIdStandadDimension = 7;
-                const int dateTimeStandardDimension = 10;
-                const int authorStandardDimension = 20;
-               
-                Console.Write($"{commitRow[0],-commitIdStandadDimension} ",
-                    Console.ForegroundColor = ConsoleColor.Magenta);
-                Console.Write($"{commitRow[1],-dateTimeStandardDimension} ",
-                    Console.ForegroundColor = ConsoleColor.Cyan);
-                Console.Write($"{commitRow[2],-authorStandardDimension}",
-                    Console.ForegroundColor = ConsoleColor.Green);
+                element.DateTime = $"{listOfCommits.DateTime[index]} ";
+                if (element.DateTime.Length == 8)
+                {
+                    element.DateTime = $"{listOfCommits.DateTime[index]}{new string(' ', 2)} ";
+                }
+
+                Console.Write(element.DateTime, Console.ForegroundColor = ConsoleColor.Cyan);
+
+                int authorLength = 20 - listOfCommits.Author[index].Length;
+                element.Author = $"{listOfCommits.Author[index]}";
+                string author = $"{element.Author}{new string(' ', authorLength)}";
+                Console.Write(author, Console.ForegroundColor = ConsoleColor.Green);
                 Console.ResetColor();
 
-                var message = "";
+                element.Message = $"{listOfCommits.Message[index]}";
 
-                var firstThreeColumns = $"{commitRow[0]} ".Length + $"{commitRow[1]} ".Length +
-                    $"{commitRow[2]} ".Length;
+                string message = string.Empty;
+                string list = $"{element.Id}{element.DateTime}{author}{element.Message}";
+                string listWithoutMessage = $"{element.Id}{element.DateTime}{author}";
 
-                var columnsStandardDimentions = $"{commitRow[0],-commitIdStandadDimension} ".Length +
-                    $"{commitRow[1],-dateTimeStandardDimension} ".Length +
-                         $"{commitRow[2],-authorStandardDimension} ".Length;
-
-                var completeMessage = listOfCommits[index].Length - firstThreeColumns;
-
-                if (completeMessage + columnsStandardDimentions > Console.WindowWidth - 2)
+                if (list.Length > Console.WindowWidth - 2)
                 {
-                    message = listOfCommits[index].Substring(firstThreeColumns,
-                        Console.WindowWidth - 2 - columnsStandardDimentions);
+                    message = element.Message.Substring(0, Console.WindowWidth - 2 - listWithoutMessage.Length - 1);
                 }
                 else
                 {
-                    message = listOfCommits[index].Substring(firstThreeColumns, completeMessage);
+                    message = element.Message.Substring(0, element.Message.Length);
                 }
 
-                Console.Write($"{message}");
-
+                Console.Write(message);
+                list = $"{element.Id}{element.DateTime}{author}{message}";
+                addList.Add(list);
                 index++;
                 cursorPosition++;
             }
 
+            panelAlreadyDisplayed = false;
             rightCursor = index;
-            Cursor.UpdateCursorPosition(displayPanel, commitNumber, listOfCommits, upOrDownOneStep);
-            Console.ResetColor();
-            Navigate.NavigateThroughConsole(repo, listofIds, commitPtr, commitNumber, listOfCommits, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition);
+            Cursor.UpdateCursorPosition(displayPanel, panelAlreadyDisplayed, addList, commitNumber, listOfCommits, upOrDownOneStep);
+            Navigate.NavigateThroughConsole(repo, panelAlreadyDisplayed, displayPanel, commitNumber, listOfCommits, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition);
         }
 
-        private static void DisplayCommitsWithPanel(IntPtr repo, List<GitOid> listofIds, IntPtr commitPtr, bool displayPanel, int heightPosition, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, List<string> listOfCommits)
+        private static void DisplayCommitsWithPanel(IntPtr repo, bool panelAlreadyDisplayed, List<string> addList, bool displayPanel, int commitNumber, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int index, int rightCursor, int cursorPosition, ListOfCommits.CommitElements listOfCommits)
         {
-            while (cursorPosition < Console.WindowHeight - 2 && index < listOfCommits.Count && index >= 0)
+            var element = new Elements();
+            var size = new DrawPanel.CommitsPanel();
+            panelAlreadyDisplayed = true;
+
+            while (cursorPosition < size.height && index < listOfCommits.Id.Count && index >= 0)
             {
+                string list = string.Empty;
+                string listWithoutMessage = string.Empty;
                 Console.SetCursorPosition(1, cursorPosition + 1);
-                var commitRow = listOfCommits[index].Split(" ");
+                element.Id = $"{listOfCommits.Id[index]} ";
+                Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
-                const int commitIdStandadDimension = 7;
-                const int dateTimeStandardDimension = 10;
-                const int authorStandardDimension = 20;
-                
-                int rowLength = listOfCommits[index].Length;
-                int panelWidth = Console.WindowWidth / 2  + 7 - 2;
-                int firstTreeColumnsLength = 0;
-
-                Console.Write($"{commitRow[0],-commitIdStandadDimension} ",
-                    Console.ForegroundColor = ConsoleColor.Magenta);
-                Console.Write($"{commitRow[1],-dateTimeStandardDimension} ",
-                    Console.ForegroundColor = ConsoleColor.Cyan);
-
-                int actualRowLength = 0;
-                string author = "";
-
-                if (commitRow[1].Length == 8)
+                element.DateTime = $"{listOfCommits.DateTime[index]} ";
+                if (element.DateTime.Length == 8)
                 {
-                    actualRowLength = commitIdStandadDimension + 8 + 2;
-                    author = listOfCommits[index].Substring(actualRowLength, 2);
+                    element.DateTime = $"{listOfCommits.DateTime[index]}{new string(' ', 2)} ";
+                }
+
+                Console.Write(element.DateTime, Console.ForegroundColor = ConsoleColor.Cyan);
+
+                int authorLength = 20 - listOfCommits.Author[index].Length;
+                element.Author = $"{listOfCommits.Author[index]}";
+                string author = $"{element.Author}{new string(' ', authorLength)}";
+
+                listWithoutMessage = $"{element.Id}{element.DateTime}{author}";
+
+                if (listWithoutMessage.Length >= Console.WindowWidth / 2 + 7 - 2)
+                {
+                    author = $"{element.Author.Substring(0, 2)}..  ";
+                    listWithoutMessage = $"{element.Id}{element.DateTime}{author}";
+                    Console.Write($"{author}", Console.ForegroundColor = ConsoleColor.Green);
                 }
                 else
                 {
-                    actualRowLength = commitIdStandadDimension + dateTimeStandardDimension + 2;
-                    author = listOfCommits[index].Substring(actualRowLength, 2);
-                }
-
-                int startIndex = $"{commitRow[0]} ".Length + $"{commitRow[1]} ".Length +
-                   $"{commitRow[2]} ".Length;
-
-                if (actualRowLength + authorStandardDimension >= Console.WindowWidth / 2  + 7 - 2)
-                {
-                    Console.Write($"{author}",
-                    Console.ForegroundColor = ConsoleColor.Green);
-                    Console.ResetColor();
-                    Console.Write("..  ");
-                    firstTreeColumnsLength = $"{commitRow[0],-commitIdStandadDimension} ".Length + $"{commitRow[1],-dateTimeStandardDimension} ".Length +
-                        author.Length + "..  ".Length;
-                }
-                else
-                {
-                    Console.Write($"{commitRow[2],-authorStandardDimension}",
-                    Console.ForegroundColor = ConsoleColor.Green);
-                    
-                    firstTreeColumnsLength = $"{commitRow[0], - commitIdStandadDimension} ".Length + $"{commitRow[1], -dateTimeStandardDimension} ".Length +
-                   $"{commitRow[2], -authorStandardDimension} ".Length;
+                    Console.Write($"{author}", Console.ForegroundColor = ConsoleColor.Green);
                 }
 
                 Console.ResetColor();
+
                 string message;
+                element.Message = listOfCommits.Message[index];
+                list = $"{element.Id}{element.DateTime}{author}{element.Message}";
 
-                var completeMessage = listOfCommits[index].Length - startIndex - 2;
 
-                if (completeMessage + firstTreeColumnsLength > Console.WindowWidth / 2 + 7 - 2)
+                if (list.Length > size.width)
                 {
-                    message = listOfCommits[index].Substring(startIndex,
-                        panelWidth - firstTreeColumnsLength);
+                    message = list.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 2);
                 }
                 else
                 {
-                    message = listOfCommits[index].Substring(startIndex, completeMessage);
+                    message = list.Substring(listWithoutMessage.Length, element.Message.Length);
                 }
 
                 Console.Write($"{message}");
-
+                list = $"{element.Id}{element.DateTime}{author}{message}";
+                addList.Add(list);
                 index++;
                 cursorPosition++;
             }
 
+            
             rightCursor = index;
-            Cursor.UpdateCursorPosition(displayPanel, heightPosition, listOfCommits, upOrDownOneStep);
-            Console.ResetColor();
-            Navigate.NavigateThroughConsole(repo, listofIds, commitPtr, heightPosition, listOfCommits, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition);
+            Cursor.UpdateCursorPosition(displayPanel, panelAlreadyDisplayed, addList, commitNumber, listOfCommits, upOrDownOneStep);
+            Navigate.NavigateThroughConsole(repo, panelAlreadyDisplayed, displayPanel, commitNumber, listOfCommits, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition);
         }
     }
 }

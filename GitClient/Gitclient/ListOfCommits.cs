@@ -5,6 +5,22 @@ namespace GitClient
 {
     public class ListOfCommits
     {
+        public struct CommitElements
+        {
+            public List<GitOid> IdGitOid;
+            public List<string> Id;
+            public List<string> DateTime;
+            public List<string> Author;
+            public List<string> Message;
+            public CommitElements()
+            {
+                IdGitOid = new List<GitOid>();
+                Id = new List<string>();
+                DateTime = new List<string>();
+                Author = new List<string>();
+                Message = new List<string>();
+            }
+        }
         public static void GetAllCommits(IntPtr repo)
         {
             IntPtr walker = IntPtr.Zero;
@@ -12,13 +28,13 @@ namespace GitClient
             GitOid id = new GitOid();
 
             var listOfIds = new List<GitOid>();
-            var listOfCommits = new List<string>();
             int index = 0;
             int rightCursor = 1;
             int cursorPosition = 0;
             int cursorPosionBiggerThenHeight = 0;
             int upOrDownOneStep = 0;
             int heightPosition = 1;
+            var list = new CommitElements();
 
             if (LibGit2Wrapper.git_revwalk_new(out walker, repo) == 0)
             {
@@ -28,13 +44,11 @@ namespace GitClient
                     {
                         if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref id) == 0)
                         {
-                            string commitId = GetCommitId(id);
-                            string dateAndTime = GetDateAndTime(commitPtr);
-                            string commitAuhor = GetCommitAuthor(commitPtr);
-                            string message = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!;
-                            var line = $"{commitId} {dateAndTime} {commitAuhor} {message}";
-                            listOfCommits.Add(line);
-                            listOfIds.Add(id);
+                            list.IdGitOid.Add(id);
+                            list.Id.Add(GetCommitId(id));
+                            list.DateTime.Add(GetDateAndTime(commitPtr));
+                            list.Author.Add(GetCommitAuthor(commitPtr));
+                            list.Message.Add(Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!);
                             LibGit2Wrapper.git_commit_free(commitPtr);
                         }
                         else
@@ -46,9 +60,10 @@ namespace GitClient
                     
                     DrawExternalBorder.DrawBox();
                     bool displayPanel = false;
+                    bool panelAlreadyDisplayed = false;
                     if (index < Console.WindowHeight - 2)
                     {
-                       Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, listOfCommits);
+                       Commits.PrintCommits(repo, panelAlreadyDisplayed, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, list);
                     }
                 }
                 else

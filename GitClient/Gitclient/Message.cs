@@ -7,38 +7,25 @@ namespace GitClient
 {
     public class Message
     {
-        public static void ReturnMessage(List<string> listOfCommits, int index, string timeDateLength)
+        public static void ReturnMessage(int index, ListOfCommits.CommitElements commitElements)
         {
             string message;
             int firstIndex = 0;
             int lengthForNow = 0;
-            int borders = 2;
-            int standardColumnsWidthIfTime = 28;
-            int standardColumnsWidthIfDate = 30;
-            const int timeStandardLength = 8;
-            string completeMessage;
             var size = new DrawPanel.MessageBox();
-            
-            if (timeDateLength.Length == timeStandardLength)
-            {
-                completeMessage = listOfCommits[index][standardColumnsWidthIfTime..];
-            }
-            else
-            {
-                completeMessage = listOfCommits[index][standardColumnsWidthIfDate..];
-            }
+            var messageList = new Commits.Elements();
 
-            
+            messageList.Message = commitElements.Message[index];
             for (int i = 1; i < size.height; i++)
             {
-                if (completeMessage.Length - lengthForNow > Console.WindowWidth / 2 - 10 - borders)
+                if (messageList.Message.Length - lengthForNow > Console.WindowWidth / 2 - 10 - 2)
                 {
-                    message = completeMessage.Substring(firstIndex, size.width).TrimStart();
+                    message = messageList.Message.Substring(firstIndex, size.width).TrimStart();
                     firstIndex++;
                 }
                 else
                 {
-                    message = completeMessage.Substring(firstIndex, completeMessage.Length - lengthForNow - 1);
+                    message = messageList.Message.Substring(firstIndex, messageList.Message.Length - lengthForNow - 1);
                 }
 
                 lengthForNow += message.Length;
@@ -46,7 +33,7 @@ namespace GitClient
                 Console.Write(message);
                 firstIndex += message.Length - 1;
 
-                if (lengthForNow == completeMessage.Length - 1)
+                if (lengthForNow == messageList.Message.Length - 1)
                 {
                     break;
                 }

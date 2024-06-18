@@ -22,6 +22,7 @@ namespace GitClient
                 }
 
                 var delta = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(deltaPtr);
+                
                 string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
                 string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
                 string filePath;
@@ -76,16 +77,37 @@ namespace GitClient
                 int firstIndex = 0;
                 int fullPathLength = filePath!.Length;
                 Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1);
-                string projectFolderName = filePath.Substring(firstIndex, fullPathLength - fileName.Length - 1);
-                string projectFolderWithSymbol = $"  ▾{projectFolderName}";
-                string projectFolder;
-                if (projectFolderWithSymbol.Length > size.width)
+                string projectFolderName;
+                string projectFolderWithSymbol;
+                string projectFolder = string.Empty;
+
+                if (fullPathLength > fileName.Length)
                 {
-                    projectFolder = projectFolderWithSymbol.Substring(firstIndex, size.width);
+                     projectFolderName = filePath.Substring(firstIndex, fullPathLength - fileName.Length - 1);
+                     projectFolderWithSymbol = $"  ▾{projectFolderName}";
+                    if (projectFolderWithSymbol.Length > size.width)
+                    {
+                        projectFolder = projectFolderWithSymbol.Substring(firstIndex, size.width);
+                    }
+                    else
+                    {
+                        projectFolder = projectFolderWithSymbol.Substring(firstIndex, projectFolderWithSymbol.Length);
+                    }
                 }
                 else
                 {
-                    projectFolder = projectFolderWithSymbol.Substring(firstIndex, projectFolderWithSymbol.Length);
+                    fileName = $"  ▾{fileName}";
+                    if (fileName.Length > size.width)
+                    {
+
+                        projectFolder = fileName.Substring(0, size.width);
+
+                    }
+                    else
+                    {
+                        projectFolder = fileName.Substring(0, fileName.Length);
+                    }
+
                 }
 
                 Console.Write(projectFolder);

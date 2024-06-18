@@ -7,32 +7,31 @@ namespace GitClient
 {
     public class Cursor
     {
-        public static void UpdateCursorPosition(bool displayPanel, int heightPosition, List<string> listOfCommits, int index)
+        public static void UpdateCursorPosition(bool displayPanel, bool panelAlreadyDisplayed, List<string> addList, int heightPosition, ListOfCommits.CommitElements listOfCommits, int index)
         {
-            Console.CursorVisible = false;
-            int indicatorPosition = (index * (Console.WindowHeight - 2)) / listOfCommits.Count;
+            Console.CursorVisible = true;
+            int indicatorPosition = (index * (Console.WindowHeight - 2)) / listOfCommits.Id.Count;
+            
             if (displayPanel == false)
             {
                 Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + 1);
-                DisplayCustomCursor(heightPosition, ConsoleColor.DarkBlue, listOfCommits, index);
             }
             else
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + 1);
-                Console.ForegroundColor = ConsoleColor.DarkBlue;
-                char cursorSymbol = '█';
-                Console.Write(cursorSymbol);
-                Console.ResetColor();
             }
+
+            DisplayCustomCursor(heightPosition, panelAlreadyDisplayed, addList, ConsoleColor.DarkBlue, listOfCommits, index);
+
         }
 
-        private static void DisplayCustomCursor(int cursorPosition, ConsoleColor color, List<string> listOfCommits, int index)
+        private static void DisplayCustomCursor(int cursorPosition, bool panelAlreadyDisplayed, List<string> addList, ConsoleColor color, ListOfCommits.CommitElements listOfCommits, int index)
         {
             Console.ForegroundColor = color;
             char cursorSymbol = '█';
             Console.Write(cursorSymbol);
             Console.ResetColor();
-            BlueBackground.DisplayBlueBox(cursorPosition, index, listOfCommits);
+            BlueBackground.DisplayBlueBox(cursorPosition, panelAlreadyDisplayed, addList, index, listOfCommits);
         }
     }
 }

@@ -6,10 +6,10 @@ namespace GitClient
 {
     public class Navigate
     {
-        public static void NavigateThroughConsole(IntPtr repo, List<GitOid> listOfIds, IntPtr commitPtr, int heightPosition, List<string> listOfCommits, int cursorPosionBiggerThenHeight, int upOrDownOneStep, int i, int j, int cursorPosition)
+        public static void NavigateThroughConsole(IntPtr repo, bool panelAlreadyDisplayed, bool displayPanel, int heightPosition, ListOfCommits.CommitElements listOfCommits, int cursorPositionBiggerThenHeight, int upOrDownOneStep, int index, int j, int cursorPosition)
         {
-            bool displayPanel = false;
             var size = new DrawPanel.FilesBox();
+            IntPtr commitPtr = IntPtr.Zero;
             ConsoleKeyInfo keyInfo;
             do
             {
@@ -18,7 +18,7 @@ namespace GitClient
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        if (i <= listOfCommits.Count && i > 0)
+                        if (upOrDownOneStep < listOfCommits.Id.Count)
                         {
                             if (heightPosition == 1 && upOrDownOneStep == 0)
                             {
@@ -31,24 +31,40 @@ namespace GitClient
                             if (heightPosition < 1)
                             {
                                 heightPosition = 1;
-                                cursorPosionBiggerThenHeight--;
-                                upOrDownOneStep = cursorPosionBiggerThenHeight;
-                                if (cursorPosionBiggerThenHeight < 0) cursorPosionBiggerThenHeight = 0;
+                                cursorPositionBiggerThenHeight--;
+                                if (cursorPositionBiggerThenHeight < 0)
+                                {
+                                    cursorPositionBiggerThenHeight = 0;
+                                }
                             }
 
                             Console.Clear();
                             DrawExternalBorder.DrawBox();
-                            i = cursorPosionBiggerThenHeight;
-                            Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                            index = cursorPositionBiggerThenHeight;
+                            if (displayPanel == true)
+                            {
+                                int i = 1;
+                                Console.Clear();
+                                DrawPanel.MessagePanel();
+                                HeaderPanel.Header();
+                                Message.ReturnMessage(upOrDownOneStep, listOfCommits);
+                                GitOid oid = listOfCommits.IdGitOid[upOrDownOneStep];
+                                if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
+                                {
+                                    Files.GetFilesAffectedByCommit(repo, commitPtr, i);
+                                }
+                            }
+
+                            Commits.PrintCommits(repo, panelAlreadyDisplayed, displayPanel, heightPosition, cursorPositionBiggerThenHeight, upOrDownOneStep, index, j, cursorPosition, listOfCommits);
                         }
                         break;
 
                     case ConsoleKey.DownArrow:
-                        if (upOrDownOneStep < listOfCommits.Count - 1)
+                        if (upOrDownOneStep < listOfCommits.Id.Count - 1)
                         {
-                            if (i < 0)
+                            if (index < 0)
                             {
-                                i = 0;
+                                index = 0;
                             }
 
                             upOrDownOneStep++;
@@ -56,17 +72,46 @@ namespace GitClient
                             {
                                 Console.Clear();
                                 DrawExternalBorder.DrawBox();
-                                i = cursorPosionBiggerThenHeight;
+                                index = cursorPositionBiggerThenHeight;
                                 heightPosition++;
-                                Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+
+                                if (displayPanel == true)
+                                {
+                                    int i = 1;
+                                    Console.Clear();
+                                    DrawPanel.MessagePanel();
+                                    HeaderPanel.Header();
+                                    Message.ReturnMessage(upOrDownOneStep, listOfCommits);
+                                    GitOid oid = listOfCommits.IdGitOid[upOrDownOneStep];
+                                    if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
+                                    {
+                                        Files.GetFilesAffectedByCommit(repo, commitPtr, i);
+                                    }
+                                }
+                                
+                                Commits.PrintCommits(repo, panelAlreadyDisplayed, displayPanel, heightPosition, cursorPositionBiggerThenHeight, upOrDownOneStep, index, j, cursorPosition, listOfCommits);
                             }
                             else
                             {
                                 Console.Clear();
                                 DrawExternalBorder.DrawBox();
-                                cursorPosionBiggerThenHeight++;
-                                i = cursorPosionBiggerThenHeight;
-                                Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                                cursorPositionBiggerThenHeight++;
+                                index = cursorPositionBiggerThenHeight;
+                                if (displayPanel == true)
+                                {
+                                    int i = 1;
+                                    Console.Clear();
+                                    DrawPanel.MessagePanel();
+                                    HeaderPanel.Header();
+                                    Message.ReturnMessage(upOrDownOneStep, listOfCommits);
+                                    GitOid oid = listOfCommits.IdGitOid[upOrDownOneStep];
+                                    if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
+                                    {
+                                        Files.GetFilesAffectedByCommit(repo, commitPtr, i);
+                                    }
+                                }
+
+                                Commits.PrintCommits(repo, panelAlreadyDisplayed, displayPanel, heightPosition, cursorPositionBiggerThenHeight, upOrDownOneStep, index, j, cursorPosition, listOfCommits);
                             }
                         }
                         break;
@@ -74,19 +119,31 @@ namespace GitClient
                     case ConsoleKey.Enter:
                         {
                             displayPanel = true;
-                            int index = 1;
-                            var split = listOfCommits[upOrDownOneStep].Split(' ');
-                            Console.Clear();
-                            DrawPanel.MessagePanel();
-                            HeaderPanel.Header();
-                            Message.ReturnMessage(listOfCommits, upOrDownOneStep, split[1]);
-                            var commitOid = listOfIds[upOrDownOneStep];
-                            if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref commitOid) == 0)
+                            if (panelAlreadyDisplayed == false && displayPanel == true)
                             {
-                                Files.GetFilesAffectedByCommit(repo, commitPtr, index);
-                            }
+                                panelAlreadyDisplayed = true;
+                                int i = 1;
+                                index = cursorPositionBiggerThenHeight;
+                                Console.Clear();
+                                DrawPanel.MessagePanel();
+                                HeaderPanel.Header();
+                                Message.ReturnMessage(upOrDownOneStep, listOfCommits);
+                                GitOid oid = listOfCommits.IdGitOid[upOrDownOneStep];
+                                if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
+                                {
+                                    Files.GetFilesAffectedByCommit(repo, commitPtr, i);
+                                }
 
-                            Commits.PrintCommits(repo, listOfIds, commitPtr, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, i, j, cursorPosition, listOfCommits);
+                                Commits.PrintCommits(repo, panelAlreadyDisplayed, displayPanel, heightPosition, cursorPositionBiggerThenHeight, upOrDownOneStep, index, j, cursorPosition, listOfCommits);
+                            }
+                            else
+                            {
+                                index = cursorPositionBiggerThenHeight;
+                                displayPanel = false;
+                                Console.Clear();
+                                DrawExternalBorder.DrawBox();
+                                Commits.PrintCommits(repo, panelAlreadyDisplayed, displayPanel, heightPosition, cursorPositionBiggerThenHeight, upOrDownOneStep, index, j, cursorPosition, listOfCommits);
+                            }
                         }
                         break;
 
