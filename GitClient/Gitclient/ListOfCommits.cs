@@ -61,6 +61,7 @@ namespace GitClient
                     DrawExternalBorder.DrawBox();
                     bool displayPanel = false;
                     bool panelAlreadyDisplayed = false;
+                    
                     if (index < Console.WindowHeight - 2)
                     {
                        Commits.PrintCommits(repo, panelAlreadyDisplayed, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, list);
