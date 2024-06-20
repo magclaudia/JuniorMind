@@ -7,12 +7,12 @@ namespace GitClient
 {
     public class Cursor
     {
-        public static void UpdateCursorPosition(bool displayPanel, bool panelAlreadyDisplayed, List<string> addList, int heightPosition, ListOfCommits.CommitElements listOfCommits, int index)
+        public static void UpdateCursorPositionList(ListOfCommits.CommitElements listOfCommits, List<string> addList, ListOfCommits.Indexes indexes)
         {
-            Console.CursorVisible = true;
-            int indicatorPosition = (index * (Console.WindowHeight - 2)) / listOfCommits.Id.Count;
+            Console.CursorVisible = false;
+            int indicatorPosition = (indexes.upOrDownOneStep * (Console.WindowHeight - 2)) / listOfCommits.Id.Count;
             
-            if (displayPanel == false)
+            if (indexes.displayPanel == false)
             {
                 Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + 1);
             }
@@ -21,17 +21,17 @@ namespace GitClient
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + 1);
             }
 
-            DisplayCustomCursor(heightPosition, panelAlreadyDisplayed, addList, ConsoleColor.DarkBlue, listOfCommits, index);
+            DisplayCustomCursor(addList, ConsoleColor.DarkBlue, listOfCommits, indexes);
 
         }
 
-        private static void DisplayCustomCursor(int cursorPosition, bool panelAlreadyDisplayed, List<string> addList, ConsoleColor color, ListOfCommits.CommitElements listOfCommits, int index)
+        private static void DisplayCustomCursor(List<string> addList, ConsoleColor color, ListOfCommits.CommitElements listOfCommits, ListOfCommits.Indexes indexes)
         {
             Console.ForegroundColor = color;
             char cursorSymbol = '█';
             Console.Write(cursorSymbol);
             Console.ResetColor();
-            BlueBackground.DisplayBlueBox(cursorPosition, panelAlreadyDisplayed, addList, index, listOfCommits);
+            BlueBackground.DisplayBlueBox(addList, indexes, listOfCommits);
         }
     }
 }

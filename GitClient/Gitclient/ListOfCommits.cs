@@ -21,18 +21,37 @@ namespace GitClient
                 Message = new List<string>();
             }
         }
+
+        public struct Indexes
+        {
+            public int index;
+            public int rightCursor;
+            public int cursorPosition;
+            public int cursorPositionBiggerThenHeight;
+            public int upOrDownOneStep;
+            public int heightPosition;
+            public bool panelAlreadyDisplayed;
+            public bool displayPanel;
+            public Indexes()
+            {
+                index = 0;
+                rightCursor = 1;
+                cursorPosition = 0;
+                cursorPositionBiggerThenHeight = 0;
+                upOrDownOneStep = 0;
+                heightPosition = 1;
+                panelAlreadyDisplayed = false;
+                displayPanel = false;
+            }
+        }
+
         public static void GetAllCommits(IntPtr repo)
         {
             IntPtr walker = IntPtr.Zero;
             IntPtr commitPtr = IntPtr.Zero;
             GitOid id = new GitOid();
 
-            int index = 0;
-            int rightCursor = 1;
-            int cursorPosition = 0;
-            int cursorPosionBiggerThenHeight = 0;
-            int upOrDownOneStep = 0;
-            int heightPosition = 1;
+            var indexes = new Indexes();
             var list = new CommitElements();
 
             if (LibGit2Wrapper.git_revwalk_new(out walker, repo) == 0)
@@ -56,15 +75,8 @@ namespace GitClient
                         }
                     }
 
-                    
                     DrawExternalBorder.DrawBox();
-                    bool displayPanel = false;
-                    bool panelAlreadyDisplayed = false;
-                    
-                    if (index < Console.WindowHeight - 2)
-                    {
-                       Commits.PrintCommits(repo, panelAlreadyDisplayed, displayPanel, heightPosition, cursorPosionBiggerThenHeight, upOrDownOneStep, index, rightCursor, cursorPosition, list);
-                    }
+                    Commits.PrintCommits(repo, indexes, list);
                 }
                 else
                 {

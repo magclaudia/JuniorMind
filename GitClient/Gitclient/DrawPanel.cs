@@ -25,7 +25,6 @@ namespace GitClient
                 edgeTwo = Console.WindowWidth - 1;
                 edgeTree = Console.WindowWidth / 2 + plusLegthForLargePanel;
                 edgeFour = Console.WindowHeight / 2 - 1;
-                
                 width = Console.WindowWidth - 1 - (Console.WindowWidth / 2 + plusLegthForLargePanel + 1);
                 height = Console.WindowHeight / 2 - 1;
             }
