@@ -27,7 +27,6 @@ namespace GitClient
             IntPtr commitPtr = IntPtr.Zero;
             GitOid id = new GitOid();
 
-            var listOfIds = new List<GitOid>();
             int index = 0;
             int rightCursor = 1;
             int cursorPosition = 0;

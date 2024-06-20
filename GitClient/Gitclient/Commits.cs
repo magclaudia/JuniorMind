@@ -46,8 +46,8 @@ namespace GitClient
                 element.Id = $"{listOfCommits.Id[index]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
-                element.DateTime = $"{listOfCommits.DateTime[index]} ";
-                if (element.DateTime.Length == 8)
+                element.DateTime = $"{listOfCommits.DateTime[index]}";
+                if (element.DateTime.Length == 9)
                 {
                     element.DateTime = $"{listOfCommits.DateTime[index]}{new string(' ', 2)} ";
                 }
