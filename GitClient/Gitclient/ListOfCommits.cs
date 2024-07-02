@@ -5,46 +5,7 @@ namespace GitClient
 {
     public class ListOfCommits
     {
-        public struct CommitElements
-        {
-            public List<GitOid> IdGitOid;
-            public List<string> Id;
-            public List<string> DateTime;
-            public List<string> Author;
-            public List<string> Message;
-            public CommitElements()
-            {
-                IdGitOid = new List<GitOid>();
-                Id = new List<string>();
-                DateTime = new List<string>();
-                Author = new List<string>();
-                Message = new List<string>();
-            }
-        }
-
-        public struct Indexes
-        {
-            public int index;
-            public int rightCursor;
-            public int cursorPosition;
-            public int cursorPositionBiggerThenHeight;
-            public int upOrDownOneStep;
-            public int heightPosition;
-            public bool panelAlreadyDisplayed;
-            public bool displayPanel;
-            public Indexes()
-            {
-                index = 0;
-                rightCursor = 1;
-                cursorPosition = 0;
-                cursorPositionBiggerThenHeight = 0;
-                upOrDownOneStep = 0;
-                heightPosition = 1;
-                panelAlreadyDisplayed = false;
-                displayPanel = false;
-            }
-        }
-
+       
         public static void GetAllCommits(IntPtr repo)
         {
             IntPtr walker = IntPtr.Zero;

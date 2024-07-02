@@ -10,9 +10,8 @@ namespace GitClient
     {
         public static void DrawBox()
         {
-            var width = Console.WindowWidth - 1;
-            var height = Console.WindowHeight - 1;
-
+            int width = Console.WindowWidth - 1;
+            int height = Console.WindowHeight - 1;
             Console.SetCursorPosition(0, 0);
             Console.Write("┌");
             Console.SetCursorPosition(width, 0);

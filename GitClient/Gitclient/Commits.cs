@@ -15,52 +15,47 @@ namespace GitClient
             public string Message;
         }
 
-        public static void PrintCommits(IntPtr repo, ListOfCommits.Indexes indexes, ListOfCommits.CommitElements listOfCommits)
+        public static void PrintCommits(IntPtr repo, Indexes indexes, CommitElements listOfCommits)
         {
             var addList = new List<string>();
             CommitNumber.ReturnCommitNumber(listOfCommits, indexes);
             var position = new DrawPanel.CommitsPanel();
-
+            int blueFond = 0;
             if (indexes.displayPanel == false)
             {
-                if (indexes.heightPosition > position.height)
-                {
-                    indexes.index = indexes.heightPosition - position.height;
-                }
-
-                DisplayCommitsOnEntireConsole(repo, addList, indexes, listOfCommits);
+                DisplayCommitsOnEntireConsole(repo, addList, indexes, listOfCommits, blueFond);
             }
             else
             {
-                DisplayCommitsWithPanel(repo, indexes, addList, listOfCommits);
+                DisplayCommitsWithPanel(repo, indexes, addList, listOfCommits, blueFond);
             }
         }
 
-        private static void DisplayCommitsOnEntireConsole(IntPtr repo, List<string> addList, ListOfCommits.Indexes indexes, ListOfCommits.CommitElements listOfCommits)
+        private static void DisplayCommitsOnEntireConsole(IntPtr repo, List<string> addList, Indexes indexes, CommitElements listOfCommits, int blueFond)
         {
             var element = new Elements();
-
-            while (indexes.cursorPosition < Console.WindowHeight - 2 && indexes.index < listOfCommits.Id.Count && indexes.index >= 0)
+            indexes.cursorPosition = 0;
+            while (indexes.cursorPosition < Console.WindowHeight - 2 && indexes.numberOfCommits < listOfCommits.Id.Count && indexes.numberOfCommits >= 0)
             {
                 Console.SetCursorPosition(1, indexes.cursorPosition + 1);
-                element.Id = $"{listOfCommits.Id[indexes.index]} ";
+                element.Id = $"{listOfCommits.Id[indexes.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
-                element.DateTime = $"{listOfCommits.DateTime[indexes.index]} ";
+                element.DateTime = $"{listOfCommits.DateTime[indexes.currentCommitIndex]} ";
                 if (element.DateTime.Length == 9)
                 {
-                    element.DateTime = $"{listOfCommits.DateTime[indexes.index]}{new string(' ', 2)} ";
+                    element.DateTime = $"{listOfCommits.DateTime[indexes.currentCommitIndex]}{new string(' ', 2)} ";
                 }
 
                 Console.Write(element.DateTime, Console.ForegroundColor = ConsoleColor.Cyan);
 
-                int authorLength = 20 - listOfCommits.Author[indexes.index].Length;
-                element.Author = $"{listOfCommits.Author[indexes.index]}";
+                int authorLength = 20 - listOfCommits.Author[indexes.currentCommitIndex].Length;
+                element.Author = $"{listOfCommits.Author[indexes.currentCommitIndex]}";
                 string author = $"{element.Author}{new string(' ', authorLength)}";
                 Console.Write(author, Console.ForegroundColor = ConsoleColor.Green);
                 Console.ResetColor();
 
-                element.Message = $"{listOfCommits.Message[indexes.index]}";
+                element.Message = $"{listOfCommits.Message[indexes.currentCommitIndex]}";
 
                 string message = string.Empty;
                 string list = $"{element.Id}{element.DateTime}{author}{element.Message}";
@@ -78,41 +73,46 @@ namespace GitClient
                 Console.Write(message);
                 list = $"{element.Id}{element.DateTime}{author}{message}";
                 addList.Add(list);
-                indexes.index++;
+                indexes.numberOfCommits++;
+                indexes.currentCommitIndex++;
                 indexes.cursorPosition++;
             }
 
+            indexes.cursorPosition = 1;
             indexes.panelAlreadyDisplayed = false;
-            indexes.rightCursor = indexes.index;
-            Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes);
-            Navigate.NavigateThroughConsole(repo, indexes, listOfCommits);
+            indexes.currentCommitIndex = 0;
+            indexes.rightCursor = indexes.currentCommitIndex;
+            int height = Console.WindowHeight;
+            int width = Console.WindowWidth;
+            Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes, blueFond);
+            Navigate.NavigateThroughConsole(repo, indexes, listOfCommits, height, width);
         }
 
-        private static void DisplayCommitsWithPanel(IntPtr repo, ListOfCommits.Indexes indexes, List<string> addList, ListOfCommits.CommitElements listOfCommits)
+        private static void DisplayCommitsWithPanel(IntPtr repo, Indexes indexes, List<string> addList, CommitElements listOfCommits, int blueFond)
         {
             var element = new Elements();
             var size = new DrawPanel.CommitsPanel();
+            indexes.cursorPosition = 0;
             indexes.panelAlreadyDisplayed = true;
-
-            while (indexes.cursorPosition < size.height && indexes.index < listOfCommits.Id.Count && indexes.index >= 0)
+            while (indexes.cursorPosition < size.height && indexes.numberOfCommits < listOfCommits.Id.Count && indexes.numberOfCommits >= 0)
             {
                 string list = string.Empty;
                 string listWithoutMessage = string.Empty;
                 Console.SetCursorPosition(1, indexes.cursorPosition + 1);
                
-                element.Id = $"{listOfCommits.Id[indexes.index]} ";
+                element.Id = $"{listOfCommits.Id[indexes.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
-                element.DateTime = $"{listOfCommits.DateTime[indexes.index]} ";
+                element.DateTime = $"{listOfCommits.DateTime[indexes.currentCommitIndex]} ";
                 if (element.DateTime.Length == 9)
                 {
-                    element.DateTime = $"{listOfCommits.DateTime[indexes.index]}{new string(' ', 2)} ";
+                    element.DateTime = $"{listOfCommits.DateTime[indexes.currentCommitIndex]}{new string(' ', 2)} ";
                 }
 
                 Console.Write(element.DateTime, Console.ForegroundColor = ConsoleColor.Cyan);
 
-                int authorLength = 20 - listOfCommits.Author[indexes.index].Length;
-                element.Author = $"{listOfCommits.Author[indexes.index]}";
+                int authorLength = 20 - listOfCommits.Author[indexes.currentCommitIndex].Length;
+                element.Author = $"{listOfCommits.Author[indexes.currentCommitIndex]}";
                 string author = $"{element.Author}{new string(' ', authorLength)}";
 
                 listWithoutMessage = $"{element.Id}{element.DateTime}{author}";
@@ -131,7 +131,7 @@ namespace GitClient
                 Console.ResetColor();
 
                 string message;
-                element.Message = listOfCommits.Message[indexes.index];
+                element.Message = listOfCommits.Message[indexes.currentCommitIndex];
                 list = $"{element.Id}{element.DateTime}{author}{element.Message}";
 
 
@@ -147,14 +147,18 @@ namespace GitClient
                 Console.Write($"{message}");
                 list = $"{element.Id}{element.DateTime}{author}{message}";
                 addList.Add(list);
-                indexes.index++;
+                indexes.numberOfCommits++;
                 indexes.cursorPosition++;
+                indexes.currentCommitIndex++;
             }
 
-
-            indexes.rightCursor = indexes.index;
-            Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes);
-            Navigate.NavigateThroughConsole(repo, indexes, listOfCommits);
-        } 
-    }
+            indexes.cursorPosition = 1;
+            indexes.rightCursor = indexes.currentCommitIndex;
+            indexes.currentCommitIndex = 0;
+            Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes, blueFond);
+            int height = Console.WindowHeight;
+            int width = Console.WindowWidth;
+            Navigate.NavigateThroughConsole(repo, indexes, listOfCommits, height, width);
+        }
+    } 
 }

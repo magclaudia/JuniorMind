@@ -8,10 +8,11 @@ namespace GitClient
 {
     public class CommitNumber
     {
-        public static void ReturnCommitNumber(ListOfCommits.CommitElements listOfCommits, ListOfCommits.Indexes indexes)
+        public static void ReturnCommitNumber(CommitElements listOfCommits, Indexes indexes)
         {
-            int commitNumber = indexes.upOrDownOneStep;
-            var text = $"Commit {commitNumber + 1}/{listOfCommits.Id.Count} ";
+            var text = string.Empty;
+            int commitNumber = indexes.currentCommitIndex;
+            text = $"Commit {commitNumber + 1}/{listOfCommits.Id.Count} ";
             Console.SetCursorPosition(1, 0);
             Console.Write(text);
         }
