@@ -2,7 +2,7 @@
 {
     public class Indexes
     {
-        public int numberOfCommits;
+        public int startIndex;
         public int rightCursor;
         public int cursorPosition;
         public int cursorPositionBiggerThenHeight;
@@ -14,8 +14,8 @@
         public bool down;
         public Indexes()
         {
-            numberOfCommits = 0;
-            rightCursor = 1;
+            startIndex = 0;
+            rightCursor = 0;
             cursorPosition = 0;
             cursorPositionBiggerThenHeight = 0;
             currentCommitIndex = 0;

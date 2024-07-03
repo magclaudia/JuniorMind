@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GitClient
 {
-    public class ReplaceElements
+    public class ReplaceEachCommitOneByOne
     {
         public static void PrintNewCommitIfPanel(IntPtr repo, Indexes indexes, CommitElements listOfCommits, List<string> addList, bool reachLimit, int blueFond)
         {
@@ -107,7 +107,6 @@ namespace GitClient
         public static void PrintNewCommitIfNoPanel(IntPtr repo, Indexes indexes, CommitElements listOfCommits, List<string> addList, bool reachLimit, int blueFond)
         {
             string message = string.Empty;
-
             for (int i = 0; i < 2; i++)
             {
                 if (i == 1)
@@ -144,7 +143,6 @@ namespace GitClient
                 int authorLength = 20 - listOfCommits.Author[indexes.currentCommitIndex].Length;
                 string author = $"{listOfCommits.Author[indexes.currentCommitIndex]}{new string(' ', authorLength)}";
 
-                listWithoutMessage = $"{listOfCommits.Id[indexes.currentCommitIndex]}{data}{author}";
 
                 if (listWithoutMessage.Length >= Console.WindowWidth - 2)
                 {
@@ -159,7 +157,7 @@ namespace GitClient
 
                 Console.ResetColor();
 
-
+                listWithoutMessage = $"{listOfCommits.Id[indexes.currentCommitIndex]}{data}{author}";
                 message = listOfCommits.Message[indexes.currentCommitIndex];
                 list = $"{id}{data}{author}{message}";
 
@@ -167,7 +165,7 @@ namespace GitClient
 
                 if (list.Length > size)
                 {
-                    message = list.Substring(listWithoutMessage.Length, size - listWithoutMessage.Length - 1).TrimStart();
+                    message = list.Substring(listWithoutMessage.Length, size - listWithoutMessage.Length - 2).TrimStart();
                 }
                 else
                 {
@@ -182,7 +180,6 @@ namespace GitClient
             }
 
             bool clear = false;
-
             if (indexes.up == true && indexes.heightPosition > 1)
             {
                 indexes.currentCommitIndex--;
@@ -202,6 +199,7 @@ namespace GitClient
             string message = string.Empty;
             int upAndDownConsole = indexes.heightPosition;
             int index = indexes.currentCommitIndex;
+            indexes.startIndex = indexes.currentCommitIndex;
             while (indexes.heightPosition <= Console.WindowHeight - 2)
             {
                 Console.SetCursorPosition(1, indexes.heightPosition);
@@ -256,7 +254,7 @@ namespace GitClient
                 }
                 else if (list.Length > Console.WindowWidth - 2 && indexes.displayPanel == false)
                 {
-                    message = list.Substring(listWithoutMessage.Length, (Console.WindowWidth - 2) - listWithoutMessage.Length - 1).TrimStart();
+                    message = list.Substring(listWithoutMessage.Length, (Console.WindowWidth - 2) - listWithoutMessage.Length - 2).TrimStart();
                 }
                 else
                 {
@@ -335,6 +333,7 @@ namespace GitClient
 
         private static void ClearFilePanel()
         {
+
             var filePanel = new DrawPanel.FilesBox();
 
             for (int x = 1; x < filePanel.height; x++)

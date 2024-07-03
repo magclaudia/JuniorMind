@@ -31,23 +31,27 @@ namespace GitClient
 
                             indexes.heightPosition--;
                             indexes.currentCommitIndex--;
+                            if (indexes.cursorPosition > 0)
+                            {
+                                indexes.cursorPosition--;
+                            }
 
                             bool reachLimit = false;
                             if (indexes.heightPosition == Console.WindowHeight - 2 || indexes.heightPosition == 0)
                             {
                                 indexes.heightPosition = 1;
-                                ReplaceElements.PrintNewCommitIfReachLimit(repo, indexes, listOfCommits, addList, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, indexes, listOfCommits, addList, blueFond);
                             }
 
                             VerifySize(repo, indexes, listOfCommits, height, width);
 
                             if (indexes.displayPanel == true)
                             {
-                                ReplaceElements.PrintNewCommitIfPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
                             }
                             else
                             {
-                                ReplaceElements.PrintNewCommitIfNoPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
                             }
                         }
                         break;
@@ -57,9 +61,9 @@ namespace GitClient
                         {
                             indexes.down = true;
                             indexes.up = false;
-                            if (indexes.numberOfCommits < 0)
+                            if (indexes.startIndex < 0)
                             {
-                                indexes.numberOfCommits = 0;
+                                indexes.startIndex = 0;
                             }
 
                             bool reachLimit = false;
@@ -73,18 +77,18 @@ namespace GitClient
                                 indexes.currentCommitIndex = indexes.cursorPosition;
                                 indexes.cursorPosition++;
                                 indexes.heightPosition = 1;
-                                ReplaceElements.PrintNewCommitIfReachLimit(repo, indexes, listOfCommits, addList, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, indexes, listOfCommits, addList, blueFond);
                             }
 
                             VerifySize(repo, indexes, listOfCommits, height, width);
                             
                             if (indexes.displayPanel == true)
                             {
-                                ReplaceElements.PrintNewCommitIfPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
                             }
                             else
                             {
-                                ReplaceElements.PrintNewCommitIfNoPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
                             }
                         }
                         break;
@@ -92,7 +96,6 @@ namespace GitClient
                     case ConsoleKey.Enter:
                         {
                             indexes.displayPanel = true;
-                            indexes.numberOfCommits = indexes.cursorPositionBiggerThenHeight;
 
                             if (indexes.panelAlreadyDisplayed == false && indexes.displayPanel == true)
                             {

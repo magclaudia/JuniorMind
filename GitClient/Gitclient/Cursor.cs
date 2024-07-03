@@ -17,7 +17,7 @@ namespace GitClient
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + 2);
                 Console.Write("║");
             }
-            else if (indexes.heightPosition >= 10 && indexes.displayPanel == true && indexes.down == true)
+            else if (indexes.heightPosition >= 10 && indexes.displayPanel == true && indexes.down == true && indicatorPosition >= 1)
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition);
                 Console.Write("║");

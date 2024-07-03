@@ -34,10 +34,13 @@ namespace GitClient
         private static void DisplayCommitsOnEntireConsole(IntPtr repo, List<string> addList, Indexes indexes, CommitElements listOfCommits, int blueFond)
         {
             var element = new Elements();
-            indexes.cursorPosition = 0;
-            while (indexes.cursorPosition < Console.WindowHeight - 2 && indexes.numberOfCommits < listOfCommits.Id.Count && indexes.numberOfCommits >= 0)
+            indexes.rightCursor = 0;
+            int index = indexes.currentCommitIndex;
+            indexes.currentCommitIndex = indexes.startIndex;
+
+            while (indexes.rightCursor < Console.WindowHeight - 2 && indexes.startIndex < listOfCommits.Id.Count && indexes.startIndex >= 0)
             {
-                Console.SetCursorPosition(1, indexes.cursorPosition + 1);
+                Console.SetCursorPosition(1, indexes.rightCursor + 1);
                 element.Id = $"{listOfCommits.Id[indexes.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
@@ -63,7 +66,7 @@ namespace GitClient
 
                 if (list.Length > Console.WindowWidth - 2)
                 {
-                    message = element.Message.Substring(0, Console.WindowWidth - 2 - listWithoutMessage.Length - 1);
+                    message = element.Message.Substring(0, Console.WindowWidth - 2 - listWithoutMessage.Length - 2);
                 }
                 else
                 {
@@ -73,15 +76,12 @@ namespace GitClient
                 Console.Write(message);
                 list = $"{element.Id}{element.DateTime}{author}{message}";
                 addList.Add(list);
-                indexes.numberOfCommits++;
                 indexes.currentCommitIndex++;
-                indexes.cursorPosition++;
+                indexes.rightCursor++;
             }
 
-            indexes.cursorPosition = 1;
             indexes.panelAlreadyDisplayed = false;
-            indexes.currentCommitIndex = 0;
-            indexes.rightCursor = indexes.currentCommitIndex;
+            indexes.currentCommitIndex = index;
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
             Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes, blueFond);
@@ -92,13 +92,16 @@ namespace GitClient
         {
             var element = new Elements();
             var size = new DrawPanel.CommitsPanel();
-            indexes.cursorPosition = 0;
+            indexes.rightCursor = 0;
             indexes.panelAlreadyDisplayed = true;
-            while (indexes.cursorPosition < size.height && indexes.numberOfCommits < listOfCommits.Id.Count && indexes.numberOfCommits >= 0)
+            int index = indexes.currentCommitIndex;
+            indexes.currentCommitIndex = indexes.startIndex;
+
+            while (indexes.rightCursor < size.height && indexes.startIndex < listOfCommits.Id.Count && indexes.startIndex >= 0)
             {
                 string list = string.Empty;
                 string listWithoutMessage = string.Empty;
-                Console.SetCursorPosition(1, indexes.cursorPosition + 1);
+                Console.SetCursorPosition(1, indexes.rightCursor + 1);
                
                 element.Id = $"{listOfCommits.Id[indexes.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
@@ -147,14 +150,12 @@ namespace GitClient
                 Console.Write($"{message}");
                 list = $"{element.Id}{element.DateTime}{author}{message}";
                 addList.Add(list);
-                indexes.numberOfCommits++;
-                indexes.cursorPosition++;
+                indexes.rightCursor++;
                 indexes.currentCommitIndex++;
             }
 
-            indexes.cursorPosition = 1;
             indexes.rightCursor = indexes.currentCommitIndex;
-            indexes.currentCommitIndex = 0;
+            indexes.currentCommitIndex = index;
             Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes, blueFond);
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
