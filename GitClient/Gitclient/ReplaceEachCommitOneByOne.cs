@@ -70,15 +70,15 @@ namespace GitClient
 
                 if (list.Length >= size.width)
                 {
-                    message = list.Substring(listWithoutMessage.Length + 1, size.width - listWithoutMessage.Length - 4);
+                    message = list.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 3);
                 }
                 else
                 {
-                    message = list.Substring(listWithoutMessage.Length + 1, message.Length);
+                    message = list.Substring(listWithoutMessage.Length, message.Length);
                 }
 
-                Console.Write($"{message}");
-                list = $"{id}{data}{author}{message}";
+                Console.Write($"{message.TrimStart()}");
+                list = $"{id}{data}{author}{message.TrimStart()}";
                 addList.Add(list);
             }
 
@@ -246,19 +246,19 @@ namespace GitClient
 
                 if (list.Length >= size.width && indexes.displayPanel == true)
                 {
-                    message = list.Substring(listWithoutMessage.Length + 1, size.width - listWithoutMessage.Length - 4);
+                    message = list.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 3);
                 }
                 else if (list.Length > Console.WindowWidth - 2 && indexes.displayPanel == false)
                 {
-                    message = list.Substring(listWithoutMessage.Length + 1, (Console.WindowWidth - 2) - listWithoutMessage.Length - 2);
+                    message = list.Substring(listWithoutMessage.Length, (Console.WindowWidth - 2) - listWithoutMessage.Length - 2);
                 }
                 else
                 {
-                    message = list.Substring(listWithoutMessage.Length + 1, message.Length);
+                    message = list.Substring(listWithoutMessage.Length, message.Length);
                 }
 
-                Console.Write($"{message}");
-                list = $"{id}{data}{author}{message}";
+                Console.Write($"{message.TrimStart()}");
+                list = $"{id}{data}{author}{message.TrimStart()}";
                 addList.Add(list);
                 indexes.heightPosition++;
                 if (indexes.up == true)
