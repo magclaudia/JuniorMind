@@ -27,7 +27,32 @@ namespace GitClient
                             list.Id.Add(GetCommitId(id));
                             list.DateTime.Add(GetDateAndTime(commitPtr));
                             list.Author.Add(GetCommitAuthor(commitPtr));
-                            list.Message.Add(Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!);
+                            string commitMessage = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!;
+                            string[] messageParts = commitMessage.Split(new[] { '\n' }, 2);
+                            string message;
+                            
+                            if (messageParts[0].Contains("\n\n"))
+                            {
+                                int index = messageParts[0].IndexOf('\n');
+                                message = messageParts[0].Remove(index);
+                            }
+                            else
+                            {
+                                message = messageParts[0].TrimEnd();
+                            }
+
+                            list.Message.Add(message);
+                            string description;
+                            if (messageParts.Length > 1)
+                            {
+                                description = messageParts[1].Trim();
+                            }
+                            else
+                            {
+                                description = string.Empty;
+                            }
+
+                            list.Description.Add(description);
                             LibGit2Wrapper.git_commit_free(commitPtr);
                         }
                         else

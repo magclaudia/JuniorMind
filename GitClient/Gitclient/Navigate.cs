@@ -67,11 +67,17 @@ namespace GitClient
                             }
 
                             bool reachLimit = false;
+                            if (indexes.currentCommitIndex > Console.WindowHeight - 2 && indexes.cursorPosition == 0 || indexes.cursorPosition < indexes.currentCommitIndex - Console.WindowHeight - 2 && indexes.heightPosition == Console.WindowHeight - 2)
+                            {
+                                indexes.cursorPosition = indexes.currentCommitIndex - (Console.WindowHeight - 2) + 2;
+                                indexes.currentCommitIndex = indexes.cursorPosition;
+                            }
+
                             if (indexes.heightPosition == Console.WindowHeight - 2)
                             {
                                 if (indexes.cursorPosition == listOfCommits.Id.Count - (Console.WindowHeight - 3))
                                 {
-                                    indexes.cursorPosition = 1;
+                                    indexes.cursorPosition = 2;
                                 }
 
                                 indexes.currentCommitIndex = indexes.cursorPosition;

@@ -13,6 +13,7 @@ namespace GitClient
             public string DateTime;
             public string Author;
             public string Message;
+            public string Description;
         }
 
         public static void PrintCommits(IntPtr repo, Indexes indexes, CommitElements listOfCommits)
@@ -58,19 +59,18 @@ namespace GitClient
                 Console.Write(author, Console.ForegroundColor = ConsoleColor.Green);
                 Console.ResetColor();
 
-                element.Message = $"{listOfCommits.Message[indexes.currentCommitIndex]}";
-
-                string message = string.Empty;
-                string list = $"{element.Id}{element.DateTime}{author}{element.Message}";
+                element.Message = $"{listOfCommits.Message[indexes.currentCommitIndex]}".TrimEnd();
+                element.Description = $"{listOfCommits.Description[indexes.currentCommitIndex]}".TrimEnd();
+                string list = $"{element.Id}{element.DateTime}{author}{element.Message}{element.Description}";
                 string listWithoutMessage = $"{element.Id}{element.DateTime}{author}";
-
+                string message = CheckList(element.Description, element.Id, element.DateTime, author, element.Message);
                 if (list.Length > Console.WindowWidth - 2)
                 {
-                    message = element.Message.Substring(0, Console.WindowWidth - 2 - listWithoutMessage.Length - 2);
+                    message = message.Substring(0, Console.WindowWidth - 2 - listWithoutMessage.Length - 2);
                 }
                 else
                 {
-                    message = element.Message.Substring(0, element.Message.Length);
+                    message = message.Substring(0, element.Message.Length);
                 }
 
                 Console.Write(message);
@@ -133,14 +133,14 @@ namespace GitClient
 
                 Console.ResetColor();
 
-                string message;
-                element.Message = listOfCommits.Message[indexes.currentCommitIndex];
-                list = $"{element.Id}{element.DateTime}{author}{element.Message}";
-
-
+                
+                element.Message = listOfCommits.Message[indexes.currentCommitIndex].TrimEnd();
+                element.Description = listOfCommits.Description[indexes.currentCommitIndex].TrimEnd();
+                string message = CheckList(element.Description, element.Id, element.DateTime, author, element.Message); 
+                list = $"{element.Id}{element.DateTime}{author}{message}";
                 if (list.Length > size.width)
                 {
-                    message = list.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 2);
+                    message = list.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 3);
                 }
                 else
                 {
@@ -160,6 +160,20 @@ namespace GitClient
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
             Navigate.NavigateThroughConsole(repo, indexes, listOfCommits, height, width);
+        }
+
+        private static string CheckList(string description, string id, string data, string author, string message)
+        {
+            if (description != "")
+            {
+                message = $"{message}.Description: {description}";
+            }
+            else
+            {
+                message = $"{message}";
+            }
+
+            return message;
         }
     } 
 }

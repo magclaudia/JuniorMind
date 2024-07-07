@@ -10,28 +10,39 @@ namespace GitClient
         public static void ReturnMessage(int index, CommitElements commitElements)
         {
             string message;
+            string outputMessage;
             int firstIndex = 0;
             int lengthForNow = 0;
             var size = new DrawPanel.MessageBox();
             var messageList = new Commits.Elements();
             messageList.Message = commitElements.Message[index];
+            messageList.Description = commitElements.Description[index];
+            if (messageList.Description != "")
+            {
+                message = $"{messageList.Message}.Description: {messageList.Description}"; ;
+            }
+            else
+            {
+                message = messageList.Message;
+            }
+
             for (int i = 1; i < size.height; i++)
             {
-                if (messageList.Message.Length - lengthForNow > Console.WindowWidth / 2 - 10 - 2)
+                if (message.Length - lengthForNow > Console.WindowWidth / 2 - 10 - 2)
                 {
-                    message = messageList.Message.Substring(firstIndex, size.width).TrimStart();
+                    outputMessage = message.Substring(firstIndex, size.width).TrimStart();
                     firstIndex++;
                 }
                 else
                 {
-                    message = messageList.Message.Substring(firstIndex, messageList.Message.Length - lengthForNow);
+                    outputMessage = message.Substring(firstIndex, message.Length - lengthForNow);
                 }
 
-                lengthForNow += message.Length;
+                lengthForNow += outputMessage.Length;
                 Console.SetCursorPosition(size.edgeOne + 1, i);
-                Console.Write(message);
-                firstIndex += message.Length - 1;
-                if (lengthForNow == messageList.Message.Length)
+                Console.Write(outputMessage);
+                firstIndex += outputMessage.Length - 1;
+                if (lengthForNow == message.Length)
                 {
                     break;
                 }

@@ -62,26 +62,24 @@ namespace GitClient
 
                 Console.ResetColor();
 
-
-                message = listOfCommits.Message[indexes.currentCommitIndex];
+                message = listOfCommits.Message[indexes.currentCommitIndex].TrimEnd();
+                string description = listOfCommits.Description[indexes.currentCommitIndex].TrimEnd();
+                message = ReturnMessage(description, id, data, author, message);
                 list = $"{id}{data}{author}{message}";
-
                 var size = new DrawPanel.CommitsPanel();
 
-                if (list.Length > size.width)
+                if (list.Length >= size.width)
                 {
-                    message = list.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 2).TrimStart();
+                    message = list.Substring(listWithoutMessage.Length + 1, size.width - listWithoutMessage.Length - 4);
                 }
                 else
                 {
-                    message = list.Substring(listWithoutMessage.Length, message.Length).TrimStart();
+                    message = list.Substring(listWithoutMessage.Length + 1, message.Length);
                 }
 
                 Console.Write($"{message}");
                 list = $"{id}{data}{author}{message}";
                 addList.Add(list);
-                Console.SetCursorPosition(0, indexes.heightPosition);
-                Console.Write("│");
             }
 
 
@@ -106,7 +104,6 @@ namespace GitClient
 
         public static void PrintNewCommitIfNoPanel(IntPtr repo, Indexes indexes, CommitElements listOfCommits, List<string> addList, bool reachLimit, int blueFond)
         {
-            string message = string.Empty;
             for (int i = 0; i < 2; i++)
             {
                 if (i == 1)
@@ -158,9 +155,10 @@ namespace GitClient
                 Console.ResetColor();
 
                 listWithoutMessage = $"{listOfCommits.Id[indexes.currentCommitIndex]}{data}{author}";
-                message = listOfCommits.Message[indexes.currentCommitIndex];
+                string message = listOfCommits.Message[indexes.currentCommitIndex].TrimEnd();
+                string description = listOfCommits.Description[indexes.currentCommitIndex].TrimEnd();
+                message = ReturnMessage(description, id, data, author, message);
                 list = $"{id}{data}{author}{message}";
-
                 var size = Console.WindowWidth - 2;
 
                 if (list.Length > size)
@@ -169,14 +167,13 @@ namespace GitClient
                 }
                 else
                 {
-                    message = list.Substring(listWithoutMessage.Length, message.Length).TrimStart();
+                    message = list.Substring(listWithoutMessage.Length, message.Length + 1).TrimStart();
                 }
 
                 Console.Write($"{message}");
+
                 list = $"{id}{data}{author}{message}";
                 addList.Add(list);
-                Console.SetCursorPosition(0, indexes.heightPosition);
-                Console.Write("│");
             }
 
             bool clear = false;
@@ -196,7 +193,6 @@ namespace GitClient
 
         public static void PrintNewCommitIfReachLimit(IntPtr repo, Indexes indexes, CommitElements listOfCommits, List<string> addList, int blueFond)
         {
-            string message = string.Empty;
             int upAndDownConsole = indexes.heightPosition;
             int index = indexes.currentCommitIndex;
             indexes.startIndex = indexes.currentCommitIndex;
@@ -242,30 +238,28 @@ namespace GitClient
 
                 Console.ResetColor();
 
-
-                message = listOfCommits.Message[indexes.currentCommitIndex];
+                string message = listOfCommits.Message[indexes.currentCommitIndex].TrimEnd();
+                string description = listOfCommits.Description[indexes.currentCommitIndex].TrimEnd();
+                message = ReturnMessage(description, id, data, author, message);
                 list = $"{id}{data}{author}{message}";
-
                 var size = new DrawPanel.CommitsPanel();
 
-                if (list.Length > size.width && indexes.displayPanel == true)
+                if (list.Length >= size.width && indexes.displayPanel == true)
                 {
-                    message = list.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 2).TrimStart();
+                    message = list.Substring(listWithoutMessage.Length + 1, size.width - listWithoutMessage.Length - 4);
                 }
                 else if (list.Length > Console.WindowWidth - 2 && indexes.displayPanel == false)
                 {
-                    message = list.Substring(listWithoutMessage.Length, (Console.WindowWidth - 2) - listWithoutMessage.Length - 2).TrimStart();
+                    message = list.Substring(listWithoutMessage.Length + 1, (Console.WindowWidth - 2) - listWithoutMessage.Length - 2);
                 }
                 else
                 {
-                    message = list.Substring(listWithoutMessage.Length, message.Length).TrimStart();
+                    message = list.Substring(listWithoutMessage.Length + 1, message.Length);
                 }
 
                 Console.Write($"{message}");
                 list = $"{id}{data}{author}{message}";
                 addList.Add(list);
-                Console.SetCursorPosition(0, indexes.heightPosition);
-                Console.Write("│");
                 indexes.heightPosition++;
                 if (indexes.up == true)
                 {
@@ -341,6 +335,20 @@ namespace GitClient
                 Console.SetCursorPosition(filePanel.edgeOneX + 1, filePanel.edgeOneY + x);
                 Console.Write(new string(' ', filePanel.width));
             }
+        }
+
+        private static string ReturnMessage(string description, string id, string data, string author, string message)
+        {
+            if (description != "")
+            {
+                message = $"{message}.Description: {description}";
+            }
+            else
+            {
+                message = $"{message}";
+            }
+
+            return message;
         }
     }
 }

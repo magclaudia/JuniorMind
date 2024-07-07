@@ -12,6 +12,7 @@ namespace GitClient
         public List<string> DateTime;
         public List<string> Author;
         public List<string> Message;
+        public List<string> Description;
         public CommitElements()
         {
             IdGitOid = new List<GitOid>();
@@ -19,6 +20,7 @@ namespace GitClient
             DateTime = new List<string>();
             Author = new List<string>();
             Message = new List<string>();
+            Description = new List<string>();
         }
     }
 }
