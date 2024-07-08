@@ -17,6 +17,7 @@ namespace GitClient
             do
             {
                 keyInfo = Console.ReadKey(true);
+                
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
@@ -99,6 +100,12 @@ namespace GitClient
                         }
                         break;
 
+                    case ConsoleKey.RightArrow:
+                        {
+
+                        }
+                        break;
+
                     case ConsoleKey.Enter:
                         {
                             indexes.displayPanel = true;
@@ -130,10 +137,11 @@ namespace GitClient
             if (clear == true)
             {
                 Console.Clear();
-                DrawPanel.MessagePanel();
+                DrawPanel.Info();
             }
 
             HeaderPanel.Header();
+            Info.GetInfo(indexes, listOfCommits);
             Message.ReturnMessage(indexes.currentCommitIndex, listOfCommits);
             GitOid oid = listOfCommits.IdGitOid[indexes.currentCommitIndex];
             if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)

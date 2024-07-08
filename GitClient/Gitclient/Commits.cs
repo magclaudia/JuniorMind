@@ -138,7 +138,7 @@ namespace GitClient
                 element.Description = listOfCommits.Description[indexes.currentCommitIndex].TrimEnd();
                 string message = CheckList(element.Description, element.Id, element.DateTime, author, element.Message); 
                 list = $"{element.Id}{element.DateTime}{author}{message}";
-                if (list.Length > size.width)
+                if (list.Length >= size.width)
                 {
                     message = list.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 3);
                 }

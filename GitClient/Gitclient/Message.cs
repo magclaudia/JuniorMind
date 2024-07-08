@@ -17,6 +17,7 @@ namespace GitClient
             var messageList = new Commits.Elements();
             messageList.Message = commitElements.Message[index];
             messageList.Description = commitElements.Description[index];
+            Console.SetCursorPosition(Console.WindowWidth / 2 + 11, Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1);
             if (messageList.Description != "")
             {
                 message = $"{messageList.Message}.Description: {messageList.Description}"; ;
@@ -26,7 +27,7 @@ namespace GitClient
                 message = messageList.Message;
             }
 
-            for (int i = 1; i < size.height; i++)
+            for (int i = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1; i < size.height; i++)
             {
                 if (message.Length - lengthForNow > Console.WindowWidth / 2 - 10 - 2)
                 {

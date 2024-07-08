@@ -74,7 +74,7 @@ namespace GitClient
                 }
                 else
                 {
-                    message = list.Substring(listWithoutMessage.Length, message.Length);
+                    message = list.Substring(listWithoutMessage.Length + 1, message.Length);
                 }
 
                 Console.Write($"{message.TrimStart()}");
@@ -317,8 +317,8 @@ namespace GitClient
         private static void ClearMessagePanel()
         {
             var messagePanel = new DrawPanel.MessageBox();
-
-            for (int y = 1; y < messagePanel.height; y++)
+            var heigth = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2 - 1);
+            for (int y = heigth; y < messagePanel.height + 1; y++)
             {
                 Console.SetCursorPosition(messagePanel.edgeOne + 1, y);
                 Console.Write(new string(' ', messagePanel.width));
@@ -327,7 +327,6 @@ namespace GitClient
 
         private static void ClearFilePanel()
         {
-
             var filePanel = new DrawPanel.FilesBox();
 
             for (int x = 1; x < filePanel.height; x++)
