@@ -7,17 +7,26 @@ namespace GitClient
 {
     public class Message
     {
-        public static void ReturnMessage(int index, CommitElements commitElements)
+        public static void ReturnMessage(int index, CommitElements commitElements, Indexes indexes)
         {
             string message;
             string outputMessage;
             int firstIndex = 0;
             int lengthForNow = 0;
-            var size = new DrawPanel.MessageBox();
+            var size = new DrawPanelRigthSide.MessageBox();
             var messageList = new Commits.Elements();
             messageList.Message = commitElements.Message[index];
             messageList.Description = commitElements.Description[index];
-            Console.SetCursorPosition(Console.WindowWidth / 2 + 11, Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1);
+            
+            if (indexes.rigth == true)
+            {
+                Console.SetCursorPosition(1, Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1);
+            }
+            else
+            {
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 11, Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1);
+            }
+
             if (messageList.Description != "")
             {
                 message = $"{messageList.Message}.Description: {messageList.Description}"; ;
@@ -40,7 +49,15 @@ namespace GitClient
                 }
 
                 lengthForNow += outputMessage.Length;
-                Console.SetCursorPosition(size.edgeOne + 1, i);
+                if (indexes.rigth == true)
+                {
+                    Console.SetCursorPosition(1, i);
+                }
+                else
+                {
+                    Console.SetCursorPosition(size.edgeOne + 1, i);
+                }
+
                 Console.Write(outputMessage);
                 firstIndex += outputMessage.Length - 1;
                 if (lengthForNow == message.Length)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gitclient;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace GitClient
     {
         public static void NavigateThroughConsole(IntPtr repo, Indexes indexes, CommitElements listOfCommits, int height, int width)
         {
-            var size = new DrawPanel.FilesBox();
+            var size = new DrawPanelRigthSide.FilesBox();
             IntPtr commitPtr = IntPtr.Zero;
             bool clear = true;
             List<string> addList = new List<string>();
@@ -102,27 +103,44 @@ namespace GitClient
 
                     case ConsoleKey.RightArrow:
                         {
+                            indexes.rigth = true;
+                            CommitDetail(repo, indexes, listOfCommits, clear);
+                        }
+                        break;
 
+                    case ConsoleKey.LeftArrow:
+                        {
+                            if (indexes.rigth == true)
+                            {
+                                indexes.rigth = false;
+                                Console.Clear();
+                                indexes.displayPanel = false;
+                                DrawExternalBorder.DrawBox();
+                                Commits.PrintCommits(repo, indexes, listOfCommits);
+                            }
                         }
                         break;
 
                     case ConsoleKey.Enter:
                         {
-                            indexes.displayPanel = true;
-
-                            if (indexes.panelAlreadyDisplayed == false && indexes.displayPanel == true)
+                            if (indexes.rigth == false)
                             {
-                                indexes.panelAlreadyDisplayed = true;
-                                CommitDetail(repo, indexes, listOfCommits, clear);
-                            }
-                            else
-                            {
-                                indexes.displayPanel = false;
-                                Console.Clear();
-                                DrawExternalBorder.DrawBox();
-                            }
+                                indexes.displayPanel = true;
 
-                            Commits.PrintCommits(repo, indexes, listOfCommits);
+                                if (indexes.panelAlreadyDisplayed == false && indexes.displayPanel == true)
+                                {
+                                    indexes.panelAlreadyDisplayed = true;
+                                    CommitDetail(repo, indexes, listOfCommits, clear);
+                                }
+                                else
+                                {
+                                    indexes.displayPanel = false;
+                                    Console.Clear();
+                                    DrawExternalBorder.DrawBox();
+                                }
+
+                                Commits.PrintCommits(repo, indexes, listOfCommits);
+                            }
                         }
                         break;
 
@@ -137,16 +155,23 @@ namespace GitClient
             if (clear == true)
             {
                 Console.Clear();
-                DrawPanel.Info();
+                if (indexes.rigth == true)
+                {
+                    DrawPanelLeftSide.Info();
+                }
+                else
+                {
+                    DrawPanelRigthSide.Info();
+                }
             }
 
-            HeaderPanel.Header();
+            HeaderPanel.Header(indexes);
             Info.GetInfo(indexes, listOfCommits);
-            Message.ReturnMessage(indexes.currentCommitIndex, listOfCommits);
+            Message.ReturnMessage(indexes.currentCommitIndex, listOfCommits, indexes);
             GitOid oid = listOfCommits.IdGitOid[indexes.currentCommitIndex];
             if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
             {
-                Files.GetFilesAffectedByCommit(repo, commitPtr, i);
+                Files.GetFilesAffectedByCommit(repo, commitPtr, i, indexes);
             }
         }
 

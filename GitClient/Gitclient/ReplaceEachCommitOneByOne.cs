@@ -66,7 +66,7 @@ namespace GitClient
                 string description = listOfCommits.Description[indexes.currentCommitIndex].TrimEnd();
                 message = ReturnMessage(description, id, data, author, message);
                 list = $"{id}{data}{author}{message}";
-                var size = new DrawPanel.CommitsPanel();
+                var size = new DrawPanelRigthSide.CommitsPanel();
 
                 if (list.Length >= size.width)
                 {
@@ -242,7 +242,7 @@ namespace GitClient
                 string description = listOfCommits.Description[indexes.currentCommitIndex].TrimEnd();
                 message = ReturnMessage(description, id, data, author, message);
                 list = $"{id}{data}{author}{message}";
-                var size = new DrawPanel.CommitsPanel();
+                var size = new DrawPanelRigthSide.CommitsPanel();
 
                 if (list.Length >= size.width && indexes.displayPanel == true)
                 {
@@ -300,7 +300,7 @@ namespace GitClient
         {
             if (indexes.displayPanel == true)
             {
-                var commitPanel = new DrawPanel.CommitsPanel();
+                var commitPanel = new DrawPanelRigthSide.CommitsPanel();
                 Console.SetCursorPosition(1, indexes.heightPosition);
                 Console.Write(new string(' ', commitPanel.width - 1));
             }
@@ -316,7 +316,7 @@ namespace GitClient
 
         private static void ClearMessagePanel()
         {
-            var messagePanel = new DrawPanel.MessageBox();
+            var messagePanel = new DrawPanelRigthSide.MessageBox();
             var heigth = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2 - 1);
             for (int y = heigth; y < messagePanel.height + 1; y++)
             {
@@ -327,9 +327,9 @@ namespace GitClient
 
         private static void ClearFilePanel()
         {
-            var filePanel = new DrawPanel.FilesBox();
+            var filePanel = new DrawPanelRigthSide.FilesBox();
 
-            for (int x = 1; x < filePanel.height; x++)
+            for (int x = 1; x < filePanel.height - 1; x++)
             {
                 Console.SetCursorPosition(filePanel.edgeOneX + 1, filePanel.edgeOneY + x);
                 Console.Write(new string(' ', filePanel.width));

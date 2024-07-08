@@ -7,7 +7,7 @@ namespace GitClient
 {
     public class Files
     {
-        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index)
+        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index, Indexes indexes)
         {
             IntPtr parentCommitPtr = IntPtr.Zero;
             IntPtr parentTreePtr = IntPtr.Zero;
@@ -32,7 +32,7 @@ namespace GitClient
             }
 
             IntPtr diff = IntPtr.Zero;
-            var position = new DrawPanel.FilesBox();
+            var position = new DrawPanelRigthSide.FilesBox();
             var options = new LibGit2Wrapper.GitDiffOptions();
 
             if (LibGit2Wrapper.git_diff_tree_to_tree(out diff, repo, parentTreePtr, treePtr, ref options) != 0)
@@ -41,10 +41,18 @@ namespace GitClient
             }
 
             UIntPtr numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
-            Console.SetCursorPosition(position.edgeOneX + 1, position.edgeOneY);
+            if (indexes.rigth == true)
+            {
+                Console.SetCursorPosition(1, position.edgeOneY);
+            }
+            else
+            {
+                Console.SetCursorPosition(position.edgeOneX + 1, position.edgeOneY);
+            }
+
             Console.WriteLine($"Files: {numDeltas} ");
 
-            PrintAllFiles.PrintAllFilesAffectedByCommit(numDeltas, diff, index);
+            PrintAllFiles.PrintAllFilesAffectedByCommit(numDeltas, diff, index, indexes);
             LibGit2Wrapper.git_diff_free(diff);
 
             Marshal.FreeHGlobal(options.old_prefix);

@@ -10,11 +10,16 @@ namespace GitClient
 {
     public class PrintAllFiles
     {
-        public static void PrintAllFilesAffectedByCommit(UIntPtr numDeltas, IntPtr diff, int a)
+        public static void PrintAllFilesAffectedByCommit(UIntPtr numDeltas, IntPtr diff, int a, Indexes indexes)
         {
-            var size = new DrawPanel.FilesBox();
+            var size = new DrawPanelRigthSide.FilesBox();
             for (UIntPtr i = 0; i < numDeltas.ToUInt64(); i++)
             {
+                if ((int)i == size.height - 3)
+                {
+                    break;
+                }
+
                 IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
                 if (deltaPtr == IntPtr.Zero)
                 {
@@ -46,23 +51,23 @@ namespace GitClient
                 {
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_ADDED:
                         fileWithSymbol = $"+    {fileName}";
-                        PrintProjectName(size, i, filePath, fileName);
+                        PrintProjectName(size, i, filePath, fileName, indexes);
                         Console.ForegroundColor = ConsoleColor.Green;
-                        PrintEveryFile(fileWithSymbol, size, i, ref a);
+                        PrintEveryFile(fileWithSymbol, size, i, ref a, indexes);
                         break;
                    
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_MODIFIED:
                         fileWithSymbol = $"M    {fileName}";
-                        PrintProjectName(size, i, filePath, fileName);
+                        PrintProjectName(size, i, filePath, fileName, indexes);
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        PrintEveryFile(fileWithSymbol, size, i, ref a);
+                        PrintEveryFile(fileWithSymbol, size, i, ref a, indexes);
                         break;
                     
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_DELETED:
                         fileWithSymbol = $"-    {fileName}";
-                        PrintProjectName(size, i, filePath, fileName);
+                        PrintProjectName(size, i, filePath, fileName, indexes);
                         Console.ForegroundColor = ConsoleColor.DarkRed;
-                        PrintEveryFile(fileWithSymbol, size, i, ref a);
+                        PrintEveryFile(fileWithSymbol, size, i, ref a, indexes);
                         break;
                 }
 
@@ -70,13 +75,21 @@ namespace GitClient
             }
         }
 
-        private static void PrintProjectName(DrawPanel.FilesBox size, ulong i, string filePath, string fileName)
+        private static void PrintProjectName(DrawPanelRigthSide.FilesBox size, ulong i, string filePath, string fileName, Indexes indexes)
         {
             if (i == 0)
             {
                 int firstIndex = 0;
                 int fullPathLength = filePath!.Length;
-                Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1);
+                if (indexes.rigth == true)
+                {
+                    Console.SetCursorPosition(1, size.edgeOneY + 1);
+                }
+                else
+                {
+                    Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1);
+                }
+
                 string projectFolderName;
                 string projectFolderWithSymbol;
                 string projectFolder = string.Empty;
@@ -114,7 +127,7 @@ namespace GitClient
             }
         }
 
-        private static void PrintEveryFile(string fileWithSymbol, DrawPanel.FilesBox size, ulong i, ref int step)
+        private static void PrintEveryFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, Indexes indexes)
         {
             int lengthForNow = 0;
             int firstIndex = 0;
@@ -125,13 +138,29 @@ namespace GitClient
                 i++;
                 if (fileWithSymbol.Length - lengthForNow > size.width)
                 {
-                    Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
+                    if (indexes.rigth == true)
+                    {
+                        Console.SetCursorPosition(1, size.edgeOneY + 1 + (int)i);
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
+                    }
+
                     file = fileWithSymbol.Substring(firstIndex, size.width);
                     firstIndex++;
                 }
                 else
                 {
-                    Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
+                    if (indexes.rigth == true)
+                    {
+                        Console.SetCursorPosition(1, size.edgeOneY + 1 + (int)i);
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
+                    }
+
                     file = fileWithSymbol.Substring(firstIndex, fileWithSymbol.Length - lengthForNow);
                 }
 

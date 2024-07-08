@@ -10,7 +10,7 @@ namespace GitClient
     {
         public static void GetInfo(Indexes indexes, CommitElements listOfCommits)
         {
-            var position = new DrawPanel.InfoPanel();
+            var position = new DrawPanelRigthSide.InfoPanel();
             string[] infos = { "Author", "Date/Time", "Sha" };
             string author = listOfCommits.Author[indexes.currentCommitIndex];
             string dateOrTime = listOfCommits.DateTime[indexes.currentCommitIndex];
@@ -19,7 +19,15 @@ namespace GitClient
             string output;
             for (int i = 1; i < position.height; i++)
             {
-                Console.SetCursorPosition(position.edgeOne + 1, i);
+                if (indexes.rigth == true)
+                {
+                    Console.SetCursorPosition(1, i);
+                }
+                else
+                {
+                    Console.SetCursorPosition(position.edgeOne + 1, i);
+                }
+
                 output = ($"{infos[i - 1]}: {arrayOfInfos[i - 1]}");
                 if (output.Length > position.width)
                 {

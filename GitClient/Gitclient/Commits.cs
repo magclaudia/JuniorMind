@@ -20,7 +20,7 @@ namespace GitClient
         {
             var addList = new List<string>();
             CommitNumber.ReturnCommitNumber(listOfCommits, indexes);
-            var position = new DrawPanel.CommitsPanel();
+            var position = new DrawPanelRigthSide.CommitsPanel();
             int blueFond = 0;
             if (indexes.displayPanel == false)
             {
@@ -35,13 +35,13 @@ namespace GitClient
         private static void DisplayCommitsOnEntireConsole(IntPtr repo, List<string> addList, Indexes indexes, CommitElements listOfCommits, int blueFond)
         {
             var element = new Elements();
-            indexes.rightCursor = 0;
+            indexes.rigthCursor = 0;
             int index = indexes.currentCommitIndex;
             indexes.currentCommitIndex = indexes.startIndex;
 
-            while (indexes.rightCursor < Console.WindowHeight - 2 && indexes.startIndex < listOfCommits.Id.Count && indexes.startIndex >= 0)
+            while (indexes.rigthCursor < Console.WindowHeight - 2 && indexes.startIndex < listOfCommits.Id.Count && indexes.startIndex >= 0)
             {
-                Console.SetCursorPosition(1, indexes.rightCursor + 1);
+                Console.SetCursorPosition(1, indexes.rigthCursor + 1);
                 element.Id = $"{listOfCommits.Id[indexes.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
@@ -77,7 +77,7 @@ namespace GitClient
                 list = $"{element.Id}{element.DateTime}{author}{message}";
                 addList.Add(list);
                 indexes.currentCommitIndex++;
-                indexes.rightCursor++;
+                indexes.rigthCursor++;
             }
 
             indexes.panelAlreadyDisplayed = false;
@@ -91,17 +91,17 @@ namespace GitClient
         private static void DisplayCommitsWithPanel(IntPtr repo, Indexes indexes, List<string> addList, CommitElements listOfCommits, int blueFond)
         {
             var element = new Elements();
-            var size = new DrawPanel.CommitsPanel();
-            indexes.rightCursor = 0;
+            var size = new DrawPanelRigthSide.CommitsPanel();
+            indexes.rigthCursor = 0;
             indexes.panelAlreadyDisplayed = true;
             int index = indexes.currentCommitIndex;
             indexes.currentCommitIndex = indexes.startIndex;
 
-            while (indexes.rightCursor < size.height && indexes.startIndex < listOfCommits.Id.Count && indexes.startIndex >= 0)
+            while (indexes.rigthCursor < size.height && indexes.startIndex < listOfCommits.Id.Count && indexes.startIndex >= 0)
             {
                 string list = string.Empty;
                 string listWithoutMessage = string.Empty;
-                Console.SetCursorPosition(1, indexes.rightCursor + 1);
+                Console.SetCursorPosition(1, indexes.rigthCursor + 1);
                
                 element.Id = $"{listOfCommits.Id[indexes.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
@@ -150,11 +150,11 @@ namespace GitClient
                 Console.Write($"{message}");
                 list = $"{element.Id}{element.DateTime}{author}{message}";
                 addList.Add(list);
-                indexes.rightCursor++;
+                indexes.rigthCursor++;
                 indexes.currentCommitIndex++;
             }
 
-            indexes.rightCursor = indexes.currentCommitIndex;
+            indexes.rigthCursor = indexes.currentCommitIndex;
             indexes.currentCommitIndex = index;
             Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes, blueFond);
             int height = Console.WindowHeight;
