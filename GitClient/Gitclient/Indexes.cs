@@ -12,6 +12,9 @@
         public bool up;
         public bool down;
         public bool rigth;
+        public int indexForFiles;
+        public List<string> addLines;
+        public bool nextFile;
         public Indexes()
         {
             startIndex = 0;
@@ -24,6 +27,9 @@
             up = false;
             down = false;
             rigth = false;
+            indexForFiles = 0;
+            addLines = new List<string>();
+            nextFile = false;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Gitclient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,12 +6,54 @@ namespace GitClient
 {
     public class Navigate
     {
-        public static void NavigateThroughConsole(IntPtr repo, Indexes indexes, CommitElements listOfCommits, int height, int width)
+        public static void NavigateThroughFilesContent(string content, string filePath, int startingIndex, Indexes indexes, int moveNext, int i, string[] lines, IntPtr repo, UIntPtr numDeltas, IntPtr diff)
+        {
+            ConsoleKeyInfo keyInfo;
+
+            do
+            {
+                keyInfo = Console.ReadKey(true);
+                switch (keyInfo.Key) 
+                {
+                    case ConsoleKey.DownArrow:
+                        {
+                            if(indexes.down == true && indexes.indexForFiles < Console.WindowHeight - 3)
+                            {
+                                indexes.indexForFiles++;
+                                indexes.down = false;
+                                FileContentReader.PrintBackground(startingIndex, content, filePath, indexes, moveNext, i, lines, repo, numDeltas, diff);
+
+                            }
+                            else
+                            {
+                                startingIndex = moveNext;
+                                moveNext++;
+                                i = 1;
+                            }
+                            
+                            if (indexes.nextFile == false)
+                            {
+                                FileContentReader.DisplayFileContentInPanel(content, filePath, startingIndex, indexes, moveNext, i, repo, numDeltas, diff);
+                            }
+                        }
+                        break;
+                    case ConsoleKey.UpArrow:
+                        {
+                           
+                        }
+                        break;
+                }
+            }
+            while (keyInfo.Key != ConsoleKey.Escape);
+        }
+
+        public static void NavigateThroughCommits(IntPtr repo, Indexes indexes, CommitElements listOfCommits, int height, int width)
         {
             var size = new DrawPanelRigthSide.FilesBox();
             IntPtr commitPtr = IntPtr.Zero;
             bool clear = true;
             List<string> addList = new List<string>();
+            List<string> filesNames = new List<string>();
             ConsoleKeyInfo keyInfo;
             int blueFond = 0;
             do
@@ -104,7 +145,13 @@ namespace GitClient
                     case ConsoleKey.RightArrow:
                         {
                             indexes.rigth = true;
+                            int index = 1;
                             CommitDetail(repo, indexes, listOfCommits, clear);
+                            GitOid oid = listOfCommits.IdGitOid[indexes.currentCommitIndex];
+                            if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
+                            {
+                                Files.GetFilesAffectedByCommit(repo, commitPtr, index, indexes);
+                            }
                         }
                         break;
 

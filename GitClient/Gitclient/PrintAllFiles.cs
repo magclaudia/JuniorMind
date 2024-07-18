@@ -10,7 +10,7 @@ namespace GitClient
 {
     public class PrintAllFiles
     {
-        public static void PrintAllFilesAffectedByCommit(UIntPtr numDeltas, IntPtr diff, int a, Indexes indexes)
+        public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, Indexes indexes)
         {
             var size = new DrawPanelRigthSide.FilesBox();
             for (UIntPtr i = 0; i < numDeltas.ToUInt64(); i++)
@@ -47,31 +47,38 @@ namespace GitClient
 
                 string fileName = Path.GetFileName(filePath)!;
                 string fileWithSymbol;
+               
+                string file = "";
                 switch (delta.status)
                 {
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_ADDED:
                         fileWithSymbol = $"+    {fileName}";
                         PrintProjectName(size, i, filePath, fileName, indexes);
                         Console.ForegroundColor = ConsoleColor.Green;
-                        PrintEveryFile(fileWithSymbol, size, i, ref a, indexes);
+                        PrintEachFile(fileWithSymbol, size, i, ref a, indexes);
                         break;
                    
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_MODIFIED:
                         fileWithSymbol = $"M    {fileName}";
                         PrintProjectName(size, i, filePath, fileName, indexes);
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        PrintEveryFile(fileWithSymbol, size, i, ref a, indexes);
+                        PrintEachFile(fileWithSymbol, size, i, ref a, indexes);
                         break;
                     
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_DELETED:
                         fileWithSymbol = $"-    {fileName}";
                         PrintProjectName(size, i, filePath, fileName, indexes);
                         Console.ForegroundColor = ConsoleColor.DarkRed;
-                        PrintEveryFile(fileWithSymbol, size, i, ref a, indexes);
+                        PrintEachFile(fileWithSymbol, size, i, ref a, indexes);
                         break;
                 }
 
                 Console.ResetColor();
+            }
+
+            if (indexes.rigth == true)
+            {
+                FileContentReader.GetFileContent(repo, numDeltas, diff, indexes);
             }
         }
 
@@ -96,8 +103,8 @@ namespace GitClient
 
                 if (fullPathLength > fileName.Length)
                 {
-                     projectFolderName = filePath.Substring(firstIndex, fullPathLength - fileName.Length - 1);
-                     projectFolderWithSymbol = $"  ▾{projectFolderName}";
+                    projectFolderName = filePath.Substring(firstIndex, fullPathLength - fileName.Length - 1);
+                    projectFolderWithSymbol = $"  ▾{projectFolderName}";
                     if (projectFolderWithSymbol.Length > size.width)
                     {
                         projectFolder = projectFolderWithSymbol.Substring(firstIndex, size.width);
@@ -127,14 +134,13 @@ namespace GitClient
             }
         }
 
-        private static void PrintEveryFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, Indexes indexes)
+        private static void PrintEachFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, Indexes indexes)
         {
             int lengthForNow = 0;
             int firstIndex = 0;
-
+            string file = "";
             if (step < size.height - 1)
             {
-                string file;
                 i++;
                 if (fileWithSymbol.Length - lengthForNow > size.width)
                 {

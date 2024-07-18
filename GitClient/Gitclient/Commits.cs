@@ -85,7 +85,7 @@ namespace GitClient
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
             Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes, blueFond);
-            Navigate.NavigateThroughConsole(repo, indexes, listOfCommits, height, width);
+            Navigate.NavigateThroughCommits(repo, indexes, listOfCommits, height, width);
         }
 
         private static void DisplayCommitsWithPanel(IntPtr repo, Indexes indexes, List<string> addList, CommitElements listOfCommits, int blueFond)
@@ -159,7 +159,7 @@ namespace GitClient
             Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes, blueFond);
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Navigate.NavigateThroughConsole(repo, indexes, listOfCommits, height, width);
+            Navigate.NavigateThroughCommits(repo, indexes, listOfCommits, height, width);
         }
 
         private static string CheckList(string description, string id, string data, string author, string message)

@@ -223,5 +223,17 @@ namespace GitClient
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern void git_diff_free(IntPtr diff);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_blob_lookup(out IntPtr blob, IntPtr repo, ref GitOid id);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr git_blob_rawcontent(IntPtr blob);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern long git_blob_rawsize(IntPtr blob);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void git_blob_free(IntPtr blob);
     }
 }

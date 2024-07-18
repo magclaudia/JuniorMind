@@ -52,7 +52,7 @@ namespace GitClient
 
             Console.WriteLine($"Files: {numDeltas} ");
 
-            PrintAllFiles.PrintAllFilesAffectedByCommit(numDeltas, diff, index, indexes);
+            PrintAllFiles.PrintAllFilesAffectedByCommit(repo, numDeltas, diff, index, indexes);
             LibGit2Wrapper.git_diff_free(diff);
 
             Marshal.FreeHGlobal(options.old_prefix);
