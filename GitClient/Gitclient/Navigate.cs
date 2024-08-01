@@ -1,5 +1,7 @@
 ﻿
 
+using Gitclient;
+
 namespace GitClient
 {
     public class Navigate
@@ -14,6 +16,7 @@ namespace GitClient
                 {
                     case ConsoleKey.DownArrow:
                         {
+                            GetDiffsLine.GetRowThroughtDiffsLines(index, list.diffForEachFile.Count);
                             if (index == list.diffForEachFile.Count - 1 && indexes.end == false)
                             {
                                 indexes.down = true;

@@ -71,7 +71,6 @@ namespace GitClient
 
             index = list.listOfDiffsForEachFiles.Count;
             PrintNewFileContain(indexes, filesList, index);
-
         }
 
         public static int DiffFileCallback(LibGit2Wrapper.GitDiffDelta delta, float progress, IntPtr payload)
