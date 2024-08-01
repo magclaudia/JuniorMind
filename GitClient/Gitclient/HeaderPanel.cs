@@ -8,7 +8,7 @@ namespace GitClient
 {
     public class HeaderPanel
     {
-        public static void Header(Indexes indexes)
+        public static void Header(VariablesForCommits indexes)
         {
             if (indexes.rigth == true)
             {

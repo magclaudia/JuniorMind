@@ -1,6 +1,6 @@
 ﻿namespace GitClient
 {
-    public class Indexes
+    public class VariablesForCommits
     {
         public int startIndex;
         public int rigthCursor;
@@ -14,8 +14,10 @@
         public bool rigth;
         public int indexForFiles;
         public List<string> addLines;
+        public bool enter;
         public bool nextFile;
-        public Indexes()
+
+        public VariablesForCommits()
         {
             startIndex = 0;
             rigthCursor = 0;
@@ -29,6 +31,7 @@
             rigth = false;
             indexForFiles = 0;
             addLines = new List<string>();
+            enter = false;
             nextFile = false;
         }
     }

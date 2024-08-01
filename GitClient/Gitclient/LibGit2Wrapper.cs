@@ -235,5 +235,61 @@ namespace GitClient
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern void git_blob_free(IntPtr blob);
+
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct GitDiffLine
+        {
+            public GitDiffLineOrigin origin;
+            public int old_lineno;
+            public int new_lineno;
+            public int num_lines;
+            public long content_len;
+            public IntPtr content_offset;
+            public IntPtr content;
+        }
+
+        public enum GitDiffLineOrigin : byte
+        {
+            GIT_DIFF_LINE_CONTEXT = 0x20, //' ',
+            GIT_DIFF_LINE_ADDITION = 0x2B, //'+',
+            GIT_DIFF_LINE_DELETION = 0x2D, //'-',
+            GIT_DIFF_LINE_CONTEXT_EOFNL = 0x3D, //'=',
+            GIT_DIFF_LINE_ADD_EOFNL = 0x3E, //'>',
+            GIT_DIFF_LINE_DEL_EOFNL = 0x3C, //'<',
+            GIT_DIFF_LINE_FILE_HDR = 0x46, //'F',
+            GIT_DIFF_LINE_HUNK_HDR = 0x48, //'H',
+            GIT_DIFF_LINE_BINARY = 0x42, //'B'
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct GitDiffHunk
+        {
+            public int old_start;
+            public int old_lines;
+            public int new_start;
+            public int new_lines;
+            public UIntPtr header_len;
+            
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
+            public char[] header;
+        }
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_diff_foreach(IntPtr diff, DiffFileCallback fileCallback, DiffBinaryCallback binaryCallback, DiffHunkCallback hunkCallback,
+            DiffLineCallback lineCallback, IntPtr payload);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int DiffFileCallback(GitDiffDelta delta, float progress, IntPtr payload);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int DiffBinaryCallback(GitDiffDelta delta, IntPtr binary, IntPtr payload);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int DiffHunkCallback(GitDiffDelta delta, GitDiffHunk hunk, IntPtr payload);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int DiffLineCallback(GitDiffDelta delta, GitDiffHunk hunk, GitDiffLine line, IntPtr payload);
     }
 }

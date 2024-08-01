@@ -7,7 +7,7 @@ namespace GitClient
 {
     public class Cursor
     {
-        public static void UpdateCursorPositionList(CommitElements listOfCommits, List<string> addList, Indexes indexes, int blueFond)
+        public static void UpdateCursorPositionList(CommitElements listOfCommits, List<string> addList, VariablesForCommits indexes, int blueFond)
         {
             Console.CursorVisible = true;
             int indicatorPosition = (indexes.currentCommitIndex * (Console.WindowHeight - 2)) / listOfCommits.Id.Count;
@@ -45,13 +45,13 @@ namespace GitClient
             DisplayCustomCursor(addList, ConsoleColor.DarkBlue, listOfCommits, indexes);
         }
 
-        private static void DisplayCustomCursor(List<string> addList, ConsoleColor color, CommitElements listOfCommits, Indexes indexes)
+        private static void DisplayCustomCursor(List<string> addList, ConsoleColor color, CommitElements listOfCommits, VariablesForCommits indexes)
         {
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             char cursorSymbol = '█';
             Console.Write(cursorSymbol);
             Console.ResetColor();
-            BlueBackground.DisplayBlueBox(addList, indexes, listOfCommits);
+            BlueBackgroundForCommits.DisplayBlueBox(addList, indexes, listOfCommits);
         }
     }
 }

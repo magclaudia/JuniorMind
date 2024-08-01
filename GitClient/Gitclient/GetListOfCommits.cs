@@ -3,7 +3,7 @@ using System.Text;
 
 namespace GitClient
 {
-    public class ListOfCommits
+    public class GetListOfCommits
     {
        
         public static void GetAllCommits(IntPtr repo)
@@ -12,7 +12,7 @@ namespace GitClient
             IntPtr commitPtr = IntPtr.Zero;
             GitOid id = new GitOid();
 
-            var indexes = new Indexes();
+            var indexes = new VariablesForCommits();
             var list = new CommitElements();
 
             if (LibGit2Wrapper.git_revwalk_new(out walker, repo) == 0)
@@ -62,7 +62,7 @@ namespace GitClient
                     }
 
                     DrawExternalBorder.DrawBox();
-                    Commits.PrintCommits(repo, indexes, list);
+                    GetCommits.PrintCommits(repo, indexes, list);
                 }
                 else
                 {

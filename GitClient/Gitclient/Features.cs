@@ -29,11 +29,11 @@ namespace GitClient
                     throw new Exception("Failed to open the repository.");
                 }
 
-                ListOfCommits.GetAllCommits(repo);
+                GetListOfCommits.GetAllCommits(repo);
             }
-            catch
+            catch(Exception ex)
             {
-                Console.WriteLine("\nFailed to open the repository.Please input a new path.");
+                Console.WriteLine($"Eroor: {ex.Message}");
             }
 
             LibGit2Wrapper.git_repository_free(repo);

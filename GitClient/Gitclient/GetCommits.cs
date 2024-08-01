@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GitClient
 {
-    public class Commits
+    public class GetCommits
     {
         public struct Elements
         {
@@ -16,10 +16,10 @@ namespace GitClient
             public string Description;
         }
 
-        public static void PrintCommits(IntPtr repo, Indexes indexes, CommitElements listOfCommits)
+        public static void PrintCommits(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits)
         {
             var addList = new List<string>();
-            CommitNumber.ReturnCommitNumber(listOfCommits, indexes);
+            GetCommitNumber.ReturnCommitNumber(listOfCommits, indexes);
             var position = new DrawPanelRigthSide.CommitsPanel();
             int blueFond = 0;
             if (indexes.displayPanel == false)
@@ -32,7 +32,7 @@ namespace GitClient
             }
         }
 
-        private static void DisplayCommitsOnEntireConsole(IntPtr repo, List<string> addList, Indexes indexes, CommitElements listOfCommits, int blueFond)
+        private static void DisplayCommitsOnEntireConsole(IntPtr repo, List<string> addList, VariablesForCommits indexes, CommitElements listOfCommits, int blueFond)
         {
             var element = new Elements();
             indexes.rigthCursor = 0;
@@ -88,7 +88,7 @@ namespace GitClient
             Navigate.NavigateThroughCommits(repo, indexes, listOfCommits, height, width);
         }
 
-        private static void DisplayCommitsWithPanel(IntPtr repo, Indexes indexes, List<string> addList, CommitElements listOfCommits, int blueFond)
+        private static void DisplayCommitsWithPanel(IntPtr repo, VariablesForCommits indexes, List<string> addList, CommitElements listOfCommits, int blueFond)
         {
             var element = new Elements();
             var size = new DrawPanelRigthSide.CommitsPanel();

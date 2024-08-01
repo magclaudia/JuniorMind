@@ -7,7 +7,7 @@ namespace GitClient
 {
     public class ReplaceEachCommitOneByOne
     {
-        public static void PrintNewCommitIfPanel(IntPtr repo, Indexes indexes, CommitElements listOfCommits, List<string> addList, bool reachLimit, int blueFond)
+        public static void PrintNewCommitIfPanel(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, List<string> addList, bool reachLimit, int blueFond)
         {
             string message = string.Empty;
 
@@ -93,7 +93,7 @@ namespace GitClient
                 indexes.heightPosition--;
             }
 
-            CommitNumber.ReturnCommitNumber(listOfCommits, indexes);
+            GetCommitNumber.ReturnCommitNumber(listOfCommits, indexes);
             Navigate.CommitDetail(repo, indexes, listOfCommits, clear);
             Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes, blueFond);
 
@@ -102,7 +102,7 @@ namespace GitClient
             Navigate.NavigateThroughCommits(repo, indexes, listOfCommits, height, width);
         }
 
-        public static void PrintNewCommitIfNoPanel(IntPtr repo, Indexes indexes, CommitElements listOfCommits, List<string> addList, bool reachLimit, int blueFond)
+        public static void PrintNewCommitIfNoPanel(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, List<string> addList, bool reachLimit, int blueFond)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -183,7 +183,7 @@ namespace GitClient
                 indexes.heightPosition--;
             }
 
-            CommitNumber.ReturnCommitNumber(listOfCommits, indexes);
+            GetCommitNumber.ReturnCommitNumber(listOfCommits, indexes);
             Cursor.UpdateCursorPositionList(listOfCommits, addList, indexes, blueFond);
 
             int height = Console.WindowHeight;
@@ -191,7 +191,7 @@ namespace GitClient
             Navigate.NavigateThroughCommits(repo, indexes, listOfCommits, height, width);
         }
 
-        public static void PrintNewCommitIfReachLimit(IntPtr repo, Indexes indexes, CommitElements listOfCommits, List<string> addList, int blueFond)
+        public static void PrintNewCommitIfReachLimit(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, List<string> addList, int blueFond)
         {
             int upAndDownConsole = indexes.heightPosition;
             int index = indexes.currentCommitIndex;
@@ -280,7 +280,7 @@ namespace GitClient
                 indexes.currentCommitIndex = index;
             }
 
-            CommitNumber.ReturnCommitNumber(listOfCommits, indexes);
+            GetCommitNumber.ReturnCommitNumber(listOfCommits, indexes);
 
             if (indexes.displayPanel == true)
             {
@@ -296,7 +296,7 @@ namespace GitClient
             Navigate.NavigateThroughCommits(repo, indexes, listOfCommits, height, width);
         }
 
-        public static void ClearCommitRow(Indexes indexes)
+        public static void ClearCommitRow(VariablesForCommits indexes)
         {
             if (indexes.displayPanel == true)
             {

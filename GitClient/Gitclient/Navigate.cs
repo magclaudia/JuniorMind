@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
 namespace GitClient
 {
     public class Navigate
     {
-        public static void NavigateThroughFilesContent(string content, string filePath, int startingIndex, Indexes indexes, int moveNext, int i, string[] lines, IntPtr repo, UIntPtr numDeltas, IntPtr diff)
+        public static void NavigateThroughDiffsContent(int row, int index, GetCertainList list, VariablesForFiles indexes, string fileFullName, int j)
         {
             ConsoleKeyInfo keyInfo;
-
             do
             {
                 keyInfo = Console.ReadKey(true);
@@ -17,29 +14,54 @@ namespace GitClient
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            if(indexes.down == true && indexes.indexForFiles < Console.WindowHeight - 3)
+                            if (index == list.diffForEachFile.Count - 1 && indexes.end == false)
                             {
-                                indexes.indexForFiles++;
-                                indexes.down = false;
-                                FileContentReader.PrintBackground(startingIndex, content, filePath, indexes, moveNext, i, lines, repo, numDeltas, diff);
+                                indexes.down = true;
+                                row = 0;
+                                index = 0;
+                            }
 
-                            }
-                            else
+                            if (row < list.diffForEachFile.Count - 1)
                             {
-                                startingIndex = moveNext;
-                                moveNext++;
-                                i = 1;
+                                if (row >= Console.WindowHeight - 3 && indexes.end == true && index != list.diffForEachFile.Count - 1)
+                                {
+                                    indexes.down = false;
+                                    index = j;
+                                    j++;
+                                    row = 0;
+                                    GetDiffs.CleanCodePanel();
+                                }
+
+                                if (row >= Console.WindowHeight - 3 && indexes.end == false && index != list.diffForEachFile.Count - 1)
+                                {
+                                    indexes.down = true;
+                                    index = j - 1;
+                                    row = 0;
+                                }
+
+                                if (index < list.diffForEachFile.Count - 1)
+                                {
+                                    DiffHelper.Print(indexes, index, row, fileFullName, j);
+                                }
                             }
-                            
-                            if (indexes.nextFile == false)
+
+                            list.listOfDiffsForEachFiles.Add(list.diffForEachFile);
+                            indexes.diffIndex += list.diffForEachFile.Count;
+                            indexes.end = false;
+                            index++;
+                            list.diffForEachFile.Clear();
+                            if (indexes.fileIndex > list.listOfFiles.Count - 1)
                             {
-                                FileContentReader.DisplayFileContentInPanel(content, filePath, startingIndex, indexes, moveNext, i, repo, numDeltas, diff);
+                                break;
                             }
+
+                            GetDiffs.CleanCodePanel();
+                            DiffHelper.PrintNewFileContain(indexes, list, index);
                         }
                         break;
                     case ConsoleKey.UpArrow:
                         {
-                           
+
                         }
                         break;
                 }
@@ -47,7 +69,8 @@ namespace GitClient
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        public static void NavigateThroughCommits(IntPtr repo, Indexes indexes, CommitElements listOfCommits, int height, int width)
+      
+        public static void NavigateThroughCommits(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, int height, int width)
         {
             var size = new DrawPanelRigthSide.FilesBox();
             IntPtr commitPtr = IntPtr.Zero;
@@ -144,32 +167,22 @@ namespace GitClient
 
                     case ConsoleKey.RightArrow:
                         {
-                            indexes.rigth = true;
-                            int index = 1;
-                            CommitDetail(repo, indexes, listOfCommits, clear);
-                            GitOid oid = listOfCommits.IdGitOid[indexes.currentCommitIndex];
-                            if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
+                            if (indexes.enter == true)
                             {
-                                Files.GetFilesAffectedByCommit(repo, commitPtr, index, indexes);
+                                indexes.rigth = true;
+                                int index = 1;
+                                CommitDetail(repo, indexes, listOfCommits, clear);
+                                GitOid oid = listOfCommits.IdGitOid[indexes.currentCommitIndex];
+                                if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
+                                {
+                                    Files.GetFilesAffectedByCommit(repo, commitPtr, index, indexes);
+                                }
                             }
                         }
                         break;
-
-                    case ConsoleKey.LeftArrow:
-                        {
-                            if (indexes.rigth == true)
-                            {
-                                indexes.rigth = false;
-                                Console.Clear();
-                                indexes.displayPanel = false;
-                                DrawExternalBorder.DrawBox();
-                                Commits.PrintCommits(repo, indexes, listOfCommits);
-                            }
-                        }
-                        break;
-
                     case ConsoleKey.Enter:
                         {
+                            indexes.enter = true;
                             if (indexes.rigth == false)
                             {
                                 indexes.displayPanel = true;
@@ -186,7 +199,7 @@ namespace GitClient
                                     DrawExternalBorder.DrawBox();
                                 }
 
-                                Commits.PrintCommits(repo, indexes, listOfCommits);
+                                GetCommits.PrintCommits(repo, indexes, listOfCommits);
                             }
                         }
                         break;
@@ -195,7 +208,7 @@ namespace GitClient
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        public static void CommitDetail(IntPtr repo, Indexes indexes, CommitElements listOfCommits, bool clear)
+        public static void CommitDetail(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, bool clear)
         {
             IntPtr commitPtr = IntPtr.Zero;
             int i = 1;
@@ -222,13 +235,13 @@ namespace GitClient
             }
         }
 
-        private static void VerifySize(IntPtr repo, Indexes indexes, CommitElements listOfCommits, int height, int width)
+        private static void VerifySize(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, int height, int width)
         {
             if (Console.WindowHeight != height && Console.WindowWidth != width)
             {
                 Console.Clear();
                 DrawExternalBorder.DrawBox();
-                Commits.PrintCommits(repo, indexes, listOfCommits);
+                GetCommits.PrintCommits(repo, indexes, listOfCommits);
             }
         }
     }

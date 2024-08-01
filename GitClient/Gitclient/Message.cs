@@ -7,14 +7,14 @@ namespace GitClient
 {
     public class Message
     {
-        public static void ReturnMessage(int index, CommitElements commitElements, Indexes indexes)
+        public static void ReturnMessage(int index, CommitElements commitElements, VariablesForCommits indexes)
         {
             string message;
             string outputMessage;
             int firstIndex = 0;
             int lengthForNow = 0;
             var size = new DrawPanelRigthSide.MessageBox();
-            var messageList = new Commits.Elements();
+            var messageList = new GetCommits.Elements();
             messageList.Message = commitElements.Message[index];
             messageList.Description = commitElements.Description[index];
             

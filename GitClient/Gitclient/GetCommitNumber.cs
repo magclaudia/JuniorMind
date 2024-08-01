@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace GitClient
 {
-    public class CommitNumber
+    public class GetCommitNumber
     {
-        public static void ReturnCommitNumber(CommitElements listOfCommits, Indexes indexes)
+        public static void ReturnCommitNumber(CommitElements listOfCommits, VariablesForCommits indexes)
         {
             var text = string.Empty;
             int commitNumber = indexes.currentCommitIndex;
