@@ -16,7 +16,6 @@ namespace GitClient
         public  List<string> filePath;
         public  List<string> hunks;
         public  List<string> filesCode;
-        public  List<LibGit2Wrapper.GitDiffLineOrigin> origin;
         public  List<string> addLines;
 
         public GetCertainList() 
@@ -29,7 +28,6 @@ namespace GitClient
             filePath = new List<string>();
             hunks = new List<string>();
             filesCode = new List<string>();
-            origin = new List<LibGit2Wrapper.GitDiffLineOrigin>();
             addLines = new List<string>();
         }
     }

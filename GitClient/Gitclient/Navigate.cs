@@ -1,8 +1,4 @@
-﻿
-
-using Gitclient;
-
-namespace GitClient
+﻿namespace GitClient
 {
     public class Navigate
     {
@@ -16,12 +12,13 @@ namespace GitClient
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            GetDiffsLine.GetRowThroughtDiffsLines(index, list.diffForEachFile.Count);
+                            indexes.up = false;
                             if (index == list.diffForEachFile.Count - 1 && indexes.end == false)
                             {
                                 indexes.down = true;
                                 row = 0;
                                 index = 0;
+                                GetDiffsLine.GetRowThroughtDiffsLines(row, list.diffForEachFile.Count);
                             }
 
                             if (row < list.diffForEachFile.Count - 1)
@@ -44,7 +41,8 @@ namespace GitClient
 
                                 if (index < list.diffForEachFile.Count - 1)
                                 {
-                                    DiffHelper.Print(indexes, index, row, fileFullName, j);
+                                    GetDiffsLine.GetRowThroughtDiffsLines(row, list.diffForEachFile.Count);
+                                    DiffHelper.Print(indexes, index, row, fileFullName, j, list);
                                 }
                             }
 
@@ -58,13 +56,24 @@ namespace GitClient
                                 break;
                             }
 
+
                             GetDiffs.CleanCodePanel();
                             DiffHelper.PrintNewFileContain(indexes, list, index);
                         }
                         break;
                     case ConsoleKey.UpArrow:
                         {
+                            if (index > 0 && row > 0)
+                            {
+                                if (index == list.diffForEachFile.Count - 1 && indexes.end == false)
+                                {
+                                    break;
+                                }
 
+                                indexes.up = true;
+                                GetDiffsLine.GetRowThroughtDiffsLines(row, list.diffForEachFile.Count);
+                                DiffHelper.Print(indexes, index, row, fileFullName, j, list);
+                            }
                         }
                         break;
                 }

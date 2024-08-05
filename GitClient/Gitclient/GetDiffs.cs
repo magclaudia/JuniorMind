@@ -62,6 +62,10 @@ namespace GitClient
             list.listOfFiles = filesList.listOfFiles;
             list.listOfDiff = filesList.listOfDiff;
             list.diffForEachFile = filesList.diffForEachFile;
+            list.listOfDiffsForEachFiles.Add(list.diffForEachFile);
+            list.filePath = filesList.filePath;
+            list.hunks = filesList.hunks;
+            list.filesCode = filesList.filesCode;
             int result = LibGit2Wrapper.git_diff_foreach(diff, DiffFileCallback, DiffBinaryCallback, DiffHunkCallback, DiffLineCallback, IntPtr.Zero);
 
             if (result != 0)
@@ -110,12 +114,12 @@ namespace GitClient
             string text = GetDiffs.ResizeTextToFitInPanel($"{(char)line.origin} {content}");
             list.listOfDiff.Add(text);
             list.filesCode.Add(text);
-            list.origin.Add(line.origin);
+            //list.origin.Add(line.origin);
             indexes.nextFile = true;
             return 0;
         }
 
-        public static void Print(VariablesForFiles indexes, int index, int row,  string fileFullName, int j)
+        public static void Print(VariablesForFiles indexes, int index, int row,  string fileFullName, int j, GetCertainList list)
         {
             string text = string.Empty;
             for (int i = 0; i < list.diffForEachFile.Count; i++)
@@ -143,7 +147,6 @@ namespace GitClient
                     case "filePath":
                         {
                             indexes.filesCode = false;
-
                             if (indexes.down == false && row == 0)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -164,7 +167,6 @@ namespace GitClient
                             Console.ForegroundColor = ConsoleColor.Blue;
                             Console.Write(list.diffForEachFile[index]);
                             Console.ResetColor();
-
                         }
                         break;
                     case "filesCode":
@@ -213,7 +215,6 @@ namespace GitClient
             if (indexes.fileIndex < list.listOfFiles.Count - 1)
             {
                 string completeFileName = "";
-
                 indexes.fileIndex++;
                 completeFileName = list.listOfFiles[indexes.fileIndex];
                 string fileName = completeFileName.Remove(0, 5);
@@ -223,8 +224,9 @@ namespace GitClient
                     if (list.listOfDiff[i].Contains(fileName))
                     {
                         index = 0;
+                        list.listOfDiffsForEachFiles.Add(list.diffForEachFile);
                         indexes.down = false;
-                        Print(indexes, index, row, currentFileName, j);
+                        Print(indexes, index, row, currentFileName, j, list);
                     }
 
                     list.diffForEachFile.Add(list.listOfDiff[i]);
@@ -241,7 +243,7 @@ namespace GitClient
                 index = 0;
                 indexes.down = false;
                 indexes.fileIndex++;
-                Print(indexes, index, row, currentFileName, j);
+                Print(indexes, index, row, currentFileName, j, list);
             }
         }
         public static void FilesBackground(string fileFullName, VariablesForFiles indexes)
@@ -316,7 +318,16 @@ namespace GitClient
             Console.ResetColor();
             if (indexes.down == true && row < Console.WindowHeight - 2)
             {
-                index++;
+                if (indexes.up == false)
+                {
+                    index++;
+                }
+                else
+                {
+                    index--;
+                    row = row - 2;
+                }
+
                 CodeBackground(index, row, indexes, j);
                 Navigate.NavigateThroughDiffsContent(row, index, list, indexes, fileFullName, j);
             }
