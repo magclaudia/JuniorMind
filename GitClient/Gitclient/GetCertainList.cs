@@ -10,25 +10,25 @@ namespace GitClient
     {
         public  List<string> listOfFiles;
         public  List<string> filesNames;
-        public  List<string> diffForEachFile;
-        public  List<List<string>> listOfDiffsForEachFiles;
+        public  List<int> startingIndexes;
         public  List<string> listOfDiff;
         public  List<string> filePath;
         public  List<string> hunks;
         public  List<string> filesCode;
         public  List<string> addLines;
+        public List<int> listStartAt;
 
         public GetCertainList() 
         {
             listOfFiles = new List<string>();
             filesNames = new List<string>();
             listOfDiff = new List<string>();
-            diffForEachFile = new List<string>();
-            listOfDiffsForEachFiles = new List<List<string>>();
+            startingIndexes = new List<int>();
             filePath = new List<string>();
             hunks = new List<string>();
             filesCode = new List<string>();
             addLines = new List<string>();
+            listStartAt = new List<int>();
         }
     }
 }

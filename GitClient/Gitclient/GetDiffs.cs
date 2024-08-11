@@ -45,27 +45,22 @@ namespace GitClient
 
     public class DiffHelper
     {
-        private static int row = 0;
-        private static int fileRow = Console.WindowHeight / 2 + 4;
         private static int index = 0;
-        private static bool nextFile;
         private static string fileName = string.Empty;
         private static GetCertainList list = new GetCertainList();
         private static string content = string.Empty;
         private static VariablesForFiles indexes = new VariablesForFiles();
-        private static int j = 1;
 
         public static void PrintDiff(IntPtr repo, IntPtr diff, GetCertainList filesList, VariablesForFiles indexes)
         {
-            nextFile = indexes.nextFile;
             list.filesNames = filesList.filesNames;
             list.listOfFiles = filesList.listOfFiles;
             list.listOfDiff = filesList.listOfDiff;
-            list.diffForEachFile = filesList.diffForEachFile;
-            list.listOfDiffsForEachFiles.Add(list.diffForEachFile);
             list.filePath = filesList.filePath;
             list.hunks = filesList.hunks;
             list.filesCode = filesList.filesCode;
+            list.startingIndexes = filesList.startingIndexes;
+            list.listStartAt = filesList.listStartAt;
             int result = LibGit2Wrapper.git_diff_foreach(diff, DiffFileCallback, DiffBinaryCallback, DiffHunkCallback, DiffLineCallback, IntPtr.Zero);
 
             if (result != 0)
@@ -73,7 +68,6 @@ namespace GitClient
                 throw new Exception("Failed to iterate over diff.");
             }
 
-            index = list.listOfDiffsForEachFiles.Count;
             PrintNewFileContain(indexes, filesList, index);
         }
 
@@ -84,10 +78,11 @@ namespace GitClient
             Console.ForegroundColor = ConsoleColor.DarkGray;
             string fileFullName = list.listOfFiles[indexes.fileIndex];
             fileName = list.filesNames[indexes.fileIndex];
+            string text = GetDiffs.ResizeTextToFitInPanel($"{newFilePath}");
             if (newFilePath!.Contains(fileName))
             {
-                list.listOfDiff.Add(newFilePath);
-                list.filePath.Add(newFilePath);
+                list.listOfDiff.Add(text);
+                list.filePath.Add(text);
             }
 
             indexes.fileIndex++;
@@ -114,30 +109,73 @@ namespace GitClient
             string text = GetDiffs.ResizeTextToFitInPanel($"{(char)line.origin} {content}");
             list.listOfDiff.Add(text);
             list.filesCode.Add(text);
-            //list.origin.Add(line.origin);
             indexes.nextFile = true;
             return 0;
         }
 
-        public static void Print(VariablesForFiles indexes, int index, int row,  string fileFullName, int j, GetCertainList list)
+        public static void PrintNewFileContain(VariablesForFiles indexes, GetCertainList list, int index)
+        {
+            string currentFileName = list.listOfFiles[indexes.fileIndex];
+            FilesBackground(currentFileName, indexes);
+
+            if (indexes.up == false)
+            {
+                indexes.fileIndex++;
+            }
+
+
+            if (indexes.fileIndex < list.listOfFiles.Count)
+            {
+                string completeFileName = "";
+                completeFileName = list.listOfFiles[indexes.fileIndex];
+                string fileName = completeFileName.Remove(0, 5);
+
+                for (int i = index; i <= list.listOfDiff.Count - 1; i++)
+                {
+                    if (i == 0)
+                    {
+                        list.startingIndexes.Add(i);
+                    }
+                    else if (list.listOfDiff[i].Contains(fileName))
+                    {
+                        list.startingIndexes.Add(i);
+                        indexes.down = false;
+                        indexes.diffForEachFileIndex = i - 1;
+                        Print(indexes, index, currentFileName, list);
+                    }
+                }
+            }
+
+            if (indexes.fileIndex == list.listOfFiles.Count)
+            {
+                indexes.diffForEachFileIndex = list.listOfDiff.Count - 1;
+                list.startingIndexes.Add(indexes.diffForEachFileIndex + 1);
+                indexes.down = false;
+                Print(indexes, index, currentFileName, list);
+            }
+        }
+
+        public static void Print(VariablesForFiles indexes, int index, string fileFullName, GetCertainList list)
         {
             string text = string.Empty;
-            for (int i = 0; i < list.diffForEachFile.Count; i++)
+            GetDiffsLine.GetRowThroughtDiffsLines(indexes.currentLine, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
+
+            for (int i = index; i <= indexes.diffForEachFileIndex; i++)
             {
-                if (row == Console.WindowHeight - 2)
+                if (indexes.row == Console.WindowHeight - 2)
                 {
-                    Navigate.NavigateThroughDiffsContent(row, index, list, indexes, fileFullName, j);
+                    Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
                 }
 
-                if (list.filePath.Contains(list.diffForEachFile[index]))
+                if (list.filePath.Contains(list.listOfDiff[i]))
                 {
                     text = "filePath";
                 }
-                else if (list.hunks.Contains(list.diffForEachFile[index]))
+                else if (list.hunks.Contains(list.listOfDiff[i]))
                 {
                     text = "hunk";
                 }
-                else if (list.filesCode.Contains(list.diffForEachFile[index]))
+                else if (list.filesCode.Contains(list.listOfDiff[i]))
                 {
                     text = "filesCode";
                 }
@@ -146,197 +184,155 @@ namespace GitClient
                 {
                     case "filePath":
                         {
-                            indexes.filesCode = false;
-                            if (indexes.down == false && row == 0)
+                            if (indexes.down == false && indexes.row == 0)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
 
-                            row++;
-                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, row);
+                            indexes.row++;
+                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row);
                             Console.ForegroundColor = ConsoleColor.DarkGray;
-                            Console.Write(list.diffForEachFile[index]);
+                            Console.Write(list.listOfDiff[i]);
                             Console.ResetColor();
                         }
                         break;
                     case "hunk":
                         {
-                            indexes.filesCode = false;
-                            row++;
-                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, row);
+                            if (indexes.row == 0 && indexes.down == false)
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                            }
+
+                            indexes.row++;
+                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row);
                             Console.ForegroundColor = ConsoleColor.Blue;
-                            Console.Write(list.diffForEachFile[index]);
+                            Console.Write(list.listOfDiff[i]);
                             Console.ResetColor();
                         }
                         break;
                     case "filesCode":
                         {
-                            if (indexes.down == true)
+                            if (indexes.row == 0 && indexes.down == false)
                             {
-                                indexes.filesCode = true;
+                                Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
 
-                            row++;
-                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, row);
-                            content = list.diffForEachFile[index];
+                            indexes.row++;
+                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row);
+                            content = list.listOfDiff[i];
                             SetColorForLinesOfCode(content);
                         }
                         break;
                 }
 
-                if (index < list.diffForEachFile.Count - 1 && indexes.down == false && row < Console.WindowHeight - 2)
+                if (index == indexes.diffForEachFileIndex || indexes.row == Console.WindowHeight - 2)
+                {
+                    indexes.end = true;
+                    indexes.numberOfNavigations++;
+                    break;
+                }
+
+                if (index <= indexes.diffForEachFileIndex && indexes.row < Console.WindowHeight - 2)
                 {
                     index++;
                 }
-                else
+
+                if (indexes.down == true)
                 {
-                    break;
-                }
-                
-            }
-
-            if (list.diffForEachFile.Count < Console.WindowHeight - 2)
-            {
-                TextFitInPanel(fileFullName, index, row, indexes, j);
-            }
-            else
-            {
-                TextBiggerThenPanel(fileFullName, index, row, indexes, j);
-            }
-
-            Navigate.NavigateThroughDiffsContent(row, index, list, indexes, fileFullName, j);
-        }
-
-        public static void PrintNewFileContain(VariablesForFiles indexes, GetCertainList list, int index)
-        {
-            string currentFileName = list.listOfFiles[indexes.fileIndex];
-            FilesBackground(currentFileName, indexes);
-            
-            if (indexes.fileIndex < list.listOfFiles.Count - 1)
-            {
-                string completeFileName = "";
-                indexes.fileIndex++;
-                completeFileName = list.listOfFiles[indexes.fileIndex];
-                string fileName = completeFileName.Remove(0, 5);
-
-                for (int i = indexes.diffIndex; i < list.listOfDiff.Count; i++)
-                {
-                    if (list.listOfDiff[i].Contains(fileName))
+                    if (indexes.diffForEachFileIndex <= Console.WindowHeight - 2)
                     {
-                        index = 0;
-                        list.listOfDiffsForEachFiles.Add(list.diffForEachFile);
-                        indexes.down = false;
-                        Print(indexes, index, row, currentFileName, j, list);
+                        TextFitInPanel(fileFullName, index, indexes);
                     }
-
-                    list.diffForEachFile.Add(list.listOfDiff[i]);
+                    else
+                    {
+                        TextExceedingPanelHeight(fileFullName, index, indexes);
+                    }
                 }
             }
 
-            if (indexes.fileIndex == list.listOfFiles.Count - 1)
-            {
-                for (int i = indexes.diffIndex; i < list.listOfDiff.Count; i++)
-                {
-                    list.diffForEachFile.Add(list.listOfDiff[i]);
-                }
-
-                index = 0;
-                indexes.down = false;
-                indexes.fileIndex++;
-                Print(indexes, index, row, currentFileName, j, list);
-            }
+            indexes.down = true;
+            Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
         }
+
         public static void FilesBackground(string fileFullName, VariablesForFiles indexes)
         {
+            indexes.nextFile = true;
+
             if (indexes.fileIndex <= list.listOfFiles.Count - 1)
             {
-                Console.SetCursorPosition(1, fileRow);
+                Console.SetCursorPosition(1, indexes.fileRow);
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                 Console.Write(fileFullName);
                 Console.ResetColor();
 
-                if (indexes.fileIndex >= 1)
+                if (indexes.fileIndex >= 1 || indexes.up == true)
                 {
-                    Console.SetCursorPosition(1, fileRow - 1);
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    fileFullName = list.listOfFiles[indexes.fileIndex - 1];
+                    if (indexes.up == true)
+                    {
+                        Console.SetCursorPosition(1, indexes.fileRow + 1);
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        fileFullName = list.listOfFiles[indexes.fileIndex + 1];
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(1, indexes.fileRow - 1);
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        fileFullName = list.listOfFiles[indexes.fileIndex - 1];
+                    }
+
                     SetColoForFiles(fileFullName, indexes);
                 }
 
-                fileRow++;
-            }
-        }
-
-        private static void CodeBackground(int index, int row, VariablesForFiles indexes, int j)
-        {
-            if (index <= list.diffForEachFile.Count - 1)
-            {
-                if (row < Console.WindowHeight - 2)
-                {
-                    Console.SetCursorPosition(Console.WindowWidth / 2 + 3, row + 1);
-                    Console.BackgroundColor = ConsoleColor.DarkBlue;
-                    Console.Write(list.diffForEachFile[index]);
-                }
-                else
-                {
-                    Console.SetCursorPosition(Console.WindowWidth / 2 + 3, row);
-                    Console.BackgroundColor = ConsoleColor.DarkBlue;
-                    Console.Write(list.diffForEachFile[index - 1]);
-                }
-
-                Console.ResetColor();
-                if (index == list.diffForEachFile.Count - 1 || row >= Console.WindowHeight - 3 && list.diffForEachFile.Count - 1 > Console.WindowHeight - 2)
-                {
-                    indexes.end = true;
-                }
-            }
-        }
-
-        public static void TextBiggerThenPanel(string fileFullName, int index, int row, VariablesForFiles indexes, int j)
-        {
-            
-            if (row == Console.WindowHeight - 2 && indexes.end == true)
-            {
-                indexes.down = true;
-            }
-
-            if (indexes.down == true && row <= Console.WindowHeight - 2)
-            {
-                index++;
-                CodeBackground(index, row, indexes, j);
-                Console.ResetColor();
-                Navigate.NavigateThroughDiffsContent(row, index, list, indexes, fileFullName, j);
-            }
-            else if (indexes.end == true)
-            {
-                Navigate.NavigateThroughDiffsContent(row, index, list, indexes, fileFullName, j);
-            }
-        }
-
-        public static void TextFitInPanel(string fileFullName, int index, int row, VariablesForFiles indexes, int j)
-        {
-            Console.ResetColor();
-            if (indexes.down == true && row < Console.WindowHeight - 2)
-            {
                 if (indexes.up == false)
                 {
-                    index++;
+                    indexes.fileRow++;
+                }
+            }
+        }
+
+        private static void CodeBackground(int index, VariablesForFiles indexes, string fileFullName)
+        {
+            if (index <= indexes.diffForEachFileIndex)
+            {
+                if (indexes.row < Console.WindowHeight - 2)
+                {
+                    Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row + 1);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    Console.Write(list.listOfDiff[index]);
+                    Console.ResetColor();
+                    GetDiffsLine.GetRowThroughtDiffsLines(indexes.currentLine + 1, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
                 }
                 else
                 {
-                    index--;
-                    row = row - 2;
+                    DiffHelper.Print(indexes, index, fileFullName, list);
+                    Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    Console.Write(list.listOfDiff[index - 1]);
                 }
 
-                CodeBackground(index, row, indexes, j);
-                Navigate.NavigateThroughDiffsContent(row, index, list, indexes, fileFullName, j);
+                Console.ResetColor();
+            }
+        }
+
+        public static void TextExceedingPanelHeight(string fileFullName, int index, VariablesForFiles indexes)
+        {
+            CodeBackground(index, indexes, fileFullName);
+            Console.ResetColor();
+            Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
+        }
+
+        public static void TextFitInPanel(string fileFullName, int index, VariablesForFiles indexes)
+        {
+            if (indexes.down == true && indexes.row < Console.WindowHeight - 2)
+            {
+                CodeBackground(index, indexes, fileFullName);
+                Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
             }
 
             if (indexes.end == true)
             {
-                Navigate.NavigateThroughDiffsContent(row, index, list, indexes, fileFullName, j);
+                Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
             }
-
         }
 
         private static void SetColoForFiles(string fileFullName, VariablesForFiles indexes)
@@ -371,7 +367,7 @@ namespace GitClient
         private static void SetColorForLinesOfCode(string content)
         {
             var firstchar = content.First();
-            switch(firstchar)
+            switch (firstchar)
             {
                 case ' ':
                     {

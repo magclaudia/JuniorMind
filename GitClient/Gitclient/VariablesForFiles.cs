@@ -8,7 +8,6 @@ namespace GitClient
 {
     public class VariablesForFiles
     {
-        public bool filesCode;
         public bool end;
         public int fileIndex;
         public int diffIndex;
@@ -18,12 +17,15 @@ namespace GitClient
         public bool down;
         public int indexForFiles;
         public int countFilesContain;
-
+        public int currentLine;
+        public int diffForEachFileIndex;
+        public int row;
+        public int fileRow;
+        public int numberOfNavigations;
         public VariablesForFiles()
         {
             nextFile = false;
-            filesCode = false;
-            end = false;
+            end = true;
             fileIndex = 0;
             diffIndex = 0;
             numberOfFiles = 0;
@@ -31,6 +33,11 @@ namespace GitClient
             down = false;
             indexForFiles = 0;
             countFilesContain = 0;
+            currentLine = 0;
+            diffForEachFileIndex = 0;
+            row = 0;
+            fileRow = Console.WindowHeight / 2 + 4;
+            numberOfNavigations = 0;
         }
     }
 }
