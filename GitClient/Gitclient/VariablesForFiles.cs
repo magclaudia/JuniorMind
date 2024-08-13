@@ -10,7 +10,6 @@ namespace GitClient
     {
         public bool end;
         public int fileIndex;
-        public int diffIndex;
         public int numberOfFiles;
         public bool nextFile;
         public bool up;
@@ -22,12 +21,13 @@ namespace GitClient
         public int row;
         public int fileRow;
         public int numberOfNavigations;
+        //public int start;
+        public int max;
         public VariablesForFiles()
         {
             nextFile = false;
             end = true;
             fileIndex = 0;
-            diffIndex = 0;
             numberOfFiles = 0;
             up = false;
             down = false;
@@ -38,6 +38,8 @@ namespace GitClient
             row = 0;
             fileRow = Console.WindowHeight / 2 + 4;
             numberOfNavigations = 0;
+           // start = 0;
+            max = 0;
         }
     }
 }

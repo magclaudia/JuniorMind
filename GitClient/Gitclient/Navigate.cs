@@ -12,7 +12,15 @@
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            if (index == list.listOfDiff.Count - 1 && indexes.currentLine == list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1])
+                            if (indexes.up == true && index == 0)
+                            {
+                                //indexes.numberOfNavigations++;
+                                indexes.row = 0;
+                            }
+
+                            indexes.up = false;
+                            indexes.max = list.listStartAt.Count - 1;
+                            if (index == list.listOfDiff.Count - 1 && indexes.currentLine == list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1] - 1)
                             {
                                 break;
                             }
@@ -27,14 +35,23 @@
                                 else
                                 {
                                     index = list.startingIndexes[indexes.fileIndex - 1];
+                                    if (index == 0)
+                                    {
+                                        list.listStartAt.Add(index);
+                                    }
+                                    else if (list.listStartAt.Last() < index)
+                                    {
+                                        list.listStartAt.Add(index);
+                                    }
                                 }
 
                                 indexes.row = 0;
                                 indexes.down = true;
                                 indexes.end = false;
+                                
                             }
 
-                            if (indexes.numberOfNavigations > 1 && index == indexes.diffForEachFileIndex)
+                            if (indexes.numberOfNavigations == 1 && index == indexes.diffForEachFileIndex)
                             {
                                 GetDiffs.CleanCodePanel();
                                 indexes.row = 0;
@@ -59,54 +76,58 @@
                         break;
                     case ConsoleKey.UpArrow:
                         {
-                            if (index == indexes.diffForEachFileIndex && indexes.end == false)
+                            if (index == 0 && indexes.up == true)
                             {
+                                indexes.end = true;
                                 break;
                             }
 
-                            indexes.up = true;
-                            if (list.listOfDiff[index] != list.filePath[0])
+                            if (list.filePath[indexes.fileIndex - 1] == list.listOfDiff[index] && index > 0 || indexes.currentLine == 0)
                             {
-                                if (index >= 0 && indexes.row == 0)
-                                {
-                                    indexes.nextFile = true;
-                                }
+                                indexes.nextFile = true;
+                            }
+                            else
+                            {
+                                indexes.nextFile = false;
+                            }
 
-                                if (indexes.row != indexes.diffIndex)
-                                {
-                                    indexes.currentLine--;
-                                }
+                            indexes.up = true;
 
-                                if (indexes.nextFile == true)
+                            if (indexes.nextFile == true)
+                            {
+                                indexes.diffForEachFileIndex = list.listStartAt[indexes.max] - 1;
+                                indexes.max--;
+                                index = list.listStartAt[indexes.max];
+                                GetDiffs.CleanCodePanel();
+                                indexes.row = 0;
+                                indexes.currentLine = 0;
+                                indexes.numberOfNavigations = 0;
+                                indexes.down = false;
+                                indexes.end = false;
+                            }
+                            else
+                            {
+                                if (indexes.row == 0)
                                 {
-                                    index = ChooseStartingIndexForNextFileContain(list, index);
+                                    indexes.diffForEachFileIndex = list.listStartAt[indexes.max];
+                                    indexes.max--;
+                                    index = list.listStartAt[indexes.max];
                                     GetDiffs.CleanCodePanel();
-                                    if (indexes.fileIndex > 0)
-                                    {
-                                        indexes.fileIndex = indexes.fileIndex - 2;
-                                        indexes.fileRow = indexes.fileRow - 2;
-                                        indexes.currentLine = list.startingIndexes[indexes.fileIndex];
-                                    }
-
-                                    DiffHelper.PrintNewFileContain(indexes, list, index);
-                                }
-                                else
-                                {
-                                    DiffHelper.Print(indexes, index, fileFullName, list);
+                                    indexes.row = 0;
+                                    indexes.currentLine = 0;
+                                    indexes.numberOfNavigations = 0;
+                                    indexes.down = false;
+                                    indexes.up = false;
+                                    indexes.end = false;
                                 }
                             }
 
-                            indexes.up = false;
+                            DiffHelper.Print(indexes, index, fileFullName, list);
                         }
                         break;
                 }
             }
             while (keyInfo.Key != ConsoleKey.Escape);
-        }
-
-        private static void NavigateDownThroughFilesContainingTextSmallerThenPanel()
-        {
-
         }
 
         public static void NavigateThroughCommits(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, int height, int width)
