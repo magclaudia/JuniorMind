@@ -12,11 +12,7 @@
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            if (indexes.up == true && index == 0)
-                            {
-                                indexes.row = 0;
-                            }
-
+                            indexes.up = false;
                             if (index == list.listOfDiff.Count - 1 && indexes.currentLine == list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1])
                             {
                                 break;
@@ -81,52 +77,22 @@
                         break;
                     case ConsoleKey.UpArrow:
                         {
+                            indexes.up = true;
                             if (index == 0 && indexes.up == true)
                             {
                                 indexes.end = true;
                                 break;
                             }
 
-                            if (list.filePath[indexes.fileIndex - 1] == list.listOfDiff[index] && index > 0 || indexes.currentLine == 0)
+                            if (list.listStartAt.Contains(index) && list.startingIndexes.Contains(index))
                             {
-                                indexes.nextFile = true;
-                            }
-                            else
-                            {
-                                indexes.nextFile = false;
-                            }
-
-                            indexes.up = true;
-
-                            if (indexes.nextFile == true)
-                            {
-                                indexes.diffForEachFileIndex = list.listStartAt[indexes.max] - 1;
-                                indexes.max--;
-                                index = list.listStartAt[indexes.max];
                                 GetDiffs.CleanCodePanel();
                                 indexes.row = 0;
                                 indexes.currentLine = 0;
                                 indexes.numberOfNavigations = 0;
-                                indexes.down = false;
-                                indexes.end = false;
-                            }
-                            else
-                            {
-                                if (indexes.row == 0)
-                                {
-                                    indexes.diffForEachFileIndex = list.listStartAt[indexes.max];
-                                    indexes.max--;
-                                    index = list.listStartAt[indexes.max];
-                                    GetDiffs.CleanCodePanel();
-                                    indexes.row = 0;
-                                    indexes.currentLine = 0;
-                                    indexes.numberOfNavigations = 0;
-                                    indexes.down = false;
-                                    indexes.up = false;
-                                    indexes.end = false;
-                                }
                             }
 
+                            indexes.currentLine--;
                             DiffHelper.Print(indexes, index, fileFullName, list);
                         }
                         break;
@@ -312,7 +278,7 @@
 
         private static void ChooseStartingIndexForNextFileContain(GetCertainList list, int index, VariablesForFiles indexes)
         {
-            if (indexes.up == false)
+            if (indexes.up == false && !list.listStartAt.Contains(index))
             {
                 list.listStartAt.Add(index);
             }

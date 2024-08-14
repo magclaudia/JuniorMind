@@ -219,7 +219,7 @@ namespace GitClient
                     break;
                 }
 
-                if (index < list.startingIndexes[indexes.fileIndex]/* && indexes.row < Console.WindowHeight - 2 && indexes.up == false && indexes.down == false*/)
+                if (index < list.startingIndexes[indexes.fileIndex] && indexes.up == false)
                 {
                     index++;
                 }
@@ -234,15 +234,6 @@ namespace GitClient
                     {
                         TextExceedingPanelHeight(fileFullName, index, indexes);
                     }
-                }
-
-                if (indexes.max == 0 && index == indexes.diffForEachFileIndex && indexes.up == true)
-                {
-                    index = 0;
-                    indexes.up = true;
-                    indexes.row = 0;
-                    indexes.numberOfNavigations = 1;
-                    list.listStartAt.Clear();
                 }
             }
 
@@ -299,7 +290,7 @@ namespace GitClient
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.Write(list.listOfDiff[index]);
                     Console.ResetColor();
-                    GetDiffsLine.GetRowThroughtDiffsLines(indexes.currentLine + 1, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
+                    GetDiffsLine.GetRowThroughtDiffsLines(indexes.currentLine/* + 1*/, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
                 }
                 else
                 {
@@ -319,7 +310,6 @@ namespace GitClient
             {
                 index--;
                 indexes.row = indexes.row - 2;
-                indexes.currentLine--;
             }
 
             CodeBackground(index, indexes, fileFullName);

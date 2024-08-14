@@ -11,6 +11,11 @@ namespace GitClient
         public static void GetRowThroughtDiffsLines(int row, int totalRows, VariablesForFiles indexes, GetCertainList list)
         {
             int length = $"Line: {row + 1}/{totalRows} ".Length;
+            if (indexes.fileIndex == 1)
+            {
+                row++;
+            }
+
             if (row == 0)
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 3, 0);
