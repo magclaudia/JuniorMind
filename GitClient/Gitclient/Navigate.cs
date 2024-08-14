@@ -14,20 +14,17 @@
                         {
                             if (indexes.up == true && index == 0)
                             {
-                                //indexes.numberOfNavigations++;
                                 indexes.row = 0;
                             }
 
-                            indexes.up = false;
-                            indexes.max = list.listStartAt.Count - 1;
-                            if (index == list.listOfDiff.Count - 1 && indexes.currentLine == list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1] - 1)
+                            if (index == list.listOfDiff.Count - 1 && indexes.currentLine == list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1])
                             {
                                 break;
                             }
 
                             if (indexes.end == true && indexes.numberOfNavigations == 1)
                             {
-                                if (index <= indexes.diffForEachFileIndex && indexes.currentLine > Console.WindowHeight - 2)
+                                if (index < list.startingIndexes[indexes.fileIndex] && indexes.currentLine > Console.WindowHeight - 2)
                                 {
                                     index = list.listStartAt[list.listStartAt.Count - 1];
                                     indexes.currentLine--;
@@ -37,37 +34,45 @@
                                     index = list.startingIndexes[indexes.fileIndex - 1];
                                     if (index == 0)
                                     {
-                                        list.listStartAt.Add(index);
+                                        ChooseStartingIndexForNextFileContain(list, index, indexes);
                                     }
-                                    else if (list.listStartAt.Last() < index)
+                                    else if (!list.listStartAt.Contains(index))
                                     {
-                                        list.listStartAt.Add(index);
+                                        ChooseStartingIndexForNextFileContain(list, index, indexes);
                                     }
                                 }
 
                                 indexes.row = 0;
                                 indexes.down = true;
                                 indexes.end = false;
-                                
                             }
 
-                            if (indexes.numberOfNavigations == 1 && index == indexes.diffForEachFileIndex)
+                            if (index == list.startingIndexes[indexes.fileIndex] - 1)
                             {
                                 GetDiffs.CleanCodePanel();
                                 indexes.row = 0;
                                 index++;
+                                ChooseStartingIndexForNextFileContain(list, index, indexes);
                                 indexes.numberOfNavigations = 0;
                                 indexes.currentLine = 0;
-                                DiffHelper.PrintNewFileContain(indexes, list, index);
+                                string currentFileName = list.listOfFiles[indexes.fileIndex];
+                                DiffHelper.FilesBackground(currentFileName, indexes);
+                                if (indexes.fileIndex <= list.listOfFiles.Count - 1)
+                                {
+                                    indexes.fileIndex++;
+                                }
+
+                                indexes.down = false;
+
                             }
-                            else if (indexes.numberOfNavigations > 1 && index < indexes.diffForEachFileIndex)
+                            else if (index < list.startingIndexes[indexes.fileIndex] && indexes.row == Console.WindowHeight - 2)
                             {
                                 GetDiffs.CleanCodePanel();
                                 indexes.row = 0;
-                                indexes.numberOfNavigations = 0;
                                 index++;
+                                ChooseStartingIndexForNextFileContain(list, index, indexes);
+                                indexes.numberOfNavigations = 0;
                                 indexes.down = false;
-                                list.listStartAt.Add(index);
                             }
 
                             indexes.currentLine++;
@@ -305,23 +310,12 @@
             }
         }
 
-        private static int ChooseStartingIndexForNextFileContain(GetCertainList list, int index)
+        private static void ChooseStartingIndexForNextFileContain(GetCertainList list, int index, VariablesForFiles indexes)
         {
-            int result = 0;
-            if (index > list.startingIndexes[0] && index <= list.startingIndexes[1])
+            if (indexes.up == false)
             {
-                result = list.startingIndexes[0];
+                list.listStartAt.Add(index);
             }
-            else if (index > list.startingIndexes[1] && index <= list.startingIndexes[2])
-            {
-                result = list.startingIndexes[1];
-            }
-            else
-            {
-                result = list.startingIndexes[2];
-            }
-
-            return result;
         }
     }
 }

@@ -130,33 +130,16 @@ namespace GitClient
                 completeFileName = list.listOfFiles[indexes.fileIndex];
                 string fileName = completeFileName.Remove(0, 5);
 
-                for (int i = index; i <= list.listOfDiff.Count - 1; i++)
+                for (int i = index; i <= list.filePath.Count - 1; i++)
                 {
-                    if (i == 0 && indexes.up == false)
-                    {
-                        list.startingIndexes.Add(i);
-                    }
-                    else if (list.listOfDiff[i].Contains(fileName))
-                    {
-                        if (indexes.up == false)
-                        {
-                            list.startingIndexes.Add(i);
-                        }
-
-                        indexes.down = false;
-                        indexes.diffForEachFileIndex = i - 1;
-                        Print(indexes, index, currentFileName, list);
-                    }
+                    var ddd = list.listOfDiff.IndexOf(list.listOfDiff.Find(x => x.Contains(list.filePath[i]))!);
+                    list.startingIndexes.Add(ddd);
                 }
+
+                list.startingIndexes.Add(list.listOfDiff.Count);
             }
 
-            if (indexes.fileIndex == list.listOfFiles.Count)
-            {
-                indexes.diffForEachFileIndex = list.listOfDiff.Count - 1;
-                list.startingIndexes.Add(indexes.diffForEachFileIndex + 1);
-                indexes.down = false;
-                Print(indexes, index, currentFileName, list);
-            }
+            Print(indexes, index, currentFileName, list);
         }
 
         public static void Print(VariablesForFiles indexes, int index, string fileFullName, GetCertainList list)
@@ -164,7 +147,7 @@ namespace GitClient
             string text = string.Empty;
             GetDiffsLine.GetRowThroughtDiffsLines(indexes.currentLine, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
 
-            for (int i = index; i <= indexes.diffForEachFileIndex; i++)
+            for (int i = index; i <= list.startingIndexes[indexes.fileIndex]; i++)
             {
                 if (indexes.row == Console.WindowHeight - 2)
                 {
@@ -229,21 +212,21 @@ namespace GitClient
                         break;
                 }
 
-                if (index == indexes.diffForEachFileIndex && indexes.up == false || indexes.row == Console.WindowHeight - 2 && indexes.up == false)
+                if (index == list.startingIndexes[indexes.fileIndex] - 1 && indexes.up == false || indexes.row == Console.WindowHeight - 2 && indexes.up == false)
                 {
                     indexes.end = true;
                     indexes.numberOfNavigations++;
                     break;
                 }
 
-                if (index <= indexes.diffForEachFileIndex && indexes.row < Console.WindowHeight - 2 && indexes.up == false)
+                if (index < list.startingIndexes[indexes.fileIndex]/* && indexes.row < Console.WindowHeight - 2 && indexes.up == false && indexes.down == false*/)
                 {
                     index++;
                 }
 
                 if (indexes.down == true)
                 {
-                    if (indexes.diffForEachFileIndex <= Console.WindowHeight - 2)
+                    if (list.startingIndexes[indexes.fileIndex] <= Console.WindowHeight - 2)
                     {
                         TextFitInPanel(fileFullName, index, indexes);
                     }
@@ -308,7 +291,7 @@ namespace GitClient
 
         private static void CodeBackground(int index, VariablesForFiles indexes, string fileFullName)
         {
-            if (index <= indexes.diffForEachFileIndex)
+            if (index < list.startingIndexes[indexes.fileIndex])
             {
                 if (indexes.row < Console.WindowHeight - 2)
                 {

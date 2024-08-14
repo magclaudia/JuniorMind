@@ -21,7 +21,6 @@ namespace GitClient
         public int row;
         public int fileRow;
         public int numberOfNavigations;
-        //public int start;
         public int max;
         public VariablesForFiles()
         {
@@ -38,7 +37,6 @@ namespace GitClient
             row = 0;
             fileRow = Console.WindowHeight / 2 + 4;
             numberOfNavigations = 0;
-           // start = 0;
             max = 0;
         }
     }

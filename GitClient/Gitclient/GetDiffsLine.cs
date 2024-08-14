@@ -19,7 +19,7 @@ namespace GitClient
                 Console.Write($"Line: {row + 1}/{totalRows} ");
 
             }
-            else if (row <= indexes.diffForEachFileIndex + 1 && row >= 1)
+            else if (row <= list.startingIndexes[indexes.fileIndex] && row >= 1)
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 3, 0);
                 Console.Write(new string(' ', length + 2));
