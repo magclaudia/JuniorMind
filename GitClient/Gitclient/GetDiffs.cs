@@ -126,7 +126,6 @@ namespace GitClient
             if (indexes.fileIndex < list.listOfFiles.Count)
             {
                 string completeFileName = "";
-                
                 completeFileName = list.listOfFiles[indexes.fileIndex];
                 string fileName = completeFileName.Remove(0, 5);
 
@@ -149,6 +148,11 @@ namespace GitClient
 
             for (int i = index; i <= list.startingIndexes[indexes.fileIndex]; i++)
             {
+                if (i == 0 && indexes.up == false && !list.listStartAt.Contains(index))
+                {
+                    list.listStartAt.Add(index);
+                }
+
                 if (indexes.row == Console.WindowHeight - 2)
                 {
                     Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
@@ -215,7 +219,18 @@ namespace GitClient
                 if (index == list.startingIndexes[indexes.fileIndex] - 1 && indexes.up == false || indexes.row == Console.WindowHeight - 2 && indexes.up == false)
                 {
                     indexes.end = true;
+                    indexes.nextFile = false;
                     indexes.numberOfNavigations++;
+
+                    if (indexes.up == false && !list.listStartAt.Contains(index + 1))
+                    {
+                        list.listStartAt.Add(index + 1);
+                    }
+
+                    var d = list.listStartAt.IndexOf(index + 1) - 1;
+                    index = list.listStartAt[indexes.x];
+                    indexes.row = 0;
+                    Console.SetCursorPosition(Console.WindowWidth / 2 + 3, 1);
                     break;
                 }
 
@@ -247,6 +262,11 @@ namespace GitClient
 
             if (indexes.fileIndex <= list.listOfFiles.Count - 1)
             {
+                //if (indexes.up == true)
+                //{
+                //    indexes.fileRow = indexes.fileRow - 2;
+                //}
+
                 Console.SetCursorPosition(1, indexes.fileRow);
                 Console.Write(new string(' ', (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4));
                 Console.SetCursorPosition(1, indexes.fileRow);
@@ -259,9 +279,10 @@ namespace GitClient
                     if (indexes.up == true)
                     {
                         indexes.fileRow++;
+                        indexes.fileIndex++;
                         Console.SetCursorPosition(1, indexes.fileRow);
                         Console.BackgroundColor = ConsoleColor.Black;
-                        fileFullName = list.listOfFiles[indexes.fileIndex + 1];
+                        fileFullName = list.listOfFiles[indexes.fileIndex];
                     }
                     else
                     {

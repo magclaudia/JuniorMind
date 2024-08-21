@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace GitClient
         public int row;
         public int fileRow;
         public int numberOfNavigations;
+        public int x;
+
         public VariablesForFiles()
         {
             nextFile = false;
@@ -34,6 +37,7 @@ namespace GitClient
             row = 0;
             fileRow = Console.WindowHeight / 2 + 4;
             numberOfNavigations = 0;
+            x = 0;
         }
     }
 }
