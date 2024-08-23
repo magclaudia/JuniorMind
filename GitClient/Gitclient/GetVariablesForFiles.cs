@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GitClient
 {
-    public class VariablesForFiles
+    public class GetVariablesForFiles
     {
         public bool end;
         public int fileIndex;
@@ -22,8 +22,9 @@ namespace GitClient
         public int fileRow;
         public int numberOfNavigations;
         public int x;
+        public int lastLine;
 
-        public VariablesForFiles()
+        public GetVariablesForFiles()
         {
             nextFile = false;
             end = true;
@@ -33,11 +34,12 @@ namespace GitClient
             down = false;
             indexForFiles = 0;
             countFilesContain = 0;
-            currentLine = 0;
+            currentLine = 1;
             row = 0;
             fileRow = Console.WindowHeight / 2 + 4;
             numberOfNavigations = 0;
             x = 0;
+            lastLine = 0;
         }
     }
 }

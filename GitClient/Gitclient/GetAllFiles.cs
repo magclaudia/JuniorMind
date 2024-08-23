@@ -81,7 +81,7 @@ namespace GitClient
 
             if (indexes.rigth == true)
             {
-                var variables = new VariablesForFiles();
+                var variables = new GetVariablesForFiles();
                 GetDiffs.GetFileContent(repo, numDeltas, diff, variables, files);
             }
         }

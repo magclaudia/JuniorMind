@@ -2,7 +2,7 @@
 {
     public class Navigate
     {
-        public static void NavigateThroughDiffsContent(int index, GetCertainList list, VariablesForFiles indexes, string fileFullName)
+        public static void NavigateThroughDiffsContent(int index, GetCertainList list, GetVariablesForFiles indexes, string fileFullName)
         {
             ConsoleKeyInfo keyInfo;
             do
@@ -34,6 +34,7 @@
                                 index++;
                                 indexes.down = false;
                                 indexes.x++;
+
                             }
                             else if (index + 1 < list.startingIndexes[indexes.fileIndex] && indexes.row == Console.WindowHeight - 3)
                             {
@@ -45,7 +46,17 @@
                                 indexes.x++;
                             }
 
-                            indexes.currentLine++;
+                            if (indexes.row <= Console.WindowHeight - 2 || index == list.startingIndexes[indexes.fileIndex] - 1)
+                            {
+                                indexes.currentLine++;
+                            }
+
+                            int totalLines = list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1];
+                            if (index == list.listStartAt[indexes.x] && totalLines - indexes.currentLine < Console.WindowHeight - 2 && totalLines > Console.WindowHeight - 2)
+                            {
+                                GetDiffsLine.GetLineIfDownMoves(list, indexes);
+                            }
+
                             DiffHelper.Print(indexes, index, fileFullName, list);
                         }
                         break;
@@ -62,7 +73,6 @@
                             {
                                 GetDiffs.CleanCodePanel();
                                 indexes.row = 0;
-                                indexes.currentLine = 0;
                                 indexes.numberOfNavigations = 0;
 
                                 if (list.startingIndexes.Contains(index))
@@ -71,12 +81,17 @@
                                     indexes.fileRow = indexes.fileRow - 2;
                                     string currentFileName = list.listOfFiles[indexes.fileIndex];
                                     DiffHelper.FilesBackground(currentFileName, indexes);
-
                                 }
 
                                 indexes.down = false;
                                 indexes.x--;
                                 index = list.listStartAt[indexes.x];
+                                int totalLines = list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1];
+
+                                if (totalLines > Console.WindowHeight - 2)
+                                {
+                                    GetDiffsLine.GetLineIfUpMoves(index, list, indexes);
+                                }
 
                                 indexes.up = false;
                                 DiffHelper.Print(indexes, index, fileFullName, list);

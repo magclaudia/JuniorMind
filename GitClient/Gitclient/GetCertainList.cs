@@ -17,6 +17,7 @@ namespace GitClient
         public  List<string> filesCode;
         public  List<string> addLines;
         public List<int> listStartAt;
+        public List<int> start;
 
         public GetCertainList() 
         {
@@ -29,6 +30,7 @@ namespace GitClient
             filesCode = new List<string>();
             addLines = new List<string>();
             listStartAt = new List<int>();
+            start = new List<int>();
         }
     }
 }

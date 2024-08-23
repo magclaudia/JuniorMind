@@ -12,7 +12,7 @@ namespace GitClient
 {
     public class GetDiffs
     {
-        public static void GetFileContent(IntPtr repo, UIntPtr numDeltas, IntPtr diff, VariablesForFiles indexes, GetCertainList filesList)
+        public static void GetFileContent(IntPtr repo, UIntPtr numDeltas, IntPtr diff, GetVariablesForFiles indexes, GetCertainList filesList)
         {
             DiffHelper.PrintDiff(repo, diff, filesList, indexes);
         }
@@ -49,9 +49,9 @@ namespace GitClient
         private static string fileName = string.Empty;
         private static GetCertainList list = new GetCertainList();
         private static string content = string.Empty;
-        private static VariablesForFiles indexes = new VariablesForFiles();
+        private static GetVariablesForFiles indexes = new GetVariablesForFiles();
 
-        public static void PrintDiff(IntPtr repo, IntPtr diff, GetCertainList filesList, VariablesForFiles indexes)
+        public static void PrintDiff(IntPtr repo, IntPtr diff, GetCertainList filesList, GetVariablesForFiles indexes)
         {
             list.filesNames = filesList.filesNames;
             list.listOfFiles = filesList.listOfFiles;
@@ -113,8 +113,13 @@ namespace GitClient
             return 0;
         }
 
-        public static void PrintNewFileContain(VariablesForFiles indexes, GetCertainList list, int index)
+        public static void PrintNewFileContain(GetVariablesForFiles indexes, GetCertainList list, int index)
         {
+            if (list.listOfDiff.Contains("= \n\\ No newline at end of file\n"))
+            {
+                list.listOfDiff.RemoveAt(list.listOfDiff.IndexOf("= \n\\ No newline at end of file\n"));
+            }
+
             string currentFileName = list.listOfFiles[indexes.fileIndex];
             FilesBackground(currentFileName, indexes);
 
@@ -137,14 +142,14 @@ namespace GitClient
 
                 list.startingIndexes.Add(list.listOfDiff.Count);
             }
-
+            
             Print(indexes, index, currentFileName, list);
         }
 
-        public static void Print(VariablesForFiles indexes, int index, string fileFullName, GetCertainList list)
+        public static void Print(GetVariablesForFiles indexes, int index, string fileFullName, GetCertainList list)
         {
             string text = string.Empty;
-            GetDiffsLine.GetRowThroughtDiffsLines(indexes.currentLine, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
+            GetDiffsLine.GetLineThroughtDiffsLines(indexes.currentLine, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
 
             for (int i = index; i <= list.startingIndexes[indexes.fileIndex]; i++)
             {
@@ -256,17 +261,12 @@ namespace GitClient
             Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
         }
 
-        public static void FilesBackground(string fileFullName, VariablesForFiles indexes)
+        public static void FilesBackground(string fileFullName, GetVariablesForFiles indexes)
         {
             indexes.nextFile = true;
 
             if (indexes.fileIndex <= list.listOfFiles.Count - 1)
             {
-                //if (indexes.up == true)
-                //{
-                //    indexes.fileRow = indexes.fileRow - 2;
-                //}
-
                 Console.SetCursorPosition(1, indexes.fileRow);
                 Console.Write(new string(' ', (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4));
                 Console.SetCursorPosition(1, indexes.fileRow);
@@ -301,7 +301,7 @@ namespace GitClient
             }
         }
 
-        private static void CodeBackground(int index, VariablesForFiles indexes, string fileFullName)
+        private static void CodeBackground(int index, GetVariablesForFiles indexes, string fileFullName)
         {
             if (index < list.startingIndexes[indexes.fileIndex])
             {
@@ -311,7 +311,7 @@ namespace GitClient
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.Write(list.listOfDiff[index]);
                     Console.ResetColor();
-                    GetDiffsLine.GetRowThroughtDiffsLines(indexes.currentLine/* + 1*/, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
+                    GetDiffsLine.GetLineThroughtDiffsLines(indexes.currentLine/* + 1*/, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
                 }
                 else
                 {
@@ -325,7 +325,7 @@ namespace GitClient
             }
         }
 
-        public static void TextExceedingPanelHeight(string fileFullName, int index, VariablesForFiles indexes)
+        public static void TextExceedingPanelHeight(string fileFullName, int index, GetVariablesForFiles indexes)
         {
             if (indexes.up == true)
             {
@@ -338,7 +338,7 @@ namespace GitClient
             Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
         }
 
-        public static void TextFitInPanel(string fileFullName, int index, VariablesForFiles indexes)
+        public static void TextFitInPanel(string fileFullName, int index, GetVariablesForFiles indexes)
         {
             if (indexes.down == true && indexes.row < Console.WindowHeight - 2)
             {
@@ -358,7 +358,7 @@ namespace GitClient
             }
         }
 
-        private static void SetColoForFiles(string fileFullName, VariablesForFiles indexes)
+        private static void SetColoForFiles(string fileFullName, GetVariablesForFiles indexes)
         {
             string symbol = fileFullName.Substring(0, 1);
             switch (symbol)
