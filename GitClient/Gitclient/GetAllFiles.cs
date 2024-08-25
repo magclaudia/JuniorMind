@@ -10,7 +10,6 @@ namespace GitClient
 {
     public class GetAllFiles
     {
-        private GetCertainList listOfFiles = new GetCertainList();
         public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, VariablesForCommits indexes)
         {
             var size = new DrawPanelRigthSide.FilesBox();
@@ -18,11 +17,6 @@ namespace GitClient
 
             for (UIntPtr i = 0; i < numDeltas.ToUInt64(); i++)
             {
-                if ((int)i == size.height - 3)
-                {
-                    break;
-                }
-
                 IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
                 if (deltaPtr == IntPtr.Zero)
                 {
@@ -30,11 +24,11 @@ namespace GitClient
                 }
 
                 var delta = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(deltaPtr);
-                
+
                 string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
                 string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
                 string filePath;
-                
+
                 if (newFilePath != null)
                 {
                     filePath = newFilePath;
@@ -60,14 +54,14 @@ namespace GitClient
                         Console.ForegroundColor = ConsoleColor.Green;
                         PrintEachFile(fileWithSymbol, size, i, ref a, indexes, files);
                         break;
-                   
+
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_MODIFIED:
                         fileWithSymbol = $"M    {fileName}";
                         PrintProjectName(size, i, filePath, fileName, indexes);
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         PrintEachFile(fileWithSymbol, size, i, ref a, indexes, files);
                         break;
-                    
+
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_DELETED:
                         fileWithSymbol = $"-    {fileName}";
                         PrintProjectName(size, i, filePath, fileName, indexes);
@@ -143,42 +137,43 @@ namespace GitClient
             int lengthForNow = 0;
             int firstIndex = 0;
             string file = "";
-            if (step < size.height - 1)
+            i++;
+            if (fileWithSymbol.Length - lengthForNow > size.width)
             {
-                i++;
-                if (fileWithSymbol.Length - lengthForNow > size.width)
+                if (indexes.rigth == true && (int)i <= size.height - 3)
                 {
-                    if (indexes.rigth == true)
-                    {
-                        Console.SetCursorPosition(1, size.edgeOneY + 1 + (int)i);
-                    }
-                    else
-                    {
-                        Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
-                    }
-
-                    file = fileWithSymbol.Substring(firstIndex, size.width);
-                    firstIndex++;
+                    Console.SetCursorPosition(1, size.edgeOneY + 1 + (int)i);
                 }
-                else
+                else if (indexes.rigth == false && (int)i <= size.height - 3)
                 {
-                    if (indexes.rigth == true)
-                    {
-                        Console.SetCursorPosition(1, size.edgeOneY + 1 + (int)i);
-                    }
-                    else
-                    {
-                        Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
-                    }
-
-                    file = fileWithSymbol.Substring(firstIndex, fileWithSymbol.Length - lengthForNow);
+                    Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
                 }
 
-                files.listOfFiles.Add(file);
-                Console.Write(file);
-                firstIndex += file.Length - 1;
-                step++;
+                file = fileWithSymbol.Substring(firstIndex, size.width);
+                firstIndex++;
             }
+            else
+            {
+                if (indexes.rigth == true && (int)i <= size.height - 3)
+                {
+                    Console.SetCursorPosition(1, size.edgeOneY + 1 + (int)i);
+                }
+                else if (indexes.rigth == false && (int)i <= size.height - 3)
+                {
+                    Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
+                }
+
+                file = fileWithSymbol.Substring(firstIndex, fileWithSymbol.Length - lengthForNow);
+            }
+
+            files.listOfFiles.Add(file);
+            if ((int)i <= size.height - 3)
+            {
+                Console.Write(file);
+            }
+
+            firstIndex += file.Length - 1;
+
         }
     }
 }

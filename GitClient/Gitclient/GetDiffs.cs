@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -264,9 +265,14 @@ namespace GitClient
         public static void FilesBackground(string fileFullName, GetVariablesForFiles indexes)
         {
             indexes.nextFile = true;
-
+            DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
             if (indexes.fileIndex <= list.listOfFiles.Count - 1)
             {
+                if (indexes.fileIndex == size.height - 3)
+                {
+
+                }
+
                 Console.SetCursorPosition(1, indexes.fileRow);
                 Console.Write(new string(' ', (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4));
                 Console.SetCursorPosition(1, indexes.fileRow);
