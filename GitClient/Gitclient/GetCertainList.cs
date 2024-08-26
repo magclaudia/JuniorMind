@@ -18,6 +18,7 @@ namespace GitClient
         public  List<string> addLines;
         public List<int> listStartAt;
         public List<int> start;
+        public List<string> addList;
 
         public GetCertainList() 
         {
@@ -31,6 +32,7 @@ namespace GitClient
             addLines = new List<string>();
             listStartAt = new List<int>();
             start = new List<int>();
+            addList = new List<string>();
         }
     }
 }

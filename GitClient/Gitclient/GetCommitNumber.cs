@@ -8,7 +8,7 @@ namespace GitClient
 {
     public class GetCommitNumber
     {
-        public static void ReturnCommitNumber(CommitElements listOfCommits, VariablesForCommits indexes)
+        public static void ReturnCommitNumber(CommitElements listOfCommits, GetVariablesForCommits indexes)
         {
             var text = string.Empty;
             int commitNumber = indexes.currentCommitIndex;

@@ -12,7 +12,7 @@ namespace GitClient
             IntPtr commitPtr = IntPtr.Zero;
             GitOid id = new GitOid();
 
-            var indexes = new VariablesForCommits();
+            var indexes = new GetVariablesForCommits();
             var list = new CommitElements();
 
             if (LibGit2Wrapper.git_revwalk_new(out walker, repo) == 0)

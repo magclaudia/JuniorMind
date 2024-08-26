@@ -7,7 +7,7 @@ namespace GitClient
 {
     public class BlueBackgroundForCommits
     {
-        public static void DisplayBlueBox(List<string> addList, VariablesForCommits indexes, CommitElements listOfCommits)
+        public static void DisplayBlueBox(List<string> addList, GetVariablesForCommits indexes, CommitElements listOfCommits)
         {
             if (indexes.heightPosition > Console.WindowHeight - 2)
             {

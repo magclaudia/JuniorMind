@@ -7,7 +7,7 @@ namespace GitClient
 {
     public class Files
     {
-        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index, VariablesForCommits indexes)
+        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index, GetVariablesForCommits indexes)
         {
             IntPtr parentCommitPtr = IntPtr.Zero;
             IntPtr parentTreePtr = IntPtr.Zero;

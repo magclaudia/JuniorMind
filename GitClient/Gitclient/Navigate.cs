@@ -2,7 +2,7 @@
 {
     public class Navigate
     {
-        public static void NavigateThroughDiffsContent(int index, GetCertainList list, GetVariablesForFiles indexes, string fileFullName)
+        public static void NavigateThroughDiffsContent(int index, GetCertainList list, GetVariablesForFiles variablesForFiles, string fileFullName)
         {
             ConsoleKeyInfo keyInfo;
             do
@@ -12,93 +12,93 @@
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            indexes.up = false;
-                            if (index == list.listOfDiff.Count - 1 && indexes.currentLine == list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1])
+                            variablesForFiles.up = false;
+                            if (index == list.listOfDiff.Count - 1 && variablesForFiles.currentLine == list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1])
                             {
                                 break;
                             }
 
-                            if (index + 1 == list.listStartAt[indexes.x + 1] && index > 0 && index + 1 == list.startingIndexes[indexes.fileIndex])
+                            if (index + 1 == list.listStartAt[variablesForFiles.x + 1] && index > 0 && index + 1 == list.startingIndexes[variablesForFiles.fileIndex])
                             {
                                 GetDiffs.CleanCodePanel();
-                                indexes.row = 0;
-                                indexes.numberOfNavigations = 0;
-                                indexes.currentLine = 0;
-                                string currentFileName = list.listOfFiles[indexes.fileIndex];
-                                DiffHelper.FilesBackground(currentFileName, indexes);
-                                if (indexes.fileIndex <= list.listOfFiles.Count - 1)
+                                variablesForFiles.row = 0;
+                                variablesForFiles.numberOfNavigations = 0;
+                                variablesForFiles.currentLine = 0;
+                                string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
+                                DiffHelper.FilesBackground(currentFileName, variablesForFiles);
+                                if (variablesForFiles.fileIndex <= list.listOfFiles.Count - 1)
                                 {
-                                    indexes.fileIndex++;
+                                    variablesForFiles.fileIndex++;
                                 }
 
                                 index++;
-                                indexes.down = false;
-                                indexes.x++;
+                                variablesForFiles.down = false;
+                                variablesForFiles.x++;
 
                             }
-                            else if (index + 1 < list.startingIndexes[indexes.fileIndex] && indexes.row == Console.WindowHeight - 3)
+                            else if (index + 1 < list.startingIndexes[variablesForFiles.fileIndex] && variablesForFiles.row == Console.WindowHeight - 3)
                             {
                                 GetDiffs.CleanCodePanel();
-                                indexes.row = 0;
+                                variablesForFiles.row = 0;
                                 index++;
-                                indexes.numberOfNavigations = 0;
-                                indexes.down = false;
-                                indexes.x++;
+                                variablesForFiles.numberOfNavigations = 0;
+                                variablesForFiles.down = false;
+                                variablesForFiles.x++;
                             }
 
-                            if (indexes.row <= Console.WindowHeight - 2 || index == list.startingIndexes[indexes.fileIndex] - 1)
+                            if (variablesForFiles.row <= Console.WindowHeight - 2 || index == list.startingIndexes[variablesForFiles.fileIndex] - 1)
                             {
-                                indexes.currentLine++;
+                                variablesForFiles.currentLine++;
                             }
 
-                            int totalLines = list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1];
-                            if (index == list.listStartAt[indexes.x] && totalLines - indexes.currentLine < Console.WindowHeight - 2 && totalLines > Console.WindowHeight - 2)
+                            int totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
+                            if (index == list.listStartAt[variablesForFiles.x] && totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && totalLines > Console.WindowHeight - 2)
                             {
-                                GetDiffsLine.GetLineIfDownMoves(list, indexes);
+                                GetDiffsLine.GetLineIfDownMoves(list, variablesForFiles);
                             }
 
-                            DiffHelper.Print(indexes, index, fileFullName, list);
+                            DiffHelper.Print(variablesForFiles, index, fileFullName, list);
                         }
                         break;
                     case ConsoleKey.UpArrow:
                         {
-                            indexes.up = true;
-                            if (index == 0 && indexes.up == true)
+                            variablesForFiles.up = true;
+                            if (index == 0 && variablesForFiles.up == true)
                             {
-                                indexes.end = true;
+                                variablesForFiles.end = true;
                                 break;
                             }
 
                             if (list.listStartAt.Contains(index))
                             {
                                 GetDiffs.CleanCodePanel();
-                                indexes.row = 0;
-                                indexes.numberOfNavigations = 0;
+                                variablesForFiles.row = 0;
+                                variablesForFiles.numberOfNavigations = 0;
 
                                 if (list.startingIndexes.Contains(index))
                                 {
-                                    indexes.fileIndex = indexes.fileIndex - 2;
-                                    indexes.fileRow = indexes.fileRow - 2;
-                                    string currentFileName = list.listOfFiles[indexes.fileIndex];
-                                    DiffHelper.FilesBackground(currentFileName, indexes);
+                                    variablesForFiles.fileIndex = variablesForFiles.fileIndex - 2;
+                                    variablesForFiles.fileRow = variablesForFiles.fileRow - 2;
+                                    string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
+                                    DiffHelper.FilesBackground(currentFileName, variablesForFiles);
                                 }
 
-                                indexes.down = false;
-                                indexes.x--;
-                                index = list.listStartAt[indexes.x];
-                                int totalLines = list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1];
+                                variablesForFiles.down = false;
+                                variablesForFiles.x--;
+                                index = list.listStartAt[variablesForFiles.x];
+                                int totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
 
                                 if (totalLines > Console.WindowHeight - 2)
                                 {
-                                    GetDiffsLine.GetLineIfUpMoves(index, list, indexes);
+                                    GetDiffsLine.GetLineIfUpMoves(index, list, variablesForFiles);
                                 }
 
-                                indexes.up = false;
-                                DiffHelper.Print(indexes, index, fileFullName, list);
+                                variablesForFiles.up = false;
+                                DiffHelper.Print(variablesForFiles, index, fileFullName, list);
                             }
 
-                            indexes.currentLine--;
-                            DiffHelper.Print(indexes, index, fileFullName, list);
+                            variablesForFiles.currentLine--;
+                            DiffHelper.Print(variablesForFiles, index, fileFullName, list);
                         }
                         break;
                 }
@@ -106,13 +106,10 @@
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        public static void NavigateThroughCommits(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, int height, int width)
+        public static void NavigateThroughCommits(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, GetCertainList list, int height, int width)
         {
             var size = new DrawPanelRigthSide.FilesBox();
             IntPtr commitPtr = IntPtr.Zero;
-            bool clear = true;
-            List<string> addList = new List<string>();
-            List<string> filesNames = new List<string>();
             ConsoleKeyInfo keyInfo;
             int blueFond = 0;
             do
@@ -122,120 +119,120 @@
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        if (indexes.currentCommitIndex < listOfCommits.Id.Count && indexes.currentCommitIndex > 0)
+                        if (variablesForCommits.currentCommitIndex < listOfCommits.Id.Count && variablesForCommits.currentCommitIndex > 0)
                         {
-                            indexes.up = true;
-                            indexes.down = false;
-                            if (indexes.heightPosition == 1 && indexes.currentCommitIndex == 0)
+                            variablesForCommits.up = true;
+                            variablesForCommits.down = false;
+                            if (variablesForCommits.heightPosition == 1 && variablesForCommits.currentCommitIndex == 0)
                             {
                                 break;
                             }
 
-                            indexes.heightPosition--;
-                            indexes.currentCommitIndex--;
-                            if (indexes.cursorPosition > 0)
+                            variablesForCommits.heightPosition--;
+                            variablesForCommits.currentCommitIndex--;
+                            if (variablesForCommits.cursorPosition > 0)
                             {
-                                indexes.cursorPosition--;
+                                variablesForCommits.cursorPosition--;
                             }
 
                             bool reachLimit = false;
-                            if (indexes.heightPosition == Console.WindowHeight - 2 || indexes.heightPosition == 0)
+                            if (variablesForCommits.heightPosition == Console.WindowHeight - 2 || variablesForCommits.heightPosition == 0)
                             {
-                                indexes.heightPosition = 1;
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, indexes, listOfCommits, addList, blueFond);
+                                variablesForCommits.heightPosition = 1;
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, variablesForCommits, listOfCommits, list, blueFond);
                             }
 
-                            VerifySize(repo, indexes, listOfCommits, height, width);
+                            VerifySize(repo, variablesForCommits, listOfCommits, height, width);
 
-                            if (indexes.displayPanel == true)
+                            if (variablesForCommits.displayPanel == true)
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, variablesForCommits, listOfCommits, list, reachLimit, blueFond);
                             }
                             else
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, variablesForCommits, listOfCommits, list, reachLimit, blueFond);
                             }
                         }
                         break;
 
                     case ConsoleKey.DownArrow:
-                        if (indexes.currentCommitIndex < listOfCommits.Id.Count - 1)
+                        if (variablesForCommits.currentCommitIndex < listOfCommits.Id.Count - 1)
                         {
-                            indexes.down = true;
-                            indexes.up = false;
-                            if (indexes.startIndex < 0)
+                            variablesForCommits.down = true;
+                            variablesForCommits.up = false;
+                            if (variablesForCommits.startIndex < 0)
                             {
-                                indexes.startIndex = 0;
+                                variablesForCommits.startIndex = 0;
                             }
 
                             bool reachLimit = false;
-                            if (indexes.currentCommitIndex > Console.WindowHeight - 2 && indexes.cursorPosition == 0 || indexes.cursorPosition < indexes.currentCommitIndex - Console.WindowHeight - 2 && indexes.heightPosition == Console.WindowHeight - 2)
+                            if (variablesForCommits.currentCommitIndex > Console.WindowHeight - 2 && variablesForCommits.cursorPosition == 0 || variablesForCommits.cursorPosition < variablesForCommits.currentCommitIndex - Console.WindowHeight - 2 && variablesForCommits.heightPosition == Console.WindowHeight - 2)
                             {
-                                indexes.cursorPosition = indexes.currentCommitIndex - (Console.WindowHeight - 2) + 2;
-                                indexes.currentCommitIndex = indexes.cursorPosition;
+                                variablesForCommits.cursorPosition = variablesForCommits.currentCommitIndex - (Console.WindowHeight - 2) + 2;
+                                variablesForCommits.currentCommitIndex = variablesForCommits.cursorPosition;
                             }
 
-                            if (indexes.heightPosition == Console.WindowHeight - 2)
+                            if (variablesForCommits.heightPosition == Console.WindowHeight - 2)
                             {
-                                if (indexes.cursorPosition == listOfCommits.Id.Count - (Console.WindowHeight - 3))
+                                if (variablesForCommits.cursorPosition == listOfCommits.Id.Count - (Console.WindowHeight - 3))
                                 {
-                                    indexes.cursorPosition = 2;
+                                    variablesForCommits.cursorPosition = 2;
                                 }
 
-                                indexes.currentCommitIndex = indexes.cursorPosition;
-                                indexes.cursorPosition++;
-                                indexes.heightPosition = 1;
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, indexes, listOfCommits, addList, blueFond);
+                                variablesForCommits.currentCommitIndex = variablesForCommits.cursorPosition;
+                                variablesForCommits.cursorPosition++;
+                                variablesForCommits.heightPosition = 1;
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, variablesForCommits, listOfCommits, list, blueFond);
                             }
 
-                            VerifySize(repo, indexes, listOfCommits, height, width);
+                            VerifySize(repo, variablesForCommits, listOfCommits, height, width);
 
-                            if (indexes.displayPanel == true)
+                            if (variablesForCommits.displayPanel == true)
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, variablesForCommits, listOfCommits, list, reachLimit, blueFond);
                             }
                             else
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, indexes, listOfCommits, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, variablesForCommits, listOfCommits, list, reachLimit, blueFond);
                             }
                         }
                         break;
 
                     case ConsoleKey.RightArrow:
                         {
-                            if (indexes.enter == true)
+                            if (variablesForCommits.enter == true)
                             {
-                                indexes.rigth = true;
+                                variablesForCommits.rigth = true;
                                 int index = 1;
-                                CommitDetail(repo, indexes, listOfCommits, clear);
-                                GitOid oid = listOfCommits.IdGitOid[indexes.currentCommitIndex];
+                                CommitDetail(repo, variablesForCommits, listOfCommits, variablesForCommits.clear);
+                                GitOid oid = listOfCommits.IdGitOid[variablesForCommits.currentCommitIndex];
                                 if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
                                 {
-                                    Files.GetFilesAffectedByCommit(repo, commitPtr, index, indexes);
+                                    Files.GetFilesAffectedByCommit(repo, commitPtr, index, variablesForCommits);
                                 }
                             }
                         }
                         break;
                     case ConsoleKey.Enter:
                         {
-                            indexes.enter = true;
-                            if (indexes.rigth == false)
+                            variablesForCommits.enter = true;
+                            if (variablesForCommits.rigth == false)
                             {
-                                indexes.displayPanel = true;
+                                variablesForCommits.displayPanel = true;
 
-                                if (indexes.panelAlreadyDisplayed == false && indexes.displayPanel == true)
+                                if (variablesForCommits.panelAlreadyDisplayed == false && variablesForCommits.displayPanel == true)
                                 {
-                                    indexes.panelAlreadyDisplayed = true;
-                                    CommitDetail(repo, indexes, listOfCommits, clear);
+                                    variablesForCommits.panelAlreadyDisplayed = true;
+                                    CommitDetail(repo, variablesForCommits, listOfCommits, variablesForCommits.clear);
                                 }
                                 else
                                 {
-                                    indexes.displayPanel = false;
+                                    variablesForCommits.displayPanel = false;
                                     Console.Clear();
                                     DrawExternalBorder.DrawBox();
                                 }
 
-                                GetCommits.PrintCommits(repo, indexes, listOfCommits);
+                                GetCommits.PrintCommits(repo, variablesForCommits, listOfCommits);
                             }
                         }
                         break;
@@ -244,7 +241,7 @@
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        public static void CommitDetail(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, bool clear)
+        public static void CommitDetail(IntPtr repo, GetVariablesForCommits indexes, CommitElements listOfCommits, bool clear)
         {
             IntPtr commitPtr = IntPtr.Zero;
             int i = 1;
@@ -271,7 +268,7 @@
             }
         }
 
-        private static void VerifySize(IntPtr repo, VariablesForCommits indexes, CommitElements listOfCommits, int height, int width)
+        private static void VerifySize(IntPtr repo, GetVariablesForCommits indexes, CommitElements listOfCommits, int height, int width)
         {
             if (Console.WindowHeight != height && Console.WindowWidth != width)
             {

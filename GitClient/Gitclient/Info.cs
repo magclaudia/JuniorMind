@@ -8,7 +8,7 @@ namespace GitClient
 {
     public class Info
     {
-        public static void GetInfo(VariablesForCommits indexes, CommitElements listOfCommits)
+        public static void GetInfo(GetVariablesForCommits indexes, CommitElements listOfCommits)
         {
             var position = new DrawPanelRigthSide.InfoPanel();
             string[] infos = { "Author", "Date/Time", "Sha" };

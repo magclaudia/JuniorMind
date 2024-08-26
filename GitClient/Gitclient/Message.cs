@@ -7,7 +7,7 @@ namespace GitClient
 {
     public class Message
     {
-        public static void ReturnMessage(int index, CommitElements commitElements, VariablesForCommits indexes)
+        public static void ReturnMessage(int index, CommitElements commitElements, GetVariablesForCommits indexes)
         {
             string message;
             string outputMessage;

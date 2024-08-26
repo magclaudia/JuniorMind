@@ -1,6 +1,6 @@
 ﻿namespace GitClient
 {
-    public class VariablesForCommits
+    public class GetVariablesForCommits
     {
         public int startIndex;
         public int rigthCursor;
@@ -13,11 +13,11 @@
         public bool down;
         public bool rigth;
         public int indexForFiles;
-        public List<string> addLines;
         public bool enter;
         public bool nextFile;
+        public bool clear;
 
-        public VariablesForCommits()
+        public GetVariablesForCommits()
         {
             startIndex = 0;
             rigthCursor = 0;
@@ -30,9 +30,9 @@
             down = false;
             rigth = false;
             indexForFiles = 0;
-            addLines = new List<string>();
             enter = false;
             nextFile = false;
+            clear = true;
         }
     }
 }

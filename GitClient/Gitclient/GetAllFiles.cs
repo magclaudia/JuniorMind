@@ -10,7 +10,7 @@ namespace GitClient
 {
     public class GetAllFiles
     {
-        public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, VariablesForCommits indexes)
+        public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits indexes)
         {
             var size = new DrawPanelRigthSide.FilesBox();
             var files = new GetCertainList();
@@ -80,7 +80,7 @@ namespace GitClient
             }
         }
 
-        private static void PrintProjectName(DrawPanelRigthSide.FilesBox size, ulong i, string filePath, string fileName, VariablesForCommits indexes)
+        private static void PrintProjectName(DrawPanelRigthSide.FilesBox size, ulong i, string filePath, string fileName, GetVariablesForCommits indexes)
         {
             if (i == 0)
             {
@@ -132,7 +132,7 @@ namespace GitClient
             }
         }
 
-        private static void PrintEachFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, VariablesForCommits indexes, GetCertainList files)
+        private static void PrintEachFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, GetVariablesForCommits indexes, GetCertainList files)
         {
             int lengthForNow = 0;
             int firstIndex = 0;
