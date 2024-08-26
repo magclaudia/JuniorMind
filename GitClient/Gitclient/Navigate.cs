@@ -1,4 +1,6 @@
-﻿namespace GitClient
+﻿using System.Collections.Generic;
+
+namespace GitClient
 {
     public class Navigate
     {
@@ -106,10 +108,12 @@
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        public static void NavigateThroughCommits(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, GetCertainList list, int height, int width)
+        public static void NavigateThroughCommits(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, /*GetCertainList list,*/ int height, int width)
         {
             var size = new DrawPanelRigthSide.FilesBox();
             IntPtr commitPtr = IntPtr.Zero;
+            List<string> addList = new List<string>();
+            List<string> filesNames = new List<string>();
             ConsoleKeyInfo keyInfo;
             int blueFond = 0;
             do
@@ -139,18 +143,18 @@
                             if (variablesForCommits.heightPosition == Console.WindowHeight - 2 || variablesForCommits.heightPosition == 0)
                             {
                                 variablesForCommits.heightPosition = 1;
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, variablesForCommits, listOfCommits, list, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, variablesForCommits, listOfCommits, addList, blueFond);
                             }
 
                             VerifySize(repo, variablesForCommits, listOfCommits, height, width);
 
                             if (variablesForCommits.displayPanel == true)
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, variablesForCommits, listOfCommits, list, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, variablesForCommits, listOfCommits, addList, reachLimit, blueFond);
                             }
                             else
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, variablesForCommits, listOfCommits, list, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, variablesForCommits, listOfCommits, addList, reachLimit, blueFond);
                             }
                         }
                         break;
@@ -182,18 +186,18 @@
                                 variablesForCommits.currentCommitIndex = variablesForCommits.cursorPosition;
                                 variablesForCommits.cursorPosition++;
                                 variablesForCommits.heightPosition = 1;
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, variablesForCommits, listOfCommits, list, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(repo, variablesForCommits, listOfCommits, addList, blueFond);
                             }
 
                             VerifySize(repo, variablesForCommits, listOfCommits, height, width);
 
                             if (variablesForCommits.displayPanel == true)
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, variablesForCommits, listOfCommits, list, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(repo, variablesForCommits, listOfCommits, addList, reachLimit, blueFond);
                             }
                             else
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, variablesForCommits, listOfCommits, list, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(repo, variablesForCommits, listOfCommits, addList, reachLimit, blueFond);
                             }
                         }
                         break;
@@ -241,14 +245,14 @@
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        public static void CommitDetail(IntPtr repo, GetVariablesForCommits indexes, CommitElements listOfCommits, bool clear)
+        public static void CommitDetail(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements commitElement, bool clear)
         {
             IntPtr commitPtr = IntPtr.Zero;
             int i = 1;
             if (clear == true)
             {
                 Console.Clear();
-                if (indexes.rigth == true)
+                if (variablesForCommits.rigth == true)
                 {
                     DrawPanelLeftSide.Info();
                 }
@@ -258,23 +262,23 @@
                 }
             }
 
-            HeaderPanel.Header(indexes);
-            Info.GetInfo(indexes, listOfCommits);
-            Message.ReturnMessage(indexes.currentCommitIndex, listOfCommits, indexes);
-            GitOid oid = listOfCommits.IdGitOid[indexes.currentCommitIndex];
+            HeaderPanel.Header(variablesForCommits);
+            Info.GetInfo(variablesForCommits, commitElement);
+            Message.ReturnMessage(variablesForCommits.currentCommitIndex, commitElement, variablesForCommits);
+            GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
             if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) == 0)
             {
-                Files.GetFilesAffectedByCommit(repo, commitPtr, i, indexes);
+                Files.GetFilesAffectedByCommit(repo, commitPtr, i, variablesForCommits);
             }
         }
 
-        private static void VerifySize(IntPtr repo, GetVariablesForCommits indexes, CommitElements listOfCommits, int height, int width)
+        private static void VerifySize(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, int height, int width)
         {
             if (Console.WindowHeight != height && Console.WindowWidth != width)
             {
                 Console.Clear();
                 DrawExternalBorder.DrawBox();
-                GetCommits.PrintCommits(repo, indexes, listOfCommits);
+                GetCommits.PrintCommits(repo, variablesForCommits, listOfCommits);
             }
         }
     }

@@ -15,7 +15,7 @@ namespace GitClient
         public  List<string> filePath;
         public  List<string> hunks;
         public  List<string> filesCode;
-        public  List<string> addLines;
+        public  List<string> addLinesOfCode;
         public List<int> listStartAt;
         public List<int> start;
         public List<string> addList;
@@ -29,7 +29,7 @@ namespace GitClient
             filePath = new List<string>();
             hunks = new List<string>();
             filesCode = new List<string>();
-            addLines = new List<string>();
+            addLinesOfCode = new List<string>();
             listStartAt = new List<int>();
             start = new List<int>();
             addList = new List<string>();

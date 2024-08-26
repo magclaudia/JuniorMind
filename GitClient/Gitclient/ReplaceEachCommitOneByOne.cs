@@ -2,7 +2,7 @@
 {
     public class ReplaceEachCommitOneByOne
     {
-        public static void PrintNewCommitIfPanel(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, GetCertainList list, bool reachLimit, int blueFond)
+        public static void PrintNewCommitIfPanel(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, List<string> addList, bool reachLimit, int blueFond)
         {
             string message = string.Empty;
 
@@ -74,7 +74,7 @@
 
                 Console.Write($"{message.TrimStart()}");
                 text = $"{id}{data}{author}{message.TrimStart()}";
-                list.addList.Add(text);
+                /*list.*/addList.Add(text);
             }
 
 
@@ -90,14 +90,14 @@
 
             GetCommitNumber.ReturnCommitNumber(listOfCommits, variablesForCommits);
             Navigate.CommitDetail(repo, variablesForCommits, listOfCommits, clear);
-            Cursor.UpdateCursorPositionList(listOfCommits, list.addList, variablesForCommits, blueFond);
+            Cursor.UpdateCursorPositionList(listOfCommits, /*list.*/addList, variablesForCommits, blueFond);
 
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(repo, variablesForCommits, listOfCommits, list, height, width);
+            Navigate.NavigateThroughCommits(repo, variablesForCommits, listOfCommits,/* list,*/ height, width);
         }
 
-        public static void PrintNewCommitIfNoPanel(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, GetCertainList list, bool reachLimit, int blueFond)
+        public static void PrintNewCommitIfNoPanel(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, List<string> addList, bool reachLimit, int blueFond)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -168,7 +168,7 @@
                 Console.Write($"{message}");
 
                 text = $"{id}{data}{author}{message}";
-                list.addList.Add(text);
+               /* list.*/addList.Add(text);
             }
 
             bool clear = false;
@@ -179,14 +179,14 @@
             }
 
             GetCommitNumber.ReturnCommitNumber(listOfCommits, variablesForCommits);
-            Cursor.UpdateCursorPositionList(listOfCommits, list.addList, variablesForCommits, blueFond);
+            Cursor.UpdateCursorPositionList(listOfCommits, /*list.*/addList, variablesForCommits, blueFond);
 
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(repo, variablesForCommits, listOfCommits, list, height, width);
+            Navigate.NavigateThroughCommits(repo, variablesForCommits, listOfCommits, /*list,*/ height, width);
         }
 
-        public static void PrintNewCommitIfReachLimit(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, GetCertainList list, int blueFond)
+        public static void PrintNewCommitIfReachLimit(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, List<string> addList, int blueFond)
         {
             int upAndDownConsole = variablesForCommits.heightPosition;
             int index = variablesForCommits.currentCommitIndex;
@@ -254,7 +254,7 @@
 
                 Console.Write($"{message.TrimStart()}");
                 text = $"{id}{data}{author}{message.TrimStart()}";
-                list.addList.Add(text);
+                /*list.*/addList.Add(text);
                 variablesForCommits.heightPosition++;
                 if (variablesForCommits.up == true)
                 {
@@ -285,10 +285,10 @@
                 Navigate.CommitDetail(repo, variablesForCommits, listOfCommits, clear);
             }
             
-            Cursor.UpdateCursorPositionList(listOfCommits, list.addList, variablesForCommits, blueFond);
+            Cursor.UpdateCursorPositionList(listOfCommits, /*list.*/addList, variablesForCommits, blueFond);
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(repo, variablesForCommits, listOfCommits, list, height, width);
+            Navigate.NavigateThroughCommits(repo, variablesForCommits, listOfCommits, /*list,*/ height, width);
         }
 
         public static void ClearCommitRow(GetVariablesForCommits variablesForCommits)
