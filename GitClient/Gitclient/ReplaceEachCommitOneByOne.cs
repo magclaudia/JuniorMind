@@ -249,7 +249,7 @@
                 }
                 else
                 {
-                    message = text.Substring(listWithoutMessage.Length, message.Length);
+                    message = text.Substring(listWithoutMessage.Length, message.Length + 1);
                 }
 
                 Console.Write($"{message.TrimStart()}");

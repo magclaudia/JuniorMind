@@ -18,21 +18,22 @@ namespace GitClient
 
         public static void PrintCommits(IntPtr repo, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits)
         {
-            GetCertainList list = new GetCertainList();
+            // GetCertainList list = new GetCertainList();
+            var addList = new List<string>();
             GetCommitNumber.ReturnCommitNumber(listOfCommits, variablesForCommits);
             var position = new DrawPanelRigthSide.CommitsPanel();
             int blueFond = 0;
             if (variablesForCommits.displayPanel == false)
             {
-                DisplayCommitsOnEntireConsole(repo, list, variablesForCommits, listOfCommits, blueFond);
+                DisplayCommitsOnEntireConsole(repo, addList, variablesForCommits, listOfCommits, blueFond);
             }
             else
             {
-                DisplayCommitsWithPanel(repo, variablesForCommits, list, listOfCommits, blueFond);
+                DisplayCommitsWithPanel(repo, variablesForCommits, addList, listOfCommits, blueFond);
             }
         }
 
-        private static void DisplayCommitsOnEntireConsole(IntPtr repo, GetCertainList list, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, int blueFond)
+        private static void DisplayCommitsOnEntireConsole(IntPtr repo, List<string> addList, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, int blueFond)
         {
             var element = new Elements();
             variablesForCommits.rigthCursor = 0;
@@ -75,7 +76,7 @@ namespace GitClient
 
                 Console.Write(message);
                 text = $"{element.Id}{element.DateTime}{author}{message}";
-                list.addList.Add(text);
+                addList.Add(text);
                 variablesForCommits.currentCommitIndex++;
                 variablesForCommits.rigthCursor++;
             }
@@ -84,11 +85,11 @@ namespace GitClient
             variablesForCommits.currentCommitIndex = index;
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Cursor.UpdateCursorPositionList(listOfCommits, list.addList, variablesForCommits, blueFond);
+            Cursor.UpdateCursorPositionList(listOfCommits, addList, variablesForCommits, blueFond);
             Navigate.NavigateThroughCommits(repo, variablesForCommits, listOfCommits, /*list,*/ height, width);
         }
 
-        private static void DisplayCommitsWithPanel(IntPtr repo, GetVariablesForCommits variablesForcommits, GetCertainList list, CommitElements listOfCommits, int blueFond)
+        private static void DisplayCommitsWithPanel(IntPtr repo, GetVariablesForCommits variablesForcommits, List<string> addList, CommitElements listOfCommits, int blueFond)
         {
             var element = new Elements();
             var size = new DrawPanelRigthSide.CommitsPanel();
@@ -149,14 +150,14 @@ namespace GitClient
 
                 Console.Write($"{message}");
                 text = $"{element.Id}{element.DateTime}{author}{message}";
-                list.addList.Add(text);
+                addList.Add(text);
                 variablesForcommits.rigthCursor++;
                 variablesForcommits.currentCommitIndex++;
             }
 
             variablesForcommits.rigthCursor = variablesForcommits.currentCommitIndex;
             variablesForcommits.currentCommitIndex = index;
-            Cursor.UpdateCursorPositionList(listOfCommits, list.addList, variablesForcommits, blueFond);
+            Cursor.UpdateCursorPositionList(listOfCommits, addList, variablesForcommits, blueFond);
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
             Navigate.NavigateThroughCommits(repo, variablesForcommits, listOfCommits,/* list, */height, width);
