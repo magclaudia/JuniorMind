@@ -5,15 +5,14 @@ namespace GitClient
 {
     public class GetListOfCommits
     {
-       
         public static void GetAllCommits(IntPtr repo)
         {
             IntPtr walker = IntPtr.Zero;
             IntPtr commitPtr = IntPtr.Zero;
             GitOid id = new GitOid();
 
-            var indexes = new GetVariablesForCommits();
-            var list = new CommitElements();
+            GetVariablesForCommits variablesForCommits = new GetVariablesForCommits();
+            CommitElements commitElement = new CommitElements();
 
             if (LibGit2Wrapper.git_revwalk_new(out walker, repo) == 0)
             {
@@ -23,10 +22,10 @@ namespace GitClient
                     {
                         if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref id) == 0)
                         {
-                            list.IdGitOid.Add(id);
-                            list.Id.Add(GetCommitId(id));
-                            list.DateTime.Add(GetDateAndTime(commitPtr));
-                            list.Author.Add(GetCommitAuthor(commitPtr));
+                            commitElement.IdGitOid.Add(id);
+                            commitElement.Id.Add(GetCommitId(id));
+                            commitElement.DateTime.Add(GetDateAndTime(commitPtr));
+                            commitElement.Author.Add(GetCommitAuthor(commitPtr));
                             string commitMessage = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!;
                             string[] messageParts = commitMessage.Split(new[] { '\n' }, 2);
                             string message;
@@ -41,7 +40,7 @@ namespace GitClient
                                 message = messageParts[0].TrimEnd();
                             }
 
-                            list.Message.Add(message);
+                            commitElement.Message.Add(message);
                             string description;
                             if (messageParts.Length > 1)
                             {
@@ -52,7 +51,7 @@ namespace GitClient
                                 description = string.Empty;
                             }
 
-                            list.Description.Add(description);
+                            commitElement.Description.Add(description);
                             LibGit2Wrapper.git_commit_free(commitPtr);
                         }
                         else
@@ -62,7 +61,8 @@ namespace GitClient
                     }
 
                     DrawExternalBorder.DrawBox();
-                    GetCommits.PrintCommits(repo, indexes, list);
+                    commitElement.repo = repo;
+                    GetCommits.PrintCommits(variablesForCommits, commitElement);
                 }
                 else
                 {

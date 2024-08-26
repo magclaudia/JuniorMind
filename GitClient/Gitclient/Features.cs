@@ -21,22 +21,23 @@ namespace GitClient
 
             LibGit2Wrapper.git_libgit2_init();
 
-            IntPtr repo = IntPtr.Zero;
+            CommitElements commitElements = new CommitElements();
+            
             try
             {
-                if (LibGit2Wrapper.git_repository_open(out repo, repoPath) != 0)
+                if (LibGit2Wrapper.git_repository_open(out commitElements.repo, repoPath) != 0)
                 {
                     throw new Exception("Failed to open the repository.");
                 }
 
-                GetListOfCommits.GetAllCommits(repo);
+                GetListOfCommits.GetAllCommits(commitElements.repo);
             }
             catch(Exception ex)
             {
-                Console.WriteLine($"Eroor: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
             }
 
-            LibGit2Wrapper.git_repository_free(repo);
+            LibGit2Wrapper.git_repository_free(commitElements.repo);
         }
 
         private static string? FindDirectoryContainingGitFolder(string directory)
