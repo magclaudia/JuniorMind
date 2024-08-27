@@ -4,7 +4,7 @@ namespace GitClient
 {
     public class Navigate
     {
-        public static void NavigateThroughDiffsContent(int index, GetCertainList list, GetVariablesForFiles variablesForFiles, string fileFullName)
+        public static void NavigateThroughDiffsContent(int index, GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
             ConsoleKeyInfo keyInfo;
             do
@@ -54,12 +54,13 @@ namespace GitClient
                             }
 
                             int totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
-                            if (index == list.listStartAt[variablesForFiles.x] && totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && totalLines > Console.WindowHeight - 2)
+                           
+                            if (index == list.listStartAt[variablesForFiles.x] && list.startingIndexes[variablesForFiles.fileIndex] - list.listStartAt[variablesForFiles.x] < Console.WindowHeight - 2 && totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && totalLines > Console.WindowHeight - 2 && variablesForFiles.fileIndex != list.listOfFiles.Count)
                             {
                                 GetDiffsLine.GetLineIfDownMoves(list, variablesForFiles);
                             }
 
-                            DiffHelper.Print(variablesForFiles, index, fileFullName, list);
+                            DiffHelper.Print(variablesForCommits, commitElements, index, fileFullName);
                         }
                         break;
                     case ConsoleKey.UpArrow:
@@ -96,11 +97,25 @@ namespace GitClient
                                 }
 
                                 variablesForFiles.up = false;
-                                DiffHelper.Print(variablesForFiles, index, fileFullName, list);
+                                DiffHelper.Print(variablesForCommits, commitElements, index, fileFullName);
                             }
 
                             variablesForFiles.currentLine--;
-                            DiffHelper.Print(variablesForFiles, index, fileFullName, list);
+                            DiffHelper.Print(variablesForCommits, commitElements,  index, fileFullName);
+                        }
+                        break;
+
+                        case ConsoleKey.LeftArrow:
+                        {
+                            IntPtr commitPtr = IntPtr.Zero;
+                            variablesForCommits.right = true;
+                            int i = 1;
+                            CommitDetail(variablesForCommits, commitElements, variablesForCommits.clear);
+                            GitOid oid = commitElements.IdGitOid[variablesForCommits.currentCommitIndex];
+                            if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElements.repo, ref oid) == 0)
+                            {
+                                Files.GetFilesAffectedByCommit(commitElements.repo, commitPtr, i, variablesForCommits, commitElements);
+                            }
                         }
                         break;
                 }
@@ -206,13 +221,13 @@ namespace GitClient
                         {
                             if (variablesForCommits.enter == true)
                             {
-                                variablesForCommits.rigth = true;
+                                variablesForCommits.right = true;
                                 int index = 1;
                                 CommitDetail(variablesForCommits, commitElement, variablesForCommits.clear);
                                 GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
                                 if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
                                 {
-                                    Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, index, variablesForCommits);
+                                    Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, index, variablesForCommits, commitElement);
                                 }
                             }
                         }
@@ -220,7 +235,7 @@ namespace GitClient
                     case ConsoleKey.Enter:
                         {
                             variablesForCommits.enter = true;
-                            if (variablesForCommits.rigth == false)
+                            if (variablesForCommits.right == false)
                             {
                                 variablesForCommits.displayPanel = true;
 
@@ -252,7 +267,7 @@ namespace GitClient
             if (clear == true)
             {
                 Console.Clear();
-                if (variablesForCommits.rigth == true)
+                if (variablesForCommits.right == true)
                 {
                     DrawPanelLeftSide.Info();
                 }
@@ -268,7 +283,7 @@ namespace GitClient
             GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
             if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
             {
-                Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits);
+                Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, commitElement);
             }
         }
 

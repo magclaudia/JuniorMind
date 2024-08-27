@@ -18,7 +18,7 @@ namespace GitClient
             messageList.Message = commitElements.Message[index];
             messageList.Description = commitElements.Description[index];
             
-            if (indexes.rigth == true)
+            if (indexes.right == true)
             {
                 Console.SetCursorPosition(1, Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1);
             }
@@ -49,7 +49,7 @@ namespace GitClient
                 }
 
                 lengthForNow += outputMessage.Length;
-                if (indexes.rigth == true)
+                if (indexes.right == true)
                 {
                     Console.SetCursorPosition(1, i);
                 }

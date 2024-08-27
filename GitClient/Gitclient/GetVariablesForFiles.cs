@@ -23,6 +23,7 @@ namespace GitClient
         public int numberOfNavigations;
         public int x;
         public int lastLine;
+        public bool left;
 
         public GetVariablesForFiles()
         {
@@ -40,6 +41,7 @@ namespace GitClient
             numberOfNavigations = 0;
             x = 0;
             lastLine = 0;
+            left = false;
         }
     }
 }

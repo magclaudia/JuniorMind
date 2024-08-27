@@ -10,7 +10,7 @@ namespace GitClient
     {
         public static void Header(GetVariablesForCommits indexes)
         {
-            if (indexes.rigth == true)
+            if (indexes.right == true)
             {
                 Console.SetCursorPosition(1, 0);
                 Console.Write("Info ");

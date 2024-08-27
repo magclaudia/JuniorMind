@@ -19,7 +19,7 @@ namespace GitClient
             string output;
             for (int i = 1; i < position.height; i++)
             {
-                if (indexes.rigth == true)
+                if (indexes.right == true)
                 {
                     Console.SetCursorPosition(1, i);
                 }

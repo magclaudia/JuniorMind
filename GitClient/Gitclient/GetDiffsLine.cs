@@ -20,10 +20,10 @@ namespace GitClient
 
         public static void GetLineIfDownMoves(GetCertainList list, GetVariablesForFiles variables)
         {
-            list.start.Add(variables.currentLine - 1);
+            list.start.Add(variables.currentLine);
             if (list.start.Count >= 2 && list.start[list.start.Count - 1] - 1 == list.start[list.start.Count - 2])
             {
-                list.start.RemoveAt(list.start.Count - 2);
+                list.start.RemoveAt(list.start.Count - 1);
             }
         }
 

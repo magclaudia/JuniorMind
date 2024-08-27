@@ -13,9 +13,9 @@ namespace GitClient
 {
     public class GetDiffs
     {
-        public static void GetFileContent(IntPtr repo, UIntPtr numDeltas, IntPtr diff, GetVariablesForFiles indexes, GetCertainList filesList)
+        public static void GetFileContent(IntPtr repo, UIntPtr numDeltas, IntPtr diff, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements, GetCertainList filesList)
         {
-            DiffHelper.PrintDiff(repo, diff, filesList, indexes);
+           DiffHelper.PrintDiff(repo, diff, filesList, variablesForCommits, commitElements);
         }
 
         public static string ResizeTextToFitInPanel(string line)
@@ -49,10 +49,10 @@ namespace GitClient
         private static int index = 0;
         private static string fileName = string.Empty;
         private static GetCertainList list = new GetCertainList();
+        private static GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
         private static string content = string.Empty;
-        private static GetVariablesForFiles indexes = new GetVariablesForFiles();
 
-        public static void PrintDiff(IntPtr repo, IntPtr diff, GetCertainList filesList, GetVariablesForFiles indexes)
+        public static void PrintDiff(IntPtr repo,IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
             list.filesNames = filesList.filesNames;
             list.listOfFiles = filesList.listOfFiles;
@@ -69,7 +69,7 @@ namespace GitClient
                 throw new Exception("Failed to iterate over diff.");
             }
 
-            PrintNewFileContain(indexes, filesList, index);
+            PrintNewFileContain(variablesForCommits, commitElements, index);
         }
 
         public static int DiffFileCallback(LibGit2Wrapper.GitDiffDelta delta, float progress, IntPtr payload)
@@ -77,8 +77,8 @@ namespace GitClient
             string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
             string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            string fileFullName = list.listOfFiles[indexes.fileIndex];
-            fileName = list.filesNames[indexes.fileIndex];
+            string fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
+            fileName = list.filesNames[variablesForFiles.fileIndex];
             string text = GetDiffs.ResizeTextToFitInPanel($"{newFilePath}");
             if (newFilePath!.Contains(fileName))
             {
@@ -86,7 +86,7 @@ namespace GitClient
                 list.filePath.Add(text);
             }
 
-            indexes.fileIndex++;
+            variablesForFiles.fileIndex++;
             return 0;
         }
 
@@ -110,29 +110,30 @@ namespace GitClient
             string text = GetDiffs.ResizeTextToFitInPanel($"{(char)line.origin} {content}");
             list.listOfDiff.Add(text);
             list.filesCode.Add(text);
-            indexes.nextFile = true;
+            variablesForFiles.nextFile = true;
             return 0;
         }
 
-        public static void PrintNewFileContain(GetVariablesForFiles indexes, GetCertainList list, int index)
+        public static void PrintNewFileContain(GetVariablesForCommits variablesForCommits, CommitElements commitElements, /* GetCertainList list,*/ int index)
         {
             if (list.listOfDiff.Contains("= \n\\ No newline at end of file\n"))
             {
                 list.listOfDiff.RemoveAt(list.listOfDiff.IndexOf("= \n\\ No newline at end of file\n"));
             }
 
-            string currentFileName = list.listOfFiles[indexes.fileIndex];
-            FilesBackground(currentFileName, indexes);
+            variablesForFiles.fileIndex = 0;
+            string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
+            FilesBackground(currentFileName, variablesForFiles);
 
-            if (indexes.up == false)
+            if (variablesForFiles.up == false)
             {
-                indexes.fileIndex++;
+                variablesForFiles.fileIndex++;
             }
 
-            if (indexes.fileIndex < list.listOfFiles.Count)
+            if (variablesForFiles.fileIndex < list.listOfFiles.Count)
             {
                 string completeFileName = "";
-                completeFileName = list.listOfFiles[indexes.fileIndex];
+                completeFileName = list.listOfFiles[variablesForFiles.fileIndex];
                 string fileName = completeFileName.Remove(0, 5);
 
                 for (int i = index; i <= list.filePath.Count - 1; i++)
@@ -144,24 +145,24 @@ namespace GitClient
                 list.startingIndexes.Add(list.listOfDiff.Count);
             }
             
-            Print(indexes, index, currentFileName, list);
+            Print(variablesForCommits, commitElements, index, currentFileName);
         }
 
-        public static void Print(GetVariablesForFiles indexes, int index, string fileFullName, GetCertainList list)
+        public static void Print(GetVariablesForCommits variablesForCommits, CommitElements commitElements, int index, string fileFullName/*, GetCertainList list*/)
         {
             string text = string.Empty;
-            GetDiffsLine.GetLineThroughtDiffsLines(indexes.currentLine, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
+            GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1], variablesForFiles, list);
 
-            for (int i = index; i <= list.startingIndexes[indexes.fileIndex]; i++)
+            for (int i = index; i <= list.startingIndexes[variablesForFiles.fileIndex]; i++)
             {
-                if (i == 0 && indexes.up == false && !list.listStartAt.Contains(index))
+                if (i == 0 && variablesForFiles.up == false && !list.listStartAt.Contains(index))
                 {
                     list.listStartAt.Add(index);
                 }
 
-                if (indexes.row == Console.WindowHeight - 2)
+                if (variablesForFiles.row == Console.WindowHeight - 2)
                 {
-                    Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
+                    Navigate.NavigateThroughDiffsContent(index, list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
                 }
 
                 if (list.filePath.Contains(list.listOfDiff[i]))
@@ -181,13 +182,13 @@ namespace GitClient
                 {
                     case "filePath":
                         {
-                            if (indexes.down == false && indexes.row == 0)
+                            if (variablesForFiles.down == false && variablesForFiles.row == 0)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
 
-                            indexes.row++;
-                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row);
+                            variablesForFiles.row++;
+                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.DarkGray;
                             Console.Write(list.listOfDiff[i]);
                             Console.ResetColor();
@@ -195,13 +196,13 @@ namespace GitClient
                         break;
                     case "hunk":
                         {
-                            if (indexes.row == 0 && indexes.down == false)
+                            if (variablesForFiles.row == 0 && variablesForFiles.down == false)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
 
-                            indexes.row++;
-                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row);
+                            variablesForFiles.row++;
+                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.Blue;
                             Console.Write(list.listOfDiff[i]);
                             Console.ResetColor();
@@ -209,57 +210,57 @@ namespace GitClient
                         break;
                     case "filesCode":
                         {
-                            if (indexes.row == 0 && indexes.down == false)
+                            if (variablesForFiles.row == 0 && variablesForFiles.down == false)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
 
-                            indexes.row++;
-                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row);
+                            variablesForFiles.row++;
+                            Console.SetCursorPosition(Console.WindowWidth / 2 + 3, variablesForFiles.row);
                             content = list.listOfDiff[i];
                             SetColorForLinesOfCode(content);
                         }
                         break;
                 }
 
-                if (index == list.startingIndexes[indexes.fileIndex] - 1 && indexes.up == false || indexes.row == Console.WindowHeight - 2 && indexes.up == false)
+                if (index == list.startingIndexes[variablesForFiles.fileIndex] - 1 && variablesForFiles.up == false || variablesForFiles.row == Console.WindowHeight - 2 && variablesForFiles.up == false)
                 {
-                    indexes.end = true;
-                    indexes.nextFile = false;
-                    indexes.numberOfNavigations++;
+                    variablesForFiles.end = true;
+                    variablesForFiles.nextFile = false;
+                    variablesForFiles.numberOfNavigations++;
 
-                    if (indexes.up == false && !list.listStartAt.Contains(index + 1))
+                    if (variablesForFiles.up == false && !list.listStartAt.Contains(index + 1))
                     {
                         list.listStartAt.Add(index + 1);
                     }
 
                     var d = list.listStartAt.IndexOf(index + 1) - 1;
-                    index = list.listStartAt[indexes.x];
-                    indexes.row = 0;
+                    index = list.listStartAt[variablesForFiles.x];
+                    variablesForFiles.row = 0;
                     Console.SetCursorPosition(Console.WindowWidth / 2 + 3, 1);
                     break;
                 }
 
-                if (index < list.startingIndexes[indexes.fileIndex] && indexes.up == false)
+                if (index < list.startingIndexes[variablesForFiles.fileIndex] && variablesForFiles.up == false)
                 {
                     index++;
                 }
 
-                if (indexes.down == true)
+                if (variablesForFiles.down == true)
                 {
-                    if (list.startingIndexes[indexes.fileIndex] <= Console.WindowHeight - 2)
+                    if (list.startingIndexes[variablesForFiles.fileIndex] <= Console.WindowHeight - 2)
                     {
-                        TextFitInPanel(fileFullName, index, indexes);
+                        TextFitInPanel(fileFullName, index, variablesForFiles, variablesForCommits, commitElements);
                     }
                     else
                     {
-                        TextExceedingPanelHeight(fileFullName, index, indexes);
+                        TextExceedingPanelHeight(fileFullName, index, variablesForFiles, variablesForCommits, commitElements);
                     }
                 }
             }
 
-            indexes.down = true;
-            Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
+            variablesForFiles.down = true;
+            Navigate.NavigateThroughDiffsContent(index, list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
         }
 
         public static void FilesBackground(string fileFullName, GetVariablesForFiles indexes)
@@ -307,22 +308,22 @@ namespace GitClient
             }
         }
 
-        private static void CodeBackground(int index, GetVariablesForFiles indexes, string fileFullName)
+        private static void CodeBackground(int index, GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
-            if (index < list.startingIndexes[indexes.fileIndex])
+            if (index < list.startingIndexes[variablesForFiles.fileIndex])
             {
-                if (indexes.row < Console.WindowHeight - 2)
+                if (variablesForFiles.row < Console.WindowHeight - 2)
                 {
-                    Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row + 1);
+                    Console.SetCursorPosition(Console.WindowWidth / 2 + 3, variablesForFiles.row + 1);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.Write(list.listOfDiff[index]);
                     Console.ResetColor();
-                    GetDiffsLine.GetLineThroughtDiffsLines(indexes.currentLine/* + 1*/, list.startingIndexes[indexes.fileIndex] - list.startingIndexes[indexes.fileIndex - 1], indexes, list);
+                    GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1], variablesForFiles, list);
                 }
                 else
                 {
-                    DiffHelper.Print(indexes, index, fileFullName, list);
-                    Console.SetCursorPosition(Console.WindowWidth / 2 + 3, indexes.row);
+                    DiffHelper.Print(variablesForCommits, commitElements, index, fileFullName);
+                    Console.SetCursorPosition(Console.WindowWidth / 2 + 3, variablesForFiles.row);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.Write(list.listOfDiff[index - 1]);
                 }
@@ -331,36 +332,36 @@ namespace GitClient
             }
         }
 
-        public static void TextExceedingPanelHeight(string fileFullName, int index, GetVariablesForFiles indexes)
+        public static void TextExceedingPanelHeight(string fileFullName, int index, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements )
         {
-            if (indexes.up == true)
+            if (variablesForFiles.up == true)
             {
                 index--;
-                indexes.row = indexes.row - 2;
+                variablesForFiles.row = variablesForFiles.row - 2;
             }
 
-            CodeBackground(index, indexes, fileFullName);
+            CodeBackground(index, /*variablesForFiles, */variablesForCommits, commitElements, fileFullName);
             Console.ResetColor();
-            Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
+            Navigate.NavigateThroughDiffsContent(index, list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
         }
 
-        public static void TextFitInPanel(string fileFullName, int index, GetVariablesForFiles indexes)
+        public static void TextFitInPanel(string fileFullName, int index, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
-            if (indexes.down == true && indexes.row < Console.WindowHeight - 2)
+            if (variablesForFiles.down == true && variablesForFiles.row < Console.WindowHeight - 2)
             {
-                if (indexes.up == true)
+                if (variablesForFiles.up == true)
                 {
                     index--;
-                    indexes.row = indexes.row - 2;
+                    variablesForFiles.row = variablesForFiles.row - 2;
                 }
 
-                CodeBackground(index, indexes, fileFullName);
-                Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
+                CodeBackground(index,/* variablesForFiles, */variablesForCommits, commitElements,  fileFullName);
+                Navigate.NavigateThroughDiffsContent(index, list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
             }
 
-            if (indexes.end == true)
+            if (variablesForFiles.end == true)
             {
-                Navigate.NavigateThroughDiffsContent(index, list, indexes, fileFullName);
+                Navigate.NavigateThroughDiffsContent(index, list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
             }
         }
 

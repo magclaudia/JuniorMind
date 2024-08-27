@@ -11,7 +11,7 @@
         public bool displayPanel;
         public bool up;
         public bool down;
-        public bool rigth;
+        public bool right;
         public int indexForFiles;
         public bool enter;
         public bool nextFile;
@@ -28,7 +28,7 @@
             displayPanel = false;
             up = false;
             down = false;
-            rigth = false;
+            right = false;
             indexForFiles = 0;
             enter = false;
             nextFile = false;

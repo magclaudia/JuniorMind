@@ -10,7 +10,7 @@ namespace GitClient
 {
     public class GetAllFiles
     {
-        public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits indexes)
+        public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
             var size = new DrawPanelRigthSide.FilesBox();
             var files = new GetCertainList();
@@ -50,43 +50,43 @@ namespace GitClient
                 {
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_ADDED:
                         fileWithSymbol = $"+    {fileName}";
-                        PrintProjectName(size, i, filePath, fileName, indexes);
+                        PrintProjectName(size, i, filePath, fileName, variablesForCommits);
                         Console.ForegroundColor = ConsoleColor.Green;
-                        PrintEachFile(fileWithSymbol, size, i, ref a, indexes, files);
+                        PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, files);
                         break;
 
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_MODIFIED:
                         fileWithSymbol = $"M    {fileName}";
-                        PrintProjectName(size, i, filePath, fileName, indexes);
+                        PrintProjectName(size, i, filePath, fileName, variablesForCommits);
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        PrintEachFile(fileWithSymbol, size, i, ref a, indexes, files);
+                        PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, files);
                         break;
 
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_DELETED:
                         fileWithSymbol = $"-    {fileName}";
-                        PrintProjectName(size, i, filePath, fileName, indexes);
+                        PrintProjectName(size, i, filePath, fileName, variablesForCommits);
                         Console.ForegroundColor = ConsoleColor.DarkRed;
-                        PrintEachFile(fileWithSymbol, size, i, ref a, indexes, files);
+                        PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, files);
                         break;
                 }
 
                 Console.ResetColor();
             }
 
-            if (indexes.rigth == true)
+            if (variablesForCommits.right == true)
             {
-                var variables = new GetVariablesForFiles();
-                GetDiffs.GetFileContent(repo, numDeltas, diff, variables, files);
+                GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
+                GetDiffs.GetFileContent(repo, numDeltas, diff, variablesForFiles, variablesForCommits, commitElements, files);
             }
         }
 
-        private static void PrintProjectName(DrawPanelRigthSide.FilesBox size, ulong i, string filePath, string fileName, GetVariablesForCommits indexes)
+        private static void PrintProjectName(DrawPanelRigthSide.FilesBox size, ulong i, string filePath, string fileName, GetVariablesForCommits variablesForCommits)
         {
             if (i == 0)
             {
                 int firstIndex = 0;
                 int fullPathLength = filePath!.Length;
-                if (indexes.rigth == true)
+                if (variablesForCommits.right == true)
                 {
                     Console.SetCursorPosition(1, size.edgeOneY + 1);
                 }
@@ -132,7 +132,7 @@ namespace GitClient
             }
         }
 
-        private static void PrintEachFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, GetVariablesForCommits indexes, GetCertainList files)
+        private static void PrintEachFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, GetVariablesForCommits variablesForCommits, GetCertainList files)
         {
             int lengthForNow = 0;
             int firstIndex = 0;
@@ -140,11 +140,11 @@ namespace GitClient
             i++;
             if (fileWithSymbol.Length - lengthForNow > size.width)
             {
-                if (indexes.rigth == true && (int)i <= size.height - 3)
+                if (variablesForCommits.right == true && (int)i <= size.height - 3)
                 {
                     Console.SetCursorPosition(1, size.edgeOneY + 1 + (int)i);
                 }
-                else if (indexes.rigth == false && (int)i <= size.height - 3)
+                else if (variablesForCommits.right == false && (int)i <= size.height - 3)
                 {
                     Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
                 }
@@ -154,11 +154,11 @@ namespace GitClient
             }
             else
             {
-                if (indexes.rigth == true && (int)i <= size.height - 3)
+                if (variablesForCommits.right == true && (int)i <= size.height - 3)
                 {
                     Console.SetCursorPosition(1, size.edgeOneY + 1 + (int)i);
                 }
-                else if (indexes.rigth == false && (int)i <= size.height - 3)
+                else if (variablesForCommits.right == false && (int)i <= size.height - 3)
                 {
                     Console.SetCursorPosition(size.edgeOneX + 1, size.edgeOneY + 1 + (int)i);
                 }
