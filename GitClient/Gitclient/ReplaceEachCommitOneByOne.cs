@@ -2,7 +2,7 @@
 {
     public class ReplaceEachCommitOneByOne
     {
-        public static void PrintNewCommitIfPanel(GetVariablesForCommits variablesForCommits, CommitElements commitElement, List<string> addList, bool reachLimit, int blueFond)
+        public static void PrintNewCommitIfPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, List<string> addList, bool reachLimit, int blueFond)
         {
             string message = string.Empty;
 
@@ -94,10 +94,10 @@
 
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(variablesForCommits, commitElement, height, width);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);
         }
 
-        public static void PrintNewCommitIfNoPanel(GetVariablesForCommits variablesForCommits, CommitElements commitElement, List<string> addList, bool reachLimit, int blueFond)
+        public static void PrintNewCommitIfNoPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, List<string> addList, bool reachLimit, int blueFond)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -183,10 +183,10 @@
 
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(variablesForCommits, commitElement, height, width);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);
         }
 
-        public static void PrintNewCommitIfReachLimit(GetVariablesForCommits variablesForCommits, CommitElements commitElement, List<string> addList, int blueFond)
+        public static void PrintNewCommitIfReachLimit(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, List<string> addList, int blueFond)
         {
             int upAndDownConsole = variablesForCommits.heightPosition;
             int index = variablesForCommits.currentCommitIndex;
@@ -288,7 +288,7 @@
             Cursor.UpdateCursorPositionList(commitElement, addList, variablesForCommits, blueFond);
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(variablesForCommits, commitElement, height, width);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);
         }
 
         public static void ClearCommitRow(GetVariablesForCommits variablesForCommits)

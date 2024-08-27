@@ -16,24 +16,23 @@ namespace GitClient
             public string Description;
         }
 
-        public static void PrintCommits(GetVariablesForCommits variablesForCommits, CommitElements commitElement)
+        public static void PrintCommits(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement)
         {
-            // GetCertainList list = new GetCertainList();
             var addList = new List<string>();
             GetCommitNumber.ReturnCommitNumber(commitElement, variablesForCommits);
             var position = new DrawPanelRigthSide.CommitsPanel();
             int blueFond = 0;
             if (variablesForCommits.displayPanel == false)
             {
-                DisplayCommitsOnEntireConsole(addList, variablesForCommits, commitElement, blueFond);
+                DisplayCommitsOnEntireConsole(addList, variablesForCommits, variablesForFiles, commitElement, blueFond);
             }
             else
             {
-                DisplayCommitsWithPanel(variablesForCommits, addList, commitElement, blueFond);
+                DisplayCommitsWithPanel(variablesForCommits, variablesForFiles, addList, commitElement, blueFond);
             }
         }
 
-        private static void DisplayCommitsOnEntireConsole(List<string> addList, GetVariablesForCommits variablesForCommits, CommitElements commitElement, int blueFond)
+        private static void DisplayCommitsOnEntireConsole(List<string> addList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, int blueFond)
         {
             var element = new Elements();
             variablesForCommits.rigthCursor = 0;
@@ -86,10 +85,10 @@ namespace GitClient
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
             Cursor.UpdateCursorPositionList(commitElement, addList, variablesForCommits, blueFond);
-            Navigate.NavigateThroughCommits(variablesForCommits, commitElement, /*list,*/ height, width);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);
         }
 
-        private static void DisplayCommitsWithPanel(GetVariablesForCommits variablesForCommits, List<string> addList, CommitElements commitElement, int blueFond)
+        private static void DisplayCommitsWithPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, List<string> addList, CommitElements commitElement, int blueFond)
         {
             var element = new Elements();
             var size = new DrawPanelRigthSide.CommitsPanel();
@@ -160,7 +159,7 @@ namespace GitClient
             Cursor.UpdateCursorPositionList(commitElement, addList, variablesForCommits, blueFond);
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(variablesForCommits, commitElement,/* list, */height, width);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);
         }
 
         private static string CheckList(string description, string id, string data, string author, string message)

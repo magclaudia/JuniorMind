@@ -12,6 +12,7 @@ namespace GitClient
             GitOid id = new GitOid();
 
             GetVariablesForCommits variablesForCommits = new GetVariablesForCommits();
+            GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
             CommitElements commitElement = new CommitElements();
 
             if (LibGit2Wrapper.git_revwalk_new(out walker, repo) == 0)
@@ -62,7 +63,7 @@ namespace GitClient
 
                     DrawExternalBorder.DrawBox();
                     commitElement.repo = repo;
-                    GetCommits.PrintCommits(variablesForCommits, commitElement);
+                    GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElement);
                 }
                 else
                 {
