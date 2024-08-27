@@ -253,7 +253,15 @@ namespace GitClient
                         break;
                     case ConsoleKey.Enter:
                         {
+                            variablesForCommits.numberOfEnterPresses++;
                             variablesForCommits.enter = true;
+
+                            if (variablesForCommits.numberOfEnterPresses > 1)
+                            {
+                                variablesForCommits.enter = false;
+                                variablesForCommits.numberOfEnterPresses = 0;
+                            }
+
                             if (variablesForCommits.right == false)
                             {
                                 variablesForCommits.displayPanel = true;

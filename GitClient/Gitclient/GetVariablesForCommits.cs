@@ -16,6 +16,7 @@
         public bool enter;
         public bool nextFile;
         public bool clear;
+        public int numberOfEnterPresses;
 
         public GetVariablesForCommits()
         {
@@ -33,6 +34,7 @@
             enter = false;
             nextFile = false;
             clear = true;
+            numberOfEnterPresses = 0;
         }
     }
 }
