@@ -144,6 +144,12 @@ namespace GitClient
                 list.startingIndexes.Add(list.listOfDiff.Count);
             }
 
+            if (list.listOfFiles.Count == 1)
+            {
+                list.startingIndexes.Add(0);
+                list.startingIndexes.Add(list.listOfDiff.Count);
+            }
+
             variablesForFiles.a = list.listOfFiles.Count;
             Print(variablesForCommits, commitElements, currentFileName);
         }
