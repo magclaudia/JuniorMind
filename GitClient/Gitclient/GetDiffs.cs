@@ -120,7 +120,6 @@ namespace GitClient
                 list.listOfDiff.RemoveAt(list.listOfDiff.IndexOf("= \n\\ No newline at end of file\n"));
             }
 
-            //Cursor.UpdateCursorPositionForDiffsList(variablesForFiles, list);
             variablesForFiles.fileIndex = 0;
             string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
             FilesBackground(currentFileName, variablesForFiles);
@@ -144,14 +143,14 @@ namespace GitClient
 
                 list.startingIndexes.Add(list.listOfDiff.Count);
             }
-            
+
+            variablesForFiles.a = list.listOfFiles.Count;
             Print(variablesForCommits, commitElements, currentFileName);
         }
 
         public static void Print(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
             string text = string.Empty;
-            variablesForFiles.a = variablesForFiles.fileIndex;
             GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1], variablesForFiles, list);
             Cursor.UpdateCursorPositionForDiffsList(variablesForFiles, list);
 

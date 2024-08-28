@@ -63,6 +63,7 @@ namespace GitClient
             Console.Write(cursorSymbol);
             Console.ResetColor();
             int i = 1;
+
             while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
             {
                 Console.SetCursorPosition(Console.WindowWidth - 2, i);
@@ -77,6 +78,20 @@ namespace GitClient
                 Console.SetCursorPosition(Console.WindowWidth - 2, Console.WindowHeight - 2 - i);
                 Console.Write("║");
                 i++;
+            }
+
+            if (list.listStartAt.Count > 0)
+            {
+                if (list.listStartAt[variablesForFiles.x] == variablesForFiles.index && indicatorPosition > 0)
+                {
+                    while (i < stop - 1)
+                    {
+                        Console.SetCursorPosition(Console.WindowWidth - 2, Console.WindowHeight - 2 - i);
+                        Console.Write("║");
+                        i++;
+                    }
+                }
+                
             }
 
             Console.SetCursorPosition(Console.WindowWidth - 2, indicatorPosition);
