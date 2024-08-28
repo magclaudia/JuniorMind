@@ -90,7 +90,7 @@
 
             GetCommitNumber.ReturnCommitNumber(commitElement, variablesForCommits);
             Navigate.CommitDetail(variablesForCommits, commitElement, clear);
-            Cursor.UpdateCursorPositionList(commitElement, addList, variablesForCommits, blueFond);
+            Cursor.UpdateCursorPositionForCommitsList(commitElement, addList, variablesForCommits, blueFond);
 
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
@@ -179,7 +179,7 @@
             }
 
             GetCommitNumber.ReturnCommitNumber(commitElement, variablesForCommits);
-            Cursor.UpdateCursorPositionList(commitElement, addList, variablesForCommits, blueFond);
+            Cursor.UpdateCursorPositionForCommitsList(commitElement, addList, variablesForCommits, blueFond);
 
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
@@ -285,7 +285,7 @@
                 Navigate.CommitDetail(variablesForCommits, commitElement, clear);
             }
             
-            Cursor.UpdateCursorPositionList(commitElement, addList, variablesForCommits, blueFond);
+            Cursor.UpdateCursorPositionForCommitsList(commitElement, addList, variablesForCommits, blueFond);
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
             Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);

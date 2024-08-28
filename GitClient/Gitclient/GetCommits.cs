@@ -84,7 +84,7 @@ namespace GitClient
             variablesForCommits.currentCommitIndex = index;
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
-            Cursor.UpdateCursorPositionList(commitElement, addList, variablesForCommits, blueFond);
+            Cursor.UpdateCursorPositionForCommitsList(commitElement, addList, variablesForCommits, blueFond);
             Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);
         }
 
@@ -156,7 +156,7 @@ namespace GitClient
 
             variablesForCommits.rigthCursor = variablesForCommits.currentCommitIndex;
             variablesForCommits.currentCommitIndex = index;
-            Cursor.UpdateCursorPositionList(commitElement, addList, variablesForCommits, blueFond);
+            Cursor.UpdateCursorPositionForCommitsList(commitElement, addList, variablesForCommits, blueFond);
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
             Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);

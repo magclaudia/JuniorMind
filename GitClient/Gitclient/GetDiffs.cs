@@ -120,6 +120,7 @@ namespace GitClient
                 list.listOfDiff.RemoveAt(list.listOfDiff.IndexOf("= \n\\ No newline at end of file\n"));
             }
 
+            //Cursor.UpdateCursorPositionForDiffsList(variablesForFiles, list);
             variablesForFiles.fileIndex = 0;
             string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
             FilesBackground(currentFileName, variablesForFiles);
@@ -150,7 +151,9 @@ namespace GitClient
         public static void Print(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
             string text = string.Empty;
+            variablesForFiles.a = variablesForFiles.fileIndex;
             GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1], variablesForFiles, list);
+            Cursor.UpdateCursorPositionForDiffsList(variablesForFiles, list);
 
             for (int i = variablesForFiles.index; i <= list.startingIndexes[variablesForFiles.fileIndex]; i++)
             {
@@ -266,13 +269,9 @@ namespace GitClient
         {
             variablesForFiles.nextFile = true;
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
+            Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list);
             if (variablesForFiles.fileIndex <= list.listOfFiles.Count - 1)
             {
-                if (variablesForFiles.fileIndex == size.height - 3)
-                {
-
-                }
-
                 Console.SetCursorPosition(1, variablesForFiles.fileRow);
                 Console.Write(new string(' ', (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4));
                 Console.SetCursorPosition(1, variablesForFiles.fileRow);

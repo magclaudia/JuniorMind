@@ -184,7 +184,7 @@ namespace GitClient
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
                 Console.SetCursorPosition(Console.WindowWidth / 2 - 1, i);
-                Console.Write("│");
+                Console.Write("║");
             }
 
             ListOfAllCommitsPanel();

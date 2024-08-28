@@ -25,6 +25,7 @@ namespace GitClient
         public int lastLine;
         public bool left;
         public int index;
+        public int a;
 
         public GetVariablesForFiles()
         {
@@ -44,6 +45,7 @@ namespace GitClient
             lastLine = 0;
             left = false;
             index = 0;
+            a = 0;
         }
     }
 }
