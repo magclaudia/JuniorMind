@@ -32,7 +32,7 @@ namespace GitClient
             }
         }
 
-        public static void CleanCodePanel()
+        public static void CleaningCodePanel()
         {
             for (int i = 1; i <= Console.WindowHeight - 2; i++)
             {
@@ -115,9 +115,11 @@ namespace GitClient
 
         public static void PrintNewFileContain(GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
-            if (list.listOfDiff.Contains("= \n\\ No newline at end of file\n"))
+            if (list.listOfDiff[variablesForFiles.index].StartsWith("=") || list.listOfDiff[variablesForFiles.index].StartsWith("<") || list.listOfDiff[variablesForFiles.index].StartsWith(">"))
             {
-                list.listOfDiff.RemoveAt(list.listOfDiff.IndexOf("= \n\\ No newline at end of file\n"));
+                list.listOfDiff.RemoveAt(list.listOfDiff.IndexOf("="));
+                list.listOfDiff.RemoveAt(list.listOfDiff.IndexOf("<"));
+                list.listOfDiff.RemoveAt(list.listOfDiff.IndexOf(">"));
             }
 
             variablesForFiles.fileIndex = 0;
@@ -137,8 +139,8 @@ namespace GitClient
 
                 for (int i = variablesForFiles.index; i <= list.filePath.Count - 1; i++)
                 {
-                    var ddd = list.listOfDiff.IndexOf(list.listOfDiff.Find(x => x.Contains(list.filePath[i]))!);
-                    list.startingIndexes.Add(ddd);
+                    var number = list.listOfDiff.IndexOf(list.listOfDiff.Find(x => x.Contains(list.filePath[i]))!);
+                    list.startingIndexes.Add(number);
                 }
 
                 list.startingIndexes.Add(list.listOfDiff.Count);
@@ -244,7 +246,6 @@ namespace GitClient
                         list.listStartAt.Add(variablesForFiles.index + 1);
                     }
 
-                    var d = list.listStartAt.IndexOf(variablesForFiles.index + 1) - 1;
                     variablesForFiles.index = list.listStartAt[variablesForFiles.x];
                     variablesForFiles.row = 0;
                     Console.SetCursorPosition(Console.WindowWidth / 2 + 3, 1);
@@ -278,6 +279,7 @@ namespace GitClient
             variablesForFiles.nextFile = true;
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
             Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list);
+
             if (variablesForFiles.fileIndex <= list.listOfFiles.Count - 1)
             {
                 Console.SetCursorPosition(1, variablesForFiles.fileRow);
@@ -304,7 +306,7 @@ namespace GitClient
                         fileFullName = list.listOfFiles[variablesForFiles.fileIndex - 1];
                     }
 
-                    SetColoForFiles(fileFullName, variablesForFiles);
+                    SetColorForFiles(fileFullName, variablesForFiles);
                 }
 
                 if (variablesForFiles.up == false && list.listOfFiles.Count > 1)
@@ -312,6 +314,24 @@ namespace GitClient
                     variablesForFiles.fileRow++;
                 }
             }
+
+            if (list.listOfFiles.Count > size.height && variablesForFiles.indexForFiles == list.listOfFiles.Count)
+            {
+                CleaningFilePanel();
+            }
+
+        }
+
+        public static void CleaningFilePanel()
+        {
+            DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
+            for (int i = 1; i <= size.height; i++)
+            {
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 3, i);
+                Console.Write(new string(' ', (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4));
+            }
+
+            Console.SetCursorPosition(1, size.height);
         }
 
         private static void CodeBackground(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
@@ -371,7 +391,7 @@ namespace GitClient
             }
         }
 
-        private static void SetColoForFiles(string fileFullName, GetVariablesForFiles variablesForFiles)
+        private static void SetColorForFiles(string fileFullName, GetVariablesForFiles variablesForFiles)
         {
             string symbol = fileFullName.Substring(0, 1);
             switch (symbol)

@@ -175,5 +175,6 @@ namespace GitClient
             firstIndex += file.Length - 1;
 
         }
+
     }
 }

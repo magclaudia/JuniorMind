@@ -22,7 +22,7 @@ namespace GitClient
 
                             if (variablesForFiles.index + 1 == list.listStartAt[variablesForFiles.x + 1] && variablesForFiles.index > 0 && variablesForFiles.index + 1 == list.startingIndexes[variablesForFiles.fileIndex])
                             {
-                                GetDiffs.CleanCodePanel();
+                                GetDiffs.CleaningCodePanel();
                                 variablesForFiles.row = 0;
                                 variablesForFiles.numberOfNavigations = 0;
                                 variablesForFiles.currentLine = 0;
@@ -40,7 +40,7 @@ namespace GitClient
                             }
                             else if (variablesForFiles.index < list.startingIndexes[variablesForFiles.fileIndex] && variablesForFiles.row == Console.WindowHeight - 3)
                             {
-                                GetDiffs.CleanCodePanel();
+                                GetDiffs.CleaningCodePanel();
                                 variablesForFiles.row = 0;
                                 variablesForFiles.index++;
                                 variablesForFiles.numberOfNavigations = 0;
@@ -73,7 +73,7 @@ namespace GitClient
 
                             if (list.listStartAt.Contains(variablesForFiles.index))
                             {
-                                GetDiffs.CleanCodePanel();
+                                GetDiffs.CleaningCodePanel();
                                 variablesForFiles.row = 0;
                                 variablesForFiles.numberOfNavigations = 0;
 

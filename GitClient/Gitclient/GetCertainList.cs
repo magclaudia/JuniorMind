@@ -16,9 +16,9 @@ namespace GitClient
         public  List<string> hunks;
         public  List<string> filesCode;
         public  List<string> addLinesOfCode;
-        public List<int> listStartAt;
-        public List<int> start;
-        public List<string> addList;
+        public  List<int> listStartAt;
+        public  List<int> start;
+        public  List<string> addList;
 
         public GetCertainList() 
         {
