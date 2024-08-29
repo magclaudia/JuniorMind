@@ -129,10 +129,10 @@ namespace GitClient
                 variablesForFiles.fileIndex++;
             }
 
-            if (variablesForFiles.fileIndex < list.listOfFiles.Count)
+            if (variablesForFiles.fileIndex <= list.listOfFiles.Count)
             {
                 string completeFileName = "";
-                completeFileName = list.listOfFiles[variablesForFiles.fileIndex];
+                completeFileName = list.listOfFiles[variablesForFiles.indexForFiles];
                 string fileName = completeFileName.Remove(0, 5);
 
                 for (int i = variablesForFiles.index; i <= list.filePath.Count - 1; i++)
@@ -144,12 +144,6 @@ namespace GitClient
                 list.startingIndexes.Add(list.listOfDiff.Count);
             }
 
-            if (list.listOfFiles.Count == 1)
-            {
-                list.startingIndexes.Add(0);
-                list.startingIndexes.Add(list.listOfDiff.Count);
-            }
-
             variablesForFiles.a = list.listOfFiles.Count;
             Print(variablesForCommits, commitElements, currentFileName);
         }
@@ -157,10 +151,19 @@ namespace GitClient
         public static void Print(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
             string text = string.Empty;
-            GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1], variablesForFiles, list);
+            if (list.listOfFiles.Count == 1)
+            {
+               variablesForFiles.totalLines = list.listOfDiff.Count;
+            }
+            else
+            {
+               variablesForFiles.totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
+            }
+
+            GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, variablesForFiles.totalLines, variablesForFiles, list);
             Cursor.UpdateCursorPositionForDiffsList(variablesForFiles, list);
 
-            for (int i = variablesForFiles.index; i <= list.startingIndexes[variablesForFiles.fileIndex]; i++)
+            for (int i = variablesForFiles.index; i < list.startingIndexes[variablesForFiles.fileIndex]; i++)
             {
                 if (i == 0 && variablesForFiles.up == false && !list.listStartAt.Contains(variablesForFiles.index))
                 {
@@ -304,7 +307,7 @@ namespace GitClient
                     SetColoForFiles(fileFullName, variablesForFiles);
                 }
 
-                if (variablesForFiles.up == false)
+                if (variablesForFiles.up == false && list.listOfFiles.Count > 1)
                 {
                     variablesForFiles.fileRow++;
                 }
@@ -321,7 +324,7 @@ namespace GitClient
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.Write(list.listOfDiff[variablesForFiles.index]);
                     Console.ResetColor();
-                    GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1], variablesForFiles, list);
+                    GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, variablesForFiles.totalLines, variablesForFiles, list);
                 }
                 else
                 {

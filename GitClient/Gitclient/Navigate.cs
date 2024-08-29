@@ -38,7 +38,7 @@ namespace GitClient
                                 variablesForFiles.x++;
 
                             }
-                            else if (variablesForFiles.index + 1 < list.startingIndexes[variablesForFiles.fileIndex] && variablesForFiles.row == Console.WindowHeight - 3)
+                            else if (variablesForFiles.index < list.startingIndexes[variablesForFiles.fileIndex] && variablesForFiles.row == Console.WindowHeight - 3)
                             {
                                 GetDiffs.CleanCodePanel();
                                 variablesForFiles.row = 0;
@@ -53,9 +53,7 @@ namespace GitClient
                                 variablesForFiles.currentLine++;
                             }
 
-                            int totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
-                           
-                            if (variablesForFiles.index == list.listStartAt[variablesForFiles.x] && list.startingIndexes[variablesForFiles.fileIndex] - list.listStartAt[variablesForFiles.x] < Console.WindowHeight - 2 && totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && totalLines > Console.WindowHeight - 2 && variablesForFiles.fileIndex != list.listOfFiles.Count)
+                            if (variablesForFiles.index == list.listStartAt[variablesForFiles.x] && list.startingIndexes[variablesForFiles.fileIndex] - list.listStartAt[variablesForFiles.x] < Console.WindowHeight - 2 && variablesForFiles.totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && variablesForFiles.totalLines > Console.WindowHeight - 2 && variablesForFiles.fileIndex != list.listOfFiles.Count)
                             {
                                 GetDiffsLine.GetLineIfDownMoves(list, variablesForFiles);
                             }
@@ -69,6 +67,7 @@ namespace GitClient
                             if (variablesForFiles.index == 0 && variablesForFiles.up == true)
                             {
                                 variablesForFiles.end = true;
+                                variablesForFiles.up = false;
                                 break;
                             }
 
@@ -89,9 +88,9 @@ namespace GitClient
                                 variablesForFiles.down = false;
                                 variablesForFiles.x--;
                                 variablesForFiles.index = list.listStartAt[variablesForFiles.x];
-                                int totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
 
-                                if (totalLines > Console.WindowHeight - 2)
+                                variablesForFiles.totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
+                                if (variablesForFiles.totalLines > Console.WindowHeight - 2)
                                 {
                                     GetDiffsLine.GetLineIfUpMoves(variablesForFiles.index, list, variablesForFiles);
                                 }
