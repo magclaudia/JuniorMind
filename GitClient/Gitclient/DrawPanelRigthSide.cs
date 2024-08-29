@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GitClient
+﻿namespace GitClient
 {
     public class DrawPanelRigthSide
     {
         private static int plusLegthForLargePanel = 10;
         private static int border = 2;
-       
+
         public struct InfoPanel
         {
             public int edgeOne;
@@ -25,11 +19,11 @@ namespace GitClient
                 edgeTwo = Console.WindowWidth - 1;
                 edgeTree = Console.WindowWidth / 2 + plusLegthForLargePanel;
                 edgeFour = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) - 2;
-                width =Console.WindowWidth - 1 - (Console.WindowWidth / 2 + plusLegthForLargePanel + 1);
+                width = Console.WindowWidth - 1 - (Console.WindowWidth / 2 + plusLegthForLargePanel + 1);
                 height = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) - 2;
             }
         }
-        
+
         public struct MessageBox
         {
             public int edgeOne;
@@ -39,7 +33,7 @@ namespace GitClient
             public int width;
             public int height;
 
-            public MessageBox() 
+            public MessageBox()
             {
                 edgeOne = Console.WindowWidth / 2 + plusLegthForLargePanel;
                 edgeTwo = Console.WindowWidth - 1;

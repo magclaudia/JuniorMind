@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace GitClient
+﻿namespace GitClient
 {
     public class GetCommits
     {
@@ -102,7 +97,7 @@ namespace GitClient
                 string text = string.Empty;
                 string listWithoutMessage = string.Empty;
                 Console.SetCursorPosition(1, variablesForCommits.rigthCursor + 1);
-               
+
                 element.Id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
@@ -133,10 +128,10 @@ namespace GitClient
 
                 Console.ResetColor();
 
-                
+
                 element.Message = commitElement.Message[variablesForCommits.currentCommitIndex].TrimEnd();
                 element.Description = commitElement.Description[variablesForCommits.currentCommitIndex].TrimEnd();
-                string message = CheckList(element.Description, element.Id, element.DateTime, author, element.Message); 
+                string message = CheckList(element.Description, element.Id, element.DateTime, author, element.Message);
                 text = $"{element.Id}{element.DateTime}{author}{message}";
                 if (text.Length >= size.width)
                 {
@@ -175,5 +170,5 @@ namespace GitClient
 
             return message;
         }
-    } 
+    }
 }

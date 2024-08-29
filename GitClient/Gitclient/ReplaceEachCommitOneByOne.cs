@@ -170,8 +170,6 @@
                 text = $"{id}{data}{author}{message}";
                 addList.Add(text);
             }
-
-            bool clear = false;
             if (variablesForCommits.up == true && variablesForCommits.heightPosition > 1)
             {
                 variablesForCommits.currentCommitIndex--;
@@ -284,7 +282,7 @@
                 bool clear = false;
                 Navigate.CommitDetail(variablesForCommits, commitElement, clear);
             }
-            
+
             Cursor.UpdateCursorPositionForCommitsList(commitElement, addList, variablesForCommits, blueFond);
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;

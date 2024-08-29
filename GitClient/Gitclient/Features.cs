@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace GitClient
+﻿namespace GitClient
 {
     public class Features
     {
@@ -22,7 +20,7 @@ namespace GitClient
             LibGit2Wrapper.git_libgit2_init();
 
             CommitElements commitElements = new CommitElements();
-            
+
             try
             {
                 if (LibGit2Wrapper.git_repository_open(out commitElements.repo, repoPath) != 0)
@@ -32,7 +30,7 @@ namespace GitClient
 
                 GetListOfCommits.GetAllCommits(commitElements.repo);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }

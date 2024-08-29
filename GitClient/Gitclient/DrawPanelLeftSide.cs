@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GitClient
+﻿namespace GitClient
 {
     public class DrawPanelLeftSide
     {
@@ -71,7 +65,7 @@ namespace GitClient
                 edgeTwoY = Console.WindowHeight / 2 + 2;
                 edgeTreeX = Console.WindowWidth / 2 + plusLegthForLargePanel;
                 edgeTreeY = Console.WindowHeight - 1;
-                
+
                 edgeFourX = Console.WindowWidth / 2 - 2;
                 edgeFourY = Console.WindowHeight - 1;
                 width = Console.WindowWidth - 1 - (Console.WindowWidth / 2 + plusLegthForLargePanel + 1);

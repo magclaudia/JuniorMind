@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace GitClient
 {
@@ -135,7 +134,7 @@ namespace GitClient
             public ushort mode;
             public ushort id_abbrev;
         }
-      
+
         private static void LoadLibrary()
         {
             string libName;
@@ -271,7 +270,7 @@ namespace GitClient
             public int new_start;
             public int new_lines;
             public UIntPtr header_len;
-            
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
             public char[] header;
         }

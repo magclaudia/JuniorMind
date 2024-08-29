@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GitClient
+﻿namespace GitClient
 {
     public class Message
     {
@@ -17,7 +12,7 @@ namespace GitClient
             var messageList = new GetCommits.Elements();
             messageList.Message = commitElements.Message[index];
             messageList.Description = commitElements.Description[index];
-            
+
             if (indexes.right == true)
             {
                 Console.SetCursorPosition(1, Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1);

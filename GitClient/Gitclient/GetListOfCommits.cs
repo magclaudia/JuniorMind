@@ -30,7 +30,7 @@ namespace GitClient
                             string commitMessage = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!;
                             string[] messageParts = commitMessage.Split(new[] { '\n' }, 2);
                             string message;
-                            
+
                             if (messageParts[0].Contains("\n\n"))
                             {
                                 int index = messageParts[0].IndexOf('\n');

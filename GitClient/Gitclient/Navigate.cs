@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace GitClient
+﻿namespace GitClient
 {
     public class Navigate
     {
         public static void NavigateThroughDiffsContent(GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
             ConsoleKeyInfo keyInfo;
+            int height = Console.WindowHeight - 2;
+
             do
             {
                 keyInfo = Console.ReadKey(true);
@@ -38,7 +38,7 @@ namespace GitClient
                                 variablesForFiles.x++;
 
                             }
-                            else if (variablesForFiles.index < list.startingIndexes[variablesForFiles.fileIndex] && variablesForFiles.row == Console.WindowHeight - 3)
+                            else if (variablesForFiles.index < list.startingIndexes[variablesForFiles.fileIndex] && variablesForFiles.row == height - 1)
                             {
                                 GetDiffs.CleaningCodePanel();
                                 variablesForFiles.row = 0;
@@ -48,12 +48,12 @@ namespace GitClient
                                 variablesForFiles.x++;
                             }
 
-                            if (variablesForFiles.row <= Console.WindowHeight - 2 || variablesForFiles.index == list.startingIndexes[variablesForFiles.fileIndex] - 1)
+                            if (variablesForFiles.row <= height || variablesForFiles.index == list.startingIndexes[variablesForFiles.fileIndex] - 1)
                             {
                                 variablesForFiles.currentLine++;
                             }
 
-                            if (variablesForFiles.index == list.listStartAt[variablesForFiles.x] && list.startingIndexes[variablesForFiles.fileIndex] - list.listStartAt[variablesForFiles.x] < Console.WindowHeight - 2 && variablesForFiles.totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && variablesForFiles.totalLines > Console.WindowHeight - 2 && variablesForFiles.fileIndex != list.listOfFiles.Count)
+                            if (variablesForFiles.index == list.listStartAt[variablesForFiles.x] && list.startingIndexes[variablesForFiles.fileIndex] - list.listStartAt[variablesForFiles.x] < height && variablesForFiles.totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && variablesForFiles.totalLines > Console.WindowHeight - 2 && variablesForFiles.fileIndex != list.listOfFiles.Count)
                             {
                                 GetDiffsLine.GetLineIfDownMoves(list, variablesForFiles);
                             }
@@ -90,7 +90,7 @@ namespace GitClient
                                 variablesForFiles.index = list.listStartAt[variablesForFiles.x];
 
                                 variablesForFiles.totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
-                                if (variablesForFiles.totalLines > Console.WindowHeight - 2)
+                                if (variablesForFiles.totalLines > height)
                                 {
                                     GetDiffsLine.GetLineIfUpMoves(variablesForFiles.index, list, variablesForFiles);
                                 }
@@ -104,7 +104,7 @@ namespace GitClient
                         }
                         break;
 
-                        case ConsoleKey.LeftArrow:
+                    case ConsoleKey.LeftArrow:
                         {
                             variablesForCommits.enter = true;
                             variablesForCommits.panelAlreadyDisplayed = false;
