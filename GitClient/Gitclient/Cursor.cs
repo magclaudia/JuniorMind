@@ -95,6 +95,11 @@
         public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             int indicatorPosition = (variablesForFiles.fileIndex * (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
+            if (variablesForFiles.up == true && variablesForFiles.fileRow == Console.WindowHeight / 2 + 3)
+            {
+                indicatorPosition = 0;
+            }
+           
             Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + indicatorPosition + 1);
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             char cursorSymbol = '█';
