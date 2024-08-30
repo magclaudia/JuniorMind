@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace GitClient
 {
@@ -158,8 +159,8 @@ namespace GitClient
                 variablesForFiles.totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
             }
 
-            //GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, variablesForFiles.totalLines, variablesForFiles, list);
-            //Cursor.UpdateCursorPositionForDiffsList(variablesForFiles, list);
+            GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, variablesForFiles.totalLines, variablesForFiles, list);
+            Cursor.UpdateCursorPositionForDiffsList(variablesForFiles, list);
 
             for (int i = variablesForFiles.index; i < list.startingIndexes[variablesForFiles.fileIndex]; i++)
             {
@@ -274,62 +275,88 @@ namespace GitClient
         {
             variablesForFiles.nextFile = true;
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
-            // Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list);
+            Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list);
 
-            if (variablesForFiles.fileIndex <= list.listOfFiles.Count - 1)
+            if (variablesForFiles.fileRow + 1 == Console.WindowHeight / 2 + 4 && variablesForFiles.up == true)
             {
-                Console.SetCursorPosition(1, variablesForFiles.fileRow);
-                Console.Write(new string(' ', (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4));
-                Console.SetCursorPosition(1, variablesForFiles.fileRow);
-                Console.BackgroundColor = ConsoleColor.DarkBlue;
-                Console.Write(fileFullName);
-                Console.ResetColor();
-
-                if (variablesForFiles.fileIndex >= 1 || variablesForFiles.up == true)
+                CleaningFilePanel();
+                variablesForFiles.fileIndex = 0;
+                while (variablesForFiles.fileRow <= Console.WindowHeight - 2)
                 {
-                    if (variablesForFiles.up == true)
-                    {
-                        variablesForFiles.fileRow++;
-                        variablesForFiles.fileIndex++;
-                        Console.SetCursorPosition(1, variablesForFiles.fileRow);
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
-                    }
-                    else
-                    {
-                        Console.SetCursorPosition(1, variablesForFiles.fileRow - 1);
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        fileFullName = list.listOfFiles[variablesForFiles.fileIndex - 1];
-                    }
-
+                    fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
                     SetColorForFiles(fileFullName, variablesForFiles);
+                    variablesForFiles.fileIndex++;
+                    variablesForFiles.fileRow++;
+                    Console.SetCursorPosition(1, variablesForFiles.fileRow);
                 }
 
-                if (variablesForFiles.up == false && list.listOfFiles.Count > 1)
-                {
-                    variablesForFiles.fileRow++;
-                }
+                variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
+                variablesForFiles.fileIndex = 0;
+                variablesForFiles.x = 1;
+                fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
             }
 
-            if (list.listOfFiles.Count > size.height && variablesForFiles.indexForFiles == list.listOfFiles.Count)
+            if (list.listOfFiles.Count > size.height - 3 && variablesForFiles.fileIndex == size.height - 3 && variablesForFiles.up == false)
             {
                 CleaningFilePanel();
             }
+            
+            Console.SetCursorPosition(1, variablesForFiles.fileRow);
+            Console.Write(new string(' ', (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4));
+            Console.SetCursorPosition(1, variablesForFiles.fileRow);
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.Write(fileFullName);
+            Console.ResetColor();
+            
+            if (variablesForFiles.fileIndex >= 1 && variablesForFiles.fileIndex <= list.listOfFiles.Count - 1 || variablesForFiles.up == true)
+            {
+                if (variablesForFiles.up == true)
+                {
+                    variablesForFiles.fileRow++;
+                    variablesForFiles.fileIndex++;
+                    Console.SetCursorPosition(1, variablesForFiles.fileRow);
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
+                    SetColorForFiles(fileFullName, variablesForFiles);
+                }
+                else if (variablesForFiles.fileIndex != list.listOfFiles.Count - 1 && list.listOfFiles.Count > size.height - 3)
+                {
+                    Console.SetCursorPosition(1, variablesForFiles.fileRow - 1);
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    fileFullName = list.listOfFiles[variablesForFiles.fileIndex - 1];
+                    SetColorForFiles(fileFullName, variablesForFiles);
+                }
+                else if (list.listOfFiles.Count < size.height - 3)
+                {
+                    Console.SetCursorPosition(1, variablesForFiles.fileRow - 1);
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    fileFullName = list.listOfFiles[variablesForFiles.fileIndex - 1];
+                    SetColorForFiles(fileFullName, variablesForFiles);
+                }
 
+
+            }
+
+            if (variablesForFiles.up == false && list.listOfFiles.Count > 1)
+            {
+                variablesForFiles.fileRow++;
+            }
         }
 
-        public static void CleaningFilePanel()
+        private static void CleaningFilePanel()
         {
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
             int width = Console.WindowWidth;
+            int maxHeight = Console.WindowHeight - 1;
 
-            for (int i = 1; i <= size.height; i++)
+            for (int i = size.height + 5; i < maxHeight; i++)
             {
-                Console.SetCursorPosition(width / 2 + 3, i);
+                Console.SetCursorPosition(1, i);
                 Console.Write(new string(' ', (width - 2) - (width / 2) - 4));
             }
 
-            Console.SetCursorPosition(1, size.height);
+            variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
+            Console.SetCursorPosition(1, size.height + 5);
         }
 
         private static void CodeBackground(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
@@ -345,7 +372,7 @@ namespace GitClient
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.Write(list.listOfDiff[variablesForFiles.index]);
                     Console.ResetColor();
-                    //GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, variablesForFiles.totalLines, variablesForFiles, list);
+                    GetDiffsLine.GetLineThroughtDiffsLines(variablesForFiles.currentLine, variablesForFiles.totalLines, variablesForFiles, list);
                 }
                 else
                 {
