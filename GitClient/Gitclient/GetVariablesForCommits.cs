@@ -2,7 +2,7 @@
 {
     public class GetVariablesForCommits
     {
-        public int startIndex;
+        //public int startIndex;
         public int rigthCursor;
         public int cursorPosition;
         public int currentCommitIndex;
@@ -23,7 +23,7 @@
 
         public GetVariablesForCommits()
         {
-            startIndex = 0;
+           // startIndex = 0;
             rigthCursor = 0;
             cursorPosition = 1;
             currentCommitIndex = 0;
