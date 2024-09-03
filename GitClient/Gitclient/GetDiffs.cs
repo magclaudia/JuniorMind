@@ -147,8 +147,8 @@ namespace GitClient
 
         public static void Print(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
-            int height = Console.WindowHeight;
-            int width = Console.WindowWidth;
+            variablesForFiles.height = Console.WindowHeight;
+            variablesForFiles.width = Console.WindowWidth;
             string text = string.Empty;
             if (list.listOfFiles.Count == 1)
             {
@@ -169,7 +169,7 @@ namespace GitClient
                     list.listStartAt.Add(variablesForFiles.index);
                 }
 
-                if (variablesForFiles.row == height - 2)
+                if (variablesForFiles.row == variablesForFiles.height - 2)
                 {
                     Navigate.NavigateThroughDiffsContent(list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
                 }
@@ -197,7 +197,7 @@ namespace GitClient
                             }
 
                             variablesForFiles.row++;
-                            Console.SetCursorPosition(width / 2 + 3, variablesForFiles.row);
+                            Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.DarkGray;
                             Console.Write(list.listOfDiff[i]);
                             Console.ResetColor();
@@ -211,7 +211,7 @@ namespace GitClient
                             }
 
                             variablesForFiles.row++;
-                            Console.SetCursorPosition(width / 2 + 3, variablesForFiles.row);
+                            Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.Blue;
                             Console.Write(list.listOfDiff[i]);
                             Console.ResetColor();
@@ -225,14 +225,14 @@ namespace GitClient
                             }
 
                             variablesForFiles.row++;
-                            Console.SetCursorPosition(width / 2 + 3, variablesForFiles.row);
+                            Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                             content = list.listOfDiff[i];
                             SetColorForLinesOfCode(content);
                         }
                         break;
                 }
 
-                if (variablesForFiles.index == list.startingIndexes[variablesForFiles.fileIndex] - 1 && variablesForFiles.up == false || variablesForFiles.row == height - 2 && variablesForFiles.up == false)
+                if (variablesForFiles.index == list.startingIndexes[variablesForFiles.fileIndex] - 1 && variablesForFiles.up == false || variablesForFiles.row == variablesForFiles.height - 2 && variablesForFiles.up == false)
                 {
                     variablesForFiles.end = true;
                     variablesForFiles.nextFile = false;
@@ -245,7 +245,7 @@ namespace GitClient
 
                     variablesForFiles.index = list.listStartAt[variablesForFiles.x];
                     variablesForFiles.row = 0;
-                    Console.SetCursorPosition(width / 2 + 3, 1);
+                    Console.SetCursorPosition(variablesForFiles.width / 2 + 3, 1);
                     break;
                 }
 
@@ -256,7 +256,7 @@ namespace GitClient
 
                 if (variablesForFiles.down == true)
                 {
-                    if (list.startingIndexes[variablesForFiles.fileIndex] <= height - 2)
+                    if (list.startingIndexes[variablesForFiles.fileIndex] <= variablesForFiles.height - 2)
                     {
                         TextFitInPanel(fileFullName, variablesForFiles, variablesForCommits, commitElements);
                     }
@@ -368,7 +368,7 @@ namespace GitClient
             {
                 if (variablesForFiles.row < height - 2)
                 {
-                    Console.SetCursorPosition(width / 2 + 3, variablesForFiles.row + 1);
+                    Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row + 1);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.Write(list.listOfDiff[variablesForFiles.index]);
                     Console.ResetColor();
@@ -377,7 +377,7 @@ namespace GitClient
                 else
                 {
                     DiffHelper.Print(variablesForCommits, commitElements, fileFullName);
-                    Console.SetCursorPosition(width / 2 + 3, variablesForFiles.row);
+                    Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.Write(list.listOfDiff[variablesForFiles.index - 1]);
                 }

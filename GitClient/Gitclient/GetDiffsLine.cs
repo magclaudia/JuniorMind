@@ -20,16 +20,16 @@
             }
         }
 
-        public static void GetLineIfUpMoves(int index, GetCertainList list, GetVariablesForFiles variables)
+        public static void GetLineIfUpMoves(int index, GetCertainList list, GetVariablesForFiles variablesForFiles)
         {
-            if (variables.nextFile == true && !list.listOfDiff[index].StartsWith(list.filePath[variables.fileIndex - 1]))
+            if (variablesForFiles.nextFile == true && !list.listOfDiff[index].StartsWith(list.filePath[variablesForFiles.fileIndex - 1]))
             {
-                variables.currentLine = list.start[list.start.Count - 1];
+                variablesForFiles.currentLine = list.start[list.start.Count - 1];
                 list.start.RemoveAt(list.start.Count - 1);
             }
             else
             {
-                variables.currentLine = variables.currentLine - (Console.WindowHeight - 2);
+                variablesForFiles.currentLine = variablesForFiles.currentLine - (Console.WindowHeight - 2);
             }
         }
     }
