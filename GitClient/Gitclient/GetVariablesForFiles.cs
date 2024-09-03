@@ -20,6 +20,8 @@
         public int index;
         public int a;
         public int totalLines;
+        public int height;
+        public int width;
 
         public GetVariablesForFiles()
         {
@@ -41,6 +43,8 @@
             index = 0;
             a = 0;
             totalLines = 0;
+            height = Console.WindowHeight - 2;
+            width = Console.WindowWidth - 2;
         }
     }
 }

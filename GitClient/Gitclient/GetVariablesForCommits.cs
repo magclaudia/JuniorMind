@@ -17,6 +17,9 @@
         public bool nextFile;
         public bool clear;
         public int numberOfEnterPresses;
+        public int height;
+        public int width;
+        public string textForBlueFond;
 
         public GetVariablesForCommits()
         {
@@ -35,6 +38,9 @@
             nextFile = false;
             clear = true;
             numberOfEnterPresses = 0;
+            height = Console.WindowHeight;
+            width = Console.WindowWidth;
+            textForBlueFond = string.Empty;
         }
     }
 }

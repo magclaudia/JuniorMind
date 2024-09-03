@@ -2,7 +2,7 @@
 {
     public class GetDiffsLine
     {
-        public static void GetLineThroughtDiffsLines(int row, int totalRows, GetVariablesForFiles indexes, GetCertainList list)
+        public static void GetLineThroughtDiffsLines(int row, int totalRows, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             int length = $"Line: {row}/{totalRows} ".Length;
             Console.SetCursorPosition(Console.WindowWidth / 2 + 3, 0);

@@ -125,7 +125,7 @@
                                     DrawExternalBorder.DrawBox();
                                 }
 
-                                GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElements);
+                                GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElements, list);
                             }
                         }
                         break;
@@ -134,14 +134,13 @@
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        public static void NavigateThroughCommits(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, int height, int width)
+        public static void NavigateThroughCommits(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
         {
             var size = new DrawPanelRigthSide.FilesBox();
             IntPtr commitPtr = IntPtr.Zero;
-            List<string> addList = new List<string>();
-            List<string> filesNames = new List<string>();
             ConsoleKeyInfo keyInfo;
             int blueFond = 0;
+
             do
             {
                 keyInfo = Console.ReadKey(true);
@@ -169,18 +168,18 @@
                             if (variablesForCommits.heightPosition == Console.WindowHeight - 2 || variablesForCommits.heightPosition == 0)
                             {
                                 variablesForCommits.heightPosition = 1;
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(variablesForCommits, variablesForFiles, commitElement, addList, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(variablesForCommits, variablesForFiles, commitElement, list, blueFond);
                             }
 
-                            VerifySize(variablesForCommits, variablesForFiles, commitElement, height, width);
+                            VerifySize(variablesForCommits, variablesForFiles, commitElement, list);
 
                             if (variablesForCommits.displayPanel == true)
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(variablesForCommits, variablesForFiles, commitElement, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(variablesForCommits, variablesForFiles, commitElement, list, reachLimit, blueFond);
                             }
                             else
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(variablesForCommits, variablesForFiles, commitElement, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(variablesForCommits, variablesForFiles, commitElement, list, reachLimit, blueFond);
                             }
                         }
                         break;
@@ -188,15 +187,15 @@
                     case ConsoleKey.DownArrow:
                         if (variablesForCommits.currentCommitIndex < commitElement.Id.Count - 1)
                         {
-                            variablesForCommits.down = true;
-                            variablesForCommits.up = false;
-                            if (variablesForCommits.startIndex < 0)
+                            if (variablesForCommits.currentCommitIndex == 0)
                             {
-                                variablesForCommits.startIndex = 0;
+                                variablesForCommits.heightPosition = 1;
                             }
 
+                            variablesForCommits.down = true;
+                            variablesForCommits.up = false;
                             bool reachLimit = false;
-                            if (variablesForCommits.currentCommitIndex > Console.WindowHeight - 2 && variablesForCommits.cursorPosition == 0 || variablesForCommits.cursorPosition < variablesForCommits.currentCommitIndex - Console.WindowHeight - 2 && variablesForCommits.heightPosition == Console.WindowHeight - 2)
+                            if (variablesForCommits.currentCommitIndex > variablesForCommits.height && variablesForCommits.cursorPosition == 0 || variablesForCommits.cursorPosition < variablesForCommits.currentCommitIndex - Console.WindowHeight - 2 && variablesForCommits.heightPosition == Console.WindowHeight - 2)
                             {
                                 variablesForCommits.cursorPosition = variablesForCommits.currentCommitIndex - (Console.WindowHeight - 2) + 2;
                                 variablesForCommits.currentCommitIndex = variablesForCommits.cursorPosition;
@@ -212,18 +211,18 @@
                                 variablesForCommits.currentCommitIndex = variablesForCommits.cursorPosition;
                                 variablesForCommits.cursorPosition++;
                                 variablesForCommits.heightPosition = 1;
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(variablesForCommits, variablesForFiles, commitElement, addList, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(variablesForCommits, variablesForFiles, commitElement, list, blueFond);
                             }
 
-                            VerifySize(variablesForCommits, variablesForFiles, commitElement, height, width);
+                            VerifySize(variablesForCommits, variablesForFiles, commitElement, list);
 
                             if (variablesForCommits.displayPanel == true)
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(variablesForCommits, variablesForFiles, commitElement, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfPanel(variablesForCommits, variablesForFiles, commitElement, list, reachLimit, blueFond);
                             }
                             else
                             {
-                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(variablesForCommits, variablesForFiles, commitElement, addList, reachLimit, blueFond);
+                                ReplaceEachCommitOneByOne.PrintNewCommitIfNoPanel(variablesForCommits, variablesForFiles, commitElement, list, reachLimit, blueFond);
                             }
                         }
                         break;
@@ -277,7 +276,7 @@
                                     DrawExternalBorder.DrawBox();
                                 }
 
-                                GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElement);
+                                GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElement, list);
                             }
                         }
                         break;
@@ -313,13 +312,15 @@
             }
         }
 
-        private static void VerifySize(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements listOfCommits, int height, int width)
+        private static void VerifySize(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements listOfCommits, GetCertainList list)
         {
-            if (Console.WindowHeight != height && Console.WindowWidth != width)
+            if (Console.WindowHeight != variablesForCommits.height && Console.WindowWidth != variablesForCommits.width)
             {
+                variablesForCommits.height = Console.WindowHeight;
+                variablesForCommits.width = Console.WindowWidth;
                 Console.Clear();
                 DrawExternalBorder.DrawBox();
-                GetCommits.PrintCommits(variablesForCommits, variablesForFiles, listOfCommits);
+                GetCommits.PrintCommits(variablesForCommits, variablesForFiles, listOfCommits, list);
             }
         }
     }

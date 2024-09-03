@@ -131,6 +131,7 @@ namespace GitClient
             int firstIndex = 0;
             string file = "";
             i++;
+
             if (fileWithSymbol.Length - lengthForNow > size.width)
             {
                 if (variablesForCommits.right == true && (int)i <= size.height - 3)

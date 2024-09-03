@@ -2,10 +2,8 @@
 {
     public class ReplaceEachCommitOneByOne
     {
-        public static void PrintNewCommitIfPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, List<string> addList, bool reachLimit, int blueFond)
+        public static void PrintNewCommitIfPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, bool reachLimit, int blueFond)
         {
-            string message = string.Empty;
-
             for (int i = 0; i < 2; i++)
             {
                 if (i == 1)
@@ -15,19 +13,15 @@
                 }
 
                 Console.SetCursorPosition(1, variablesForCommits.heightPosition);
-                string text = string.Empty;
-                string listWithoutMessage = string.Empty;
-
                 if (i == 0)
                 {
                     ClearCommitRow(variablesForCommits);
                 }
 
-                string id = string.Empty;
-                id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
+                string id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
                 Console.Write($"{commitElement.Id[variablesForCommits.currentCommitIndex]} ", Console.ForegroundColor = ConsoleColor.Magenta);
 
-                string data = string.Empty;
+                string data;
                 if ($"{commitElement.DateTime[variablesForCommits.currentCommitIndex]} ".Length == 9)
                 {
                     data = $"{commitElement.DateTime[variablesForCommits.currentCommitIndex]}{new string(' ', 2)} ";
@@ -42,8 +36,7 @@
                 int authorLength = 20 - commitElement.Author[variablesForCommits.currentCommitIndex].Length;
                 string author = $"{commitElement.Author[variablesForCommits.currentCommitIndex]}{new string(' ', authorLength)}";
 
-                listWithoutMessage = $"{commitElement.Id[variablesForCommits.currentCommitIndex]}{data}{author}";
-
+                string listWithoutMessage = $"{commitElement.Id[variablesForCommits.currentCommitIndex]}{data}{author}";
                 if (listWithoutMessage.Length >= Console.WindowWidth / 2 + 7 - 2)
                 {
                     author = $"{author.Substring(0, 2)}..  ";
@@ -57,24 +50,38 @@
 
                 Console.ResetColor();
 
-                message = commitElement.Message[variablesForCommits.currentCommitIndex].TrimEnd();
+                string message = commitElement.Message[variablesForCommits.currentCommitIndex].TrimEnd();
                 string description = commitElement.Description[variablesForCommits.currentCommitIndex].TrimEnd();
-                message = ReturnMessage(description, id, data, author, message);
-                text = $"{id}{data}{author}{message}";
+                message = ReturnMessage(description, message);
+                string text = $"{id}{data}{author}{message}";
                 var size = new DrawPanelRigthSide.CommitsPanel();
 
                 if (text.Length >= size.width)
                 {
-                    message = text.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 3);
+                    message = text.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 2);
                 }
                 else
                 {
-                    message = text.Substring(listWithoutMessage.Length + 1, message.Length);
+                    if (listWithoutMessage.Length + 1 + message.Length == text.Length + 1)
+                    {
+                        message = text.Substring(listWithoutMessage.Length, message.Length);
+                    }
+                    else
+                    {
+                        message = text.Substring(listWithoutMessage.Length + 1, message.Length);
+                    }
                 }
 
                 Console.Write($"{message.TrimStart()}");
                 text = $"{id}{data}{author}{message.TrimStart()}";
-                addList.Add(text);
+                if (i == 0 && variablesForCommits.up == true)
+                {
+                    variablesForCommits.textForBlueFond = text;
+                }
+                else if (i == 1 && variablesForCommits.down == true)
+                {
+                    variablesForCommits.textForBlueFond = text;
+                }
             }
 
 
@@ -90,14 +97,11 @@
 
             GetCommitNumber.ReturnCommitNumber(commitElement, variablesForCommits);
             Navigate.CommitDetail(variablesForCommits, commitElement, clear);
-            Cursor.UpdateCursorPositionForCommitsList(commitElement, addList, variablesForCommits, blueFond);
-
-            int height = Console.WindowHeight;
-            int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);
+            Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
         }
 
-        public static void PrintNewCommitIfNoPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, List<string> addList, bool reachLimit, int blueFond)
+        public static void PrintNewCommitIfNoPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, bool reachLimit, int blueFond)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -108,19 +112,16 @@
                 }
 
                 Console.SetCursorPosition(1, variablesForCommits.heightPosition);
-                string text = string.Empty;
                 string listWithoutMessage = string.Empty;
 
                 if (i == 0)
                 {
                     ClearCommitRow(variablesForCommits);
                 }
-
-                string id = string.Empty;
-                id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
+                string id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
                 Console.Write($"{commitElement.Id[variablesForCommits.currentCommitIndex]} ", Console.ForegroundColor = ConsoleColor.Magenta);
 
-                string data = string.Empty;
+                string data;
                 if ($"{commitElement.DateTime[variablesForCommits.currentCommitIndex]} ".Length == 9)
                 {
                     data = $"{commitElement.DateTime[variablesForCommits.currentCommitIndex]}{new string(' ', 2)} ";
@@ -134,7 +135,6 @@
 
                 int authorLength = 20 - commitElement.Author[variablesForCommits.currentCommitIndex].Length;
                 string author = $"{commitElement.Author[variablesForCommits.currentCommitIndex]}{new string(' ', authorLength)}";
-
 
                 if (listWithoutMessage.Length >= Console.WindowWidth - 2)
                 {
@@ -152,8 +152,8 @@
                 listWithoutMessage = $"{commitElement.Id[variablesForCommits.currentCommitIndex]}{data}{author}";
                 string message = commitElement.Message[variablesForCommits.currentCommitIndex].TrimEnd();
                 string description = commitElement.Description[variablesForCommits.currentCommitIndex].TrimEnd();
-                message = ReturnMessage(description, id, data, author, message);
-                text = $"{id}{data}{author}{message}";
+                message = ReturnMessage(description, message);
+                string text = $"{id}{data}{author}{message}";
                 var size = Console.WindowWidth - 2;
 
                 if (text.Length > size)
@@ -168,8 +168,16 @@
                 Console.Write($"{message}");
 
                 text = $"{id}{data}{author}{message}";
-                addList.Add(text);
+                if (i == 1 && variablesForCommits.down == true)
+                {
+                    variablesForCommits.textForBlueFond = text;
+                }
+                else if (i == 0 && variablesForCommits.up == true)
+                {
+                    variablesForCommits.textForBlueFond = text;
+                }
             }
+
             if (variablesForCommits.up == true && variablesForCommits.heightPosition > 1)
             {
                 variablesForCommits.currentCommitIndex--;
@@ -177,31 +185,32 @@
             }
 
             GetCommitNumber.ReturnCommitNumber(commitElement, variablesForCommits);
-            Cursor.UpdateCursorPositionForCommitsList(commitElement, addList, variablesForCommits, blueFond);
-
-            int height = Console.WindowHeight;
-            int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);
+            Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
         }
 
-        public static void PrintNewCommitIfReachLimit(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, List<string> addList, int blueFond)
+        public static void PrintNewCommitIfReachLimit(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
         {
+            variablesForCommits.height = Console.WindowHeight;
+            variablesForCommits.width = Console.WindowWidth;
             int upAndDownConsole = variablesForCommits.heightPosition;
             int index = variablesForCommits.currentCommitIndex;
-            variablesForCommits.startIndex = variablesForCommits.currentCommitIndex;
-            while (variablesForCommits.heightPosition <= Console.WindowHeight - 2)
+            int i = 0;
+            int count = 0;
+            if (variablesForCommits.down == true)
+            {
+                i = 1;
+            }
+
+            while (variablesForCommits.heightPosition <= variablesForCommits.height - 2)
             {
                 Console.SetCursorPosition(1, variablesForCommits.heightPosition);
-                string text = string.Empty;
-                string listWithoutMessage = string.Empty;
-
                 ClearCommitRow(variablesForCommits);
 
-                string id = string.Empty;
-                id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
+                string id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
                 Console.Write($"{commitElement.Id[variablesForCommits.currentCommitIndex]} ", Console.ForegroundColor = ConsoleColor.Magenta);
 
-                string data = string.Empty;
+                string data;
                 if ($"{commitElement.DateTime[variablesForCommits.currentCommitIndex]} ".Length == 9)
                 {
                     data = $"{commitElement.DateTime[variablesForCommits.currentCommitIndex]}{new string(' ', 2)} ";
@@ -216,8 +225,7 @@
                 int authorLength = 20 - commitElement.Author[variablesForCommits.currentCommitIndex].Length;
                 string author = $"{commitElement.Author[variablesForCommits.currentCommitIndex]}{new string(' ', authorLength)}";
 
-                listWithoutMessage = $"{commitElement.Id[variablesForCommits.currentCommitIndex]}{data}{author}";
-
+                string listWithoutMessage = $"{commitElement.Id[variablesForCommits.currentCommitIndex]}{data}{author}";
                 if (listWithoutMessage.Length >= Console.WindowWidth / 2 + 7 - 2 && variablesForCommits.displayPanel == true)
                 {
                     author = $"{author.Substring(0, 2)}..  ";
@@ -233,17 +241,21 @@
 
                 string message = commitElement.Message[variablesForCommits.currentCommitIndex].TrimEnd();
                 string description = commitElement.Description[variablesForCommits.currentCommitIndex].TrimEnd();
-                message = ReturnMessage(description, id, data, author, message);
-                text = $"{id}{data}{author}{message}";
+                message = ReturnMessage(description, message);
+                string text = $"{id}{data}{author}{message}";
                 var size = new DrawPanelRigthSide.CommitsPanel();
 
                 if (text.Length >= size.width && variablesForCommits.displayPanel == true)
                 {
-                    message = text.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 3);
+                    message = text.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 2);
                 }
                 else if (text.Length > Console.WindowWidth - 2 && variablesForCommits.displayPanel == false)
                 {
                     message = text.Substring(listWithoutMessage.Length, (Console.WindowWidth - 2) - listWithoutMessage.Length - 2);
+                }
+                else if (text.Length - listWithoutMessage.Length == message.Length)
+                {
+                    message = text.Substring(listWithoutMessage.Length, message.Length);
                 }
                 else
                 {
@@ -252,16 +264,18 @@
 
                 Console.Write($"{message.TrimStart()}");
                 text = $"{id}{data}{author}{message.TrimStart()}";
-                addList.Add(text);
+                if (i == 1 && variablesForCommits.down == true)
+                {
+                    variablesForCommits.textForBlueFond = text;
+                }
+                else if (count == 0 && variablesForCommits.up == true)
+                {
+                    variablesForCommits.textForBlueFond = text;
+                }
+
                 variablesForCommits.heightPosition++;
-                if (variablesForCommits.up == true)
-                {
-                    variablesForCommits.currentCommitIndex++;
-                }
-                else
-                {
-                    variablesForCommits.currentCommitIndex++;
-                }
+                variablesForCommits.currentCommitIndex++;
+                count++;
             }
 
             variablesForCommits.heightPosition--;
@@ -283,10 +297,8 @@
                 Navigate.CommitDetail(variablesForCommits, commitElement, clear);
             }
 
-            Cursor.UpdateCursorPositionForCommitsList(commitElement, addList, variablesForCommits, blueFond);
-            int height = Console.WindowHeight;
-            int width = Console.WindowWidth;
-            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, height, width);
+            Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
         }
 
         public static void ClearCommitRow(GetVariablesForCommits variablesForCommits)
@@ -310,8 +322,8 @@
         private static void ClearMessagePanel()
         {
             var messagePanel = new DrawPanelRigthSide.MessageBox();
-            var heigth = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2 - 1);
-            for (int y = heigth; y < messagePanel.height + 1; y++)
+            int height = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2 - 1);
+            for (int y = height; y < messagePanel.height + 1; y++)
             {
                 Console.SetCursorPosition(messagePanel.edgeOne + 1, y);
                 Console.Write(new string(' ', messagePanel.width));
@@ -329,7 +341,7 @@
             }
         }
 
-        private static string ReturnMessage(string description, string id, string data, string author, string message)
+        private static string ReturnMessage(string description, string message)
         {
             if (description != "")
             {

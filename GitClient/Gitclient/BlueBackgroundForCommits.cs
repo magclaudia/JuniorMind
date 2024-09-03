@@ -2,7 +2,7 @@
 {
     public class BlueBackgroundForCommits
     {
-        public static void DisplayBlueBox(List<string> addList, GetVariablesForCommits variablesForCommits, CommitElements listOfCommits)
+        public static void DisplayBlueBox(GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, GetCertainList list)
         {
             if (variablesForCommits.heightPosition > Console.WindowHeight - 2)
             {
@@ -12,26 +12,20 @@
             Console.SetCursorPosition(1, variablesForCommits.heightPosition);
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.ForegroundColor = ConsoleColor.White;
-            if (addList.Count > 2)
+
+            if (variablesForCommits.up == true && variablesForCommits.currentCommitIndex > 1)
             {
-                Console.Write(addList[variablesForCommits.heightPosition - 1]);
+                Console.SetCursorPosition(1, variablesForCommits.heightPosition);
+                Console.Write(variablesForCommits.textForBlueFond);
+
+            }
+            else if (variablesForCommits.down == true && variablesForCommits.heightPosition <= variablesForCommits.height)
+            {
+                Console.Write(variablesForCommits.textForBlueFond);
             }
             else
             {
-                if (variablesForCommits.up == true)
-                {
-                    Console.SetCursorPosition(1, variablesForCommits.heightPosition);
-                    Console.Write(addList[0]);
-                }
-                else if (variablesForCommits.up == true && variablesForCommits.currentCommitIndex > 1)
-                {
-                    Console.SetCursorPosition(1, 1);
-                    Console.Write(addList[0]);
-                }
-                else
-                {
-                    Console.Write(addList[1]);
-                }
+                Console.Write(variablesForCommits.textForBlueFond);
             }
 
             Console.ResetColor();

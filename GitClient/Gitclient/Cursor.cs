@@ -2,7 +2,7 @@
 {
     public class Cursor
     {
-        public static void UpdateCursorPositionForCommitsList(CommitElements commitElements, List<string> addList, GetVariablesForCommits variablesForCommits, int blueFond)
+        public static void UpdateCursorPositionForCommitsList(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list, int blueFond)
         {
             Console.CursorVisible = true;
             int indicatorPosition = (variablesForCommits.currentCommitIndex * (Console.WindowHeight - 2)) / commitElements.Id.Count;
@@ -37,16 +37,16 @@
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + 1);
             }
 
-            DisplayCustomCursor(addList, ConsoleColor.DarkBlue, commitElements, variablesForCommits);
+            DisplayCustomCursor(ConsoleColor.DarkBlue, commitElements, variablesForCommits, list);
         }
 
-        private static void DisplayCustomCursor(List<string> addList, ConsoleColor color, CommitElements listOfCommits, GetVariablesForCommits indexes)
+        private static void DisplayCustomCursor(ConsoleColor color, CommitElements listOfCommits, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             char cursorSymbol = '█';
             Console.Write(cursorSymbol);
             Console.ResetColor();
-            BlueBackgroundForCommits.DisplayBlueBox(addList, indexes, listOfCommits);
+            BlueBackgroundForCommits.DisplayBlueBox(variablesForCommits, listOfCommits, list);
         }
 
         public static void UpdateCursorPositionForDiffsList(GetVariablesForFiles variablesForFiles, GetCertainList list)
