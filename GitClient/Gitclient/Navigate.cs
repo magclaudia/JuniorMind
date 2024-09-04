@@ -5,7 +5,7 @@
         public static void NavigateThroughDiffsContent(GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
             ConsoleKeyInfo keyInfo;
-            int height = Console.WindowHeight - 2;
+            variablesForFiles.height = Console.WindowHeight;
 
             do
             {
@@ -38,7 +38,7 @@
                                 variablesForFiles.x++;
 
                             }
-                            else if (variablesForFiles.index < list.startingIndexes[variablesForFiles.fileIndex] && variablesForFiles.row == height - 1)
+                            else if (variablesForFiles.index < list.startingIndexes[variablesForFiles.fileIndex] && variablesForFiles.row == variablesForFiles.height - 3)
                             {
                                 GetDiffs.CleaningCodePanel();
                                 variablesForFiles.row = 0;
@@ -48,12 +48,12 @@
                                 variablesForFiles.x++;
                             }
 
-                            if (variablesForFiles.row <= height || variablesForFiles.index == list.startingIndexes[variablesForFiles.fileIndex] - 1)
+                            if (variablesForFiles.row <= variablesForFiles.height - 2 || variablesForFiles.index == list.startingIndexes[variablesForFiles.fileIndex] - 1)
                             {
                                 variablesForFiles.currentLine++;
                             }
 
-                            if (variablesForFiles.index == list.listStartAt[variablesForFiles.x] && list.startingIndexes[variablesForFiles.fileIndex] - list.listStartAt[variablesForFiles.x] < height && variablesForFiles.totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && variablesForFiles.totalLines > Console.WindowHeight - 2 && variablesForFiles.fileIndex != list.listOfFiles.Count)
+                            if (variablesForFiles.index == list.listStartAt[variablesForFiles.x] && list.startingIndexes[variablesForFiles.fileIndex] - list.listStartAt[variablesForFiles.x] < variablesForFiles.height - 2 && variablesForFiles.totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && variablesForFiles.totalLines > Console.WindowHeight - 2 && variablesForFiles.fileIndex != list.listOfFiles.Count)
                             {
                                 GetDiffsLine.GetLineIfDownMoves(list, variablesForFiles);
                             }
@@ -90,7 +90,7 @@
                                 variablesForFiles.index = list.listStartAt[variablesForFiles.x];
 
                                 variablesForFiles.totalLines = list.startingIndexes[variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.fileIndex - 1];
-                                if (variablesForFiles.totalLines > height)
+                                if (variablesForFiles.totalLines > variablesForFiles.height - 2)
                                 {
                                     GetDiffsLine.GetLineIfUpMoves(variablesForFiles.index, list, variablesForFiles);
                                 }

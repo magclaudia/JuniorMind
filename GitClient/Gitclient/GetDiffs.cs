@@ -73,10 +73,15 @@ namespace GitClient
             Console.ForegroundColor = ConsoleColor.DarkGray;
             string fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
             fileName = list.filesNames[variablesForFiles.fileIndex];
+            list.filePath.Add(newFilePath!);
+           
             string text = GetDiffs.ResizeTextToFitInPanel($"{newFilePath}");
+           
+            
             if (newFilePath!.Contains(fileName))
             {
                 list.listOfDiff.Add(text);
+                list.startingIndexes.Add(list.listOfDiff.Count - 1);
                 list.filePath.Add(text);
             }
 
@@ -128,22 +133,12 @@ namespace GitClient
 
             if (variablesForFiles.fileIndex <= list.listOfFiles.Count)
             {
-                string completeFileName = "";
-                completeFileName = list.listOfFiles[variablesForFiles.indexForFiles];
-                string fileName = completeFileName.Remove(0, 5);
-
-                for (int i = variablesForFiles.index; i <= list.filePath.Count - 1; i++)
-                {
-                    var number = list.listOfDiff.IndexOf(list.listOfDiff.Find(x => x.Contains(list.filePath[i]))!);
-                    list.startingIndexes.Add(number);
-                }
-
                 list.startingIndexes.Add(list.listOfDiff.Count);
             }
 
             variablesForFiles.a = list.listOfFiles.Count;
             Print(variablesForCommits, commitElements, currentFileName);
-        }
+        }  
 
         public static void Print(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
@@ -319,22 +314,13 @@ namespace GitClient
                     fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
                     SetColorForFiles(fileFullName, variablesForFiles);
                 }
-                else if (variablesForFiles.fileIndex != list.listOfFiles.Count - 1 && list.listOfFiles.Count > size.height - 3)
+                else
                 {
                     Console.SetCursorPosition(1, variablesForFiles.fileRow - 1);
                     Console.BackgroundColor = ConsoleColor.Black;
                     fileFullName = list.listOfFiles[variablesForFiles.fileIndex - 1];
                     SetColorForFiles(fileFullName, variablesForFiles);
                 }
-                else if (list.listOfFiles.Count < size.height - 3)
-                {
-                    Console.SetCursorPosition(1, variablesForFiles.fileRow - 1);
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    fileFullName = list.listOfFiles[variablesForFiles.fileIndex - 1];
-                    SetColorForFiles(fileFullName, variablesForFiles);
-                }
-
-
             }
 
             if (variablesForFiles.up == false && list.listOfFiles.Count > 1)
@@ -361,7 +347,6 @@ namespace GitClient
 
         private static void CodeBackground(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
         {
-            int width = Console.WindowWidth;
             int height = Console.WindowHeight;
 
             if (variablesForFiles.index < list.startingIndexes[variablesForFiles.fileIndex])
