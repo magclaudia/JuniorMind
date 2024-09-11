@@ -18,7 +18,6 @@
             }
 
             LibGit2Wrapper.git_libgit2_init();
-
             CommitElements commitElements = new CommitElements();
 
             try
@@ -32,7 +31,8 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.Write($"Error: {ex.Message}");
+                Console.Write(ex.StackTrace);
             }
 
             LibGit2Wrapper.git_repository_free(commitElements.repo);
