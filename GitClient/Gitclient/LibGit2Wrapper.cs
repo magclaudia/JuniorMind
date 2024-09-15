@@ -2,13 +2,6 @@
 
 namespace GitClient
 {
-    [StructLayout(LayoutKind.Sequential)]
-    public struct GitOid
-    {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
-        public byte[] Id;
-    }
-
     public class LibGit2Wrapper
     {
         private const string libgit2 = "git2";
@@ -17,6 +10,15 @@ namespace GitClient
         {
             LoadLibrary();
         }
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct GitOid
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
+            public byte[] Id;
+        }
+
 
         [StructLayout(LayoutKind.Sequential)]
         public struct GitDiffOptions
@@ -50,11 +52,13 @@ namespace GitClient
                 oid_type = GitOidT.GIT_OID_SHA1;
                 id_abbrev = 7;
                 max_size = 512 * 1024 * 1024;
-                old_prefix = Marshal.StringToHGlobalAnsi("a");
-                new_prefix = Marshal.StringToHGlobalAnsi("b");
+                old_prefix = Marshal.StringToCoTaskMemUTF8("a");
+                new_prefix = Marshal.StringToCoTaskMemUTF8("b");
             }
         }
 
+
+        [Flags]
         public enum SubmoduleIgnore
         {
             GIT_SUBMODULE_IGNORE_UNSPECIFIED,
@@ -64,6 +68,7 @@ namespace GitClient
             GIT_SUBMODULE_IGNORE_ALL
         }
 
+
         [StructLayout(LayoutKind.Sequential)]
         public struct GitStrArray
         {
@@ -71,22 +76,20 @@ namespace GitClient
             public uint count;
         }
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int DiffNotifyCallback(IntPtr diff_so_far, IntPtr delta_to_add, IntPtr matched_pathspec, IntPtr payload);
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int DiffProgressCallback(IntPtr diff_so_far, IntPtr old_path, IntPtr new_path, IntPtr payload);
-
+        [Flags]
         public enum GitOidT
         {
             GIT_OID_SHA1
         }
+
 
         [Flags]
         public enum DiffOptionFlags
         {
             GIT_DIFF_NORMAL = 0
         }
+
 
         [StructLayout(LayoutKind.Sequential)]
         public struct GitDiffDelta
@@ -99,6 +102,8 @@ namespace GitClient
             public GitDiffFile new_file;
         }
 
+
+        [Flags]
         public enum GitDelta
         {
             GIT_DELTA_UNMODIFIED,
@@ -114,6 +119,7 @@ namespace GitClient
             GIT_DELTA_CONFLICTED
         }
 
+
         [Flags]
         public enum GitDiffFlags
         {
@@ -123,6 +129,7 @@ namespace GitClient
             GIT_DIFF_FLAG_EXISTS,
             GIT_DIFF_FLAG_VALID_SIZE
         }
+
 
         [StructLayout(LayoutKind.Sequential)]
         public struct GitDiffFile
@@ -135,6 +142,7 @@ namespace GitClient
             public ushort id_abbrev;
         }
 
+
         [StructLayout(LayoutKind.Sequential)]
         public struct GitDiffLine
         {
@@ -142,10 +150,11 @@ namespace GitClient
             public int old_lineno;
             public int new_lineno;
             public int num_lines;
-            public long content_len;
-            public IntPtr content_offset;
+            public UIntPtr content_len;
+            public long content_offset;
             public IntPtr content;
         }
+
 
         public enum GitDiffLineOrigin : byte
         {
@@ -160,6 +169,7 @@ namespace GitClient
             GIT_DIFF_LINE_BINARY = 0x42, //'B'
         }
 
+
         [StructLayout(LayoutKind.Sequential)]
         public struct GitDiffHunk
         {
@@ -170,12 +180,15 @@ namespace GitClient
             public UIntPtr header_len;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
-            public char[] header;
+            public byte[] header;
         }
 
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_diff_foreach(IntPtr diff, DiffFileCallback fileCallback, DiffBinaryCallback binaryCallback, DiffHunkCallback hunkCallback,
-            DiffLineCallback lineCallback, IntPtr payload);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int DiffNotifyCallback(IntPtr diff_so_far, IntPtr delta_to_add, IntPtr matched_pathspec, IntPtr payload);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int DiffProgressCallback(IntPtr diff_so_far, IntPtr old_path, IntPtr new_path, IntPtr payload);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int DiffFileCallback(GitDiffDelta delta, float progress, IntPtr payload);
@@ -188,7 +201,12 @@ namespace GitClient
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int DiffLineCallback(GitDiffDelta delta, GitDiffHunk hunk, GitDiffLine line, IntPtr payload);
-       
+
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_diff_foreach(IntPtr diff, DiffFileCallback fileCallback, DiffBinaryCallback binaryCallback, DiffHunkCallback hunkCallback,
+            DiffLineCallback lineCallback, IntPtr payload);
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_libgit2_init();
 

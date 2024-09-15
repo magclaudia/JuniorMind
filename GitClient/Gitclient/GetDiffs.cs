@@ -96,8 +96,8 @@ namespace GitClient
 
         public static int DiffHunkCallback(LibGit2Wrapper.GitDiffDelta delta, LibGit2Wrapper.GitDiffHunk hunk, IntPtr payload)
         {
-            char[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
-            string hunkHeader = new string(filteredHeader);
+            byte[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
+            string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
             string text = GetDiffs.ResizeTextToFitInPanel($"{hunkHeader}");
             list.listOfDiff.Add(text);
             list.hunks.Add(text);

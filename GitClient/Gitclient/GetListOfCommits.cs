@@ -9,7 +9,7 @@ namespace GitClient
         {
             IntPtr walker = IntPtr.Zero;
             IntPtr commitPtr = IntPtr.Zero;
-            GitOid id = new GitOid();
+            LibGit2Wrapper.GitOid id = new LibGit2Wrapper.GitOid();
 
             GetVariablesForCommits variablesForCommits = new GetVariablesForCommits();
             GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
@@ -79,7 +79,7 @@ namespace GitClient
             LibGit2Wrapper.git_revwalk_free(walker);
         }
 
-        private static string GetCommitId(GitOid id)
+        private static string GetCommitId(LibGit2Wrapper.GitOid id)
         {
             StringBuilder sb = new StringBuilder();
             foreach (byte b in id.Id)

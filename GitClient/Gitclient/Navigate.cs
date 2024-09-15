@@ -241,7 +241,7 @@
                                 variablesForFiles.index = 0;
                                 variablesForFiles.down = false;
                                 CommitDetail(variablesForCommits, commitElement, variablesForCommits.clear);
-                                GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
+                                LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
                                 if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
                                 {
                                     Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, index, variablesForCommits, commitElement);
@@ -305,7 +305,7 @@
             HeaderPanel.Header(variablesForCommits);
             Info.GetInfo(variablesForCommits, commitElement);
             Message.ReturnMessage(variablesForCommits.currentCommitIndex, commitElement, variablesForCommits);
-            GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
+            LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
             if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
             {
                 Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, commitElement);

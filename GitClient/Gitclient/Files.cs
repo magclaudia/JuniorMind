@@ -52,8 +52,8 @@ namespace GitClient
             GetAllFiles.PrintAllFilesAffectedByCommit(repo, numDeltas, diff, index, variablesForCommits, commitElements);
             LibGit2Wrapper.git_diff_free(diff);
 
-            Marshal.FreeHGlobal(options.old_prefix);
-            Marshal.FreeHGlobal(options.new_prefix);
+            Marshal.FreeCoTaskMem(options.old_prefix);
+            Marshal.FreeCoTaskMem(options.new_prefix);
 
             if (commitPtr != IntPtr.Zero)
             {
