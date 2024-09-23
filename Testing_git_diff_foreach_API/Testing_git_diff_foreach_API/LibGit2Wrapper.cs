@@ -1,24 +1,27 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace GitClient
+namespace Testing_git_diff_foreach_API
 {
     public class LibGit2Wrapper
     {
         private const string libgit2 = "git2";
-
         static LibGit2Wrapper()
         {
             LoadLibrary();
         }
 
-
+       
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct GitOid
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
             public byte[] Id;
         }
-
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct GitDiffOptions
@@ -56,7 +59,6 @@ namespace GitClient
                 new_prefix = Marshal.StringToCoTaskMemUTF8("b");
             }
         }
-
 
         [Flags]
         public enum SubmoduleIgnore
@@ -142,6 +144,18 @@ namespace GitClient
             public ushort id_abbrev;
         }
 
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct GitDiffHunk
+        {
+            public int old_start;
+            public int old_lines;
+            public int new_start;
+            public int new_lines;
+            public UIntPtr header_len;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
+            public byte[] header;
+        }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct GitDiffLine
@@ -169,144 +183,7 @@ namespace GitClient
             GIT_DIFF_LINE_BINARY = 0x42, //'B'
         }
 
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        public struct GitDiffHunk
-        {
-            public int old_start;
-            public int old_lines;
-            public int new_start;
-            public int new_lines;
-            public UIntPtr header_len;
-
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
-            public byte[] header;
-        }
-
-
-        public delegate int DiffNotifyCallback(IntPtr diff_so_far, GitDiffDelta delta_to_add, IntPtr matched_pathspec, IntPtr payload);
-
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public delegate int DiffProgressCallback(IntPtr diff_so_far, IntPtr old_path, IntPtr new_path, IntPtr payload);
-
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public delegate int DiffFileCallback(GitDiffDelta delta, float progress, IntPtr payload);
-
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public delegate int DiffBinaryCallback(GitDiffDelta delta, IntPtr binary, IntPtr payload);
-
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public delegate int DiffHunkCallback(GitDiffDelta delta, GitDiffHunk hunk, IntPtr payload);
-
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public delegate int DiffLineCallback(GitDiffDelta delta, GitDiffHunk hunk, GitDiffLine line, IntPtr payload);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_diff_foreach(IntPtr diff, DiffFileCallback fileCallback, DiffBinaryCallback binaryCallback, DiffHunkCallback hunkCallback,
-            DiffLineCallback lineCallback, IntPtr payload);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_libgit2_init();
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_repository_open(out IntPtr repo, string path);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void git_repository_free(IntPtr repo);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_revwalk_new(out IntPtr walker, IntPtr repo);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_revwalk_push_head(IntPtr walker);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_revwalk_next(out GitOid id, IntPtr walker);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_commit_lookup(out IntPtr commit, IntPtr repo, ref GitOid id);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr git_commit_author(IntPtr commit);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern long git_commit_time(IntPtr commit);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr git_commit_message(IntPtr commit);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void git_commit_free(IntPtr commit);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void git_revwalk_free(IntPtr walker);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern uint git_commit_parentcount(IntPtr commit);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_commit_parent(out IntPtr parent, IntPtr commit, uint n);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_commit_tree(out IntPtr treeOut, IntPtr commit);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void git_tree_free(IntPtr tree);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_diff_tree_to_tree(out IntPtr diff, IntPtr repo, IntPtr oldTree, IntPtr newTree, ref GitDiffOptions options);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern UIntPtr git_diff_num_deltas(IntPtr diff);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr git_diff_get_delta(IntPtr diff, UIntPtr id);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void git_diff_free(IntPtr diff);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int git_blob_lookup(out IntPtr blob, IntPtr repo, ref GitOid id);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr git_blob_rawcontent(IntPtr blob);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern long git_blob_rawsize(IntPtr blob);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-
-        public static extern void git_blob_free(IntPtr blob);
+       
 
         private static void LoadLibrary()
         {
@@ -335,6 +212,109 @@ namespace GitClient
                 throw new FileNotFoundException($"Failed to load {libName} from {libPath}.");
             }
         }
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_libgit2_init();
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_repository_open(out IntPtr repo, string path);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void git_repository_free(IntPtr repo);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_commit_tree(out IntPtr treeOut, IntPtr commit);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void git_tree_free(IntPtr tree);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern uint git_commit_parentcount(IntPtr commit);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_commit_parent(out IntPtr parent, IntPtr commit, uint n);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_diff_tree_to_tree(out IntPtr diff, IntPtr repo, IntPtr oldTree, IntPtr newTree, ref GitDiffOptions options);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern UIntPtr git_diff_num_deltas(IntPtr diff);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr git_diff_get_delta(IntPtr diff, UIntPtr id);
+
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public delegate int DiffNotifyCallback(IntPtr diff_so_far, GitDiffDelta delta_to_add, IntPtr matched_pathspec, IntPtr payload);
+
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public delegate int DiffProgressCallback(IntPtr diff_so_far, IntPtr old_path, IntPtr new_path, IntPtr payload);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void git_diff_free(IntPtr diff);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_diff_foreach(IntPtr diff, DiffFileCallback fileCallback, DiffBinaryCallback binaryCallback, DiffHunkCallback hunkCallback,
+           DiffLineCallback lineCallback, IntPtr payload);
+
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public delegate int DiffFileCallback(GitDiffDelta delta, float progress, IntPtr payload);
+
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public delegate int DiffBinaryCallback(GitDiffDelta delta, IntPtr binary, IntPtr payload);
+
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public delegate int DiffHunkCallback(GitDiffDelta delta, GitDiffHunk hunk, IntPtr payload);
+
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public delegate int DiffLineCallback(GitDiffDelta delta, GitDiffHunk hunk, GitDiffLine line, IntPtr payload);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_revwalk_new(out IntPtr walker, IntPtr repo);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_revwalk_push_head(IntPtr walker);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_revwalk_next(out GitOid id, IntPtr walker);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int git_commit_lookup(out IntPtr commit, IntPtr repo, ref GitOid id);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr git_commit_author(IntPtr commit);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern long git_commit_time(IntPtr commit);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr git_commit_message(IntPtr commit);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void git_commit_free(IntPtr commit);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void git_revwalk_free(IntPtr walker);
+
 
     }
 }

@@ -10,7 +10,6 @@ namespace GitClient
             IntPtr walker = IntPtr.Zero;
             IntPtr commitPtr = IntPtr.Zero;
             LibGit2Wrapper.GitOid id = new LibGit2Wrapper.GitOid();
-
             GetVariablesForCommits variablesForCommits = new GetVariablesForCommits();
             GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
             CommitElements commitElement = new CommitElements();
