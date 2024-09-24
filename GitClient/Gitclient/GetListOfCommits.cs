@@ -49,7 +49,7 @@ namespace GitClient
                             }
                             else
                             {
-                                description = string.Empty;
+                                description = string.Empty; 
                             }
 
                             commitElement.Description.Add(description);

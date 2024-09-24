@@ -66,11 +66,12 @@ namespace GitClient
             PrintNewFileContain(variablesForCommits, commitElements);
         }
 
-        public static int DiffFileCallback(LibGit2Wrapper.GitDiffDelta delta, float progress, IntPtr payload)
+        public static int DiffFileCallback(ref LibGit2Wrapper.GitDiffDelta delta, float progress, IntPtr payload)
         {
             string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
             string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
             Console.ForegroundColor = ConsoleColor.DarkGray;
+            
             string fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
             fileName = list.filesNames[variablesForFiles.fileIndex];
             list.filePath.Add(newFilePath!);
@@ -89,12 +90,12 @@ namespace GitClient
             return 0;
         }
 
-        public static int DiffBinaryCallback(LibGit2Wrapper.GitDiffDelta delta, IntPtr binary, IntPtr payload)
+        public static int DiffBinaryCallback(ref LibGit2Wrapper.GitDiffDelta delta, IntPtr binary, IntPtr payload)
         {
             return 0;
         }
 
-        public static int DiffHunkCallback(LibGit2Wrapper.GitDiffDelta delta, LibGit2Wrapper.GitDiffHunk hunk, IntPtr payload)
+        public static int DiffHunkCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, IntPtr payload)
         {
             byte[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
             string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
@@ -104,7 +105,7 @@ namespace GitClient
             return 0;
         }
 
-        public static int DiffLineCallback(LibGit2Wrapper.GitDiffDelta delta, LibGit2Wrapper.GitDiffHunk hunk, LibGit2Wrapper.GitDiffLine line, IntPtr payload)
+        public static int DiffLineCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, ref LibGit2Wrapper.GitDiffLine line, IntPtr payload)
         {
             string content = Marshal.PtrToStringAnsi(line.content, (int)line.content_len);
             string text = GetDiffs.ResizeTextToFitInPanel($"{(char)line.origin} {content}");
@@ -160,6 +161,11 @@ namespace GitClient
 
             for (int i = variablesForFiles.index; i < list.startingIndexes[variablesForFiles.fileIndex]; i++)
             {
+                if (variablesForFiles.row == Console.WindowHeight - 3)
+                {
+                    Console.SetCursorPosition(variablesForFiles.width / 2 + 3, Console.WindowHeight - 2);
+                }
+
                 if (i == 0 && variablesForFiles.up == false && !list.listStartAt.Contains(variablesForFiles.index))
                 {
                     list.listStartAt.Add(variablesForFiles.index);
@@ -195,7 +201,7 @@ namespace GitClient
                             variablesForFiles.row++;
                             Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.DarkGray;
-                            Console.Write(list.listOfDiff[i]);
+                            Console.WriteLine(list.listOfDiff[i]);
                             Console.ResetColor();
                         }
                         break;
@@ -209,7 +215,7 @@ namespace GitClient
                             variablesForFiles.row++;
                             Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.Blue;
-                            Console.Write(list.listOfDiff[i]);
+                            Console.WriteLine(list.listOfDiff[i]);
                             Console.ResetColor();
                         }
                         break;
@@ -443,6 +449,7 @@ namespace GitClient
                     {
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write(content);
+                        Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                         Console.ResetColor();
                     }
                     break;
@@ -450,6 +457,7 @@ namespace GitClient
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
                         Console.Write(content);
+                        Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                         Console.ResetColor();
                     }
                     break;
@@ -457,6 +465,7 @@ namespace GitClient
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(content);
+                        Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                         Console.ResetColor();
                     }
                     break;

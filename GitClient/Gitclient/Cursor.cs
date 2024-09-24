@@ -51,77 +51,77 @@
 
         public static void UpdateCursorPositionForDiffsList(GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
-            int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2)) / list.listOfDiff.Count;
-            Console.SetCursorPosition(Console.WindowWidth - 2, indicatorPosition + 1);
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
-            char cursorSymbol = '█';
-            Console.Write(cursorSymbol);
-            Console.ResetColor();
-            int i = 1;
+            // int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2)) / list.listOfDiff.Count;
+            // Console.SetCursorPosition(Console.WindowWidth - 2, indicatorPosition + 1);
+            // Console.ForegroundColor = ConsoleColor.DarkBlue;
+            // char cursorSymbol = '█';
+            // Console.Write(cursorSymbol);
+            // Console.ResetColor();
+            // int i = 1;
 
-            while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
-            {
-                Console.SetCursorPosition(Console.WindowWidth - 2, i);
-                Console.Write("║");
-                i++;
-            }
+            // while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
+            // {
+            //     Console.SetCursorPosition(Console.WindowWidth - 2, i);
+            //     Console.Write("║");
+            //     i++;
+            // }
 
-            i = 0;
-            int stop = (Console.WindowHeight - 2) - indicatorPosition;
-            while (variablesForFiles.up == true && i < stop - 1)
-            {
-                Console.SetCursorPosition(Console.WindowWidth - 2, Console.WindowHeight - 2 - i);
-                Console.Write("║");
-                i++;
-            }
+            // i = 0;
+            // int stop = (Console.WindowHeight - 2) - indicatorPosition;
+            // while (variablesForFiles.up == true && i < stop - 1)
+            // {
+            //     Console.SetCursorPosition(Console.WindowWidth - 2, Console.WindowHeight - 2 - i);
+            //     Console.Write("║");
+            //     i++;
+            // }
 
-            if (list.listStartAt.Count > 0)
-            {
-                if (list.listStartAt[variablesForFiles.x] == variablesForFiles.index && indicatorPosition >= 0)
-                {
-                    while (i < stop - 1)
-                    {
-                        Console.SetCursorPosition(Console.WindowWidth - 2, Console.WindowHeight - 2 - i);
-                        Console.Write("║");
-                        i++;
-                    }
-                }
+            // if (list.listStartAt.Count > 0)
+            // {
+            //     if (list.listStartAt[variablesForFiles.x] == variablesForFiles.index && indicatorPosition >= 0)
+            //     {
+            //         while (i < stop - 1)
+            //         {
+            //             Console.SetCursorPosition(Console.WindowWidth - 2, Console.WindowHeight - 2 - i);
+            //             Console.Write("║");
+            //             i++;
+            //         }
+            //     }
 
-            }
+            // }
 
-            Console.SetCursorPosition(Console.WindowWidth - 2, indicatorPosition);
+            // Console.SetCursorPosition(Console.WindowWidth - 2, indicatorPosition);
         }
 
         public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
-            int indicatorPosition = (variablesForFiles.fileIndex * (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
-            if (variablesForFiles.up == true && variablesForFiles.fileRow == Console.WindowHeight / 2 + 3)
-            {
-                indicatorPosition = 0;
-            }
+            // int indicatorPosition = (variablesForFiles.fileIndex * (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
+            // if (variablesForFiles.up == true && variablesForFiles.fileRow == Console.WindowHeight / 2 + 3)
+            // {
+            //     indicatorPosition = 0;
+            // }
            
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + indicatorPosition + 1);
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
-            char cursorSymbol = '█';
-            Console.Write(cursorSymbol);
-            Console.ResetColor();
+            // Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + indicatorPosition + 1);
+            // Console.ForegroundColor = ConsoleColor.DarkBlue;
+            // char cursorSymbol = '█';
+            // Console.Write(cursorSymbol);
+            // Console.ResetColor();
 
-            int i = 1;
-            while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
-            {
-                Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + i);
-                Console.Write("║");
-                i++;
-            }
+            // int i = 1;
+            // while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
+            // {
+            //     Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + i);
+            //     Console.Write("║");
+            //     i++;
+            // }
 
-            i = 0;
-            int stop = (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) - indicatorPosition;
-            while (variablesForFiles.up == true && i < stop - 2)
-            {
-                Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight - 2 - i);
-                Console.Write("║");
-                i++;
-            }
+            // i = 0;
+            // int stop = (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) - indicatorPosition;
+            // while (variablesForFiles.up == true && i < stop - 2)
+            // {
+            //     Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight - 2 - i);
+            //     Console.Write("║");
+            //     i++;
+            // }
         }
     }
 }
