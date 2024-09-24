@@ -18,7 +18,7 @@ namespace Testing_git_diff_foreach_API
             }
         }
 
-        public static int DiffFileCallback(LibGit2Wrapper.GitDiffDelta delta, float progress, IntPtr payload)
+        public static int DiffFileCallback(ref LibGit2Wrapper.GitDiffDelta delta, float progress, IntPtr payload)
         {
             string? oldFilePath = Marshal.PtrToStringUTF8(delta.old_file.path);
             string? newFilePath = Marshal.PtrToStringUTF8(delta.new_file.path);
@@ -27,12 +27,12 @@ namespace Testing_git_diff_foreach_API
             return 0;
         }
 
-        public static int DiffBinaryCallback(LibGit2Wrapper.GitDiffDelta delta, IntPtr binary, IntPtr payload)
+        public static int DiffBinaryCallback(ref LibGit2Wrapper.GitDiffDelta delta, IntPtr binary, IntPtr payload)
         {
             return 0;
         }
 
-        public static int DiffHunkCallback(LibGit2Wrapper.GitDiffDelta delta, LibGit2Wrapper.GitDiffHunk hunk, IntPtr payload)
+        public static int DiffHunkCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, IntPtr payload)
         {
             byte[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
             string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
@@ -41,7 +41,7 @@ namespace Testing_git_diff_foreach_API
             return 0;
         }
 
-        public static int DiffLineCallback(LibGit2Wrapper.GitDiffDelta delta, LibGit2Wrapper.GitDiffHunk hunk, LibGit2Wrapper.GitDiffLine line, IntPtr payload)
+        public static int DiffLineCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, ref LibGit2Wrapper.GitDiffLine line, IntPtr payload)
         {
             string content = Marshal.PtrToStringUTF8(line.content)!;
             Console.Write(content);
