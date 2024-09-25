@@ -312,16 +312,16 @@ namespace GitClient
             if (list.listOfFiles.Count > size.height - 3 && variablesForFiles.fileIndex == size.height - 3 && variablesForFiles.up == false)
             {
                 CleaningFilePanel();
+                PrintRemaingingFiles();
+                variablesForFiles.filesReachPanelLimit = true;
             }
             
-            Console.SetCursorPosition(1, variablesForFiles.fileRow);
-            Console.Write(new string(' ', (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4));
             Console.SetCursorPosition(1, variablesForFiles.fileRow);
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.Write(fileFullName);
             Console.ResetColor();
-            
-            if (variablesForFiles.fileIndex >= 1 && variablesForFiles.fileIndex <= list.listOfFiles.Count - 1 || variablesForFiles.up == true)
+
+            if (variablesForFiles.filesReachPanelLimit == false && variablesForFiles.fileIndex >= 1 && variablesForFiles.fileIndex <= list.listOfFiles.Count - 1 || variablesForFiles.up == true)
             {
                 if (variablesForFiles.up == true)
                 {
@@ -345,6 +345,29 @@ namespace GitClient
             {
                 variablesForFiles.fileRow++;
             }
+
+            if (variablesForFiles.fileRow == Console.WindowHeight - 2 || variablesForFiles.fileIndex == list.listOfFiles.Count - 2)
+            {
+                variablesForFiles.filesReachPanelLimit = false;
+            }
+        }
+
+        private static void PrintRemaingingFiles()
+        {
+            int position = variablesForFiles.fileRow;
+            for (int i = variablesForFiles.fileIndex; i < list.listOfFiles.Count; i++) 
+            {
+                if (position == variablesForFiles.height)
+                {
+                    break;
+                }
+
+                Console.SetCursorPosition(1, position);
+                Console.Write(list.listOfFiles[i]);
+                Console.SetCursorPosition(1, position + 1);
+                position++;
+            }
+
         }
 
         private static void CleaningFilePanel()
@@ -353,14 +376,14 @@ namespace GitClient
             int width = Console.WindowWidth;
             int maxHeight = Console.WindowHeight - 1;
 
-            for (int i = size.height + 5; i < maxHeight; i++)
+            for (int i = size.height + 6; i < maxHeight; i++)
             {
                 Console.SetCursorPosition(1, i);
                 Console.Write(new string(' ', (width - 2) - (width / 2) - 4));
             }
 
             variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
-            Console.SetCursorPosition(1, size.height + 5);
+            Console.SetCursorPosition(1, size.height + 6);
         }
 
         private static void CodeBackground(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)

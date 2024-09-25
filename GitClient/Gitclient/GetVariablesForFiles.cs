@@ -22,6 +22,7 @@
         public int totalLines;
         public int height;
         public int width;
+        public bool filesReachPanelLimit;
 
         public GetVariablesForFiles()
         {
@@ -45,6 +46,7 @@
             totalLines = 0;
             height = Console.WindowHeight - 2;
             width = Console.WindowWidth - 2;
+            filesReachPanelLimit = false;
         }
     }
 }
