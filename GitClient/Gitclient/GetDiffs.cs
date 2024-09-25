@@ -99,7 +99,7 @@ namespace GitClient
         {
             byte[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
             string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
-            string text = GetDiffs.ResizeTextToFitInPanel($"{hunkHeader}");
+            string text = GetDiffs.ResizeTextToFitInPanel($"{hunkHeader}").TrimEnd();
             list.listOfDiff.Add(text);
             list.hunks.Add(text);
             return 0;
@@ -108,6 +108,17 @@ namespace GitClient
         public static int DiffLineCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, ref LibGit2Wrapper.GitDiffLine line, IntPtr payload)
         {
             string content = Marshal.PtrToStringAnsi(line.content, (int)line.content_len);
+            if (content.StartsWith('\t'))
+            {
+                string output = content.Replace("\t", new string(' ', 4));
+                content = output + content;
+            }
+           
+            if (content.Contains("\n\t"))
+            {
+                content = content[..content.IndexOf("\n\t")];
+            }
+           
             string text = GetDiffs.ResizeTextToFitInPanel($"{(char)line.origin} {content}");
             list.listOfDiff.Add(text);
             list.filesCode.Add(text);
@@ -163,7 +174,7 @@ namespace GitClient
             {
                 if (variablesForFiles.row == Console.WindowHeight - 3)
                 {
-                    Console.SetCursorPosition(variablesForFiles.width / 2 + 3, Console.WindowHeight - 2);
+                    Console.SetCursorPosition(variablesForFiles.width / 2 + 3, Console.WindowHeight - 3);
                 }
 
                 if (i == 0 && variablesForFiles.up == false && !list.listStartAt.Contains(variablesForFiles.index))
@@ -201,7 +212,7 @@ namespace GitClient
                             variablesForFiles.row++;
                             Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.DarkGray;
-                            Console.WriteLine(list.listOfDiff[i]);
+                            Console.Write(list.listOfDiff[i]);
                             Console.ResetColor();
                         }
                         break;
@@ -215,7 +226,7 @@ namespace GitClient
                             variablesForFiles.row++;
                             Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.Blue;
-                            Console.WriteLine(list.listOfDiff[i]);
+                            Console.Write(list.listOfDiff[i]);
                             Console.ResetColor();
                         }
                         break;
@@ -247,7 +258,7 @@ namespace GitClient
 
                     variablesForFiles.index = list.listStartAt[variablesForFiles.x];
                     variablesForFiles.row = 0;
-                    Console.SetCursorPosition(variablesForFiles.width / 2 + 3, 1);
+                    Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                     break;
                 }
 
@@ -445,14 +456,6 @@ namespace GitClient
             var firstChar = content.First();
             switch (firstChar)
             {
-                case ' ':
-                    {
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.Write(content);
-                        Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
-                        Console.ResetColor();
-                    }
-                    break;
                 case '+':
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -461,9 +464,19 @@ namespace GitClient
                         Console.ResetColor();
                     }
                     break;
+
                 case '-':
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(content);
+                        Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
+                        Console.ResetColor();
+                    }
+                    break;
+
+                default:
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
                         Console.Write(content);
                         Console.SetCursorPosition(variablesForFiles.width / 2 + 3, variablesForFiles.row);
                         Console.ResetColor();
