@@ -92,35 +92,39 @@
             Console.SetCursorPosition(Console.WindowWidth - 2, indicatorPosition);
         }
 
-        public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetCertainList list)
+        public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetCertainList list, DrawPanelRigthSide.FilesBox size)
         {
             int indicatorPosition = (variablesForFiles.fileIndex * (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
             if (variablesForFiles.up == true && variablesForFiles.fileRow == Console.WindowHeight / 2 + 3)
             {
                 indicatorPosition = 0;
             }
-           
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + indicatorPosition + 1);
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
-            char cursorSymbol = '█';
-            Console.Write(cursorSymbol);
-            Console.ResetColor();
 
-            int i = 1;
-            while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
-            {
-                Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + i);
-                Console.Write("║");
-                i++;
-            }
 
-            i = 0;
-            int stop = (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) - indicatorPosition;
-            while (variablesForFiles.up == true && i < stop - 2)
+            if (indicatorPosition < size.height - 2)
             {
-                Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight - 2 - i);
-                Console.Write("║");
-                i++;
+                Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + indicatorPosition + 1);
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                char cursorSymbol = '█';
+                Console.Write(cursorSymbol);
+                Console.ResetColor();
+
+                int i = 1;
+                while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
+                {
+                    Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + i);
+                    Console.Write("║");
+                    i++;
+                }
+
+                i = 0;
+                int stop = (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) - indicatorPosition;
+                while (variablesForFiles.up == true && i < stop - 2)
+                {
+                    Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight - 2 - i);
+                    Console.Write("║");
+                    i++;
+                }
             }
         }
     }

@@ -288,7 +288,7 @@ namespace GitClient
         {
             variablesForFiles.nextFile = true;
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
-            Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list);
+            Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list, size);
 
             if (variablesForFiles.fileRow + 1 == Console.WindowHeight / 2 + 4 && variablesForFiles.up == true)
             {
@@ -346,10 +346,7 @@ namespace GitClient
                 variablesForFiles.fileRow++;
             }
 
-            if (variablesForFiles.fileRow == Console.WindowHeight - 2 || variablesForFiles.fileIndex == list.listOfFiles.Count - 2)
-            {
-                variablesForFiles.filesReachPanelLimit = false;
-            }
+            variablesForFiles.filesReachPanelLimit = false;
         }
 
         private static void PrintRemaingingFiles()
@@ -375,15 +372,24 @@ namespace GitClient
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
             int width = Console.WindowWidth;
             int maxHeight = Console.WindowHeight - 1;
+            int maxPosition = 0;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                maxPosition = 5;
+            }
+            else
+            {
+                maxPosition = 6;
+            }
 
-            for (int i = size.height + 6; i < maxHeight; i++)
+            for (int i = size.height + maxPosition; i < maxHeight; i++)
             {
                 Console.SetCursorPosition(1, i);
                 Console.Write(new string(' ', (width - 2) - (width / 2) - 4));
             }
 
             variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
-            Console.SetCursorPosition(1, size.height + 6);
+            Console.SetCursorPosition(1, size.height + maxPosition);
         }
 
         private static void CodeBackground(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
