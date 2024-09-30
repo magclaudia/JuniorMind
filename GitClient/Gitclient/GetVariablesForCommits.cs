@@ -19,6 +19,9 @@
         public int height;
         public int width;
         public string textForBlueFond;
+        public int pressRight;
+        public bool stopWorkingOnCommits;
+        public bool left;
 
         public GetVariablesForCommits()
         {
@@ -39,6 +42,9 @@
             height = Console.WindowHeight;
             width = Console.WindowWidth;
             textForBlueFond = string.Empty;
+            pressRight = 1;
+            stopWorkingOnCommits = false;
+            left = false;
         }
     }
 }

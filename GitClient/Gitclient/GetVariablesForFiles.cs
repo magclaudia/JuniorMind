@@ -16,13 +16,13 @@
         public int numberOfNavigations;
         public int x;
         public int lastLine;
-        public bool left;
         public int index;
         public int a;
         public int totalLines;
         public int height;
         public int width;
         public bool filesReachPanelLimit;
+        public int indexDiff;
 
         public GetVariablesForFiles()
         {
@@ -40,13 +40,13 @@
             numberOfNavigations = 0;
             x = 0;
             lastLine = 0;
-            left = false;
             index = 0;
             a = 0;
             totalLines = 0;
             height = Console.WindowHeight - 2;
             width = Console.WindowWidth - 2;
             filesReachPanelLimit = false;
+            indexDiff = -1;
         }
     }
 }

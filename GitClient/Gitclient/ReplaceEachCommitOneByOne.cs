@@ -96,7 +96,7 @@
             }
 
             GetCommitNumber.ReturnCommitNumber(commitElement, variablesForCommits);
-            Navigate.CommitDetail(variablesForCommits, commitElement, clear);
+            Navigate.GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, clear);
             Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
             Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
         }
@@ -294,7 +294,7 @@
                 ClearMessagePanel();
                 ClearFilePanel();
                 bool clear = false;
-                Navigate.CommitDetail(variablesForCommits, commitElement, clear);
+                Navigate.GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, clear);
             }
 
             Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);

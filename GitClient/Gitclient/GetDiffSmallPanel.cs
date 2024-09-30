@@ -1,0 +1,119 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GitClient
+{
+    public class GetDiffSmallPanel
+    {
+        public static void GetDiffRelatedToTheSelectedFile(GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
+        {
+            variablesForFiles.indexDiff = variablesForFiles.fileIndex;
+            if (list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index].StartsWith("=")
+               || list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index].StartsWith("<")
+                 || list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index].StartsWith(">"))
+            {
+                list.listOfAllDiffs[variablesForFiles.indexDiff].RemoveAt(list.listOfAllDiffs[variablesForFiles.indexDiff].IndexOf("="));
+                list.listOfAllDiffs[variablesForFiles.indexDiff].RemoveAt(list.listOfAllDiffs[variablesForFiles.indexDiff].IndexOf("<"));
+                list.listOfAllDiffs[variablesForFiles.indexDiff].RemoveAt(list.listOfAllDiffs[variablesForFiles.indexDiff].IndexOf(">"));
+            }
+
+            string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
+            if(variablesForFiles.nextFile == false)
+            {
+                DiffHelper.FilesBackground(currentFileName, variablesForFiles);
+            }
+
+            variablesForFiles.a = list.listOfFiles.Count;
+            Print(list, variablesForCommits, variablesForFiles, commitElements, currentFileName);
+        }
+
+        public static void Print(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements, string fileFullName)
+        {
+            variablesForFiles.totalLines = list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
+
+            GetDiffsLine.GetLineThroughtDiffsLines(variablesForCommits, variablesForFiles.currentLine, variablesForFiles.totalLines, list);
+            Cursor.UpdateCursorPositionForDiffsList(variablesForCommits, variablesForFiles, list);
+
+            int x;
+
+            if (variablesForCommits.pressRight == 1)
+            {
+                x = variablesForFiles.width / 2 + 4;
+            }
+            else
+            {
+                x = 1;
+            }
+
+            int stop = DiffHelper.MaxValue(list, variablesForFiles);
+            string text;
+
+            for (int i = variablesForFiles.index; i < stop; i++)
+            {
+                if (list.listOfAllDiffs[variablesForFiles.indexDiff][i].Contains(fileFullName.Remove(0, 5)))
+                {
+                    text = "filePath";
+                }
+                else if (list.listOfAllDiffs[variablesForFiles.indexDiff][i].StartsWith('@'))
+                {
+                    text = "hunk";
+                }
+                else
+                {
+                    text = "filesCode";
+                }
+
+                switch (text)
+                {
+                    case "filePath":
+                        {
+                            if (variablesForFiles.down == false && variablesForFiles.row == 0)
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                            }
+
+                            variablesForFiles.row++;
+                            Console.SetCursorPosition(x, variablesForFiles.row);
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            string textOutput = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][i], variablesForCommits);
+                            Console.Write(textOutput);
+                            Console.ResetColor();
+                        }
+                        break;
+                    case "hunk":
+                        {
+                            if (variablesForFiles.row == 0 && variablesForFiles.down == false)
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                            }
+
+                            variablesForFiles.row++;
+                            Console.SetCursorPosition(x, variablesForFiles.row);
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            string textOutput = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][i], variablesForCommits);
+                            Console.Write(textOutput);
+                            Console.ResetColor();
+                        }
+                        break;
+                    case "filesCode":
+                        {
+                            if (variablesForFiles.row == 0 && variablesForFiles.down == false)
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                            }
+
+                            variablesForFiles.row++;
+                            Console.SetCursorPosition(x, variablesForFiles.row);
+                            string content = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][i], variablesForCommits);
+                            DiffHelper.SetColorForLinesOfCode(content, variablesForCommits);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+}

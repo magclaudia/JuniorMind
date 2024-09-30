@@ -4,7 +4,7 @@ namespace GitClient
 {
     public class Files
     {
-        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
+        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements, GetCertainList list)
         {
             IntPtr parentCommitPtr = IntPtr.Zero;
             IntPtr parentTreePtr = IntPtr.Zero;
@@ -37,19 +37,28 @@ namespace GitClient
                 throw new Exception("Failed to get the diff.");
             }
 
-            UIntPtr numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
-            if (variablesForCommits.right == true)
+            if (variablesForFiles.nextFile == false && variablesForCommits.pressRight == 1)
             {
-                Console.SetCursorPosition(1, position.edgeOneY);
+                UIntPtr numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
+
+                if (variablesForCommits.right == true)
+                {
+                    Console.SetCursorPosition(1, position.edgeOneY);
+                }
+                else
+                {
+                    Console.SetCursorPosition(position.edgeOneX + 1, position.edgeOneY);
+                }
+
+                Console.WriteLine($"Files: {numDeltas} ");
+
+                GetAllFiles.PrintAllFilesAffectedByCommit(repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, commitElements, list);
             }
             else
             {
-                Console.SetCursorPosition(position.edgeOneX + 1, position.edgeOneY);
+                GetDiffs.GetFileContent(diff, variablesForFiles, variablesForCommits, commitElements, list);
             }
 
-            Console.WriteLine($"Files: {numDeltas} ");
-
-            GetAllFiles.PrintAllFilesAffectedByCommit(repo, numDeltas, diff, index, variablesForCommits, commitElements);
             LibGit2Wrapper.git_diff_free(diff);
 
             Marshal.FreeCoTaskMem(options.old_prefix);

@@ -1,13 +1,14 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.IO.Pipes;
+using System.Runtime.InteropServices;
 
 namespace GitClient
 {
     public class GetAllFiles
     {
-        public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
+        public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements, GetCertainList list)
         {
-            var size = new DrawPanelRigthSide.FilesBox();
-            var files = new GetCertainList();
+            DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
 
             for (UIntPtr i = 0; i < numDeltas.ToUInt64(); i++)
             {
@@ -38,28 +39,32 @@ namespace GitClient
 
                 string fileName = Path.GetFileName(filePath)!;
                 string fileWithSymbol;
-                files.filesNames.Add(fileName);
+                if (variablesForCommits.right == true)
+                {
+                    list.filesNames.Add(fileName);
+                }
+
                 switch (delta.status)
                 {
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_ADDED:
                         fileWithSymbol = $"+    {fileName}";
                         PrintProjectName(size, i, filePath, fileName, variablesForCommits);
                         Console.ForegroundColor = ConsoleColor.Green;
-                        PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, files);
+                        PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, list);
                         break;
 
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_MODIFIED:
                         fileWithSymbol = $"M    {fileName}";
                         PrintProjectName(size, i, filePath, fileName, variablesForCommits);
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, files);
+                        PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, list);
                         break;
 
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_DELETED:
                         fileWithSymbol = $"-    {fileName}";
                         PrintProjectName(size, i, filePath, fileName, variablesForCommits);
                         Console.ForegroundColor = ConsoleColor.DarkRed;
-                        PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, files);
+                        PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, list);
                         break;
                 }
 
@@ -68,8 +73,55 @@ namespace GitClient
 
             if (variablesForCommits.right == true)
             {
-                GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
-                GetDiffs.GetFileContent(repo, numDeltas, diff, variablesForFiles, variablesForCommits, commitElements, files);
+                GetDiffs.GetFileContent(diff, variablesForFiles, variablesForCommits, commitElements, list);
+            }
+        }
+
+        public static void PrintRemaingingFiles(GetVariablesForFiles variablesForFiles, GetCertainList list)
+        {
+            int position = variablesForFiles.fileRow;
+            for (int i = variablesForFiles.fileIndex; i < list.listOfFiles.Count; i++)
+            {
+                if (position > variablesForFiles.height)
+                {
+                    break;
+                }
+
+                Console.SetCursorPosition(1, position);
+                ChooseColorForFiles(variablesForFiles, list, position, i);
+                Console.SetCursorPosition(1, position + 1);
+                position++;
+            }
+        }
+
+        public static void ChooseColorForFiles(GetVariablesForFiles variablesForFiles, GetCertainList list, int y, int i)
+        {
+            switch (list.listOfFiles[i][0])
+            {
+                case 'M':
+                    {
+                        Console.SetCursorPosition(1, y);
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write(list.listOfFiles[i]);
+                        Console.ResetColor();
+                    }
+                    break;
+                case '+':
+                    {
+                        Console.SetCursorPosition(1, y);
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(list.listOfFiles[i]);
+                        Console.ResetColor();
+                    }
+                    break;
+                case '-':
+                    {
+                        Console.SetCursorPosition(1, y);
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(list.listOfFiles[i]);
+                        Console.ResetColor();
+                    }
+                    break;
             }
         }
 
@@ -125,7 +177,7 @@ namespace GitClient
             }
         }
 
-        private static void PrintEachFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, GetVariablesForCommits variablesForCommits, GetCertainList files)
+        private static void PrintEachFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
             int lengthForNow = 0;
             int firstIndex = 0;
@@ -160,7 +212,12 @@ namespace GitClient
                 file = fileWithSymbol.Substring(firstIndex, fileWithSymbol.Length - lengthForNow);
             }
 
-            files.listOfFiles.Add(file);
+            if (variablesForCommits.right == true)
+            {
+                list.listOfFiles.Add(file);
+            }
+
+
             if ((int)i <= size.height - 3)
             {
                 Console.Write(file);

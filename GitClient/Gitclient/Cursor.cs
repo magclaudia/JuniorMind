@@ -1,4 +1,6 @@
-﻿namespace GitClient
+﻿using System.Runtime.InteropServices;
+
+namespace GitClient
 {
     public class Cursor
     {
@@ -49,10 +51,20 @@
             BlueBackgroundForCommits.DisplayBlueBox(variablesForCommits, listOfCommits, list);
         }
 
-        public static void UpdateCursorPositionForDiffsList(GetVariablesForFiles variablesForFiles, GetCertainList list)
+        public static void UpdateCursorPositionForDiffsList(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
-            int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2)) / list.listOfDiff.Count;
-            Console.SetCursorPosition(Console.WindowWidth - 2, indicatorPosition + 1);
+            int x = 0;
+            if (variablesForCommits.pressRight == 1)
+            {
+                x = Console.WindowWidth - 2;
+            }
+            else
+            {
+                x = Console.WindowWidth - 1;
+            }
+
+            int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2)) / list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
+            Console.SetCursorPosition(x, indicatorPosition + 1);
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             char cursorSymbol = '█';
             Console.Write(cursorSymbol);
@@ -61,7 +73,7 @@
 
             while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
             {
-                Console.SetCursorPosition(Console.WindowWidth - 2, i);
+                Console.SetCursorPosition(x, i);
                 Console.Write("║");
                 i++;
             }
@@ -70,7 +82,7 @@
             int stop = (Console.WindowHeight - 2) - indicatorPosition;
             while (variablesForFiles.up == true && i < stop - 1)
             {
-                Console.SetCursorPosition(Console.WindowWidth - 2, Console.WindowHeight - 2 - i);
+                Console.SetCursorPosition(x, Console.WindowHeight - 2 - i);
                 Console.Write("║");
                 i++;
             }
@@ -81,7 +93,7 @@
                 {
                     while (i < stop - 1)
                     {
-                        Console.SetCursorPosition(Console.WindowWidth - 2, Console.WindowHeight - 2 - i);
+                        Console.SetCursorPosition(x, Console.WindowHeight - 2 - i);
                         Console.Write("║");
                         i++;
                     }
@@ -89,7 +101,7 @@
 
             }
 
-            Console.SetCursorPosition(Console.WindowWidth - 2, indicatorPosition);
+            Console.SetCursorPosition(x, indicatorPosition);
         }
 
         public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetCertainList list, DrawPanelRigthSide.FilesBox size)
