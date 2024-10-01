@@ -122,6 +122,9 @@ namespace GitClient
                     case ConsoleKey.Escape:
                         {
                             variablesForCommits.pressRight = 1;
+                            Console.Clear();
+                            variablesForFiles.nextFile = false;
+                            HandleRightArrow(variablesForCommits, variablesForFiles, commitElements, list);
                         }
                         break;
                 }
@@ -175,45 +178,7 @@ namespace GitClient
 
                     case ConsoleKey.RightArrow:
                         {
-                            if (variablesForCommits.enter == true)
-                            {
-                                if (variablesForCommits.pressRight == 1)
-                                {
-                                    variablesForCommits.right = true;
-                                    variablesForFiles.fileIndex = 0;
-                                    variablesForFiles.row = 0;
-                                    variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
-                                    variablesForFiles.currentLine = 1;
-                                    variablesForFiles.x = 0;
-                                    variablesForFiles.index = 0;
-                                    variablesForFiles.down = false;
-                                    GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
-                                    variablesForCommits.pressRight++;
-                                    variablesForCommits.stopWorkingOnCommits = true;
-                                }
-                                else
-                                {
-                                    Console.Clear();
-                                    int i = 1;
-                                    DrawExternalBorder.DrawBox();
-                                    LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
-                                    variablesForFiles.down = false;
-                                    variablesForFiles.fileIndex = 0;
-                                    variablesForFiles.row = 0;
-                                    variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
-                                    variablesForFiles.currentLine = 1;
-                                    variablesForFiles.x = 0;
-                                    variablesForFiles.index = 0;
-                                    variablesForFiles.row = 0;
-
-                                    if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
-                                    {
-                                        Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
-                                    }
-
-                                    variablesForCommits.pressRight = 1;
-                                }
-                            }
+                            HandleRightArrow(variablesForCommits, variablesForFiles, commitElement, list);
                         }
                         break;
                     case ConsoleKey.LeftArrow:
@@ -309,6 +274,49 @@ namespace GitClient
             }
         }
 
+        private static void HandleRightArrow(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
+        {
+            if (variablesForCommits.enter == true)
+            {
+                if (variablesForCommits.pressRight == 1)
+                {
+                    variablesForCommits.right = true;
+                    variablesForFiles.fileIndex = 0;
+                    variablesForFiles.row = 0;
+                    variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
+                    variablesForFiles.currentLine = 1;
+                    variablesForFiles.x = 0;
+                    variablesForFiles.index = 0;
+                    variablesForFiles.down = false;
+                    GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
+                    variablesForCommits.pressRight++;
+                    variablesForCommits.stopWorkingOnCommits = true;
+                }
+                else
+                {
+                    Console.Clear();
+                    int i = 1;
+                    DrawExternalBorder.DrawBox();
+                    LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
+                    variablesForFiles.down = false;
+                    variablesForFiles.fileIndex = 0;
+                    variablesForFiles.row = 0;
+                    variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
+                    variablesForFiles.currentLine = 1;
+                    variablesForFiles.x = 0;
+                    variablesForFiles.index = 0;
+                    variablesForFiles.row = 0;
+                    IntPtr commitPtr = IntPtr.Zero;
+
+                    if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
+                    {
+                        Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
+                    }
+
+                    variablesForCommits.pressRight = 1;
+                }
+            }
+        }
 
         private static void HandleFilesUpMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
         {
@@ -413,7 +421,6 @@ namespace GitClient
 
             Console.SetCursorPosition(1, panel.edgeOneY + 2);
         }
-
 
 
         private static void HandleCommitsUpMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)

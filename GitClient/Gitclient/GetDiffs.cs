@@ -78,7 +78,7 @@ namespace GitClient
                 list = filesList;
                 variablesForCommit = variablesForCommits;
                 variablesForFiles = variablesForFile;
-                if (variablesForFiles.nextFile == false)
+                if (variablesForFiles.nextFile == false && list.listOfAllDiffs.Count == 0)
                 {
                     int i = 0;
                     while (i < list.listOfFiles.Count)
