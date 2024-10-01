@@ -208,7 +208,7 @@ namespace GitClient
 
                                     if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
                                     {
-                                        Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, commitElement, list);
+                                        Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
                                     }
 
                                     variablesForCommits.pressRight = 1;
@@ -230,6 +230,7 @@ namespace GitClient
                                 if (variablesForCommits.panelAlreadyDisplayed == false && variablesForCommits.displayPanel == true)
                                 {
                                     variablesForCommits.panelAlreadyDisplayed = true;
+                                    list.ClearAllLists();
                                     GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
                                 }
                                 else
@@ -304,14 +305,14 @@ namespace GitClient
 
             if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
             {
-                Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, commitElement, list);
+                Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
             }
         }
 
 
         private static void HandleFilesUpMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
         {
-            int y = variablesForFiles.fileRow - 1;
+            int y = variablesForFiles.fileRow;
             var panel = new DrawPanelRigthSide.FilesBox();
             if (variablesForFiles.fileRow == panel.edgeOneY + 2 && variablesForFiles.fileIndex > 0)
             {
@@ -349,7 +350,7 @@ namespace GitClient
                 LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
                 if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
                 {
-                    Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, commitElement, list);
+                    Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
                 }
             }
         }
@@ -375,7 +376,7 @@ namespace GitClient
                 }
                 else
                 {
-                    int y = variablesForFiles.fileRow - 1;
+                    int y = variablesForFiles.fileRow;
                     GetAllFiles.ChooseColorForFiles(variablesForFiles, list, y, variablesForFiles.fileIndex);
                     Console.SetCursorPosition(1, y + 1);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -396,7 +397,7 @@ namespace GitClient
                     LibGit2Wrapper.GitOid oid = commitElements.IdGitOid[variablesForCommits.currentCommitIndex];
                     if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElements.repo, ref oid) == 0)
                     {
-                        Files.GetFilesAffectedByCommit(commitElements.repo, commitPtr, i, variablesForCommits, variablesForFiles, commitElements, list);
+                        Files.GetFilesAffectedByCommit(commitElements.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElements);
                     }
                 }
             }

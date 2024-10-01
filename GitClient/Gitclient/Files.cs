@@ -4,7 +4,7 @@ namespace GitClient
 {
     public class Files
     {
-        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements, GetCertainList list)
+        public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {
             IntPtr parentCommitPtr = IntPtr.Zero;
             IntPtr parentTreePtr = IntPtr.Zero;
@@ -51,8 +51,7 @@ namespace GitClient
                 }
 
                 Console.WriteLine($"Files: {numDeltas} ");
-
-                GetAllFiles.PrintAllFilesAffectedByCommit(repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, commitElements, list);
+                GetAllFiles.PrintAllFilesAffectedByCommit(repo, numDeltas, diff, index, variablesForCommits, list, commitElements);
             }
             else
             {

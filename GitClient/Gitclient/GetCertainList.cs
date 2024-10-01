@@ -23,5 +23,17 @@
             addList = new List<string>();
             listOfAllDiffs = new List<List<string>>();
         }
+
+        public void ClearAllLists()
+        {
+            listOfFiles.Clear();
+            filesNames.Clear();
+            startingIndexes.Clear();
+            addLinesOfCode.Clear();
+            listStartAt.Clear();
+            start.Clear();
+            addList.Clear();
+            listOfAllDiffs.Clear();
+        }
     }
 }

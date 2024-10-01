@@ -6,7 +6,7 @@ namespace GitClient
 {
     public class GetAllFiles
     {
-        public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements, GetCertainList list)
+        public static void PrintAllFilesAffectedByCommit(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, GetCertainList list, CommitElements commitElements)
         {
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
 
@@ -73,6 +73,7 @@ namespace GitClient
 
             if (variablesForCommits.right == true)
             {
+                GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
                 GetDiffs.GetFileContent(diff, variablesForFiles, variablesForCommits, commitElements, list);
             }
         }
@@ -224,8 +225,6 @@ namespace GitClient
             }
 
             firstIndex += file.Length - 1;
-
         }
-
     }
 }

@@ -71,19 +71,15 @@ namespace GitClient
         private static string content = string.Empty;
         private static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
 
-        public static void PrintDiff(IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements)
+        public static void PrintDiff(IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFile, CommitElements commitElements)
         {
             if (variablesForCommits.pressRight == 1)
             {
+                list = filesList;
+                variablesForCommit = variablesForCommits;
+                variablesForFiles = variablesForFile;
                 if (variablesForFiles.nextFile == false)
                 {
-                    list.filesNames = filesList.filesNames;
-                    list.listOfFiles = filesList.listOfFiles;
-                    list.startingIndexes = filesList.startingIndexes;
-                    list.listStartAt = filesList.listStartAt;
-                    variablesForCommit = variablesForCommits;
-                    list.listOfAllDiffs = filesList.listOfAllDiffs;
-
                     int i = 0;
                     while (i < list.listOfFiles.Count)
                     {
@@ -98,10 +94,14 @@ namespace GitClient
                     {
                         throw new Exception("Failed to iterate over diff.");
                     }
+
+                    variablesForFile.fileIndex = 0;
+                    GetDiffSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
                 }
-
-                GetDiffSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFiles, variablesForCommits, commitElements);
-
+                else
+                {
+                    GetDiffSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
+                }
             }
             else
             {
