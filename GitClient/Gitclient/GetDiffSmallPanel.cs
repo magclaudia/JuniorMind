@@ -23,7 +23,7 @@ namespace GitClient
             }
 
             string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
-            if(variablesForFiles.nextFile == false)
+            if(variablesForFiles.fileIndex == 0)
             {
                 DiffHelper.FilesBackground(currentFileName, variablesForFiles);
             }
