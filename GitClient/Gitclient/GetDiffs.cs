@@ -116,18 +116,13 @@ namespace GitClient
             string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
             string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            //string fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
             fileName = list.filesNames[variablesForFiles.fileIndex];
-            //list.filePath.Add(newFilePath!);
             string text = newFilePath!;
 
             if (newFilePath!.Contains(fileName))
             {
                 variablesForFiles.indexDiff++;
                 list.listOfAllDiffs[variablesForFiles.indexDiff].Add(text);
-                //list.listOfDiff.Add(text);
-                //list.startingIndexes[variablesForFiles.indexDiff].Add();
-                //list.filePath.Add(text);
             }
 
             variablesForFiles.fileIndex++;
@@ -145,8 +140,6 @@ namespace GitClient
             string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
             string text = hunkHeader;
             list.listOfAllDiffs[variablesForFiles.indexDiff].Add(text);
-            //list.listOfDiff.Add(text);
-            //list.hunks.Add(text);
             return 0;
         }
 
@@ -167,8 +160,6 @@ namespace GitClient
             string text = $"{(char)line.origin} {content}";
 
             list.listOfAllDiffs[variablesForFiles.indexDiff].Add(text);
-            //list.listOfDiff.Add(text);
-            //list.filesCode.Add(text);
             variablesForFiles.nextFile = true;
             return 0;
         }
@@ -178,16 +169,6 @@ namespace GitClient
             variablesForFiles.height = Console.WindowHeight;
             variablesForFiles.width = Console.WindowWidth;
             string text = string.Empty;
-            //if (list.listOfFiles.Count == 1)
-            //{
-            //    variablesForFiles.totalLines = list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
-            //}
-            //else
-            //{
-            //    variablesForFiles.totalLines = list.listOfAllDiffs[variablesForFiles.indexDiff].Count
-            //    //variablesForFiles.totalLines = list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex - 1];
-            //}
-
             if (variablesForCommits.pressRight > 1)
             {
                 variablesForFiles.row = 0;
@@ -549,7 +530,6 @@ namespace GitClient
                     {
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write(content);
-                       // Console.SetCursorPosition(x, variablesForFiles.row);
                         Console.ResetColor();
                     }
                     break;
