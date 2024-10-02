@@ -25,7 +25,7 @@ namespace GitClient
 
                             if (variablesForFiles.index + 1 == list.listStartAt[variablesForFiles.x + 1] && variablesForFiles.index > 0 && variablesForFiles.index + 1 == list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex])
                             {
-                                GetDiffs.CleaningDiffPanel(variablesForCommits);
+                                GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
                                 variablesForFiles.row = 0;
                                 variablesForFiles.numberOfNavigations = 0;
                                 variablesForFiles.currentLine = 0;
@@ -47,7 +47,7 @@ namespace GitClient
                             }
                             else if (variablesForFiles.index < list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex] && variablesForFiles.row == variablesForFiles.height - 3)
                             {
-                                GetDiffs.CleaningDiffPanel(variablesForCommits);
+                                GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
                                 variablesForFiles.row = 0;
                                 variablesForFiles.index++;
                                 variablesForFiles.numberOfNavigations = 0;
@@ -80,7 +80,7 @@ namespace GitClient
 
                             if (list.listStartAt.Contains(variablesForFiles.index))
                             {
-                                GetDiffs.CleaningDiffPanel(variablesForCommits);
+                                GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
                                 variablesForFiles.row = 0;
                                 variablesForFiles.numberOfNavigations = 0;
 
@@ -121,7 +121,7 @@ namespace GitClient
                         break;
                     case ConsoleKey.Escape:
                         {
-                            variablesForCommits.pressRight = 1;
+                            variablesForCommits.pressRight = 0;
                             Console.Clear();
                             variablesForFiles.nextFile = false;
                             HandleRightArrow(variablesForCommits, variablesForFiles, commitElements, list);
@@ -278,6 +278,7 @@ namespace GitClient
         {
             if (variablesForCommits.enter == true)
             {
+                variablesForCommits.pressRight++;
                 if (variablesForCommits.pressRight == 1)
                 {
                     variablesForCommits.right = true;
@@ -289,7 +290,6 @@ namespace GitClient
                     variablesForFiles.index = 0;
                     variablesForFiles.down = false;
                     GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
-                    variablesForCommits.pressRight++;
                     variablesForCommits.stopWorkingOnCommits = true;
                 }
                 else
@@ -349,7 +349,7 @@ namespace GitClient
                 variablesForFiles.fileRow--;
                 variablesForFiles.fileIndex--;
 
-                GetDiffs.CleaningDiffPanel(variablesForCommits);
+                GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
                 IntPtr commitPtr = IntPtr.Zero;
                 int i = 1;
                 variablesForFiles.row = 0;
@@ -395,8 +395,9 @@ namespace GitClient
                     Console.SetCursorPosition(1, y + 1);
                     variablesForFiles.fileRow++;
                     variablesForFiles.fileIndex++;
-                    variablesForCommits.pressRight = 1;
-                    GetDiffs.CleaningDiffPanel(variablesForCommits);
+                    //variablesForCommits.pressRight = 1;
+                    GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
+                    //variablesForCommits.pressRight = 2;
                     IntPtr commitPtr = IntPtr.Zero;
                     int i = 1;
                     variablesForFiles.row = 0;

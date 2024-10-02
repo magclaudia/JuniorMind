@@ -34,24 +34,29 @@ namespace GitClient
             }
         }
 
-        public static void CleaningDiffPanel(GetVariablesForCommits variablesForCommits)
+        public static void CleaningEntireDiffPanel(GetVariablesForCommits variablesForCommits)
+        {
+            int height = Console.WindowHeight;
+
+            int x = 1;
+            int y = height - 2;
+
+            for (int i = 1; i <= height - 2; i++)
+            {
+                Console.SetCursorPosition(x, i);
+                Console.Write(new string(' ', y));
+            }
+
+            Console.SetCursorPosition(x, 1);
+        }
+
+        public static void CleaningHalfOfDiffPanel(GetVariablesForCommits variablesForCommits)
         {
             int height = Console.WindowHeight;
             int width = Console.WindowWidth;
 
-            int x;
-            int y;
-
-            if (variablesForCommits.pressRight == 1)
-            {
-                x = width / 2 + 3;
-                y = (width - 2) - (width / 2) - 4;
-            }
-            else
-            {
-                x = 1;
-                y = height - 2;
-            }
+            int x = width / 2 + 3;
+            int y = (width - 2) - (width / 2) - 4;
 
             for (int i = 1; i <= height - 2; i++)
             {
@@ -191,7 +196,8 @@ namespace GitClient
             }
 
 
-            for (int i = variablesForFiles.index; i < MaxValue(list, variablesForFiles); i++)
+            int stop = MaxValue(list, variablesForFiles);
+            for (int i = variablesForFiles.index; i < stop; i++)
             {
                 if (list.listOfAllDiffs[variablesForFiles.indexDiff][i].Contains(fileFullName.Remove(0, 5)))
                 {
@@ -280,8 +286,13 @@ namespace GitClient
 
         public static int MaxValue(GetCertainList list, GetVariablesForFiles variablesForFiles)
         {
+            if (variablesForCommit.pressRight > 1)
+            {
+                variablesForFiles.height = variablesForFiles.height - 2;
+            }
+
             return list.listOfAllDiffs[variablesForFiles.indexDiff].Count > variablesForFiles.height
-                ? variablesForFiles.height : list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
+                ? variablesForFiles.height: list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
         }
 
         public static void FilesBackground(string fileFullName, GetVariablesForFiles variablesForFiles)

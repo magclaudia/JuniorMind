@@ -37,7 +37,7 @@ namespace GitClient
                 throw new Exception("Failed to get the diff.");
             }
 
-            if (variablesForFiles.nextFile == false && variablesForCommits.pressRight == 1)
+            if (variablesForFiles.nextFile == false && variablesForCommits.pressRight < 2)
             {
                 UIntPtr numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
 

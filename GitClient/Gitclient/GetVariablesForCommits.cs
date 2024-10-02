@@ -42,7 +42,7 @@
             height = Console.WindowHeight;
             width = Console.WindowWidth;
             textForBlueFond = string.Empty;
-            pressRight = 1;
+            pressRight = 0;
             stopWorkingOnCommits = false;
             left = false;
         }
