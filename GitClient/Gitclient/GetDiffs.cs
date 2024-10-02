@@ -112,7 +112,7 @@ namespace GitClient
             {
                 string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
                 variablesForFiles.down = false;
-                Print(variablesForCommits, commitElements, currentFileName);
+                Print(variablesForCommits, commitElements);
             }
         }
 
@@ -169,15 +169,15 @@ namespace GitClient
             return 0;
         }
 
-        public static void Print(GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
+        public static void Print(GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
             variablesForFiles.height = Console.WindowHeight;
             variablesForFiles.width = Console.WindowWidth;
             string text = string.Empty;
-            if (variablesForCommits.pressRight > 1)
+
+            if (variablesForFiles.diffMoves == false)
             {
                 variablesForFiles.row = 0;
-                variablesForFiles.down = false;
             }
 
             variablesForFiles.totalLines = list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
@@ -195,10 +195,11 @@ namespace GitClient
                 x = 1;
             }
 
-
             int stop = MaxValue(list, variablesForFiles);
             for (int i = variablesForFiles.index; i < stop; i++)
             {
+                string fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
+
                 if (list.listOfAllDiffs[variablesForFiles.indexDiff][i].Contains(fileFullName.Remove(0, 5)))
                 {
                     text = "filePath";
@@ -259,14 +260,14 @@ namespace GitClient
                         break;
                 }
 
-                if (variablesForFiles.index < variablesForFiles.fileIndex && variablesForFiles.up == false)
+                if (variablesForFiles.up == false)
                 {
                     variablesForFiles.index++;
                 }
 
                 if (variablesForFiles.down == true)
                 {
-                    if (variablesForFiles.fileIndex <= variablesForFiles .height - 2)
+                    if (variablesForFiles.fileIndex <= variablesForFiles.height - 2)
                     {
                         TextFitInPanel(fileFullName, variablesForFiles, variablesForCommits, commitElements);
                     }
@@ -280,7 +281,7 @@ namespace GitClient
             variablesForFiles.down = true;
             if (variablesForCommits.pressRight > 1)
             {
-                Navigate.NavigateThroughDiffsContent(list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
         }
 
@@ -321,7 +322,7 @@ namespace GitClient
                 PrintRemaingingFiles();
                 variablesForFiles.filesReachPanelLimit = true;
             }
-            
+
             Console.SetCursorPosition(1, variablesForFiles.fileRow);
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.Write(fileFullName);
@@ -358,7 +359,7 @@ namespace GitClient
         private static void PrintRemaingingFiles()
         {
             int position = variablesForFiles.fileRow;
-            for (int i = variablesForFiles.fileIndex; i < list.listOfFiles.Count; i++) 
+            for (int i = variablesForFiles.fileIndex; i < list.listOfFiles.Count; i++)
             {
                 if (position == variablesForFiles.height)
                 {
@@ -412,28 +413,26 @@ namespace GitClient
                 x = 1;
             }
 
-            if (variablesForFiles.index < list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex])
-            {
-                if (variablesForFiles.row < height - 2)
-                {
-                    Console.SetCursorPosition(x, variablesForFiles.row + 1);
-                    Console.BackgroundColor = ConsoleColor.DarkBlue;
-                    string text = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index], variablesForCommits);
-                    Console.Write(text);
-                    Console.ResetColor();
-                    GetDiffsLine.GetLineThroughtDiffsLines(variablesForCommits, variablesForFiles.currentLine, variablesForFiles.totalLines, list);
-                }
-                else
-                {
-                    DiffHelper.Print(variablesForCommits, commitElements, fileFullName);
-                    Console.SetCursorPosition(x, variablesForFiles.row);
-                    Console.BackgroundColor = ConsoleColor.DarkBlue;
-                    string text = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index - 1], variablesForCommits);
-                    Console.Write(text);
-                }
 
+            if (variablesForFiles.row < height - 2)
+            {
+                Console.SetCursorPosition(x, variablesForFiles.row + 1);
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                string text = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index], variablesForCommits);
+                Console.Write(text);
                 Console.ResetColor();
+                GetDiffsLine.GetLineThroughtDiffsLines(variablesForCommits, variablesForFiles.currentLine, variablesForFiles.totalLines, list);
             }
+            else
+            {
+                DiffHelper.Print(variablesForCommits, commitElements);
+                Console.SetCursorPosition(x, variablesForFiles.row);
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                string text = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index - 1], variablesForCommits);
+                Console.Write(text);
+            }
+
+            Console.ResetColor();
         }
 
         public static void TextExceedingPanelHeight(string fileFullName, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
@@ -446,7 +445,7 @@ namespace GitClient
 
             CodeBackground(variablesForCommits, commitElements, fileFullName);
             Console.ResetColor();
-            Navigate.NavigateThroughDiffsContent(list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
         }
 
         public static void TextFitInPanel(string fileFullName, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
@@ -460,12 +459,12 @@ namespace GitClient
                 }
 
                 CodeBackground(variablesForCommits, commitElements, fileFullName);
-                Navigate.NavigateThroughDiffsContent(list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
 
             if (variablesForFiles.end == true)
             {
-                Navigate.NavigateThroughDiffsContent(list, variablesForFiles, variablesForCommits, commitElements, fileFullName);
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
         }
 

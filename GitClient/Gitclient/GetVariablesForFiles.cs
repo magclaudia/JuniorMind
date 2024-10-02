@@ -23,6 +23,7 @@
         public int width;
         public bool filesReachPanelLimit;
         public int indexDiff;
+        public bool diffMoves;
 
         public GetVariablesForFiles()
         {
@@ -47,6 +48,7 @@
             width = Console.WindowWidth - 2;
             filesReachPanelLimit = false;
             indexDiff = -1;
+            diffMoves = false;
         }
     }
 }

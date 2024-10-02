@@ -16,56 +16,7 @@ namespace GitClient
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            variablesForFiles.up = false;
-
-                            if (variablesForFiles.index == list.listOfAllDiffs.Count - 1 && variablesForFiles.currentLine == list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex] - list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex - 1])
-                            {
-                                break;
-                            }
-
-                            if (variablesForFiles.index + 1 == list.listStartAt[variablesForFiles.x + 1] && variablesForFiles.index > 0 && variablesForFiles.index + 1 == list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex])
-                            {
-                                GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
-                                variablesForFiles.row = 0;
-                                variablesForFiles.numberOfNavigations = 0;
-                                variablesForFiles.currentLine = 0;
-                                if (variablesForCommits.pressRight == 1)
-                                {
-                                    string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
-                                    DiffHelper.FilesBackground(currentFileName, variablesForFiles);
-                                }
-
-                                if (variablesForFiles.fileIndex <= list.listOfFiles.Count - 1)
-                                {
-                                    variablesForFiles.fileIndex++;
-                                }
-
-                                variablesForFiles.index++;
-                                variablesForFiles.down = false;
-                                variablesForFiles.x++;
-
-                            }
-                            else if (variablesForFiles.index < list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex] && variablesForFiles.row == variablesForFiles.height - 3)
-                            {
-                                GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
-                                variablesForFiles.row = 0;
-                                variablesForFiles.index++;
-                                variablesForFiles.numberOfNavigations = 0;
-                                variablesForFiles.down = false;
-                                variablesForFiles.x++;
-                            }
-
-                            if (variablesForFiles.row <= variablesForFiles.height - 2 || variablesForFiles.index == list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex] - 1)
-                            {
-                                variablesForFiles.currentLine++;
-                            }
-
-                            if (variablesForFiles.index == list.listStartAt[variablesForFiles.x] && list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.fileIndex] - list.listStartAt[variablesForFiles.x] < variablesForFiles.height - 2 && variablesForFiles.totalLines - variablesForFiles.currentLine < Console.WindowHeight - 2 && variablesForFiles.totalLines > Console.WindowHeight - 2 && variablesForFiles.fileIndex != list.listOfFiles.Count)
-                            {
-                                GetDiffsLine.GetLineIfDownMoves(list, variablesForFiles);
-                            }
-
-                            DiffHelper.Print(variablesForCommits, commitElements, fileFullName);
+                            
                         }
                         break;
                     case ConsoleKey.UpArrow:
@@ -112,22 +63,14 @@ namespace GitClient
                                 }
 
                                 variablesForFiles.up = false;
-                                DiffHelper.Print(variablesForCommits, commitElements, fileFullName);
+                                DiffHelper.Print(variablesForCommits, commitElements);
                             }
 
                             variablesForFiles.currentLine--;
-                            DiffHelper.Print(variablesForCommits, commitElements, fileFullName);
+                            DiffHelper.Print(variablesForCommits, commitElements);
                         }
                         break;
-                    case ConsoleKey.Escape:
-                        {
-                            variablesForCommits.esc = true;
-                            variablesForCommits.pressRight = 0;
-                            Console.Clear();
-                            variablesForFiles.nextFile = false;
-                            HandleRightArrow(variablesForCommits, variablesForFiles, commitElements, list);
-                        }
-                        break;
+                   
                 }
             }
             while (keyInfo.Key != ConsoleKey.Escape);
@@ -166,9 +109,13 @@ namespace GitClient
 
                     case ConsoleKey.DownArrow:
                         {
-                            if (variablesForCommits.stopWorkingOnCommits == true)
+                            if (variablesForCommits.stopWorkingOnCommits == true && variablesForCommits.pressRight == 1)
                             {
                                 HandleFilesDownMoves(variablesForCommits, variablesForFiles, list, commitElement);
+                            }
+                            else if (variablesForCommits.pressRight == 2)
+                            {
+                                HandleDiffDownMoves(variablesForCommits, variablesForFiles, list, commitElement);
                             }
                             else
                             {
@@ -242,6 +189,16 @@ namespace GitClient
                             }
                         }
                         break;
+                    case ConsoleKey.Escape:
+                        {
+                            variablesForCommits.esc = true;
+                            variablesForCommits.pressRight = 0;
+                            variablesForFiles.diffMoves = false;
+                            Console.Clear();
+                            variablesForFiles.nextFile = false;
+                            HandleRightArrow(variablesForCommits, variablesForFiles, commitElement, list);
+                        }
+                        break;
 
                 }
             } while (keyInfo.Key != ConsoleKey.Escape);
@@ -273,6 +230,31 @@ namespace GitClient
             if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
             {
                 Files.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
+            }
+        }
+
+        private static void HandleDiffDownMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
+        {
+            if (variablesForCommits.pressRight == 2)
+            {
+                variablesForFiles.diffMoves = true;
+            }
+
+            if (variablesForFiles.diffMoves == true && variablesForFiles.currentLine < list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
+            {
+                variablesForFiles.up = false;
+                variablesForFiles.diffMoves = true;
+                if (variablesForCommits.pressRight == 2 && variablesForFiles.row == list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
+                {
+                    variablesForFiles.row = 0;
+                    variablesForFiles.currentLine = 1;
+                    variablesForFiles.index = 0;
+                    //variablesForFiles.indexDiff = variablesForFiles.fileIndex;
+                }
+
+                variablesForFiles.currentLine++;
+
+                DiffHelper.Print(variablesForCommits, commitElements);
             }
         }
 

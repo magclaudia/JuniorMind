@@ -28,7 +28,7 @@ namespace GitClient
                 DiffHelper.FilesBackground(currentFileName, variablesForFiles);
             }
 
-            variablesForFiles.a = list.listOfFiles.Count;
+            //variablesForFiles.a = list.listOfFiles.Count;
             Print(list, variablesForCommits, variablesForFiles, commitElements, currentFileName);
         }
 
