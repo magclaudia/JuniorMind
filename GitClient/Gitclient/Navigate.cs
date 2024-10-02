@@ -131,30 +131,33 @@ namespace GitClient
                         break;
                     case ConsoleKey.LeftArrow:
                         {
-                            variablesForCommits.stopWorkingOnCommits = false;
-                            variablesForCommits.enter = true;
-                            variablesForCommits.panelAlreadyDisplayed = false;
-                            variablesForCommits.esc = false;
-                            if (variablesForCommits.right == true)
+                            if(variablesForCommits.esc == true)
                             {
-                                variablesForCommits.pressRight = 0;
-                                variablesForCommits.right = false;
-                                variablesForCommits.displayPanel = true;
-                                variablesForFiles.nextFile = false;
-                                if (variablesForCommits.panelAlreadyDisplayed == false && variablesForCommits.displayPanel == true)
+                                variablesForCommits.stopWorkingOnCommits = false;
+                                variablesForCommits.enter = true;
+                                variablesForCommits.panelAlreadyDisplayed = false;
+                                variablesForCommits.esc = false;
+                                if (variablesForCommits.right == true)
                                 {
-                                    variablesForCommits.panelAlreadyDisplayed = true;
-                                    list.ClearAllLists();
-                                    GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
-                                }
-                                else
-                                {
-                                    variablesForCommits.displayPanel = false;
-                                    Console.Clear();
-                                    DrawExternalBorder.DrawBox();
-                                }
+                                    variablesForCommits.pressRight = 0;
+                                    variablesForCommits.right = false;
+                                    variablesForCommits.displayPanel = true;
+                                    variablesForFiles.nextFile = false;
+                                    if (variablesForCommits.panelAlreadyDisplayed == false && variablesForCommits.displayPanel == true)
+                                    {
+                                        variablesForCommits.panelAlreadyDisplayed = true;
+                                        list.ClearAllLists();
+                                        GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
+                                    }
+                                    else
+                                    {
+                                        variablesForCommits.displayPanel = false;
+                                        Console.Clear();
+                                        DrawExternalBorder.DrawBox();
+                                    }
 
-                                GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElement, list);
+                                    GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElement, list);
+                                }
                             }
                         }
                         break;
