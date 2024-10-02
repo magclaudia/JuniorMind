@@ -287,9 +287,7 @@ namespace GitClient
         public static int MaxValue(GetCertainList list, GetVariablesForFiles variablesForFiles)
         {
             int height = Console.WindowHeight - 2;
-
-            return list.listOfAllDiffs[variablesForFiles.indexDiff].Count > height
-                ? height : list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
+            return list.listOfAllDiffs[variablesForFiles.indexDiff].Count > height ? height : list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
         }
 
         public static void FilesBackground(string fileFullName, GetVariablesForFiles variablesForFiles)

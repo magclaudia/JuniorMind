@@ -187,9 +187,10 @@ namespace GitClient
                             variablesForCommits.stopWorkingOnCommits = false;
                             variablesForCommits.enter = true;
                             variablesForCommits.panelAlreadyDisplayed = false;
+                            variablesForCommits.esc = false;
                             if (variablesForCommits.right == true)
                             {
-                                variablesForCommits.pressRight = 1;
+                                variablesForCommits.pressRight = 0;
                                 variablesForCommits.right = false;
                                 variablesForCommits.displayPanel = true;
                                 variablesForFiles.nextFile = false;
