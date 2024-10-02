@@ -121,6 +121,7 @@ namespace GitClient
                         break;
                     case ConsoleKey.Escape:
                         {
+                            variablesForCommits.esc = true;
                             variablesForCommits.pressRight = 0;
                             Console.Clear();
                             variablesForFiles.nextFile = false;
@@ -395,9 +396,7 @@ namespace GitClient
                     Console.SetCursorPosition(1, y + 1);
                     variablesForFiles.fileRow++;
                     variablesForFiles.fileIndex++;
-                    //variablesForCommits.pressRight = 1;
                     GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
-                    //variablesForCommits.pressRight = 2;
                     IntPtr commitPtr = IntPtr.Zero;
                     int i = 1;
                     variablesForFiles.row = 0;

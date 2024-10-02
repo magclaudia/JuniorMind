@@ -39,7 +39,7 @@ namespace GitClient
 
                 string fileName = Path.GetFileName(filePath)!;
                 string fileWithSymbol;
-                if (variablesForCommits.right == true)
+                if (variablesForCommits.right == true && variablesForCommits.esc == false)
                 {
                     list.filesNames.Add(fileName);
                 }
@@ -213,7 +213,7 @@ namespace GitClient
                 file = fileWithSymbol.Substring(firstIndex, fileWithSymbol.Length - lengthForNow);
             }
 
-            if (variablesForCommits.right == true)
+            if (variablesForCommits.right == true && variablesForCommits.esc == false)
             {
                 list.listOfFiles.Add(file);
             }

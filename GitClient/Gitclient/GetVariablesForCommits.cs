@@ -22,6 +22,7 @@
         public int pressRight;
         public bool stopWorkingOnCommits;
         public bool left;
+        public bool esc;
 
         public GetVariablesForCommits()
         {
@@ -45,6 +46,7 @@
             pressRight = 0;
             stopWorkingOnCommits = false;
             left = false;
+            esc = false;
         }
     }
 }
