@@ -131,7 +131,7 @@ namespace GitClient
                         break;
                     case ConsoleKey.LeftArrow:
                         {
-                            if(variablesForCommits.esc == true)
+                            if (variablesForFiles.diffMoves == false)
                             {
                                 variablesForCommits.stopWorkingOnCommits = false;
                                 variablesForCommits.enter = true;
@@ -236,6 +236,11 @@ namespace GitClient
             }
         }
 
+        private static void HandleDiffUpMoves()
+        {
+
+        }
+
         private static void HandleDiffDownMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {
             if (variablesForCommits.pressRight == 2)
@@ -247,15 +252,33 @@ namespace GitClient
             {
                 variablesForFiles.up = false;
                 variablesForFiles.diffMoves = true;
-                if (variablesForCommits.pressRight == 2 && variablesForFiles.row == list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
+                if (variablesForFiles.numberOfNavigations == 1)
                 {
+                    if (variablesForFiles.row == Console.WindowHeight - 2)
+                    {
+                        variablesForFiles.index = variablesForFiles.index - (Console.WindowHeight - 2);
+                    }
+                    else
+                    {
+                        variablesForFiles.index = (list.listOfAllDiffs[variablesForFiles.indexDiff].Count) - variablesForFiles.row;
+                    }
+
                     variablesForFiles.row = 0;
-                    variablesForFiles.currentLine = 1;
-                    variablesForFiles.index = 0;
-                    //variablesForFiles.indexDiff = variablesForFiles.fileIndex;
+                    variablesForFiles.numberOfNavigations--;    
                 }
 
-                variablesForFiles.currentLine++;
+                if (variablesForFiles.row == Console.WindowHeight - 3)
+                {
+                    list.startingIndexes[variablesForFiles.indexDiff].Add(variablesForFiles.index + 1);
+                    variablesForFiles.row = 0;
+                    GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
+                    variablesForFiles.down = false;
+                }
+
+                if (variablesForFiles.index > 0)
+                {
+                    variablesForFiles.currentLine++;
+                }
 
                 DiffHelper.Print(variablesForCommits, commitElements);
             }
@@ -290,9 +313,10 @@ namespace GitClient
                     variablesForFiles.row = 0;
                     variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
                     variablesForFiles.currentLine = 1;
-                    variablesForFiles.x = 0;
+                    variablesForFiles.diffMoves = false;
                     variablesForFiles.index = 0;
                     variablesForFiles.row = 0;
+
                     IntPtr commitPtr = IntPtr.Zero;
 
                     if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)

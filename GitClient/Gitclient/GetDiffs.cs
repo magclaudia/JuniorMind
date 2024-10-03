@@ -39,7 +39,7 @@ namespace GitClient
             int height = Console.WindowHeight;
 
             int x = 1;
-            int y = height - 2;
+            int y = Console.WindowWidth - 2;
 
             for (int i = 1; i <= height - 2; i++)
             {
@@ -112,6 +112,7 @@ namespace GitClient
             {
                 string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
                 variablesForFiles.down = false;
+                variablesForFile.diffMoves = false;
                 Print(variablesForCommits, commitElements);
             }
         }
@@ -128,7 +129,8 @@ namespace GitClient
             {
                 variablesForFiles.indexDiff++;
                 list.listOfAllDiffs[variablesForFiles.indexDiff].Add(text);
-            }
+                list.startingIndexes[variablesForFiles.indexDiff].Add(0);
+            } 
 
             variablesForFiles.fileIndex++;
             return 0;
@@ -174,6 +176,10 @@ namespace GitClient
             variablesForFiles.height = Console.WindowHeight;
             variablesForFiles.width = Console.WindowWidth;
             string text = string.Empty;
+            if (variablesForFiles.row == 0 && variablesForFiles.currentLine > Console.WindowHeight - 2 && variablesForFiles.diffMoves == false)
+            {
+                variablesForFiles.down = false;
+            }
 
             if (variablesForFiles.diffMoves == false)
             {
@@ -195,9 +201,14 @@ namespace GitClient
                 x = 1;
             }
 
-            int stop = MaxValue(list, variablesForFiles);
-            for (int i = variablesForFiles.index; i < stop; i++)
+            for (int i = variablesForFiles.index; i <= list.listOfAllDiffs[variablesForFiles.indexDiff].Count; i++)
             {
+                if (variablesForFiles.row == Console.WindowHeight - 2 || variablesForFiles.index == list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
+                {
+                    variablesForFiles.numberOfNavigations++;
+                    break;
+                }
+
                 string fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
 
                 if (list.listOfAllDiffs[variablesForFiles.indexDiff][i].Contains(fileFullName.Remove(0, 5)))
@@ -267,7 +278,7 @@ namespace GitClient
 
                 if (variablesForFiles.down == true)
                 {
-                    if (variablesForFiles.fileIndex <= variablesForFiles.height - 2)
+                    if (variablesForFiles.index < variablesForFiles.height - 2)
                     {
                         TextFitInPanel(fileFullName, variablesForFiles, variablesForCommits, commitElements);
                     }
