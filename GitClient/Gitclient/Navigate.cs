@@ -131,6 +131,11 @@ namespace GitClient
 
                     case ConsoleKey.RightArrow:
                         {
+                            if (variablesForCommits.pressRight == 2)
+                            {
+                                break;
+                            }
+
                             HandleRightArrow(variablesForCommits, variablesForFiles, commitElement, list);
                         }
                         break;
