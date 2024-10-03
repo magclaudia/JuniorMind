@@ -271,12 +271,12 @@ namespace GitClient
                         break;
                 }
 
-                if (variablesForFiles.up == false || variablesForFiles.index < list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
+                if (variablesForFiles.up == false && variablesForFiles.index < list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
                 {
                     variablesForFiles.index++;
                 }
 
-                if (variablesForFiles.down == true)
+                if (variablesForFiles.down == true || variablesForFiles.up == true)
                 {
                     if (variablesForFiles.index < variablesForFiles.height - 2)
                     {
@@ -460,7 +460,7 @@ namespace GitClient
 
         public static void TextFitInPanel(string fileFullName, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
-            if (variablesForFiles.down == true && variablesForFiles.row < Console.WindowHeight - 2)
+            if (variablesForFiles.down == true && variablesForFiles.row < Console.WindowHeight - 2 || variablesForFiles.up == true)
             {
                 if (variablesForFiles.up == true)
                 {

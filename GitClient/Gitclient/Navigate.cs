@@ -221,7 +221,7 @@ namespace GitClient
             {
                 variablesForFiles.index = variablesForFiles.index - (Console.WindowHeight - 2);
             }
-            else
+            else if (variablesForFiles.row > Console.WindowHeight - 2)
             {
                 variablesForFiles.index = (list.listOfAllDiffs[variablesForFiles.indexDiff].Count) - variablesForFiles.row;
             }
