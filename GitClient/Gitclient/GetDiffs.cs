@@ -201,9 +201,9 @@ namespace GitClient
                 x = 1;
             }
 
-            for (int i = variablesForFiles.index; i <= list.listOfAllDiffs[variablesForFiles.indexDiff].Count; i++)
+            for (int i = variablesForFiles.index; i < list.listOfAllDiffs[variablesForFiles.indexDiff].Count; i++)
             {
-                if (variablesForFiles.row == Console.WindowHeight - 2 || variablesForFiles.index == list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
+                if (variablesForFiles.row == Console.WindowHeight - 2)
                 {
                     variablesForFiles.numberOfNavigations++;
                     break;
@@ -271,7 +271,7 @@ namespace GitClient
                         break;
                 }
 
-                if (variablesForFiles.up == false)
+                if (variablesForFiles.up == false || variablesForFiles.index < list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
                 {
                     variablesForFiles.index++;
                 }
@@ -455,7 +455,6 @@ namespace GitClient
             }
 
             CodeBackground(variablesForCommits, commitElements, fileFullName);
-            Console.ResetColor();
             Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
         }
 

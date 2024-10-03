@@ -115,6 +115,11 @@ namespace GitClient
                             }
                             else if (variablesForCommits.pressRight == 2)
                             {
+                                if (variablesForFiles.index == list.listOfAllDiffs[variablesForFiles.indexDiff].Count - 1)
+                                {
+                                    break;
+                                }
+
                                 HandleDiffDownMoves(variablesForCommits, variablesForFiles, list, commitElement);
                             }
                             else
@@ -248,10 +253,14 @@ namespace GitClient
                 variablesForFiles.diffMoves = true;
             }
 
+            if (variablesForFiles.index == list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
+            {
+                variablesForFiles.numberOfNavigations++;
+            }
+
             if (variablesForFiles.diffMoves == true && variablesForFiles.currentLine < list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
             {
                 variablesForFiles.up = false;
-                variablesForFiles.diffMoves = true;
                 if (variablesForFiles.numberOfNavigations == 1)
                 {
                     if (variablesForFiles.row == Console.WindowHeight - 2)
@@ -269,17 +278,14 @@ namespace GitClient
 
                 if (variablesForFiles.row == Console.WindowHeight - 3)
                 {
-                    list.startingIndexes[variablesForFiles.indexDiff].Add(variablesForFiles.index + 1);
+                    variablesForFiles.index++;
+                    list.startingIndexes[variablesForFiles.indexDiff].Add(variablesForFiles.index);
                     variablesForFiles.row = 0;
                     GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
                     variablesForFiles.down = false;
                 }
 
-                if (variablesForFiles.index > 0)
-                {
-                    variablesForFiles.currentLine++;
-                }
-
+                variablesForFiles.currentLine++;
                 DiffHelper.Print(variablesForCommits, commitElements);
             }
         }
