@@ -16,15 +16,15 @@ namespace GitClient
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            
+
                         }
                         break;
                     case ConsoleKey.UpArrow:
                         {
-                           
+
                         }
                         break;
-                   
+
                 }
             }
             while (keyInfo.Key != ConsoleKey.Escape);
@@ -173,6 +173,7 @@ namespace GitClient
                             variablesForCommits.pressRight = 0;
                             variablesForFiles.diffMoves = false;
                             variablesForFiles.numberOfNavigations = 0;
+                            list.startingIndexes.Clear();
                             Console.Clear();
                             variablesForFiles.nextFile = false;
                             HandleRightArrow(variablesForCommits, variablesForFiles, commitElement, list);
@@ -220,7 +221,7 @@ namespace GitClient
             if (list.listOfAllDiffs[variablesForFiles.indexDiff].Count > Console.WindowHeight - 2 && list.startingIndexes[variablesForFiles.indexDiff].Contains(variablesForFiles.index))
             {
                 GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
-                if(variablesForFiles.x > 0)
+                if (variablesForFiles.x > 0)
                 {
                     variablesForFiles.x--;
                 }
@@ -257,19 +258,9 @@ namespace GitClient
             if (variablesForFiles.diffMoves == true && variablesForFiles.currentLine < list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
             {
                 variablesForFiles.up = false;
-                if (variablesForFiles.numberOfNavigations == 1)
+                if (variablesForFiles.row == Console.WindowHeight - 2)
                 {
-                    if (variablesForFiles.row == Console.WindowHeight - 2)
-                    {
-                        variablesForFiles.index = variablesForFiles.index - (Console.WindowHeight - 2);
-                    }
-                    else
-                    {
-                        variablesForFiles.index = (list.listOfAllDiffs[variablesForFiles.indexDiff].Count) - variablesForFiles.row;
-                    }
-
-                    variablesForFiles.row = 0;
-                    variablesForFiles.numberOfNavigations--;    
+                    variablesForFiles.index = variablesForFiles.index - (Console.WindowHeight - 2);
                 }
 
                 if (variablesForFiles.row == Console.WindowHeight - 3)

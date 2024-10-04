@@ -288,6 +288,13 @@ namespace GitClient
                 }
             }
 
+
+            if (variablesForFiles.index == list.listOfAllDiffs[variablesForFiles.indexDiff].Count || variablesForFiles.row == Console.WindowHeight - 2)
+            {
+                variablesForFiles.row = 0;
+                variablesForFiles.index = list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.x];
+            }
+
             variablesForFiles.down = true;
             if (variablesForCommits.pressRight > 1)
             {
