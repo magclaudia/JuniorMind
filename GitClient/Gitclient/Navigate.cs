@@ -274,6 +274,7 @@ namespace GitClient
                 }
 
                 variablesForFiles.currentLine++;
+                variablesForFiles.down = true;
                 DiffHelper.Print(variablesForCommits, commitElements);
             }
         }
