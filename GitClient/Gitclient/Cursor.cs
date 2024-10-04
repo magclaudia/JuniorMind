@@ -6,7 +6,7 @@ namespace GitClient
     {
         public static void UpdateCursorPositionForCommitsList(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list, int blueFond)
         {
-            Console.CursorVisible = true;
+            Console.CursorVisible = false;
             int indicatorPosition = (variablesForCommits.currentCommitIndex * (Console.WindowHeight - 2)) / commitElements.Id.Count;
 
             if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == true && variablesForCommits.up && indicatorPosition < Console.WindowHeight - 3)

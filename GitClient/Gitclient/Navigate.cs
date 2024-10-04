@@ -172,6 +172,7 @@ namespace GitClient
                             variablesForCommits.esc = true;
                             variablesForCommits.pressRight = 0;
                             variablesForFiles.diffMoves = false;
+                            variablesForFiles.x = 0;
                             variablesForFiles.numberOfNavigations = 0;
                             list.startingIndexes.Clear();
                             Console.Clear();
@@ -274,7 +275,6 @@ namespace GitClient
                 }
 
                 variablesForFiles.currentLine++;
-                variablesForFiles.down = true;
                 DiffHelper.Print(variablesForCommits, commitElements);
             }
         }
