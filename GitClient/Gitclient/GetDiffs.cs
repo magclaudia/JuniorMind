@@ -187,7 +187,6 @@ namespace GitClient
             }
 
             variablesForFiles.totalLines = list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
-
             GetDiffsLine.GetLineThroughtDiffsLines(variablesForCommits, variablesForFiles.currentLine, variablesForFiles.totalLines, list);
             Cursor.UpdateCursorPositionForDiffsList(variablesForCommits, variablesForFiles, list);
 

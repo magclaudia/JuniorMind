@@ -217,13 +217,21 @@ namespace GitClient
             variablesForFiles.up = true;
             variablesForFiles.down = false;
 
-            if (variablesForFiles.row == Console.WindowHeight - 2)
+            if (list.listOfAllDiffs[variablesForFiles.indexDiff].Count > Console.WindowHeight - 2 && list.startingIndexes[variablesForFiles.indexDiff].Contains(variablesForFiles.index))
             {
-                variablesForFiles.index = variablesForFiles.index - (Console.WindowHeight - 2);
-            }
-            else if (variablesForFiles.row > Console.WindowHeight - 2)
-            {
-                variablesForFiles.index = (list.listOfAllDiffs[variablesForFiles.indexDiff].Count) - variablesForFiles.row;
+                GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
+                if(variablesForFiles.x > 0)
+                {
+                    variablesForFiles.x--;
+                }
+
+                variablesForFiles.index = list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.x];
+                variablesForFiles.up = false;
+                variablesForFiles.down = false;
+                variablesForFiles.row = 0;
+                variablesForFiles.currentLine = variablesForFiles.index + 1;
+                DiffHelper.Print(variablesForCommits, commitElements);
+
             }
 
             variablesForFiles.numberOfNavigations = 1;
@@ -249,7 +257,6 @@ namespace GitClient
             if (variablesForFiles.diffMoves == true && variablesForFiles.currentLine < list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
             {
                 variablesForFiles.up = false;
-               // variablesForFiles.down = true;
                 if (variablesForFiles.numberOfNavigations == 1)
                 {
                     if (variablesForFiles.row == Console.WindowHeight - 2)
@@ -269,6 +276,7 @@ namespace GitClient
                 {
                     variablesForFiles.index++;
                     list.startingIndexes[variablesForFiles.indexDiff].Add(variablesForFiles.index);
+                    variablesForFiles.x++;
                     variablesForFiles.row = 0;
                     GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
                     variablesForFiles.down = false;
