@@ -4,32 +4,6 @@ namespace GitClient
 {
     public class Navigate
     {
-        public static void NavigateThroughDiffsContent(GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements, string fileFullName)
-        {
-            ConsoleKeyInfo keyInfo;
-            variablesForFiles.height = Console.WindowHeight;
-
-            do
-            {
-                keyInfo = Console.ReadKey(true);
-                switch (keyInfo.Key)
-                {
-                    case ConsoleKey.DownArrow:
-                        {
-
-                        }
-                        break;
-                    case ConsoleKey.UpArrow:
-                        {
-
-                        }
-                        break;
-
-                }
-            }
-            while (keyInfo.Key != ConsoleKey.Escape);
-        }
-
         public static void NavigateThroughCommits(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
         {
             var size = new DrawPanelRigthSide.FilesBox();
