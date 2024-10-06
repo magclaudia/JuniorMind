@@ -371,11 +371,6 @@ namespace GitClient
                 }
             }
 
-            if (variablesForFiles.up == false && list.listOfFiles.Count > 1)
-            {
-                variablesForFiles.fileRow++;
-            }
-
             variablesForFiles.filesReachPanelLimit = false;
         }
 

@@ -23,6 +23,7 @@
         public bool stopWorkingOnCommits;
         public bool left;
         public bool esc;
+        public int fileIndex;
 
         public GetVariablesForCommits()
         {
@@ -47,6 +48,7 @@
             stopWorkingOnCommits = false;
             left = false;
             esc = false;
+            fileIndex = 0;
         }
     }
 }
