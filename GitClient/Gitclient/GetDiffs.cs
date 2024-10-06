@@ -270,7 +270,7 @@ namespace GitClient
                         break;
                 }
 
-                if (variablesForFiles.up == false && variablesForFiles.index < list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
+                if (variablesForFiles.up == false && variablesForFiles.index < list.listOfAllDiffs[variablesForFiles.indexDiff].Count && variablesForFiles.down == true)
                 {
                     variablesForFiles.index++;
                 }

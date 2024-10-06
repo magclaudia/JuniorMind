@@ -272,11 +272,12 @@ namespace GitClient
                     variablesForFiles.down = false;
                 }
 
-                if (variablesForFiles.index == 0 && variablesForFiles.row == 0)
+                if (variablesForFiles.row == list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
                 {
-                    variablesForFiles.down = true;
+                    variablesForFiles.row = 0;
                 }
 
+                variablesForFiles.down = true;
                 variablesForFiles.currentLine++;
                 DiffHelper.Print(variablesForCommits, commitElements);
             }
