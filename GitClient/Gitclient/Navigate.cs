@@ -271,7 +271,6 @@ namespace GitClient
                     variablesForFiles.index++;
                     list.startingIndexes[variablesForFiles.indexDiff].Add(variablesForFiles.index);
                     variablesForFiles.x++;
-                    variablesForFiles.row = 0;
                     GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
                     variablesForFiles.down = false;
                 }
@@ -280,9 +279,17 @@ namespace GitClient
                 {
                     variablesForFiles.row = 0;
                 }
-
+               
                 variablesForFiles.down = true;
                 variablesForFiles.currentLine++;
+
+                
+                if (variablesForFiles.row == Console.WindowHeight - 3)
+                {
+                    variablesForFiles.row = 0;
+                    variablesForFiles.down = false;
+                }
+
                 DiffHelper.Print(variablesForCommits, commitElements);
             }
         }

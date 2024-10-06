@@ -301,6 +301,7 @@ namespace GitClient
             }
 
             variablesForFiles.down = true;
+            variablesForFiles.row = 0;
             if (variablesForCommits.pressRight > 1)
             {
                 Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
