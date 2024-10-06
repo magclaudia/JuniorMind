@@ -207,6 +207,11 @@ namespace GitClient
                     variablesForFiles.numberOfNavigations++;
                     break;
                 }
+                else if (variablesForCommits.esc == true && variablesForCommits.pressRight == 1)
+                {
+                    break;
+                }
+
 
                 string fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
 

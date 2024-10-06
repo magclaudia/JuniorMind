@@ -169,13 +169,16 @@ namespace GitClient
                         break;
                     case ConsoleKey.Escape:
                         {
-                            variablesForCommits.esc = true;
-                            variablesForCommits.pressRight = 0;
-                            variablesForFiles.diffMoves = false;
-                            variablesForFiles.numberOfNavigations = 0;
-                            Console.Clear();
-                            variablesForFiles.nextFile = false;
-                            HandleRightArrow(variablesForCommits, variablesForFiles, commitElement, list);
+                            if (variablesForCommits.pressRight == 2)
+                            {
+                                variablesForCommits.esc = true;
+                                variablesForCommits.pressRight = 0;
+                                variablesForFiles.diffMoves = false;
+                                variablesForFiles.numberOfNavigations = 0;
+                                Console.Clear();
+                                variablesForFiles.nextFile = false;
+                                HandleRightArrow(variablesForCommits, variablesForFiles, commitElement, list);
+                            }
                         }
                         break;
 
