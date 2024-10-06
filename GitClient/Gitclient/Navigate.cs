@@ -174,6 +174,7 @@ namespace GitClient
                                 variablesForCommits.esc = true;
                                 variablesForCommits.pressRight = 0;
                                 variablesForFiles.diffMoves = false;
+                                variablesForFiles.up = false;
                                 variablesForFiles.numberOfNavigations = 0;
                                 Console.Clear();
                                 variablesForFiles.nextFile = false;
