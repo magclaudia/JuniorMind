@@ -15,6 +15,7 @@ namespace GitClient
             DrawTabs.DrawBorders();
             GetTabsNames();
             GetRepoPath(repoPath);
+            SetInitialState();
             ChooseTab();
         }
 
@@ -34,7 +35,19 @@ namespace GitClient
         public static void GetRepoPath(string repoPath)
         {
             Console.SetCursorPosition(1, dimensions.tabHeight + 2);
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(repoPath);
+            Console.ResetColor();
+        }
+
+        public static void SetInitialState()
+        {
+            CleanTabs(dimensions.tabWidth * 2);
+            DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
+            GetTabsNames();
+            SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
+            DrawStatus.DrawPanelsForStatus();
+            StatusTab.GetStatusChangesNames();
         }
 
         public static void ChooseTab()
@@ -53,7 +66,7 @@ namespace GitClient
                             DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
                             GetTabsNames();
                             SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
-                            DrawStatusExternalBorders.DrawPanelBordersForStatus();
+                            DrawStatus.DrawPanelsForStatus();
                             StatusTab.GetStatusChangesNames();
                         }
                         break;
@@ -61,7 +74,9 @@ namespace GitClient
                     case ConsoleKey.NumPad2:
                         {
                             CleanTabs(dimensions.tabWidth * 2);
+                            CleanTextPanel();
                             DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
+                            DrawStatus.DrawLargePanel();
                             GetTabsNames();
                             SetColorForChosenTab("Log [2]", dimensions.tabWidth, dimensions.tabWidth * 2);
                             
@@ -110,6 +125,16 @@ namespace GitClient
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write(new string(' ', stop));
+            }
+        }
+
+        private static void CleanTextPanel()
+        {
+            int start = dimensions.tabHeight + dimensions.repoPathHeight;
+            for(int i = start; i < Console.WindowHeight - 1; i++) 
+            {
+                Console.SetCursorPosition(1, i);
+                Console.Write(new string(' ', Console.WindowWidth - 2));
             }
         }
     }
