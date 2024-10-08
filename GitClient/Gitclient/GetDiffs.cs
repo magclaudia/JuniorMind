@@ -16,11 +16,11 @@ namespace GitClient
             int width;
             if (variablesForCommits.pressRight == 1)
             {
-                width = (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4;
+                width = (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 5;
             }
             else
             {
-                width = Console.WindowWidth - 3;
+                width = Console.WindowWidth - 4;
             }
 
             if (line.Length < width)
