@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GitClient
 {
-    public class GetDiffSmallPanel
+    public class GetDiffForSmallPanel
     {
         public static void GetDiffRelatedToTheSelectedFile(GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {

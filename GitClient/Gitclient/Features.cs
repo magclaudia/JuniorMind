@@ -27,7 +27,9 @@
                     throw new Exception("Failed to open the repository.");
                 }
 
-                GetListOfCommits.GetAllCommits(commitElements.repo);
+
+                Tabs.PrintTabs(repoPath);
+                //GetListOfCommits.GetAllCommits(commitElements.repo);
             }
             catch (Exception ex)
             {

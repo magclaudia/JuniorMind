@@ -101,11 +101,11 @@ namespace GitClient
                     }
 
                     variablesForFile.fileIndex = 0;
-                    GetDiffSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
+                    GetDiffForSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
                 }
                 else
                 {
-                    GetDiffSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
+                    GetDiffForSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
                 }
             }
             else
@@ -165,6 +165,15 @@ namespace GitClient
             }
 
             string text = $"{(char)line.origin} {content}";
+
+            if (list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index].StartsWith("=")
+               || list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index].StartsWith("<")
+                 || list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index].StartsWith(">"))
+            {
+                list.listOfAllDiffs[variablesForFiles.indexDiff].RemoveAt(list.listOfAllDiffs[variablesForFiles.indexDiff].IndexOf("="));
+                list.listOfAllDiffs[variablesForFiles.indexDiff].RemoveAt(list.listOfAllDiffs[variablesForFiles.indexDiff].IndexOf("<"));
+                list.listOfAllDiffs[variablesForFiles.indexDiff].RemoveAt(list.listOfAllDiffs[variablesForFiles.indexDiff].IndexOf(">"));
+            }
 
             list.listOfAllDiffs[variablesForFiles.indexDiff].Add(text);
             variablesForFiles.nextFile = true;
