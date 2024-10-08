@@ -53,7 +53,8 @@ namespace GitClient
                             DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
                             GetTabsNames();
                             SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
-                            DrawStatusBorders.DrawPanelBordersForStatus();
+                            DrawStatusExternalBorders.DrawPanelBordersForStatus();
+                            StatusTab.GetStatusChangesNames();
                         }
                         break;
                     case ConsoleKey.D2:
