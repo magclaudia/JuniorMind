@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static GitClient.DrawTabs;
 
 namespace GitClient
 {
@@ -37,8 +36,8 @@ namespace GitClient
         {
             DrawUpperBorders();
             DrawPanelForRepoPath();
-            DrawPanelBordersForText();
         }
+
         public static void DrawUpperBorders()
         {
             Dimensions dimensions = new Dimensions();
@@ -143,36 +142,6 @@ namespace GitClient
                 Console.Write("─");
                 Console.SetCursorPosition(i, dimensions.repoPathHeight);
                 Console.Write("─");
-            }
-        }
-
-        public static void DrawPanelBordersForText()
-        {
-            Dimensions dimensions = new Dimensions();
-
-            Console.SetCursorPosition(0, dimensions.textPanelHeight);
-            Console.Write("┌");
-            Console.SetCursorPosition(width, dimensions.textPanelHeight);
-            Console.Write("┐");
-            Console.SetCursorPosition(0, height);
-            Console.Write("└");
-            Console.SetCursorPosition(width, height);
-            Console.Write("┘");
-
-            for (int i = 1; i < width; i++)
-            {
-                Console.SetCursorPosition(i, dimensions.textPanelHeight);
-                Console.Write("─");
-                Console.SetCursorPosition(i, height);
-                Console.Write("─");
-            }
-
-            for (int i = dimensions.textPanelHeight + 1; i < height; i++)
-            {
-                Console.SetCursorPosition(0, i);
-                Console.Write("│");
-                Console.SetCursorPosition(width, i);
-                Console.Write("│");
             }
         }
     }

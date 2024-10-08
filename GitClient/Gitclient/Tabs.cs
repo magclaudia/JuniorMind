@@ -46,20 +46,24 @@ namespace GitClient
                 keyInfo = Console.ReadKey(true);
                 switch (keyInfo.Key)
                 {
+                    case ConsoleKey.D1:
                     case ConsoleKey.NumPad1:
                         {
                             CleanTabs(dimensions.tabWidth * 2);
                             DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
                             GetTabsNames();
                             SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
+                            DrawStatusBorders.DrawPanelBordersForStatus();
                         }
                         break;
+                    case ConsoleKey.D2:
                     case ConsoleKey.NumPad2:
                         {
                             CleanTabs(dimensions.tabWidth * 2);
                             DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
                             GetTabsNames();
                             SetColorForChosenTab("Log [2]", dimensions.tabWidth, dimensions.tabWidth * 2);
+                            
                         }
                         break;
 
