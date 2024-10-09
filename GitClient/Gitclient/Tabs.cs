@@ -9,12 +9,12 @@ namespace GitClient
     public class Tabs
     {
         private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        private static string path = string.Empty;
 
         public static void PrintTabs(string repoPath)
         {
-            DrawTabs.DrawBorders();
-            GetTabsNames();
-            GetRepoPath(repoPath);
+            Console.Clear();
+            path = repoPath;
             SetInitialState();
             ChooseTab();
         }
@@ -23,27 +23,28 @@ namespace GitClient
         {
             Console.SetCursorPosition(1, 1);
             string statusTab = "Status [1]";
-            string outputText = SetTabTextLength(statusTab);
+            string outputText = SetTabTextLength(statusTab, dimensions.tabWidth);
             Console.Write(outputText);
 
             Console.SetCursorPosition(dimensions.tabWidth + 1, 1);
             string logTab = "Log [2]";
-            outputText = SetTabTextLength(logTab);
+            outputText = SetTabTextLength(logTab, dimensions.tabWidth);
             Console.Write(outputText);
         }
 
         public static void GetRepoPath(string repoPath)
         {
-            Console.SetCursorPosition(1, dimensions.tabHeight + 2);
+            Console.SetCursorPosition((Console.WindowWidth / 2) + 3, 1);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(repoPath);
+            string text = SetTabTextLength(repoPath, Console.WindowWidth - (dimensions.tabWidth * 2) - 2);
+            Console.Write(text);
             Console.ResetColor();
         }
 
         public static void SetInitialState()
         {
-            CleanTabs(dimensions.tabWidth * 2);
-            DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
+            DrawTabs.DrawOnlyTabs(0, Console.WindowWidth - 1);
+            GetRepoPath(path);
             GetTabsNames();
             SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
             DrawStatus.DrawPanelsForStatus();
@@ -75,8 +76,9 @@ namespace GitClient
                         {
                             CleanTabs(dimensions.tabWidth * 2);
                             CleanTextPanel();
+                            GetRepoPath(path);
                             DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
-                            DrawStatus.DrawLargePanel();
+                            DrawLogPanel.DrawLargePanel();
                             GetTabsNames();
                             SetColorForChosenTab("Log [2]", dimensions.tabWidth, dimensions.tabWidth * 2);
                             
@@ -89,17 +91,17 @@ namespace GitClient
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        private static string SetTabTextLength(string name)
+        private static string SetTabTextLength(string name, int maxValue)
         {
             string text;
-            if (name.Length < dimensions.tabWidth)
+            if (name.Length < maxValue)
             {
-                int freeSpace = (dimensions.tabWidth - name.Length) / 2;
+                int freeSpace = (maxValue - name.Length) / 2;
                 text = new string(' ', freeSpace) + name;
             }
             else
             {
-                text = name.Substring(0, dimensions.tabWidth);
+                text = name.Substring(0, maxValue);
             }
 
             return text;
@@ -109,13 +111,19 @@ namespace GitClient
         {
             Console.SetCursorPosition(x, 1);
             Console.BackgroundColor = ConsoleColor.Gray;
-            DrawTabs.DrawOnlyTabs(x, y);
+            for (int i = x; i < y; i++)
+            {
+                Console.SetCursorPosition(i, 0);
+                Console.Write("─");
+                Console.SetCursorPosition(i, 1);
+                Console.Write("─");
+                Console.SetCursorPosition(i, dimensions.tabHeight);
+                Console.Write("─");
+            }
 
             Console.SetCursorPosition(x + 1, 1);
-            Console.Write(new string(' ', dimensions.tabWidth));
-            Console.SetCursorPosition(x + 1, 1);
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.Write(SetTabTextLength(tabName));
+            Console.Write(SetTabTextLength(tabName, dimensions.tabWidth));
             Console.ResetColor();
         }
 
@@ -130,11 +138,11 @@ namespace GitClient
 
         private static void CleanTextPanel()
         {
-            int start = dimensions.tabHeight + dimensions.repoPathHeight;
-            for(int i = start; i < Console.WindowHeight - 1; i++) 
+            int start = dimensions.tabHeight;
+            for(int i = start + 1; i < Console.WindowHeight; i++) 
             {
-                Console.SetCursorPosition(1, i);
-                Console.Write(new string(' ', Console.WindowWidth - 2));
+                Console.SetCursorPosition(0, i);
+                Console.Write(new string(' ', Console.WindowWidth));
             }
         }
     }
