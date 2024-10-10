@@ -111,6 +111,7 @@ namespace GitClient
         {
             Console.SetCursorPosition(x, 1);
             Console.BackgroundColor = ConsoleColor.Gray;
+            Console.ForegroundColor = ConsoleColor.Gray;
             for (int i = x; i < y; i++)
             {
                 Console.SetCursorPosition(i, 0);
