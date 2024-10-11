@@ -18,6 +18,7 @@ namespace GitClient
             int blueFond = 0;
             variablesForCommits.height = Console.WindowHeight;
             variablesForCommits.width = Console.WindowWidth;
+           
             if (variablesForCommits.displayPanel == false)
             {
                 DisplayCommitsOnEntireConsole(variablesForCommits, variablesForFiles, commitElement, list, blueFond);

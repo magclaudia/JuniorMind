@@ -10,6 +10,8 @@
         public List<int> start;
         public List<string> addList;
         public List<List<string>> listOfAllDiffs;
+        public List<string> unstagedChanges;
+        public List<string> stagedChanges;
 
 
         public GetCertainList()
@@ -22,6 +24,8 @@
             start = new List<int>();
             addList = new List<string>();
             listOfAllDiffs = new List<List<string>>();
+            unstagedChanges = new List<string>();
+            stagedChanges = new List<string>();
         }
 
         public void ClearAllLists()
@@ -34,6 +38,8 @@
             start.Clear();
             addList.Clear();
             listOfAllDiffs.Clear();
+            unstagedChanges.Clear();
+            stagedChanges.Clear();
         }
     }
 }

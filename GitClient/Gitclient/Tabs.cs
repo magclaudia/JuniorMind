@@ -8,19 +8,20 @@ namespace GitClient
 {
     public class Tabs
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
         private static string path = string.Empty;
+        private static GetVariablesForTabs tabs = new GetVariablesForTabs();
 
-        public static void PrintTabs(string repoPath)
+        public static void PrintTabs(string repoPath, CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
             Console.Clear();
             path = repoPath;
-            SetInitialState();
-            ChooseTab();
+            SetInitialState(commitElements, variablesForCommits, list);
+            ChooseTab(commitElements, variablesForCommits, list);
         }
 
         public static void GetTabsNames()
         {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             Console.SetCursorPosition(1, 1);
             string statusTab = "Status [1]";
             string outputText = SetTabTextLength(statusTab, dimensions.tabWidth);
@@ -34,6 +35,7 @@ namespace GitClient
 
         public static void GetRepoPath(string repoPath)
         {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             Console.SetCursorPosition((Console.WindowWidth / 2) + 3, 1);
             Console.ForegroundColor = ConsoleColor.Red;
             string text = SetTabTextLength(repoPath, Console.WindowWidth - (dimensions.tabWidth * 2) - 2);
@@ -41,18 +43,23 @@ namespace GitClient
             Console.ResetColor();
         }
 
-        public static void SetInitialState()
+        public static void SetInitialState(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
-            DrawTabs.DrawOnlyTabs(0, Console.WindowWidth - 1);
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            DrawTabs.DrawOnlyTabs();
             GetRepoPath(path);
             GetTabsNames();
             SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
             DrawStatus.DrawPanelsForStatus();
             StatusTab.GetStatusChangesNames();
+            StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, list, tabs);
+            StatusTab.GetStagedChanges(commitElements, variablesForCommits, list, tabs);
+
         }
 
-        public static void ChooseTab()
+        public static void ChooseTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             ConsoleKeyInfo keyInfo;
 
             do
@@ -63,25 +70,26 @@ namespace GitClient
                     case ConsoleKey.D1:
                     case ConsoleKey.NumPad1:
                         {
-                            CleanTabs(dimensions.tabWidth * 2);
-                            DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
+                            Console.Clear();
+                            DrawTabs.DrawOnlyTabs();
                             GetTabsNames();
                             SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
+                            GetRepoPath(path);
                             DrawStatus.DrawPanelsForStatus();
                             StatusTab.GetStatusChangesNames();
+                            StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, list, tabs);
+                            StatusTab.GetStagedChanges(commitElements, variablesForCommits, list, tabs);
                         }
                         break;
                     case ConsoleKey.D2:
                     case ConsoleKey.NumPad2:
                         {
-                            CleanTabs(dimensions.tabWidth * 2);
-                            CleanTextPanel();
+                            Console.Clear();
                             GetRepoPath(path);
-                            DrawTabs.DrawOnlyTabs(0, dimensions.tabWidth * 2);
+                            DrawTabs.DrawOnlyTabs();
                             DrawLogPanel.DrawLargePanel();
                             GetTabsNames();
                             SetColorForChosenTab("Log [2]", dimensions.tabWidth, dimensions.tabWidth * 2);
-                            
                         }
                         break;
 
@@ -109,6 +117,7 @@ namespace GitClient
 
         private static void SetColorForChosenTab(string tabName, int x, int y)
         {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             Console.SetCursorPosition(x, 1);
             Console.BackgroundColor = ConsoleColor.Gray;
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -126,25 +135,6 @@ namespace GitClient
             Console.ForegroundColor = ConsoleColor.Black;
             Console.Write(SetTabTextLength(tabName, dimensions.tabWidth));
             Console.ResetColor();
-        }
-
-        private static void CleanTabs(int stop)
-        {
-            for (int i = 0; i <= dimensions.tabHeight; i++)
-            {
-                Console.SetCursorPosition(0, i);
-                Console.Write(new string(' ', stop));
-            }
-        }
-
-        private static void CleanTextPanel()
-        {
-            int start = dimensions.tabHeight;
-            for(int i = start + 1; i < Console.WindowHeight; i++) 
-            {
-                Console.SetCursorPosition(0, i);
-                Console.Write(new string(' ', Console.WindowWidth));
-            }
         }
     }
 }

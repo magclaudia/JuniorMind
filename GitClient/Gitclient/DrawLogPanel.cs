@@ -9,35 +9,33 @@ namespace GitClient
 {
     public class DrawLogPanel
     {
-        private static int width = Console.WindowWidth - 1;
-        private static int height = Console.WindowHeight - 1;
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
         public static void DrawLargePanel()
         {
-            for (int i = 1; i < width; i++)
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
+            for (int i = 1; i < dimensions.width; i++)
             {
-                Console.SetCursorPosition(i, dimensions.textPanelHeight);
+                Console.SetCursorPosition(i, dimensions.tabHeight + 1);
                 Console.Write("─");
-                Console.SetCursorPosition(i, height);
+                Console.SetCursorPosition(i, dimensions.height);
                 Console.Write("─");
             }
 
-            for (int i = dimensions.tabHeight + 2; i < height; i++)
+            for (int i = dimensions.tabHeight + 2; i < dimensions.height; i++)
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
-                Console.SetCursorPosition(width, i);
+                Console.SetCursorPosition(dimensions.width, i);
                 Console.Write("│");
             }
 
-            Console.SetCursorPosition(0, dimensions.textPanelHeight);
+            Console.SetCursorPosition(0, dimensions.tabHeight + 1);
             Console.Write("┌");
-            Console.SetCursorPosition(width, dimensions.textPanelHeight);
+            Console.SetCursorPosition(dimensions.width, dimensions.tabHeight + 1);
             Console.Write("┐");
-            Console.SetCursorPosition(0, height);
+            Console.SetCursorPosition(0, dimensions.height);
             Console.Write("└");
-            Console.SetCursorPosition(width, height);
+            Console.SetCursorPosition(dimensions.width, dimensions.height);
             Console.Write("┘");
         }
     }

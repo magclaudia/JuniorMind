@@ -308,6 +308,28 @@ namespace GitClient
 
         public static extern void git_blob_free(IntPtr blob);
 
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_diff_index_to_workdir(out IntPtr diff, IntPtr repo, IntPtr index, ref GitDiffOptions diff_opts);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_reference_name_to_id(out GitOid id, IntPtr repo, string name);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_repository_index(out IntPtr index, IntPtr repo);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_diff_tree_to_index(out IntPtr diff, IntPtr repo,  IntPtr tree, IntPtr index, ref GitDiffOptions options);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void git_index_free(IntPtr index);
+
+
+
         private static void LoadLibrary()
         {
             string libName;

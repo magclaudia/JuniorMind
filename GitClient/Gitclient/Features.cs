@@ -18,7 +18,10 @@
             }
 
             LibGit2Wrapper.git_libgit2_init();
+            
             CommitElements commitElements = new CommitElements();
+            GetVariablesForCommits variablesForCommits = new GetVariablesForCommits();
+            GetCertainList list = new GetCertainList();
 
             try
             {
@@ -28,7 +31,7 @@
                 }
 
 
-                Tabs.PrintTabs(repoPath);
+                Tabs.PrintTabs(repoPath, commitElements, variablesForCommits, list);
                 //GetListOfCommits.GetAllCommits(commitElements.repo);
             }
             catch (Exception ex)

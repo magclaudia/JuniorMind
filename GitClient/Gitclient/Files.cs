@@ -9,6 +9,7 @@ namespace GitClient
             IntPtr parentCommitPtr = IntPtr.Zero;
             IntPtr parentTreePtr = IntPtr.Zero;
             IntPtr treePtr = IntPtr.Zero;
+            GetVariablesForTabs tab = new GetVariablesForTabs();
 
             if (LibGit2Wrapper.git_commit_tree(out treePtr, commitPtr) != 0)
             {
@@ -51,7 +52,7 @@ namespace GitClient
                 }
 
                 Console.WriteLine($"Files: {numDeltas} ");
-                GetAllFiles.PrintAllFilesAffectedByCommit(repo, numDeltas, diff, index, variablesForCommits, list, commitElements);
+                GetAllFiles.PrintAllFiles(repo, numDeltas, diff, index, variablesForCommits, list, commitElements, tab);
             }
             else
             {

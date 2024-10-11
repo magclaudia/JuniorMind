@@ -3,27 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GitClient.DrawTabs;
 
 namespace GitClient
 {
     public class DrawTabs
     {
-        private static int width = Console.WindowWidth - 1;
-        private static int height = Console.WindowHeight - 1;
-
         public struct Dimensions
         {
+            public int width;
+            public int height;
             public int tabWidth;
             public int tabHeight;
-            public int textPanelWidth;
-            public int textPanelHeight;
-
+            public int changesPanelWidth;
+            public int changesPanelHeight;
+           
             public Dimensions()
             {
+                width = Console.WindowWidth - 1;
+                height = Console.WindowHeight - 1;
                 tabWidth = 15;
                 tabHeight = 2;
-                textPanelWidth = width;
-                textPanelHeight = tabHeight + 1;
+                changesPanelWidth = width / 2 - 1;
+                changesPanelHeight = (height / 2 + 1) - tabHeight;
             }
         }
        
@@ -36,7 +38,7 @@ namespace GitClient
         {
             Dimensions dimensions = new Dimensions();
 
-            for (int i = 1; i < width; i++)
+            for (int i = 1; i < dimensions.width; i++)
             {
                 Console.SetCursorPosition(i, dimensions.tabHeight);
                 Console.Write("─");
@@ -46,11 +48,11 @@ namespace GitClient
             Console.Write("│");
         }
 
-        public static void DrawOnlyTabs(int start, int stop)
+        public static void DrawOnlyTabs()
         {
             Dimensions dimensions = new Dimensions();
 
-            for (int i = start; i < stop; i++)
+            for (int i = 0; i < dimensions.width; i++)
             {
                 Console.SetCursorPosition(i, dimensions.tabHeight);
                 Console.Write("─");

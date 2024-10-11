@@ -13,6 +13,7 @@
             public int edgeFour;
             public int width;
             public int height;
+
             public InfoPanel()
             {
                 edgeOne = Console.WindowWidth / 2 + plusLegthForLargePanel;
