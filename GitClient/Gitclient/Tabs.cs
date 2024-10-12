@@ -46,6 +46,7 @@ namespace GitClient
         public static void SetInitialState(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+           // tabs.initialState = true;
             DrawTabs.DrawOnlyTabs();
             GetRepoPath(path);
             GetTabsNames();
@@ -58,17 +59,18 @@ namespace GitClient
             {
                 string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
                 DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+                variablesForCommits.stopWorkingOnCommits = true;
+                variablesForCommits.pressRight = 1;
+                tabs.initialState = true;
+                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
-            
-            variablesForCommits.stopWorkingOnCommits = true;
-            variablesForCommits.pressRight = 1;
-            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
         }
 
         public static void ChooseTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             ConsoleKeyInfo keyInfo;
+            tabs.initialState = false;
 
             do
             {
@@ -87,9 +89,9 @@ namespace GitClient
                             StatusTab.GetStatusChangesNames();
                             StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
                             StatusTab.GetStagedChanges(commitElements, variablesForCommits, list, tabs);
-                            
                             string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
                             DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+                            variablesForFiles.down = false;
                             DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
                            
                         }

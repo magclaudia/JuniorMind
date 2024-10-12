@@ -10,11 +10,13 @@ namespace GitClient
     {
         public  bool unstageChanges;
         public bool stageChanges;
+        public bool initialState;
 
         public GetVariablesForTabs()
         {
             unstageChanges = false;
             stageChanges = false;
+            initialState = false;
         }
     }
 }

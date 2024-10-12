@@ -284,11 +284,7 @@ namespace GitClient
                 variablesForFiles.row = 3;
             }
 
-            if (variablesForCommits.pressRight > 1 && variablesForCommit.logTab == true)
-            {
-                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list, tab);
-            }
-            else if (variablesForCommit.logTab == false)
+            if (variablesForCommits.pressRight > 1 && variablesForCommit.logTab == true || tab.initialState == false)
             {
                 Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list, tab);
             }
