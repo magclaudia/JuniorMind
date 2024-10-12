@@ -32,7 +32,7 @@ namespace GitClient
 
                 if (numDeltas == 0)
                 {
-                    Console.SetCursorPosition(1, 3);
+                    Console.SetCursorPosition(1, 4);
                     string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                 }
