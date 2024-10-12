@@ -54,8 +54,12 @@ namespace GitClient
             StatusTab.GetStatusChangesNames();
             StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             StatusTab.GetStagedChanges(commitElements, variablesForCommits, list, tabs);
-            string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-            DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+            if (list.unstagedChangesFiles.Count > 0)
+            {
+                string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+                DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+            }
+            
             variablesForCommits.stopWorkingOnCommits = true;
             variablesForCommits.pressRight = 1;
             DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
