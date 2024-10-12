@@ -12,16 +12,7 @@ namespace GitClient
         public static void GetDiffRelatedToTheSelectedFile(GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
             variablesForFiles.indexDiff = variablesForFiles.fileIndex;
-
-            if (list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index].StartsWith("=")
-               || list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index].StartsWith("<")
-                 || list.listOfAllDiffs[variablesForFiles.indexDiff][variablesForFiles.index].StartsWith(">"))
-            {
-                list.listOfAllDiffs[variablesForFiles.indexDiff].RemoveAt(list.listOfAllDiffs[variablesForFiles.indexDiff].IndexOf("="));
-                list.listOfAllDiffs[variablesForFiles.indexDiff].RemoveAt(list.listOfAllDiffs[variablesForFiles.indexDiff].IndexOf("<"));
-                list.listOfAllDiffs[variablesForFiles.indexDiff].RemoveAt(list.listOfAllDiffs[variablesForFiles.indexDiff].IndexOf(">"));
-            }
-
+            
             string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
             if(variablesForFiles.fileIndex == 0)
             {

@@ -9,7 +9,7 @@ namespace GitClient
 {
     public class StatusTab
     {
-        public static void GetUnstagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list, GetVariablesForTabs tab)
+        public static void GetUnstagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
         {
             IntPtr unstagedDiff = IntPtr.Zero;
             IntPtr indexPtr = IntPtr.Zero;
@@ -32,15 +32,20 @@ namespace GitClient
 
                 if (numDeltas == 0)
                 {
-                    Console.WriteLine("No changes found in the unstaging area.");
+                    Console.SetCursorPosition(1, Console.WindowHeight / 2 + 2);
+                    string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+                    Console.WriteLine(text);
                 }
-
 
                 int index = 0;
                 tab.unstageChanges = true;
                 GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, unstagedDiff, index, variablesForCommits, list, commitElements, tab);
+                GetDiffForChanges.DiffUnstagedChanges(unstagedDiff, list, variablesForFiles, variablesForCommits, tab);
+                variablesForFiles.indexDiff = 0;
+                variablesForFiles.fileIndex = 0;
+               
                 tab.unstageChanges = false;
-                list.ClearAllLists();
+                //list.ClearAllLists();
             }
             finally 
             {
@@ -96,13 +101,15 @@ namespace GitClient
                 nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(stagedDiff);
                 if (numDeltas == 0)
                 {
-                    Console.WriteLine("No changes found in the staging area.");
+                    Console.SetCursorPosition(1, Console.WindowHeight / 2 + 3);
+                    string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+                    Console.WriteLine(text);
                 }
 
                 tab.stageChanges = true;
                 GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, list, commitElements, tab);
                 tab.stageChanges = false;
-                list.ClearAllLists();
+                //list.ClearAllLists();
             }
             finally
             {

@@ -4,7 +4,8 @@ namespace GitClient
 {
     public class Navigate
     {
-        public static void NavigateThroughCommits(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
+        private static GetVariablesForTabs tabs = new GetVariablesForTabs();
+        public static void NavigateThroughCommits(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, GetVariablesForTabs tab)
         {
             var size = new DrawPanelRigthSide.FilesBox();
             IntPtr commitPtr = IntPtr.Zero;
@@ -48,23 +49,31 @@ namespace GitClient
 
                     case ConsoleKey.DownArrow:
                         {
-                            if (variablesForCommits.stopWorkingOnCommits == true && variablesForCommits.pressRight == 1)
+                            if (variablesForCommits.logTab == true)
                             {
-                                HandleFilesDownMoves(variablesForCommits, variablesForFiles, list, commitElement);
-                            }
-                            else if (variablesForCommits.pressRight == 2)
-                            {
-                                if (variablesForFiles.index == list.listOfAllDiffs[variablesForFiles.indexDiff].Count - 1 && variablesForFiles.currentLine != 1)
+                                if (variablesForCommits.stopWorkingOnCommits == true && variablesForCommits.pressRight == 1)
                                 {
-                                    break;
+                                    HandleFilesDownMoves(variablesForCommits, variablesForFiles, list, commitElement);
                                 }
+                                else if (variablesForCommits.pressRight == 2)
+                                {
+                                    if (variablesForFiles.index == list.listOfAllDiffs[variablesForFiles.indexDiff].Count - 1 && variablesForFiles.currentLine != 1)
+                                    {
+                                        break;
+                                    }
 
-                                HandleDiffDownMoves(variablesForCommits, variablesForFiles, list, commitElement);
+                                    HandleDiffDownMoves(variablesForCommits, variablesForFiles, list, commitElement);
+                                }
+                                else
+                                {
+                                    HandleCommitsDownMoves(variablesForCommits, variablesForFiles, commitElement, list, blueFond);
+                                }
                             }
                             else
                             {
-                                HandleCommitsDownMoves(variablesForCommits, variablesForFiles, commitElement, list, blueFond);
+                                HandleStatusFilesDownMoves(variablesForCommits, variablesForFiles, list, commitElement, tab);
                             }
+                           
                         }
                         break;
 
@@ -190,12 +199,65 @@ namespace GitClient
             }
         }
 
+        private static void HandleStatusFilesDownMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement, GetVariablesForTabs tab)
+        {
+            var filelist = new List<string>();
+            int y = 0;
+            if (variablesForFiles.fileIndex < list.unstagedChangesFiles.Count - 1)
+            {
+                filelist = list.unstagedChangesFiles;
+                y = 5;
+            }
+            else
+            {
+                filelist = list.stagedChangesFiles;
+            }
+
+            if (variablesForFiles.fileIndex < filelist.Count - 1)
+            {
+                if (variablesForFiles.fileRow <= Console.WindowHeight / 2 - 1)
+                {
+                    Console.SetCursorPosition(1, variablesForFiles.fileRow);
+                    Console.Write(new string(' ', Console.WindowWidth / 2 - 2));
+                    Console.SetCursorPosition(1, variablesForFiles.fileRow);
+                    GetAllFiles.ChooseColorForFiles(variablesForFiles, list, variablesForFiles.fileRow, variablesForFiles.fileIndex);
+                    variablesForFiles.fileIndex++;
+                    variablesForFiles.fileRow++;
+                    Console.SetCursorPosition(1, variablesForFiles.fileRow);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(filelist[variablesForFiles.fileIndex]);
+                    Console.ResetColor();
+                }
+                else
+                {
+                    variablesForFiles.fileRow = (Console.WindowHeight / 2) - 4;
+                    int i = variablesForFiles.fileRow;
+
+                    while (i <= (Console.WindowHeight / 2))
+                    {
+                        Console.SetCursorPosition(1, i);
+                        Console.Write(new string(' ', Console.WindowWidth / 2 - 2));
+                        i++;
+                    }
+
+                    GetAllFiles.PrintRemaingingFiles(variablesForFiles, variablesForCommits, list);
+                    variablesForFiles.fileRow = y;
+                    Console.SetCursorPosition(1, variablesForFiles.fileRow);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(filelist[variablesForFiles.fileIndex]);
+                    Console.ResetColor();
+                }
+            }
+        }
+
         private static void HandleDiffUpMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {
             variablesForFiles.up = true;
             variablesForFiles.down = false;
 
-            if (list.listOfAllDiffs[variablesForFiles.indexDiff].Count > Console.WindowHeight - 2 && list.startingIndexes[variablesForFiles.indexDiff].Contains(variablesForFiles.index))
+            if (list.listOfAllDiffs[variablesForFiles.indexDiff].Count > Console.WindowHeight - 2 && list.startingIndexesLog[variablesForFiles.indexDiff].Contains(variablesForFiles.index))
             {
                 GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
                 if (variablesForFiles.x > 0)
@@ -203,12 +265,12 @@ namespace GitClient
                     variablesForFiles.x--;
                 }
 
-                variablesForFiles.index = list.startingIndexes[variablesForFiles.indexDiff][variablesForFiles.x];
+                variablesForFiles.index = list.startingIndexesLog[variablesForFiles.indexDiff][variablesForFiles.x];
                 variablesForFiles.up = false;
                 variablesForFiles.down = false;
                 variablesForFiles.row = 0;
                 variablesForFiles.currentLine = variablesForFiles.index + 1;
-                DiffHelper.Print(variablesForCommits, commitElements);
+                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
 
             }
 
@@ -216,7 +278,7 @@ namespace GitClient
             if (variablesForFiles.index > 0)
             {
                 variablesForFiles.currentLine--;
-                DiffHelper.Print(variablesForCommits, commitElements);
+                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
         }
 
@@ -243,7 +305,7 @@ namespace GitClient
                 if (variablesForFiles.row == Console.WindowHeight - 3)
                 {
                     variablesForFiles.index++;
-                    list.startingIndexes[variablesForFiles.indexDiff].Add(variablesForFiles.index);
+                    list.startingIndexesLog[variablesForFiles.indexDiff].Add(variablesForFiles.index);
                     variablesForFiles.x++;
                     GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
                     variablesForFiles.down = false;
@@ -253,18 +315,18 @@ namespace GitClient
                 {
                     variablesForFiles.row = 0;
                 }
-               
+
                 variablesForFiles.down = true;
                 variablesForFiles.currentLine++;
 
-                
+
                 if (variablesForFiles.row == Console.WindowHeight - 3)
                 {
                     variablesForFiles.row = 0;
                     variablesForFiles.down = false;
                 }
 
-                DiffHelper.Print(variablesForCommits, commitElements);
+                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
         }
 
@@ -321,7 +383,7 @@ namespace GitClient
             {
                 CleaningFilePanel(panel);
                 variablesForFiles.fileIndex = 0;
-                GetAllFiles.PrintRemaingingFiles(variablesForFiles, list);
+                GetAllFiles.PrintRemaingingFiles(variablesForFiles, variablesForCommits, list);
                 Console.SetCursorPosition(1, variablesForFiles.fileRow);
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                 Console.ForegroundColor = ConsoleColor.White;
@@ -368,14 +430,13 @@ namespace GitClient
                     CleaningFilePanel(panel);
                     variablesForFiles.fileRow = variablesForFiles.fileRow - panel.height + 4;
                     variablesForFiles.fileIndex++;
-                    GetAllFiles.PrintRemaingingFiles(variablesForFiles, list);
+                    GetAllFiles.PrintRemaingingFiles(variablesForFiles, variablesForCommits, list);
                     Console.SetCursorPosition(1, variablesForFiles.fileRow);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(list.listOfFiles[variablesForFiles.fileIndex]);
                     Console.ResetColor();
                     Console.SetCursorPosition(1, variablesForFiles.fileRow);
-
                 }
                 else
                 {

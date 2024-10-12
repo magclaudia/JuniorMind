@@ -77,32 +77,62 @@ namespace GitClient
             }
         }
 
-        public static void PrintRemaingingFiles(GetVariablesForFiles variablesForFiles, GetCertainList list)
+        public static void PrintRemaingingFiles(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
-            int position = variablesForFiles.fileRow;
-            for (int i = variablesForFiles.fileIndex; i < list.listOfFiles.Count; i++)
+            int position;
+            var filelist = new List<string>();
+
+            if (variablesForCommits.logTab == true)
             {
-                if (position > variablesForFiles.height)
+                position = variablesForFiles.fileRow;
+            }
+            else
+            {
+                position = Console.WindowHeight / 2;
+            }
+
+            if (variablesForFiles.fileIndex < list.unstagedChangesFiles.Count - 1)
+            {
+                filelist = list.unstagedChangesFiles;
+            }
+            else
+            {
+                filelist = list.stagedChangesFiles;
+            }
+
+            for (int i = variablesForFiles.fileIndex; i < filelist.Count; i++)
+            {
+                if (variablesForFiles.fileRow > position)
                 {
                     break;
                 }
 
-                Console.SetCursorPosition(1, position);
-                ChooseColorForFiles(variablesForFiles, list, position, i);
-                Console.SetCursorPosition(1, position + 1);
-                position++;
+                Console.SetCursorPosition(1, variablesForFiles.fileRow);
+                ChooseColorForFiles(variablesForFiles, list, variablesForFiles.fileRow, i);
+                Console.SetCursorPosition(1, variablesForFiles.fileRow + 1);
+                variablesForFiles.fileRow++;
             }
         }
 
         public static void ChooseColorForFiles(GetVariablesForFiles variablesForFiles, GetCertainList list, int y, int i)
         {
-            switch (list.listOfFiles[i][0])
+            var filelist = new List<string>();
+            if (variablesForFiles.fileIndex < list.unstagedChangesFiles.Count - 1)
+            {
+                filelist = list.unstagedChangesFiles;
+            }
+            else
+            {
+                filelist = list.stagedChangesFiles;
+            }
+
+            switch (filelist[i][0])
             {
                 case 'M':
                     {
                         Console.SetCursorPosition(1, y);
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write(list.listOfFiles[i]);
+                        Console.Write(filelist[i]);
                         Console.ResetColor();
                     }
                     break;
@@ -110,7 +140,7 @@ namespace GitClient
                     {
                         Console.SetCursorPosition(1, y);
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(list.listOfFiles[i]);
+                        Console.Write(filelist[i]);
                         Console.ResetColor();
                     }
                     break;
@@ -118,7 +148,7 @@ namespace GitClient
                     {
                         Console.SetCursorPosition(1, y);
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(list.listOfFiles[i]);
+                        Console.Write(filelist[i]);
                         Console.ResetColor();
                     }
                     break;
@@ -255,7 +285,7 @@ namespace GitClient
                     }
                 }
 
-                width = dimensions.changesPanelWidth - 3;
+                width = dimensions.changesPanelWidth - 2;
                 height = dimensions.changesPanelHeight - 3;
             }
 
@@ -295,11 +325,11 @@ namespace GitClient
 
             if (tab.unstageChanges == true)
             {
-                list.unstagedChanges.Add(file);
+                list.unstagedChangesFiles.Add(file);
             }
             else if (tab.stageChanges == true)
             {
-                list.stagedChanges.Add(file);
+                list.stagedChangesFiles.Add(file);
             }
 
             if ((int)i <= height)

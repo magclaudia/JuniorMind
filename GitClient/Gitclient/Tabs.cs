@@ -11,12 +11,12 @@ namespace GitClient
         private static string path = string.Empty;
         private static GetVariablesForTabs tabs = new GetVariablesForTabs();
 
-        public static void PrintTabs(string repoPath, CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list)
+        public static void PrintTabs(string repoPath, CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             Console.Clear();
             path = repoPath;
-            SetInitialState(commitElements, variablesForCommits, list);
-            ChooseTab(commitElements, variablesForCommits, list);
+            SetInitialState(commitElements, variablesForCommits, variablesForFiles, list);
+            ChooseTab(commitElements, variablesForCommits, variablesForFiles, list);
         }
 
         public static void GetTabsNames()
@@ -43,7 +43,7 @@ namespace GitClient
             Console.ResetColor();
         }
 
-        public static void SetInitialState(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list)
+        public static void SetInitialState(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             DrawTabs.DrawOnlyTabs();
@@ -52,12 +52,16 @@ namespace GitClient
             SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
             DrawStatus.DrawPanelsForStatus();
             StatusTab.GetStatusChangesNames();
-            StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, list, tabs);
+            StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             StatusTab.GetStagedChanges(commitElements, variablesForCommits, list, tabs);
-
+            string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+            DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+            variablesForCommits.stopWorkingOnCommits = true;
+            variablesForCommits.pressRight = 1;
+            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
         }
 
-        public static void ChooseTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list)
+        public static void ChooseTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             ConsoleKeyInfo keyInfo;
@@ -77,8 +81,13 @@ namespace GitClient
                             GetRepoPath(path);
                             DrawStatus.DrawPanelsForStatus();
                             StatusTab.GetStatusChangesNames();
-                            StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, list, tabs);
+                            StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
                             StatusTab.GetStagedChanges(commitElements, variablesForCommits, list, tabs);
+                            
+                            string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+                            DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+                            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
+                           
                         }
                         break;
                     case ConsoleKey.D2:
@@ -99,7 +108,7 @@ namespace GitClient
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        private static string SetTabTextLength(string name, int maxValue)
+        public static string SetTabTextLength(string name, int maxValue)
         {
             string text;
             if (name.Length < maxValue)

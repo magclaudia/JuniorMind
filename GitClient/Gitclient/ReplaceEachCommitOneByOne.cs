@@ -96,9 +96,10 @@
             }
 
             GetCommitNumber.ReturnCommitNumber(commitElement, variablesForCommits);
+            GetVariablesForTabs tabs = new GetVariablesForTabs();
             Navigate.GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, clear);
             Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
-            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list, tabs);
         }
 
         public static void PrintNewCommitIfNoPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, bool reachLimit, int blueFond)
@@ -184,9 +185,10 @@
                 variablesForCommits.heightPosition--;
             }
 
+            GetVariablesForTabs tabs = new GetVariablesForTabs();
             GetCommitNumber.ReturnCommitNumber(commitElement, variablesForCommits);
             Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
-            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list, tabs);
         }
 
         public static void PrintNewCommitIfReachLimit(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
@@ -297,8 +299,9 @@
                 Navigate.GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, clear);
             }
 
+            GetVariablesForTabs tabs = new GetVariablesForTabs();
             Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
-            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list, tabs);
         }
 
         public static void ClearCommitRow(GetVariablesForCommits variablesForCommits)

@@ -21,6 +21,7 @@
             
             CommitElements commitElements = new CommitElements();
             GetVariablesForCommits variablesForCommits = new GetVariablesForCommits();
+            GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
             GetCertainList list = new GetCertainList();
 
             try
@@ -30,8 +31,7 @@
                     throw new Exception("Failed to open the repository.");
                 }
 
-
-                Tabs.PrintTabs(repoPath, commitElements, variablesForCommits, list);
+                Tabs.PrintTabs(repoPath, commitElements, variablesForCommits, variablesForFiles, list);
                 //GetListOfCommits.GetAllCommits(commitElements.repo);
             }
             catch (Exception ex)

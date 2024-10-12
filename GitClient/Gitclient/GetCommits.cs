@@ -94,8 +94,9 @@ namespace GitClient
 
             variablesForCommits.panelAlreadyDisplayed = false;
             variablesForCommits.currentCommitIndex = index;
+            GetVariablesForTabs tab = new GetVariablesForTabs();
             Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
-            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list, tab);
         }
 
         private static void DisplayCommitsWithPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
@@ -185,8 +186,9 @@ namespace GitClient
 
             variablesForCommits.rigthCursor = variablesForCommits.currentCommitIndex;
             variablesForCommits.currentCommitIndex = index;
+            GetVariablesForTabs tabs = new GetVariablesForTabs();
             Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
-            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list, tabs);
         }
 
         private static string GetMessage(string description, string id, string data, string author, string message)
