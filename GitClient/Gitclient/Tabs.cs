@@ -16,7 +16,7 @@ namespace GitClient
             Console.Clear();
             path = repoPath;
             SetInitialState(commitElements, variablesForCommits, variablesForFiles, list);
-            ChooseTab(commitElements, variablesForCommits, variablesForFiles, list);
+           // ChooseTab(commitElements, variablesForCommits, variablesForFiles, list);
         }
 
         public static void GetTabsNames()
@@ -46,7 +46,6 @@ namespace GitClient
         public static void SetInitialState(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-           // tabs.initialState = true;
             DrawTabs.DrawOnlyTabs();
             GetRepoPath(path);
             GetTabsNames();
@@ -54,64 +53,55 @@ namespace GitClient
             DrawStatus.DrawPanelsForStatus();
             StatusTab.GetStatusChangesNames();
             StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
-            StatusTab.GetStagedChanges(commitElements, variablesForCommits, list, tabs);
-            if (list.unstagedChangesFiles.Count > 0)
+            StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
+            string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+            DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+            variablesForCommits.stopWorkingOnCommits = true;
+            variablesForCommits.pressRight = 1;
+            tabs.initialState = true;
+            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
+        }
+
+        public static void ChooseStatusTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
+        {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            tabs.initialState = false;
+            Console.Clear();
+            DrawTabs.DrawOnlyTabs();
+            GetTabsNames();
+            SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
+            GetRepoPath(path);
+            DrawStatus.DrawPanelsForStatus();
+            StatusTab.GetStatusChangesNames();
+            if (list.unstagedChangesFiles.Count == 0)
             {
+                StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
+                StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
                 string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
                 DiffHelper.FilesBackground(fileFullName, variablesForFiles);
-                variablesForCommits.stopWorkingOnCommits = true;
-                variablesForCommits.pressRight = 1;
-                tabs.initialState = true;
+                variablesForFiles.down = false;
+                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
+            }
+            else
+            {
+                GetAllFiles.PrintStatusFilesIfAlreadyReceived(variablesForFiles, list, 5, 0);
+                string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+                DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+                variablesForFiles.down = false;
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
         }
 
-        public static void ChooseTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
+        public static void ChooseLogTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-            ConsoleKeyInfo keyInfo;
             tabs.initialState = false;
-
-            do
-            {
-                keyInfo = Console.ReadKey(true);
-                switch (keyInfo.Key)
-                {
-                    case ConsoleKey.D1:
-                    case ConsoleKey.NumPad1:
-                        {
-                            Console.Clear();
-                            DrawTabs.DrawOnlyTabs();
-                            GetTabsNames();
-                            SetColorForChosenTab("Status [1]", 0, dimensions.tabWidth);
-                            GetRepoPath(path);
-                            DrawStatus.DrawPanelsForStatus();
-                            StatusTab.GetStatusChangesNames();
-                            StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
-                            StatusTab.GetStagedChanges(commitElements, variablesForCommits, list, tabs);
-                            string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-                            DiffHelper.FilesBackground(fileFullName, variablesForFiles);
-                            variablesForFiles.down = false;
-                            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
-                           
-                        }
-                        break;
-                    case ConsoleKey.D2:
-                    case ConsoleKey.NumPad2:
-                        {
-                            Console.Clear();
-                            GetRepoPath(path);
-                            DrawTabs.DrawOnlyTabs();
-                            DrawLogPanel.DrawLargePanel();
-                            GetTabsNames();
-                            SetColorForChosenTab("Log [2]", dimensions.tabWidth, dimensions.tabWidth * 2);
-                        }
-                        break;
-
-                    default: break;
-                }
-            }
-            while (keyInfo.Key != ConsoleKey.Escape);
+            Console.Clear();
+            GetRepoPath(path);
+            DrawTabs.DrawOnlyTabs();
+            DrawLogPanel.DrawLargePanel();
+            GetTabsNames();
+            SetColorForChosenTab("Log [2]", dimensions.tabWidth, dimensions.tabWidth * 2);
         }
 
         public static string SetTabTextLength(string name, int maxValue)

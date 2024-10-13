@@ -27,7 +27,7 @@ namespace GitClient
             }
             else
             {
-                width = Console.WindowWidth / 2 - 2;
+                width = Console.WindowWidth / 2 - 3;
             }
 
             if (line.Length < width)
@@ -59,13 +59,27 @@ namespace GitClient
 
         public static void CleaningHalfOfDiffPanel(GetVariablesForCommits variablesForCommits)
         {
-            int height = Console.WindowHeight;
-            int width = Console.WindowWidth;
+            int x = 0;
+            int y = 0;
+            int z = 0;
+            int height = 0;
 
-            int x = width / 2 + 3;
-            int y = (width - 2) - (width / 2) - 4;
+            if (variablesForCommits.logTab == true)
+            {
+                height = Console.WindowHeight - 2;
+                x = Console.WindowWidth / 2 + 3;
+                y = (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4;
+                z = 1;
+            }
+            else
+            {
+                height = Console.WindowHeight - 2;
+                x = Console.WindowWidth / 2 + 1;
+                y = Console.WindowWidth / 2 - 2;
+                z = 4;
+            }
 
-            for (int i = 1; i <= height - 2; i++)
+            for (int i = z; i <= height; i++)
             {
                 Console.SetCursorPosition(x, i);
                 Console.Write(new string(' ', y));

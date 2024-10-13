@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace GitClient
 {
     public class GetAllFiles
     {
-        public static void PrintAllFiles(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, GetCertainList list, CommitElements commitElements, GetVariablesForTabs tab)
+        public static void PrintAllFiles(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements, GetVariablesForTabs tab)
         {
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
 
@@ -47,21 +48,21 @@ namespace GitClient
                 {
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_ADDED:
                         fileWithSymbol = $"+    {fileName}";
-                        PrintProjectName(size, i, filePath, fileName, variablesForCommits, tab);
+                        PrintProjectName(size, i, filePath, fileName, variablesForCommits, variablesForFiles, tab);
                         Console.ForegroundColor = ConsoleColor.Green;
                         PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, list, tab);
                         break;
 
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_MODIFIED:
                         fileWithSymbol = $"M    {fileName}";
-                        PrintProjectName(size, i, filePath, fileName, variablesForCommits, tab);
+                        PrintProjectName(size, i, filePath, fileName, variablesForCommits, variablesForFiles, tab);
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, list, tab);
                         break;
 
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_DELETED:
                         fileWithSymbol = $"-    {fileName}";
-                        PrintProjectName(size, i, filePath, fileName, variablesForCommits, tab);
+                        PrintProjectName(size, i, filePath, fileName, variablesForCommits, variablesForFiles, tab);
                         Console.ForegroundColor = ConsoleColor.DarkRed;
                         PrintEachFile(fileWithSymbol, size, i, ref a, variablesForCommits, list, tab);
                         break;
@@ -72,8 +73,8 @@ namespace GitClient
 
             if (variablesForCommits.right == true)
             {
-                GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
-                GetDiffs.GetFileContent(diff, variablesForFiles, variablesForCommits, commitElements, list);
+                GetVariablesForFiles variablesForFile = new GetVariablesForFiles();
+                GetDiffs.GetFileContent(diff, variablesForFile, variablesForCommits, commitElements, list);
             }
         }
 
@@ -81,6 +82,7 @@ namespace GitClient
         {
             int position;
             var filelist = new List<string>();
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
             if (variablesForCommits.logTab == true)
             {
@@ -114,10 +116,64 @@ namespace GitClient
             }
         }
 
+        public static void PrintStatusFilesIfAlreadyReceived(GetVariablesForFiles variablesForFiles, GetCertainList list, int y, int i)
+        {
+            Console.SetCursorPosition(1, y - 1);
+            Console.Write(variablesForFiles.projName);
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            int j = 0;
+            if (list.unstagedChangesFiles.Count > 0)
+            {
+                while (j < list.unstagedChangesFiles.Count)
+                {
+                    if (j == dimensions.changesPanelHeight - 3)
+                    {
+                        break;
+                    }
+
+                    ChooseColorForFiles(variablesForFiles, list, variablesForFiles.fileRow, i);
+                    variablesForFiles.fileRow++;
+                    j++;
+                    i++;
+                }
+            }
+            else
+            {
+                Console.SetCursorPosition(1, 4);
+                string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+                Console.WriteLine(text);
+            }
+
+            if (list.stagedChangesFiles.Count > 0)
+            {
+                j = 0;
+                i = 0;
+
+                while (j < list.stagedChangesFiles.Count)
+                {
+                    if (j == dimensions.changesPanelHeight - 3)
+                    {
+                        break;
+                    }
+
+                    ChooseColorForFiles(variablesForFiles, list, variablesForFiles.fileRow, i);
+                    variablesForFiles.fileRow++;
+                    j++;
+                    i++;
+                }
+            }
+            else
+            {
+                Console.SetCursorPosition(1, Console.WindowHeight / 2 + 3);
+                string text = Tabs.SetTabTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
+                Console.WriteLine(text);
+            }
+        }
+
         public static void ChooseColorForFiles(GetVariablesForFiles variablesForFiles, GetCertainList list, int y, int i)
         {
             var filelist = new List<string>();
-            if (variablesForFiles.fileIndex < list.unstagedChangesFiles.Count - 1)
+            if (variablesForFiles.fileIndex <= list.unstagedChangesFiles.Count - 1)
             {
                 filelist = list.unstagedChangesFiles;
             }
@@ -155,7 +211,7 @@ namespace GitClient
             }
         }
 
-        private static void PrintProjectName(DrawPanelRigthSide.FilesBox size, ulong i, string filePath, string fileName, GetVariablesForCommits variablesForCommits, GetVariablesForTabs tab)
+        private static void PrintProjectName(DrawPanelRigthSide.FilesBox size, ulong i, string filePath, string fileName, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetVariablesForTabs tab)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
@@ -241,6 +297,7 @@ namespace GitClient
 
                 }
 
+                variablesForFiles.projName = projectFolder;
                 Console.Write(projectFolder);
             }
         }

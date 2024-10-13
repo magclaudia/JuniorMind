@@ -24,6 +24,7 @@
         public bool filesReachPanelLimit;
         public int indexDiff;
         public bool diffMoves;
+        public string projName;
 
         public GetVariablesForFiles()
         {
@@ -49,6 +50,7 @@
             filesReachPanelLimit = false;
             indexDiff = -1;
             diffMoves = false;
+            projName = "";
         }
     }
 }

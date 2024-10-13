@@ -39,7 +39,7 @@ namespace GitClient
 
                 int index = 0;
                 tab.unstageChanges = true;
-                GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, unstagedDiff, index, variablesForCommits, list, commitElements, tab);
+                GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, unstagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
                 GetDiffForChanges.DiffUnstagedChanges(unstagedDiff, list, variablesForFiles, variablesForCommits, tab);
                 variablesForFiles.indexDiff = 0;
                 variablesForFiles.fileIndex = 0;
@@ -61,13 +61,13 @@ namespace GitClient
             }
         }
 
-        public static void GetStagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list, GetVariablesForTabs tab)
+        public static void GetStagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
         {
             LibGit2Wrapper.GitOid commitOid;
             IntPtr commitPtr = IntPtr.Zero;
             IntPtr treePtr = IntPtr.Zero; 
             IntPtr indexPtr = IntPtr.Zero;  
-            IntPtr stagedDiff = IntPtr.Zero; 
+            IntPtr stagedDiff = IntPtr.Zero;
             var options = new LibGit2Wrapper.GitDiffOptions();
 
             try
@@ -102,12 +102,12 @@ namespace GitClient
                 if (numDeltas == 0)
                 {
                     Console.SetCursorPosition(1, Console.WindowHeight / 2 + 3);
-                    string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+                    string text = Tabs.SetTabTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                 }
 
                 tab.stageChanges = true;
-                GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, list, commitElements, tab);
+                GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
                 tab.stageChanges = false;
                 //list.ClearAllLists();
             }
