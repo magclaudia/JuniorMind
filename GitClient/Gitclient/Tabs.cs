@@ -55,7 +55,8 @@ namespace GitClient
             StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-            DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+            variablesForFiles.fileRow = dimensions.unstagedStart;
+            DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
             variablesForCommits.stopWorkingOnCommits = true;
             variablesForCommits.pressRight = 1;
             tabs.initialState = true;
@@ -78,7 +79,7 @@ namespace GitClient
                 StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
                 StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
                 string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-                DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+                DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
                 variablesForFiles.down = false;
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
@@ -86,7 +87,7 @@ namespace GitClient
             {
                 GetAllFiles.PrintStatusFilesIfAlreadyReceived(variablesForFiles, list, 5, 0);
                 string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-                DiffHelper.FilesBackground(fileFullName, variablesForFiles);
+                DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
                 variablesForFiles.down = false;
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }

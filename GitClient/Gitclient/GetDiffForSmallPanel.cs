@@ -16,7 +16,7 @@ namespace GitClient
             string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
             if(variablesForFiles.fileIndex == 0)
             {
-                DiffHelper.FilesBackground(currentFileName, variablesForFiles);
+                DiffHelper.FilesBackground(currentFileName, variablesForFiles, variablesForCommits);
             }
 
             Print(list, variablesForCommits, variablesForFiles, commitElements, currentFileName);

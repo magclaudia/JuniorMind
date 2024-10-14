@@ -25,6 +25,8 @@
         public int indexDiff;
         public bool diffMoves;
         public string projName;
+        public bool unstageChanges;
+        public bool stageChanges;
 
         public GetVariablesForFiles()
         {
@@ -51,6 +53,9 @@
             indexDiff = -1;
             diffMoves = false;
             projName = "";
+            unstageChanges = false;
+            stageChanges = false;
+
         }
     }
 }

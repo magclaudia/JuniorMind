@@ -9,6 +9,8 @@ namespace GitClient
 {
     public class StatusTab
     {
+        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
         public static void GetUnstagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
         {
             IntPtr unstagedDiff = IntPtr.Zero;
@@ -32,19 +34,20 @@ namespace GitClient
 
                 if (numDeltas == 0)
                 {
-                    Console.SetCursorPosition(1, 4);
+                    Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
+                    Console.Write(variablesForFiles.projName);
+                    Console.SetCursorPosition(1, dimensions.stagedStart);
                     string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                 }
 
                 int index = 0;
-                tab.unstageChanges = true;
+                variablesForFiles.unstageChanges = true;
                 GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, unstagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
                 GetDiffForChanges.DiffUnstagedChanges(unstagedDiff, list, variablesForFiles, variablesForCommits, tab);
                 variablesForFiles.indexDiff = 0;
                 variablesForFiles.fileIndex = 0;
                
-                tab.unstageChanges = false;
                 //list.ClearAllLists();
             }
             finally 
@@ -101,14 +104,17 @@ namespace GitClient
                 nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(stagedDiff);
                 if (numDeltas == 0)
                 {
-                    Console.SetCursorPosition(1, Console.WindowHeight / 2 + 3);
+                    Console.SetCursorPosition(1, dimensions.stagedStart - 1);
+                    Console.Write(variablesForFiles.projName);
+                    Console.SetCursorPosition(1, dimensions.stagedStart);
                     string text = Tabs.SetTabTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                 }
 
-                tab.stageChanges = true;
+
+                variablesForFiles.stageChanges = true;
                 GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
-                tab.stageChanges = false;
+                variablesForFiles.stageChanges = false;
                 //list.ClearAllLists();
             }
             finally

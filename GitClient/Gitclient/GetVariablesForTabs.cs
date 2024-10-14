@@ -8,15 +8,13 @@ namespace GitClient
 {
     public class GetVariablesForTabs
     {
-        public  bool unstageChanges;
-        public bool stageChanges;
         public bool initialState;
+        public bool finishUpMoves;
 
         public GetVariablesForTabs()
         {
-            unstageChanges = false;
-            stageChanges = false;
             initialState = false;
+            finishUpMoves = false;
         }
     }
 }

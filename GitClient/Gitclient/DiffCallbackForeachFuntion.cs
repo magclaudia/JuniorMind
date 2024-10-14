@@ -29,7 +29,7 @@ namespace GitClient
             }
             else
             {
-                if (tab1.unstageChanges == true)
+                if (variablesForFiles.unstageChanges == true)
                 {
                     filesList = list.unstagedChangesFiles;
                 }
@@ -90,6 +90,11 @@ namespace GitClient
             byte[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
             string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
             string text = hunkHeader;
+            if (text.Contains('\n'))
+            {
+                text = text.Remove(text.IndexOf('\n'));
+            }
+
             list1.listOfAllDiffs[files.indexDiff].Add(text);
             return 0;
         }
