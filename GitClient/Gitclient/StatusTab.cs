@@ -36,7 +36,7 @@ namespace GitClient
                 {
                     Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
                     Console.Write(variablesForFiles.projName);
-                    Console.SetCursorPosition(1, dimensions.stagedStart);
+                    Console.SetCursorPosition(1, dimensions.unstagedStart);
                     string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                 }

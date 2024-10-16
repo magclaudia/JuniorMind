@@ -255,7 +255,7 @@ namespace GitClient
                     if (variablesForFiles.unstageChanges == true)
                     {
                         x = 1;
-                        y = 4;
+                        y = dimensions.unstagedStart - 1;
                     }
                     else
                     {
@@ -312,7 +312,9 @@ namespace GitClient
                 }
 
                 variablesForFiles.projName = projectFolder;
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.Write(projectFolder);
+                Console.ResetColor();
             }
         }
 
@@ -344,7 +346,7 @@ namespace GitClient
                 else
                 {
                     x = 1;
-                    y = dimensions.stagedStart - 1;
+                    y = dimensions.stagedStart;
                 }
 
                 width = dimensions.changesPanelWidth - 2;
