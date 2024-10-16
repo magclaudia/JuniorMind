@@ -123,7 +123,10 @@ namespace GitClient
         public static void PrintStatusFilesIfAlreadyReceived(GetVariablesForFiles variablesForFiles, GetCertainList list, int y, int i)
         {
             Console.SetCursorPosition(1, y - 1);
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write(variablesForFiles.projName);
+            Console.ResetColor();
+
             int j = 0;
 
             if (variablesForFiles.fileIndex < dimensions.changesPanelHeight - 3)
