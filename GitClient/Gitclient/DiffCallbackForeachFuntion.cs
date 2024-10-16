@@ -58,6 +58,7 @@ namespace GitClient
             string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
             Console.ForegroundColor = ConsoleColor.DarkGray;
             string fileName = "";
+            
             if (variablesForCommit.logTab == true)
             {
                 fileName = list1.filesNames[files.fileIndex];
@@ -69,6 +70,7 @@ namespace GitClient
             }
 
             string text = newFilePath!;
+           
             if (newFilePath!.Contains(fileName))
             {
                 files.indexDiff++;
@@ -90,6 +92,7 @@ namespace GitClient
             byte[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
             string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
             string text = hunkHeader;
+            
             if (text.Contains('\n'))
             {
                 text = text.Remove(text.IndexOf('\n'));
@@ -102,6 +105,7 @@ namespace GitClient
         public static int DiffLineCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, ref LibGit2Wrapper.GitDiffLine line, IntPtr payload)
         {
             string content = Marshal.PtrToStringAnsi(line.content, (int)line.content_len);
+            
             if (content.StartsWith('\t'))
             {
                 string output = content.Replace("\t", new string(' ', 4));

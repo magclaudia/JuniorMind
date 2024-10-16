@@ -104,6 +104,8 @@ namespace GitClient
         private static string content = string.Empty;
         private static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
         private static GetVariablesForTabs tab = new GetVariablesForTabs();
+        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        private static DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
 
         public static void PrintDiff(IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFile, CommitElements commitElements)
         {
@@ -141,7 +143,6 @@ namespace GitClient
 
         public static void Print(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements, GetCertainList list)
         {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             variablesForFiles.height = Console.WindowHeight;
             variablesForFiles.width = Console.WindowWidth;
             string text = string.Empty;
@@ -337,17 +338,7 @@ namespace GitClient
                 DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
                 y = size.height - 3;
             }
-            //else
-            //{
-            //    if (tab.unstageChanges == true)
-            //    {
-                   
-            //    }
-            //    else
-            //    {
-
-            //    }
-            //}
+           
 
             //Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list, size);
 
@@ -429,7 +420,7 @@ namespace GitClient
 
         private static void CleaningFilePanel()
         {
-            DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
+           
             int width = Console.WindowWidth;
             int maxHeight = Console.WindowHeight - 1;
             int maxPosition = 0;

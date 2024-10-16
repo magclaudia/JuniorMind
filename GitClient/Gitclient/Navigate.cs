@@ -5,10 +5,11 @@ namespace GitClient
     public class Navigate
     {
         private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        private static DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
+       
 
         public static void NavigateThroughCommits(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, GetVariablesForTabs tab)
         {
-            var size = new DrawPanelRigthSide.FilesBox();
             IntPtr commitPtr = IntPtr.Zero;
             ConsoleKeyInfo keyInfo;
             int blueFond = 0;
@@ -50,7 +51,7 @@ namespace GitClient
                             }
                             else
                             {
-                                if (variablesForFiles.up == false && variablesForFiles.fileIndex == 0)
+                                if (variablesForFiles.up == false && variablesForFiles.fileIndex == 0 || variablesForCommits.right == true)
                                 {
                                     break;
                                 }
@@ -85,6 +86,11 @@ namespace GitClient
                             }
                             else
                             {
+                                if (variablesForCommits.right == true)
+                                {
+                                    break;
+                                }
+
                                 HandleStatusFilesDownMoves(variablesForCommits, variablesForFiles, list, commitElement, tab);
                             }
                         }
@@ -116,7 +122,7 @@ namespace GitClient
                         break;
                     case ConsoleKey.LeftArrow:
                         {
-                            if (variablesForFiles.diffMoves == false)
+                            if (variablesForFiles.diffMoves == false && variablesForCommits.logTab == true)
                             {
                                 variablesForCommits.stopWorkingOnCommits = false;
                                 variablesForCommits.enter = true;
@@ -197,20 +203,6 @@ namespace GitClient
                             {
                                 if (variablesForCommits.right == true)
                                 {
-                                    //var filelist = new List<string>();
-
-                                    //if (variablesForFiles.fileIndex <= list.unstagedChangesFiles.Count - 1)
-                                    //{
-                                    //    filelist = list.unstagedChangesFiles;
-                                    //    //variablesForFiles.fileRow = dimensions.unstagedStart;
-
-                                    //}
-                                    //else
-                                    //{
-                                    //    filelist = list.stagedChangesFiles;
-                                    //    //variablesForFiles.fileRow = dimensions.stagedStart;
-                                    //}
-
                                     variablesForFiles.down = false;
                                     variablesForCommits.right = false;
                                     variablesForCommits.esc = true;
@@ -275,7 +267,6 @@ namespace GitClient
 
         private static void HandleStatusFilesUp(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement, GetVariablesForTabs tab)
         {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             var filelist = new List<string>();
             int y = 0;
 
@@ -337,7 +328,6 @@ namespace GitClient
                 variablesForFiles.down = false;
                 GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
                 tab.finishUpMoves = true;
-                //variablesForFiles.fileRow = dimensions.changesPanelHeight;
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElement, list);
             }
         }
@@ -345,7 +335,6 @@ namespace GitClient
         private static void HandleStatusFilesDownMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement, GetVariablesForTabs tab)
         {
             var filelist = new List<string>();
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
             if (variablesForFiles.fileIndex < list.unstagedChangesFiles.Count - 1)
             {
@@ -528,9 +517,6 @@ namespace GitClient
 
         private static void HandleRightArrowStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
         {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
-            //variablesForFiles.fileRow = dimensions.tabHeight + 1;
             variablesForFiles.index = 0;
             variablesForFiles.down = false;
             variablesForCommits.right = true;

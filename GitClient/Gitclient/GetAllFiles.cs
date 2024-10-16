@@ -6,10 +6,12 @@ namespace GitClient
 {
     public class GetAllFiles
     {
+        private static DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
+        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+       
+
         public static void PrintAllFiles(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements, GetVariablesForTabs tab)
         {
-            DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
-
             for (UIntPtr i = 0; i < numDeltas.ToUInt64(); i++)
             {
                 IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
@@ -82,7 +84,6 @@ namespace GitClient
         {
             int position;
             var filelist = new List<string>();
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
             if (variablesForCommits.logTab == true)
             {
@@ -123,7 +124,6 @@ namespace GitClient
         {
             Console.SetCursorPosition(1, y - 1);
             Console.Write(variablesForFiles.projName);
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             int j = 0;
 
             if (variablesForFiles.fileIndex < dimensions.changesPanelHeight - 3)
@@ -195,6 +195,7 @@ namespace GitClient
         public static void ChooseColorForFiles(GetVariablesForFiles variablesForFiles, GetCertainList list, int y, int i)
         {
             var filelist = new List<string>();
+           
             if (variablesForFiles.fileIndex <= list.unstagedChangesFiles.Count - 1)
             {
                 filelist = list.unstagedChangesFiles;
@@ -235,8 +236,6 @@ namespace GitClient
 
         private static void PrintProjectName(DrawPanelRigthSide.FilesBox size, ulong i, string filePath, string fileName, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetVariablesForTabs tab)
         {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
             if (i == 0)
             {
                 int x = 0;
@@ -261,14 +260,7 @@ namespace GitClient
                     else
                     {
                         x = 1;
-                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                        {
-                            y = Console.WindowHeight / 2 + 3;
-                        }
-                        else
-                        {
-                            y = Console.WindowHeight / 2 + 2;
-                        }
+                        y = dimensions.stagedStart - 1;
                     }
 
                     width = dimensions.changesPanelWidth;
@@ -326,7 +318,6 @@ namespace GitClient
 
         private static void PrintEachFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, GetVariablesForCommits variablesForCommits, GetCertainList list, GetVariablesForFiles variablesForFiles)
         {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions(); 
             int lengthForNow = 0;
             int firstIndex = 0;
             string file = "";
@@ -353,14 +344,7 @@ namespace GitClient
                 else
                 {
                     x = 1;
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        y = Console.WindowHeight / 2 + 3;
-                    }
-                    else
-                    {
-                        y = Console.WindowHeight / 2 + 2;
-                    }
+                    y = dimensions.stagedStart - 1;
                 }
 
                 width = dimensions.changesPanelWidth - 2;

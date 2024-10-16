@@ -10,12 +10,12 @@ namespace GitClient
     public class StatusTab
     {
         private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        private static LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
 
         public static void GetUnstagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
         {
             IntPtr unstagedDiff = IntPtr.Zero;
             IntPtr indexPtr = IntPtr.Zero;
-            var options = new LibGit2Wrapper.GitDiffOptions();
 
             try
             {
@@ -47,8 +47,6 @@ namespace GitClient
                 GetDiffForChanges.DiffUnstagedChanges(unstagedDiff, list, variablesForFiles, variablesForCommits, tab);
                 variablesForFiles.indexDiff = 0;
                 variablesForFiles.fileIndex = 0;
-               
-                //list.ClearAllLists();
             }
             finally 
             {
@@ -71,7 +69,6 @@ namespace GitClient
             IntPtr treePtr = IntPtr.Zero; 
             IntPtr indexPtr = IntPtr.Zero;  
             IntPtr stagedDiff = IntPtr.Zero;
-            var options = new LibGit2Wrapper.GitDiffOptions();
 
             try
             {
@@ -113,9 +110,8 @@ namespace GitClient
 
 
                 variablesForFiles.stageChanges = true;
+                variablesForFiles.unstageChanges = false;
                 GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
-                variablesForFiles.stageChanges = false;
-                //list.ClearAllLists();
             }
             finally
             {
