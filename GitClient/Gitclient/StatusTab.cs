@@ -42,13 +42,16 @@ namespace GitClient
                     string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                 }
-
-                int index = 0;
-                variablesForFiles.unstageChanges = true;
-                GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, unstagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
-                GetDiffForChanges.DiffUnstagedChanges(unstagedDiff, list, variablesForFiles, variablesForCommits, tab);
-                variablesForFiles.indexDiff = 0;
-                variablesForFiles.fileIndex = 0;
+                else
+                {
+                    int index = 0;
+                    variablesForFiles.unstageChanges = true;
+                    GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, unstagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
+                    GetDiffForChanges.DiffUnstagedChanges(unstagedDiff, list, variablesForFiles, variablesForCommits, tab);
+                    variablesForFiles.indexDiff = 0;
+                    variablesForFiles.fileIndex = 0;
+                }
+                
             }
             finally 
             {
