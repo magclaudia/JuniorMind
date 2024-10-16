@@ -15,6 +15,7 @@ namespace GitClient
             for (UIntPtr i = 0; i < numDeltas.ToUInt64(); i++)
             {
                 IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
+               
                 if (deltaPtr == IntPtr.Zero)
                 {
                     throw new Exception("Failed to get delta.");
@@ -41,6 +42,7 @@ namespace GitClient
 
                 string fileName = Path.GetFileName(filePath)!;
                 string fileWithSymbol;
+
                 if (variablesForCommits.right == true && variablesForCommits.esc == false)
                 {
                     list.filesNames.Add(fileName);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,16 +35,16 @@ namespace GitClient
 
                 if (numDeltas == 0)
                 {
-                    Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(variablesForFiles.projName);
-                    Console.ResetColor();
                     Console.SetCursorPosition(1, dimensions.unstagedStart);
                     string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                 }
                 else
                 {
+                    Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(variablesForFiles.projName);
+                    Console.ResetColor();
                     int index = 0;
                     variablesForFiles.unstageChanges = true;
                     GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, unstagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
@@ -51,7 +52,6 @@ namespace GitClient
                     variablesForFiles.indexDiff = 0;
                     variablesForFiles.fileIndex = 0;
                 }
-                
             }
             finally 
             {
@@ -96,29 +96,33 @@ namespace GitClient
                 {
                     throw new Exception("Failed to get the repository index");
                 }
-
+             
                 if (LibGit2Wrapper.git_diff_tree_to_index(out stagedDiff, commitElements.repo, treePtr, indexPtr, ref options) != 0)
                 {
                     throw new Exception("Failed to get diff between tree and index");
                 }
 
                 int index = 0;
-                nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(stagedDiff);
+                UIntPtr numDeltas = LibGit2Wrapper.git_diff_num_deltas(stagedDiff);
+
                 if (numDeltas == 0)
+                {
+                    Console.SetCursorPosition(1, dimensions.stagedStart);
+                    string text = Tabs.SetTabTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
+                    Console.WriteLine(text);
+                }
+                else
                 {
                     Console.SetCursorPosition(1, dimensions.stagedStart - 1);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(variablesForFiles.projName);
                     Console.ResetColor();
-                    Console.SetCursorPosition(1, dimensions.stagedStart);
-                    string text = Tabs.SetTabTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
-                    Console.WriteLine(text);
+
+                    variablesForFiles.stageChanges = true;
+                    variablesForFiles.unstageChanges = false;
+                    GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
                 }
 
-
-                variablesForFiles.stageChanges = true;
-                variablesForFiles.unstageChanges = false;
-                GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
             }
             finally
             {
@@ -153,15 +157,7 @@ namespace GitClient
             Console.Write(unstaged);
             
             string staged = SetStatusTabTextLength("Staged Changes: ");
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                Console.SetCursorPosition(1, dimensions.height / 2 + 2);
-            }
-            else
-            {
-                Console.SetCursorPosition(1, dimensions.height / 2 + 2);
-            }
-
+            Console.SetCursorPosition(1, dimensions.stagedStart - 2);
             Console.Write(staged);
             
             string diff = "Diff: ";

@@ -329,7 +329,6 @@ namespace GitClient
         public static extern void git_index_free(IntPtr index);
 
 
-
         private static void LoadLibrary()
         {
             string libName;
