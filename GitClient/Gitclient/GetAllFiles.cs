@@ -140,7 +140,7 @@ namespace GitClient
 
             if (list.unstagedChangesFiles.Count > 0)
             {
-                if (i == list.unstagedChangesFiles.Count - 1)
+                if (i == list.unstagedChangesFiles.Count)
                 {
                     i = dimensions.changesPanelHeight - 3;
                     y = dimensions.unstagedStart;
@@ -149,7 +149,7 @@ namespace GitClient
 
                 while (j < list.unstagedChangesFiles.Count)
                 {
-                    if (j == dimensions.changesPanelHeight - 3 || i > list.unstagedChangesFiles.Count - 1)
+                    if (j == dimensions.changesPanelHeight - 3 || i > list.unstagedChangesFiles.Count)
                     {
                         break;
                     }

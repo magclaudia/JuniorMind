@@ -35,7 +35,9 @@ namespace GitClient
                 if (numDeltas == 0)
                 {
                     Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(variablesForFiles.projName);
+                    Console.ResetColor();
                     Console.SetCursorPosition(1, dimensions.unstagedStart);
                     string text = Tabs.SetTabTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
@@ -102,7 +104,9 @@ namespace GitClient
                 if (numDeltas == 0)
                 {
                     Console.SetCursorPosition(1, dimensions.stagedStart - 1);
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(variablesForFiles.projName);
+                    Console.ResetColor();
                     Console.SetCursorPosition(1, dimensions.stagedStart);
                     string text = Tabs.SetTabTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
