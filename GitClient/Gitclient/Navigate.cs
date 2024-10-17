@@ -52,6 +52,12 @@ namespace GitClient
                             }
                             else
                             {
+
+                                if (variablesForFiles.fileIndex == 0 && variablesForFiles.fileRow == dimensions.stagedStart && list.unstagedChangesFiles.Count == 0)
+                                {
+                                    break;
+                                }
+
                                 if (variablesForFiles.stageChanges == true && variablesForFiles.fileIndex == 0 && variablesForFiles.fileRow == dimensions.stagedStart)
                                 {
                                     variablesForFiles.up = true;
@@ -62,6 +68,7 @@ namespace GitClient
                                     break;
                                 }
 
+                                
                                 HandleStatusFilesUp(variablesForCommits, variablesForFiles, list, commitElement, tab);
                             }
                         }
