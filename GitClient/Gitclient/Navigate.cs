@@ -52,7 +52,6 @@ namespace GitClient
                             }
                             else
                             {
-
                                 if (variablesForFiles.fileIndex == 0 && variablesForFiles.fileRow == dimensions.stagedStart && list.unstagedChangesFiles.Count == 0)
                                 {
                                     break;
@@ -68,7 +67,6 @@ namespace GitClient
                                     break;
                                 }
 
-                                
                                 HandleStatusFilesUp(variablesForCommits, variablesForFiles, list, commitElement, tab);
                             }
                         }
@@ -104,10 +102,14 @@ namespace GitClient
                                     break;
                                 }
 
-                                if (list.stagedChangesFiles.Count > 0 && variablesForFiles.fileIndex == list.stagedChangesFiles.Count - 1)
+                                if (list.stagedChangesFiles.Count == 1 && variablesForFiles.fileRow == dimensions.stagedStart)
                                 {
                                     break;
                                 }
+                                //if (list.stagedChangesFiles.Count > 0 && variablesForFiles.fileIndex == list.stagedChangesFiles.Count - 1)
+                                //{
+                                //    break;
+                                //}
 
                                 HandleStatusFilesDownMoves(variablesForCommits, variablesForFiles, list, commitElement, tab);
                             }
