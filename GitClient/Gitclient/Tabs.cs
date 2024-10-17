@@ -50,8 +50,19 @@ namespace GitClient
             StatusTab.GetStatusChangesNames();
             StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
-            string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-            variablesForFiles.fileRow = dimensions.unstagedStart;
+            string fileFullName = "";
+            
+            if (list.unstagedChangesFiles.Count > 0)
+            {
+                fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+                variablesForFiles.fileRow = dimensions.unstagedStart;
+            }
+            else
+            {
+                fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
+                variablesForFiles.fileRow = dimensions.stagedStart;
+            }
+
             DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
             variablesForCommits.stopWorkingOnCommits = true;
             variablesForCommits.pressRight = 1;
@@ -71,17 +82,37 @@ namespace GitClient
             
             if (list.unstagedChangesFiles.Count == 0)
             {
-                StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
-                StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
-                string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-                DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
-                variablesForFiles.down = false;
-                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
+                if (list.stagedChangesFiles.Count > 0)
+                {
+                    variablesForFiles.unstageChanges = false;
+                    variablesForFiles.stageChanges = true;
+                    GetAllFiles.PrintStatusFilesIfAlreadyReceived(variablesForFiles, list, 5, 0);
+                    string fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
+                    DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
+                    variablesForFiles.down = false;
+                    DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
+                }
             }
             else
             {
                 GetAllFiles.PrintStatusFilesIfAlreadyReceived(variablesForFiles, list, 5, 0);
-                string fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+                string fileFullName = "";
+                if (variablesForFiles.unstageChanges == true)
+                {
+                    fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+                    //variablesForFiles.fileRow = dimensions.unstagedStart;
+                    variablesForFiles.unstageChanges = true;
+                    variablesForFiles.stageChanges = false;
+                }
+                else
+                {
+                    fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
+                    //variablesForFiles.fileRow = dimensions.stagedStart;
+                    variablesForFiles.unstageChanges = false;
+                    variablesForFiles.stageChanges = true;
+                }
+
+                
                 DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
                 variablesForFiles.down = false;
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
@@ -101,6 +132,7 @@ namespace GitClient
         public static string SetTabTextLength(string name, int maxValue)
         {
             string text;
+
             if (name.Length < maxValue)
             {
                 int freeSpace = (maxValue - name.Length) / 2;

@@ -190,7 +190,30 @@ namespace GitClient
                 }
             }
 
-            for (int i = variablesForFiles.index; i < list.listOfAllDiffs[variablesForFiles.indexDiff].Count; i++)
+            List<List<string>> filesDiff = new List<List<string>>();
+            string fileFullName = "";
+
+            if (variablesForCommits.logTab == true)
+            {
+                filesDiff = list.listOfAllDiffs;
+                fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
+            }
+            else
+            {
+
+                if (variablesForFiles.unstageChanges == true)
+                {
+                    filesDiff = list.unstagedChangesDiff;
+                    fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+                }
+                else
+                {
+                    filesDiff = list.stagedChangesDiff;
+                    fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
+                }
+            }
+
+            for (int i = variablesForFiles.index; i < filesDiff[variablesForFiles.indexDiff].Count; i++)
             {
                 if (variablesForFiles.row == Console.WindowHeight - 2)
                 {
@@ -202,21 +225,11 @@ namespace GitClient
                     break;
                 }
 
-                string fileFullName = "";
-                if (variablesForCommit.logTab == true)
-                {
-                    fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
-                }
-                else
-                {
-                    fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-                }
-
-                if (list.listOfAllDiffs[variablesForFiles.indexDiff][i].Contains(fileFullName.Remove(0, 5)))
+                if (filesDiff[variablesForFiles.indexDiff][i].Contains(fileFullName.Remove(0, 5)))
                 {
                     text = "filePath";
                 }
-                else if (list.listOfAllDiffs[variablesForFiles.indexDiff][i].StartsWith('@'))
+                else if (filesDiff[variablesForFiles.indexDiff][i].StartsWith('@'))
                 {
                     text = "hunk";
                 }
@@ -237,7 +250,7 @@ namespace GitClient
                             variablesForFiles.row++;
                             Console.SetCursorPosition(x, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.DarkGray;
-                            string textOutput = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][i], variablesForCommits);
+                            string textOutput = GetDiffs.ResizeTextToFitInPanel(filesDiff[variablesForFiles.indexDiff][i], variablesForCommits);
                             Console.Write(textOutput);
                             Console.ResetColor();
                         }
@@ -252,7 +265,7 @@ namespace GitClient
                             variablesForFiles.row++;
                             Console.SetCursorPosition(x, variablesForFiles.row);
                             Console.ForegroundColor = ConsoleColor.Blue;
-                            string textOutput = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][i], variablesForCommits);
+                            string textOutput = GetDiffs.ResizeTextToFitInPanel(filesDiff[variablesForFiles.indexDiff][i], variablesForCommits);
                             Console.Write(textOutput);
                             Console.ResetColor();
                         }
@@ -266,13 +279,13 @@ namespace GitClient
 
                             variablesForFiles.row++;
                             Console.SetCursorPosition(x, variablesForFiles.row);
-                            content = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][i], variablesForCommits);
+                            content = GetDiffs.ResizeTextToFitInPanel(filesDiff[variablesForFiles.indexDiff][i], variablesForCommits);
                             SetColorForLinesOfCode(content, variablesForCommits);
                         }
                         break;
                 }
 
-                if (variablesForFiles.up == false && variablesForFiles.index < list.listOfAllDiffs[variablesForFiles.indexDiff].Count && variablesForFiles.down == true)
+                if (variablesForFiles.up == false && variablesForFiles.index < filesDiff[variablesForFiles.indexDiff].Count && variablesForFiles.down == true)
                 {
                     variablesForFiles.index++;
                 }
@@ -291,29 +304,31 @@ namespace GitClient
             }
 
 
-            if (variablesForFiles.index == list.listOfAllDiffs[variablesForFiles.indexDiff].Count || variablesForFiles.row == Console.WindowHeight - 2)
-            {
-                if (variablesForCommits.logTab == true)
-                {
-                    variablesForFiles.row = 0;
-                }
-                else
-                {
-                    variablesForFiles.row = 3;
-                }
+            //if (variablesForFiles.index == filesDiff[variablesForFiles.indexDiff].Count || variablesForFiles.row == Console.WindowHeight - 2)
+            //{
+            //    if (variablesForCommits.logTab == true)
+            //    {
+            //        variablesForFiles.row = 0;
+            //        variablesForFiles.index = list.startingIndexesLog[variablesForFiles.indexDiff][variablesForFiles.x];
 
-                variablesForFiles.index = list.startingIndexesLog[variablesForFiles.indexDiff][variablesForFiles.x];
-            }
+            //    }
+            //    else
+            //    {
+            //        if (variablesForFiles.unstageChanges == true)
+            //        {
+            //            variablesForFiles.index = list.startingIndexesUnstaged[variablesForFiles.indexDiff][variablesForFiles.x];
+            //        }
+            //        else
+            //        {
+            //            variablesForFiles.index = list.startingIndexesStaged[variablesForFiles.indexDiff][variablesForFiles.x];
+            //        }
+
+            //        variablesForFiles.row = 3;
+            //    }
+
+            //}
 
             variablesForFiles.down = true;
-            if (variablesForCommits.logTab == true)
-            {
-                variablesForFiles.row = 0;
-            }
-            else
-            {
-                variablesForFiles.row = 3;
-            }
 
             if (variablesForCommits.pressRight > 1 && variablesForCommit.logTab == true || tab.initialState == false)
             {
@@ -329,7 +344,6 @@ namespace GitClient
 
         public static void FilesBackground(string fileFullName, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits)
         {
-            //int x = 0;
             int y = 0;
 
             if (variablesForCommit.logTab == true)

@@ -41,15 +41,11 @@ namespace GitClient
                 }
                 else
                 {
-                    Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(variablesForFiles.projName);
-                    Console.ResetColor();
                     int index = 0;
                     variablesForFiles.unstageChanges = true;
                     GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, unstagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
                     GetDiffForChanges.DiffUnstagedChanges(unstagedDiff, list, variablesForFiles, variablesForCommits, tab);
-                    variablesForFiles.indexDiff = 0;
+                    variablesForFiles.indexDiff = -1;
                     variablesForFiles.fileIndex = 0;
                 }
             }
@@ -92,14 +88,30 @@ namespace GitClient
                     throw new Exception("Failed to get the commit tree");
                 }
 
+
                 if (LibGit2Wrapper.git_repository_index(out indexPtr, commitElements.repo) != 0)
                 {
-                    throw new Exception("Failed to get the repository index");
+                    Console.WriteLine("Failed to get repository index.");
+                    return;
                 }
-             
+
+                LibGit2Wrapper.GitStrArray pathspec = new LibGit2Wrapper.GitStrArray();
+                if (LibGit2Wrapper.git_index_add_all(indexPtr, ref pathspec, 0, IntPtr.Zero, IntPtr.Zero) != 0)
+                {
+                    Console.WriteLine("Failed to add all changes to the index.");
+                    return;
+                }
+
+                if (LibGit2Wrapper.git_index_write(indexPtr) != 0)
+                {
+                    Console.WriteLine("Failed to write changes to the index.");
+                    return;
+                }
+
                 if (LibGit2Wrapper.git_diff_tree_to_index(out stagedDiff, commitElements.repo, treePtr, indexPtr, ref options) != 0)
                 {
-                    throw new Exception("Failed to get diff between tree and index");
+                    Console.WriteLine("Failed to create diff.");
+                    return;
                 }
 
                 int index = 0;
@@ -121,8 +133,16 @@ namespace GitClient
                     variablesForFiles.stageChanges = true;
                     variablesForFiles.unstageChanges = false;
                     GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
-                }
+                    GetDiffForChanges.DiffUnstagedChanges(stagedDiff, list, variablesForFiles, variablesForCommits, tab);
+                    variablesForFiles.indexDiff = 0;
+                    variablesForFiles.fileIndex = 0;
 
+                    if (list.unstagedChangesFiles.Count > 0)
+                    {
+                        variablesForFiles.unstageChanges = true;
+                        variablesForFiles.stageChanges = false;
+                    }
+                }
             }
             finally
             {
@@ -146,7 +166,6 @@ namespace GitClient
                     LibGit2Wrapper.git_commit_free(commitPtr);
                 }
             }
-            
         }
 
         public static void GetStatusChangesNames()

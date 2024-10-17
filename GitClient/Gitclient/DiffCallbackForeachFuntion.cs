@@ -23,30 +23,39 @@ namespace GitClient
 
             int i = 0;
             var filesList = new List<string>();
+
             if (variablesForCommit.logTab == true)
             {
                 filesList = list.listOfFiles;
+                while (i < filesList.Count)
+                {
+                    list.listOfAllDiffs.Add(new List<string>());
+                    list.startingIndexesLog.Add(new List<int>());
+                    i++;
+                }
             }
             else
             {
                 if (variablesForFiles.unstageChanges == true)
                 {
                     filesList = list.unstagedChangesFiles;
+                    while (i < filesList.Count)
+                    {
+                        list.unstagedChangesDiff.Add(new List<string>());
+                        list.startingIndexesUnstaged.Add(new List<int>());
+                        i++;
+                    }
                 }
                 else
                 {
                     filesList = list.stagedChangesFiles;
+                    while (i < filesList.Count)
+                    {
+                        list.stagedChangesDiff.Add(new List<string>());
+                        list.startingIndexesStaged.Add(new List<int>());
+                        i++;
+                    }
                 }
-            }
-
-            while (i < filesList.Count)
-            {
-                list.listOfAllDiffs.Add(new List<string>());
-                list.stagedChangesDiff.Add(new List<string>());
-                list.unstagedChangesDiff.Add(new List<string>());
-                list.startingIndexesLog.Add(new List<int>());
-                list.startingIndexesTab.Add(new List<int>());
-                i++;
             }
 
             return LibGit2Wrapper.git_diff_foreach(diff, DiffFileCallback, DiffBinaryCallback, DiffHunkCallback, DiffLineCallback, IntPtr.Zero);
@@ -65,8 +74,16 @@ namespace GitClient
             }
             else 
             {
-                fileName = list1.unstagedChangesFiles[files.fileIndex];
-                fileName = fileName.Remove(0, 5);
+                if (files.unstageChanges == true)
+                {
+                    fileName = list1.unstagedChangesFiles[files.fileIndex];
+                    fileName = fileName.Remove(0, 5);
+                }
+                else
+                {
+                    fileName = list1.stagedChangesFiles[files.fileIndex];
+                    fileName = fileName.Remove(0, 5);
+                }
             }
 
             string text = newFilePath!;
@@ -74,8 +91,24 @@ namespace GitClient
             if (newFilePath!.Contains(fileName))
             {
                 files.indexDiff++;
-                list1.listOfAllDiffs[files.indexDiff].Add(text);
-                list1.startingIndexesLog[files.indexDiff].Add(0);
+                if (variablesForCommit.logTab == true)
+                {
+                    list1.listOfAllDiffs[files.indexDiff].Add(text);
+                    list1.startingIndexesLog[files.indexDiff].Add(0);
+                }
+                else
+                {
+                    if (files.unstageChanges == true)
+                    {
+                        list1.unstagedChangesDiff[files.indexDiff].Add(text);
+                        list1.startingIndexesUnstaged[files.fileIndex].Add(0);
+                    }
+                    else
+                    {
+                        list1.stagedChangesDiff[files.indexDiff].Add(text);
+                        list1.startingIndexesStaged[files.fileIndex].Add(0);
+                    }
+                }
             }
 
             files.fileIndex++;
@@ -98,7 +131,22 @@ namespace GitClient
                 text = text.Remove(text.IndexOf('\n'));
             }
 
-            list1.listOfAllDiffs[files.indexDiff].Add(text);
+            if (variablesForCommit.logTab == true)
+            {
+                list1.listOfAllDiffs[files.indexDiff].Add(text);
+            }
+            else
+            {
+                if (files.unstageChanges == true)
+                {
+                    list1.unstagedChangesDiff[files.indexDiff].Add(text);
+                }
+                else
+                {
+                    list1.stagedChangesDiff[files.indexDiff].Add(text);
+                }
+            }
+
             return 0;
         }
 
@@ -119,17 +167,23 @@ namespace GitClient
 
             string text = $"{(char)line.origin} {content}";
 
-            if (list1.listOfAllDiffs[files.indexDiff][files.index].StartsWith("=")
-               || list1.listOfAllDiffs[files.indexDiff][files.index].StartsWith("<")
-                 || list1.listOfAllDiffs[files.indexDiff][files.index].StartsWith(">"))
+            if (variablesForCommit.logTab == true)
             {
-                list1.listOfAllDiffs[files.indexDiff].RemoveAt(list1.listOfAllDiffs[files.indexDiff].IndexOf("="));
-                list1.listOfAllDiffs[files.indexDiff].RemoveAt(list1.listOfAllDiffs[files.indexDiff].IndexOf("<"));
-                list1.listOfAllDiffs[files.indexDiff].RemoveAt(list1.listOfAllDiffs[files.indexDiff].IndexOf(">"));
+                list1.listOfAllDiffs[files.indexDiff].Add(text);
+                files.nextFile = true;
+            }
+            else
+            {
+                if (files.unstageChanges == true)
+                {
+                    list1.unstagedChangesDiff[files.indexDiff].Add(text);
+                }
+                else
+                {
+                    list1.stagedChangesDiff[files.indexDiff].Add(text);
+                }
             }
 
-            list1.listOfAllDiffs[files.indexDiff].Add(text);
-            files.nextFile = true;
             return 0;
         }
     }
