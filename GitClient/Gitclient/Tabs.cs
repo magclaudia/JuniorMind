@@ -51,23 +51,26 @@ namespace GitClient
             StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             string fileFullName = "";
-            
-            if (list.unstagedChangesFiles.Count > 0)
-            {
-                fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-                variablesForFiles.fileRow = dimensions.unstagedStart;
-            }
-            else
-            {
-                fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
-                variablesForFiles.fileRow = dimensions.stagedStart;
-            }
 
-            DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
-            variablesForCommits.stopWorkingOnCommits = true;
-            variablesForCommits.pressRight = 1;
-            tabs.initialState = true;
-            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
+            if (list.unstagedChangesFiles.Count > 0 || list.listOfFiles.Count > 0)
+            {
+                if (list.unstagedChangesFiles.Count > 0)
+                {
+                    fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+                    variablesForFiles.fileRow = dimensions.unstagedStart;
+                }
+                else
+                {
+                    fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
+                    variablesForFiles.fileRow = dimensions.stagedStart;
+                }
+
+                DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
+                variablesForCommits.stopWorkingOnCommits = true;
+                variablesForCommits.pressRight = 1;
+                tabs.initialState = true;
+                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
+            }
         }
 
         public static void ChooseStatusTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
