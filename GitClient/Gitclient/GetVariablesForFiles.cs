@@ -27,7 +27,9 @@
         public string projName;
         public bool unstageChanges;
         public bool stageChanges;
-
+        public bool statusDiffOpen;
+        public bool statusDiffStartNavigate;
+        public int currentLineForStatusDiff;
         public GetVariablesForFiles()
         {
             nextFile = false;
@@ -55,7 +57,9 @@
             projName = "";
             unstageChanges = false;
             stageChanges = false;
-
+            statusDiffOpen = false;
+            statusDiffStartNavigate = true;
+            currentLineForStatusDiff = 1;
         }
     }
 }
