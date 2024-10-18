@@ -101,6 +101,7 @@ namespace GitClient
             {
                 GetAllFiles.PrintStatusFilesIfAlreadyReceived(variablesForFiles, list, 5, 0);
                 string fileFullName = "";
+               
                 if (variablesForFiles.unstageChanges == true)
                 {
                     fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
@@ -115,7 +116,6 @@ namespace GitClient
                     variablesForFiles.unstageChanges = false;
                     variablesForFiles.stageChanges = true;
                 }
-
 
                 DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
                 variablesForFiles.down = false;
