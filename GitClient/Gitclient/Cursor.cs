@@ -89,7 +89,7 @@ namespace GitClient
 
             if (list.listStartAt.Count > 0)
             {
-                if (list.listStartAt[variablesForFiles.x] == variablesForFiles.index && indicatorPosition >= 0)
+                if (list.listStartAt[variablesForFiles.indexForLog] == variablesForFiles.index && indicatorPosition >= 0)
                 {
                     while (i < stop - 1)
                     {

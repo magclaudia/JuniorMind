@@ -14,7 +14,7 @@
         public int row;
         public int fileRow;
         public int numberOfNavigations;
-        public int x;
+        public int indexForLog;
         public int lastLine;
         public int index;
         public int a;
@@ -30,6 +30,9 @@
         public bool statusDiffOpen;
         public bool statusDiffStartNavigate;
         public int currentLineForStatusDiff;
+        public int indexForUnstaged;
+        public int indexForStaged;
+        public int startAt;
         public GetVariablesForFiles()
         {
             nextFile = false;
@@ -44,7 +47,7 @@
             row = 0;
             fileRow = Console.WindowHeight / 2 + 4;
             numberOfNavigations = 0;
-            x = 0;
+            indexForLog = 0;
             lastLine = 0;
             index = 0;
             a = 0;
@@ -60,6 +63,9 @@
             statusDiffOpen = false;
             statusDiffStartNavigate = true;
             currentLineForStatusDiff = 1;
+            indexForUnstaged = 0;
+            indexForStaged = 0;
+            startAt = 0;
         }
     }
 }

@@ -164,7 +164,7 @@ namespace GitClient
             string fileFullName = "";
 
             int height = 0;
-           
+
             if (variablesForCommits.logTab == true)
             {
                 if (variablesForFiles.diffMoves == false)
@@ -195,7 +195,7 @@ namespace GitClient
                 {
                     x = 1;
 
-                    if (variablesForFiles.down == false)
+                    if (variablesForFiles.down == false && variablesForFiles.up == false)
                     {
                         variablesForFiles.row = dimensions.tabHeight + 1;
                     }
@@ -264,7 +264,7 @@ namespace GitClient
                         break;
                     case "hunk":
                         {
-                            if (variablesForFiles.row == 0 && variablesForFiles.down == false || variablesForCommits.logTab == false && variablesForFiles.row == 3 && variablesForFiles.down == false)
+                            if (variablesForFiles.row == 0 && variablesForFiles.down == false || variablesForCommits.logTab == false && variablesForFiles.row == 3 && variablesForFiles.down == false && variablesForFiles.up == false)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
@@ -308,8 +308,6 @@ namespace GitClient
                         TextExceedingPanelHeight(fileFullName, variablesForFiles, variablesForCommits, list, commitElements);
                     }
                 }
-
-                
             }
 
 
@@ -390,7 +388,7 @@ namespace GitClient
 
                 variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
                 variablesForFiles.fileIndex = 0;
-                variablesForFiles.x = 1;
+                variablesForFiles.indexForLog = 1;
                 fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
             }
 
@@ -517,6 +515,7 @@ namespace GitClient
                 string text = GetDiffs.ResizeTextToFitInPanel(filesDiff[variablesForFiles.indexDiff][variablesForFiles.index], variablesForCommits);
                 Console.Write(text);
                 Console.ResetColor();
+
                 if (variablesForCommits.logTab == true)
                 {
                     GetDiffsLine.GetLineThroughtDiffsLines(variablesForCommits, variablesForFiles.currentLine, variablesForFiles.totalLines, list);
