@@ -56,18 +56,22 @@ namespace GitClient
             {
                 fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
                 variablesForFiles.fileRow = dimensions.unstagedStart;
+                DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
+                variablesForCommits.stopWorkingOnCommits = true;
+                variablesForCommits.pressRight = 1;
+                tabs.initialState = true;
+                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
-            else
+            else if (list.stagedChangesFiles.Count > 0)
             {
                 fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
                 variablesForFiles.fileRow = dimensions.stagedStart;
+                DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
+                variablesForCommits.stopWorkingOnCommits = true;
+                variablesForCommits.pressRight = 1;
+                tabs.initialState = true;
+                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
-
-            DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
-            variablesForCommits.stopWorkingOnCommits = true;
-            variablesForCommits.pressRight = 1;
-            tabs.initialState = true;
-            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
         }
 
         public static void ChooseStatusTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
