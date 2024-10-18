@@ -109,7 +109,6 @@ namespace GitClient
                                         break;
                                     }
 
-                                    //
                                     if (list.stagedChangesFiles.Count > 0 && variablesForFiles.fileIndex == list.stagedChangesFiles.Count)
                                     {
                                         break;
