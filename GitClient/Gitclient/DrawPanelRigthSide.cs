@@ -4,6 +4,7 @@
     {
         private static int plusLegthForLargePanel = 10;
         private static int border = 2;
+        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public struct InfoPanel
         {
@@ -96,9 +97,9 @@
         public static void Info()
         {
             var infoPanel = new InfoPanel();
-            Console.SetCursorPosition(infoPanel.edgeOne, 0);
+            Console.SetCursorPosition(infoPanel.edgeOne, dimensions.tabHeight + 1);
             Console.Write("┌");
-            Console.SetCursorPosition(infoPanel.edgeTwo, 0);
+            Console.SetCursorPosition(infoPanel.edgeTwo, dimensions.tabHeight + 1);
             Console.Write("┐");
             Console.SetCursorPosition(infoPanel.edgeTree, infoPanel.edgeFour);
             Console.Write("└");
@@ -107,13 +108,13 @@
 
             for (int i = Console.WindowWidth / 2 + plusLegthForLargePanel + 1; i < Console.WindowWidth - 1; i++)
             {
-                Console.SetCursorPosition(i, 0);
+                Console.SetCursorPosition(i, dimensions.tabHeight + 1);
                 Console.Write("─");
                 Console.SetCursorPosition(i, infoPanel.edgeFour);
                 Console.Write("─");
             }
 
-            for (int i = 1; i < infoPanel.edgeFour; i++)
+            for (int i = dimensions.tabHeight + 2; i < infoPanel.edgeFour; i++)
             {
                 Console.SetCursorPosition(infoPanel.edgeOne, i);
                 Console.Write("│");
@@ -190,9 +191,9 @@
         private static void ListOfAllCommitsPanel()
         {
             var commitsPanel = new CommitsPanel();
-            Console.SetCursorPosition(0, 0);
+            Console.SetCursorPosition(0, dimensions.tabHeight + 1);
             Console.Write("┌");
-            Console.SetCursorPosition(commitsPanel.edgeTwoX, 0);
+            Console.SetCursorPosition(commitsPanel.edgeTwoX, dimensions.tabHeight + 1);
             Console.Write("┐");
             Console.SetCursorPosition(0, commitsPanel.edgeTreeY);
             Console.Write("└");
@@ -201,19 +202,19 @@
 
             for (int i = 1; i < commitsPanel.width; i++)
             {
-                Console.SetCursorPosition(i, 0);
+                Console.SetCursorPosition(i, dimensions.tabHeight + 1);
                 Console.Write("─");
                 Console.SetCursorPosition(i, commitsPanel.edgeTreeY);
                 Console.Write("─");
             }
 
-            for (int i = 1; i < Console.WindowHeight - 1; i++)
+            for (int i = dimensions.tabHeight + 2; i < Console.WindowHeight - 1; i++)
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
                 Console.SetCursorPosition(commitsPanel.edgeTwoX, i);
                 Console.Write("║");
-                Console.SetCursorPosition(1, i);
+                Console.SetCursorPosition(0, i);
             }
         }
     }

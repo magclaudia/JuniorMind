@@ -212,32 +212,44 @@ namespace GitClient
                         break;
                     case ConsoleKey.Enter:
                         {
-                            variablesForCommits.numberOfEnterPresses++;
-                            variablesForCommits.enter = true;
-
-                            if (variablesForCommits.numberOfEnterPresses > 1)
+                            if (variablesForCommits.logTab == true)
                             {
-                                variablesForCommits.enter = false;
-                                variablesForCommits.numberOfEnterPresses = 0;
-                            }
+                                variablesForCommits.numberOfEnterPresses++;
+                                variablesForCommits.enter = true;
 
-                            if (variablesForCommits.right == false)
-                            {
-                                variablesForCommits.displayPanel = true;
-
-                                if (variablesForCommits.panelAlreadyDisplayed == false && variablesForCommits.displayPanel == true)
+                                if (variablesForCommits.numberOfEnterPresses > 1)
                                 {
-                                    variablesForCommits.panelAlreadyDisplayed = true;
-                                    GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
-                                }
-                                else
-                                {
-                                    variablesForCommits.displayPanel = false;
-                                    Console.Clear();
-                                    DrawExternalBorder.DrawBox();
+                                    variablesForCommits.enter = false;
+                                    variablesForCommits.numberOfEnterPresses = 0;
                                 }
 
-                                GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElement, list);
+                                if (variablesForCommits.right == false)
+                                {
+                                    variablesForCommits.displayPanel = true;
+
+                                    if (variablesForCommits.panelAlreadyDisplayed == false && variablesForCommits.displayPanel == true)
+                                    {
+                                        variablesForCommits.panelAlreadyDisplayed = true;
+                                        GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
+                                    }
+                                    else
+                                    {
+                                        variablesForCommits.displayPanel = false;
+                                        int i = dimensions.tabHeight + 1;
+
+                                        while (i < Console.WindowHeight)
+                                        {
+                                            Console.SetCursorPosition(0, i);
+                                            Console.Write(new string(' ', dimensions.width + 1));
+                                            i++;
+                                        }
+
+                                        // DrawExternalBorder.DrawBox();
+                                        DrawLogPanel.DrawLargePanel();
+                                    }
+
+                                    GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElement, list);
+                                }
                             }
                         }
                         break;
@@ -349,9 +361,18 @@ namespace GitClient
         {
             IntPtr commitPtr = IntPtr.Zero;
             int i = 1;
+
             if (clear == true)
             {
-                Console.Clear();
+                int j = dimensions.tabHeight + 1;
+
+                while (j < Console.WindowHeight)
+                {
+                    Console.SetCursorPosition(0, j);
+                    Console.Write(new string(' ', dimensions.width + 1));
+                    j++;
+                }
+
                 if (variablesForCommits.right == true)
                 {
                     DrawPanelLeftSide.Info();
@@ -580,7 +601,6 @@ namespace GitClient
             else
             {
                 filelist = list.stagedChangesFiles;
-                //variablesForFiles.fileRow = dimensions.stagedStart;
                 y = Console.WindowHeight - 1;
             }
 

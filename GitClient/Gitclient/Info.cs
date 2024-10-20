@@ -2,6 +2,8 @@
 {
     public class Info
     {
+        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
         public static void GetInfo(GetVariablesForCommits indexes, CommitElements listOfCommits)
         {
             var position = new DrawPanelRigthSide.InfoPanel();
@@ -11,7 +13,8 @@
             string sha = listOfCommits.Id[indexes.currentCommitIndex];
             string[] arrayOfInfos = { author, dateOrTime, sha };
             string output;
-            for (int i = 1; i < position.height; i++)
+
+            for (int i = dimensions.tabHeight + 2; i < position.height; i++)
             {
                 if (indexes.right == true)
                 {
@@ -22,7 +25,7 @@
                     Console.SetCursorPosition(position.edgeOne + 1, i);
                 }
 
-                output = ($"{infos[i - 1]}: {arrayOfInfos[i - 1]}");
+                output = $"{infos[i - 4]}: {arrayOfInfos[i - 4]}";
                 if (output.Length > position.width)
                 {
                     output = output.Substring(0, position.width);
@@ -34,7 +37,7 @@
 
                 Console.Write(output);
 
-                if (i == 3)
+                if (i == 6)
                 {
                     break;
                 }

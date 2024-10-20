@@ -119,11 +119,11 @@ namespace GitClient
                 variablesForCommits.currentCommitIndex = 0;
             }
 
-            while (variablesForCommits.rigthCursor < size.height)
+            while (variablesForCommits.rigthCursor < size.height - dimensions.tabHeight - 1)
             {
                 string text = string.Empty;
                 string listWithoutMessage = string.Empty;
-                Console.SetCursorPosition(1, variablesForCommits.rigthCursor + 1);
+                Console.SetCursorPosition(1, variablesForCommits.rigthCursor + 1 + dimensions.tabHeight + 1);
 
                 element.Id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
@@ -159,6 +159,7 @@ namespace GitClient
                 element.Description = commitElement.Description[variablesForCommits.currentCommitIndex].TrimEnd();
                 string message = GetMessage(element.Description, element.Id, element.DateTime, author, element.Message);
                 text = $"{element.Id}{element.DateTime}{author}{message}";
+                
                 if (text.Length >= size.width)
                 {
                     message = text.Substring(listWithoutMessage.Length, size.width - listWithoutMessage.Length - 2);
@@ -177,6 +178,7 @@ namespace GitClient
 
                 Console.Write($"{message}");
                 text = $"{element.Id}{element.DateTime}{author}{message}";
+
                 if (variablesForCommits.currentCommitIndex == index)
                 {
                     variablesForCommits.textForBlueFond = text;
