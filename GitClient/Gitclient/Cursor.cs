@@ -24,7 +24,7 @@ namespace GitClient
             }
             else if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == false && variablesForCommits.up == true && indicatorPosition < Console.WindowHeight - 3)
             {
-                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + 1);
+                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + dimensions.tabHeight + 3);
                 Console.Write("║");
             }
             else if (variablesForCommits.heightPosition > 10 && variablesForCommits.displayPanel == false && variablesForCommits.down == true && indicatorPosition >= 1)

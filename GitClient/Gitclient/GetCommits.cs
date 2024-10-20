@@ -36,6 +36,7 @@ namespace GitClient
             var element = new Elements();
             variablesForCommits.rigthCursor = 0;
             int index = variablesForCommits.currentCommitIndex;
+
             if (variablesForCommits.currentCommitIndex > variablesForCommits.heightPosition)
             {
                 variablesForCommits.currentCommitIndex = variablesForCommits.currentCommitIndex - variablesForCommits.heightPosition + 1;

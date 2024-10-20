@@ -170,6 +170,7 @@
                 Console.Write($"{message}");
 
                 text = $"{id}{data}{author}{message}";
+
                 if (i == 1 && variablesForCommits.down == true)
                 {
                     variablesForCommits.textForBlueFond = text;

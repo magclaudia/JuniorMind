@@ -891,13 +891,15 @@ namespace GitClient
                 variablesForCommits.down = false;
                 variablesForCommits.heightPosition--;
                 variablesForCommits.currentCommitIndex--;
+                
                 if (variablesForCommits.cursorPosition > 0)
                 {
                     variablesForCommits.cursorPosition--;
                 }
 
                 bool reachLimit = false;
-                if (variablesForCommits.heightPosition == Console.WindowHeight - 2 || variablesForCommits.heightPosition == 0)
+
+                if (variablesForCommits.heightPosition == Console.WindowHeight - 2 || variablesForCommits.heightPosition == dimensions.tabHeight + 1)
                 {
                     variablesForCommits.heightPosition = dimensions.tabHeight + 2;
                     ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(variablesForCommits, variablesForFiles, commitElement, list, blueFond);
