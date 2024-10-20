@@ -7,7 +7,7 @@
             var text = string.Empty;
             int commitNumber = indexes.currentCommitIndex;
             text = $"Commit {commitNumber + 1}/{listOfCommits.Id.Count} ";
-            Console.SetCursorPosition(1, 0);
+            Console.SetCursorPosition(1, 3);
             Console.Write(text);
         }
     }

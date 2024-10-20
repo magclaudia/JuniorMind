@@ -105,7 +105,6 @@ namespace GitClient
                                 }
                                 else
                                 {
-
                                     HandleCommitsDownMoves(variablesForCommits, variablesForFiles, commitElement, list, blueFond);
                                 }
                             }
@@ -326,6 +325,7 @@ namespace GitClient
                             variablesForCommits.logTab = true;
                             tab.finishUpMoves = false;
                             Tabs.ChooseLogTab(commitElement, variablesForCommits, variablesForFiles, list);
+                            GetListOfCommits.GetAllCommits(commitElement.repo);
                         }
                         break;
 
@@ -899,7 +899,7 @@ namespace GitClient
                 bool reachLimit = false;
                 if (variablesForCommits.heightPosition == Console.WindowHeight - 2 || variablesForCommits.heightPosition == 0)
                 {
-                    variablesForCommits.heightPosition = 1;
+                    variablesForCommits.heightPosition = dimensions.tabHeight + 2;
                     ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(variablesForCommits, variablesForFiles, commitElement, list, blueFond);
                 }
 
@@ -922,12 +922,13 @@ namespace GitClient
             {
                 if (variablesForCommits.currentCommitIndex == 0)
                 {
-                    variablesForCommits.heightPosition = 1;
+                    variablesForCommits.heightPosition = dimensions.tabHeight + 2;
                 }
 
                 variablesForCommits.down = true;
                 variablesForCommits.up = false;
                 bool reachLimit = false;
+
                 if (variablesForCommits.currentCommitIndex > variablesForCommits.height && variablesForCommits.cursorPosition == 0 || variablesForCommits.cursorPosition < variablesForCommits.currentCommitIndex - Console.WindowHeight - 2 && variablesForCommits.heightPosition == Console.WindowHeight - 2)
                 {
                     variablesForCommits.cursorPosition = variablesForCommits.currentCommitIndex - (Console.WindowHeight - 2) + 2;
@@ -936,14 +937,14 @@ namespace GitClient
 
                 if (variablesForCommits.heightPosition == Console.WindowHeight - 2)
                 {
-                    if (variablesForCommits.cursorPosition == commitElement.Id.Count - (Console.WindowHeight - 3))
+                    if (variablesForCommits.cursorPosition == commitElement.Id.Count - (Console.WindowHeight - dimensions.tabHeight - 4))
                     {
                         variablesForCommits.cursorPosition = 2;
                     }
 
                     variablesForCommits.currentCommitIndex = variablesForCommits.cursorPosition;
                     variablesForCommits.cursorPosition++;
-                    variablesForCommits.heightPosition = 1;
+                    variablesForCommits.heightPosition = dimensions.tabHeight + 2;
                     ReplaceEachCommitOneByOne.PrintNewCommitIfReachLimit(variablesForCommits, variablesForFiles, commitElement, list, blueFond);
                 }
 
@@ -962,10 +963,10 @@ namespace GitClient
 
         private static void VerifySize(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements listOfCommits, GetCertainList list)
         {
-            if (Console.WindowHeight != variablesForCommits.height && Console.WindowWidth != variablesForCommits.width)
+            if (Console.WindowHeight != variablesForCommits.height - (dimensions.tabHeight + 2) && Console.WindowWidth != variablesForCommits.width)
             {
-                variablesForCommits.height = Console.WindowHeight;
-                variablesForCommits.width = Console.WindowWidth;
+                variablesForCommits.height = Console.WindowHeight - (dimensions.tabHeight + 2);
+                variablesForCommits.width = Console.WindowWidth - 2;
                 Console.Clear();
                 DrawExternalBorder.DrawBox();
                 GetCommits.PrintCommits(variablesForCommits, variablesForFiles, listOfCommits, list);

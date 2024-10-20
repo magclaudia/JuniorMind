@@ -119,6 +119,7 @@
                 {
                     ClearCommitRow(variablesForCommits);
                 }
+
                 string id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
                 Console.Write($"{commitElement.Id[variablesForCommits.currentCommitIndex]} ", Console.ForegroundColor = ConsoleColor.Magenta);
 
@@ -199,6 +200,7 @@
             int index = variablesForCommits.currentCommitIndex;
             int i = 0;
             int count = 0;
+
             if (variablesForCommits.down == true)
             {
                 i = 1;

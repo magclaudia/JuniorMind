@@ -43,6 +43,7 @@ namespace GitClient
 
                             commitElement.Message.Add(message);
                             string description;
+                            
                             if (messageParts.Length > 1)
                             {
                                 description = messageParts[1].Trim();
@@ -61,7 +62,7 @@ namespace GitClient
                         }
                     }
 
-                    DrawExternalBorder.DrawBox();
+                    //DrawExternalBorder.DrawBox();
                     commitElement.repo = repo;
                     GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElement, list);
                 }

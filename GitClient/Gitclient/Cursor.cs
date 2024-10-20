@@ -4,10 +4,13 @@ namespace GitClient
 {
     public class Cursor
     {
+        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
+
         public static void UpdateCursorPositionForCommitsList(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list, int blueFond)
         {
-            Console.CursorVisible = false;
-            int indicatorPosition = (variablesForCommits.currentCommitIndex * (Console.WindowHeight - 2)) / commitElements.Id.Count;
+            Console.CursorVisible = true;
+            int indicatorPosition = (variablesForCommits.currentCommitIndex * ((Console.WindowHeight - dimensions.tabHeight - 4)) / commitElements.Id.Count);
 
             if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == true && variablesForCommits.up && indicatorPosition < Console.WindowHeight - 3)
             {
@@ -16,27 +19,27 @@ namespace GitClient
             }
             else if (variablesForCommits.heightPosition >= 10 && variablesForCommits.displayPanel == true && variablesForCommits.down == true && indicatorPosition >= 1)
             {
-                Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition);
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + 1);
                 Console.Write("║");
             }
             else if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == false && variablesForCommits.up == true && indicatorPosition < Console.WindowHeight - 3)
             {
-                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + 2);
+                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + 1);
                 Console.Write("║");
             }
             else if (variablesForCommits.heightPosition > 10 && variablesForCommits.displayPanel == false && variablesForCommits.down == true && indicatorPosition >= 1)
             {
-                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition);
+                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + dimensions.tabHeight + 1);
                 Console.Write("║");
             }
 
             if (variablesForCommits.displayPanel == false)
             {
-                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + 1);
+                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + dimensions.tabHeight + 2);
             }
             else
             {
-                Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + 1);
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + +dimensions.tabHeight + 2);
             }
 
             DisplayCustomCursor(ConsoleColor.DarkBlue, commitElements, variablesForCommits, list);

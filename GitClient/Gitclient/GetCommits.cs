@@ -3,6 +3,8 @@ namespace GitClient
 {
     public class GetCommits
     {
+        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
         public struct Elements
         {
             public string Id;
@@ -45,9 +47,9 @@ namespace GitClient
 
             string text = "";
 
-            while (variablesForCommits.rigthCursor < variablesForCommits.height - 2)
+            while (variablesForCommits.rigthCursor < (variablesForCommits.height - dimensions.tabHeight) - 3)
             {
-                Console.SetCursorPosition(1, variablesForCommits.rigthCursor + 1);
+                Console.SetCursorPosition(1, variablesForCommits.rigthCursor + dimensions.tabHeight + 2);
                 element.Id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
@@ -89,11 +91,11 @@ namespace GitClient
 
                 variablesForCommits.currentCommitIndex++;
                 variablesForCommits.rigthCursor++;
-                
             }
 
             variablesForCommits.panelAlreadyDisplayed = false;
             variablesForCommits.currentCommitIndex = index;
+            variablesForCommits.logTab = true;
             GetVariablesForTabs tab = new GetVariablesForTabs();
             Cursor.UpdateCursorPositionForCommitsList(commitElement, variablesForCommits, list, blueFond);
             Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list, tab);

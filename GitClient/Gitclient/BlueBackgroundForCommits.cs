@@ -1,12 +1,16 @@
-﻿namespace GitClient
+﻿using System.Runtime.InteropServices;
+
+namespace GitClient
 {
     public class BlueBackgroundForCommits
     {
+        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
         public static void DisplayBlueBox(GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, GetCertainList list)
         {
-            if (variablesForCommits.heightPosition > Console.WindowHeight - 2)
+            if (variablesForCommits.heightPosition > Console.WindowHeight)
             {
-                variablesForCommits.heightPosition = Console.WindowHeight - 2;
+                variablesForCommits.heightPosition = (Console.WindowHeight - dimensions.tabHeight) - 3;
             }
 
             Console.SetCursorPosition(1, variablesForCommits.heightPosition);

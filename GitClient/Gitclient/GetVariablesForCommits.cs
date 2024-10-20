@@ -31,7 +31,7 @@
             rigthCursor = 0;
             cursorPosition = 1;
             currentCommitIndex = 0;
-            heightPosition = 1;
+            heightPosition = 4;
             panelAlreadyDisplayed = false;
             displayPanel = false;
             up = false;
@@ -42,7 +42,7 @@
             nextFile = false;
             clear = true;
             numberOfEnterPresses = 0;
-            height = Console.WindowHeight;
+            height = Console.WindowHeight - 4;
             width = Console.WindowWidth;
             textForBlueFond = string.Empty;
             pressRight = 0;
