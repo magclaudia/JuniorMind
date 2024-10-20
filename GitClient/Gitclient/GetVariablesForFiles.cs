@@ -44,7 +44,7 @@
             indexForFiles = 0;
             countFilesContain = 0;
             currentLine = 1;
-            row = 0;
+            row = 3;
             fileRow = Console.WindowHeight / 2 + 4;
             numberOfNavigations = 0;
             indexForLog = 0;

@@ -2,34 +2,34 @@
 {
     public class DrawExternalBorder
     {
-        public static void DrawBox()
-        {
-            int width = Console.WindowWidth - 1;
-            int height = Console.WindowHeight - 1;
-            Console.SetCursorPosition(0, 0);
-            Console.Write("┌");
-            Console.SetCursorPosition(width, 0);
-            Console.Write("┐");
-            Console.SetCursorPosition(0, height);
-            Console.Write("└");
-            Console.SetCursorPosition(width, height);
-            Console.Write("┘");
+        //public static void DrawBox()
+        //{
+        //    int width = Console.WindowWidth - 1;
+        //    int height = Console.WindowHeight - 1;
+        //    Console.SetCursorPosition(0, 0);
+        //    Console.Write("┌");
+        //    Console.SetCursorPosition(width, 0);
+        //    Console.Write("┐");
+        //    Console.SetCursorPosition(0, height);
+        //    Console.Write("└");
+        //    Console.SetCursorPosition(width, height);
+        //    Console.Write("┘");
 
-            for (int i = 1; i < width; i++)
-            {
-                Console.SetCursorPosition(i, 0);
-                Console.Write("─");
-                Console.SetCursorPosition(i, height);
-                Console.Write("─");
-            }
+        //    for (int i = 1; i < width; i++)
+        //    {
+        //        Console.SetCursorPosition(i, 0);
+        //        Console.Write("─");
+        //        Console.SetCursorPosition(i, height);
+        //        Console.Write("─");
+        //    }
 
-            for (int i = 1; i < height; i++)
-            {
-                Console.SetCursorPosition(0, i);
-                Console.Write("│");
-                Console.SetCursorPosition(width, i);
-                Console.Write("║");
-            }
-        }
+        //    for (int i = 1; i < height; i++)
+        //    {
+        //        Console.SetCursorPosition(0, i);
+        //        Console.Write("│");
+        //        Console.SetCursorPosition(width, i);
+        //        Console.Write("║");
+        //    }
+        //}
     }
 }

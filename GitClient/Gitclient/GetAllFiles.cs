@@ -118,13 +118,13 @@ namespace GitClient
                 }
 
                 Console.SetCursorPosition(1, y);
-                ChooseColorForFiles(variablesForFiles, list, y, i);
+                ChooseColorForFiles(variablesForFiles, variablesForCommits, list, y, i);
                 Console.SetCursorPosition(1, y + 1);
                 y++;
             }
         }
 
-        public static void PrintStatusFilesIfAlreadyReceived(GetVariablesForFiles variablesForFiles, GetCertainList list, int y, int i)
+        public static void PrintStatusFilesIfAlreadyReceived(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, int y, int i)
         {
             int j = 0;
             bool unstagedBool = variablesForFiles.unstageChanges;
@@ -163,7 +163,7 @@ namespace GitClient
                         break;
                     }
 
-                    ChooseColorForFiles(variablesForFiles, list, y, i);
+                    ChooseColorForFiles(variablesForFiles, variablesForCommits, list, y, i);
                     j++;
                     i++;
                     y++;
@@ -197,7 +197,7 @@ namespace GitClient
                         break;
                     }
 
-                    ChooseColorForFiles(variablesForFiles, list, y, i);
+                    ChooseColorForFiles(variablesForFiles, variablesForCommits, list, y, i);
                     j++;
                     i++;
                     y++;
@@ -216,18 +216,26 @@ namespace GitClient
             //variablesForFiles.stageChanges = false;
         }
 
-        public static void ChooseColorForFiles(GetVariablesForFiles variablesForFiles, GetCertainList list, int y, int i)
+        public static void ChooseColorForFiles(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, int y, int i)
         {
             var filelist = new List<string>();
-           
-            if (variablesForFiles.unstageChanges == true)
+            
+            if (variablesForCommits.logTab == true)
             {
-                filelist = list.unstagedChangesFiles;
+                filelist = list.listOfFiles;
             }
             else
             {
-                filelist = list.stagedChangesFiles;
+                if (variablesForFiles.unstageChanges == true)
+                {
+                    filelist = list.unstagedChangesFiles;
+                }
+                else
+                {
+                    filelist = list.stagedChangesFiles;
+                }
             }
+            
 
             switch (filelist[i][0])
             {

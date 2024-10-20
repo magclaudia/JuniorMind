@@ -2,18 +2,36 @@
 {
     public class Message
     {
-        public static void ReturnMessage(int index, CommitElements commitElements, GetVariablesForCommits indexes)
+        public static void ReturnMessage(int index, CommitElements commitElements, GetVariablesForCommits variablesForCommits)
         {
             string message;
             string outputMessage;
             int firstIndex = 0;
             int lengthForNow = 0;
-            var size = new DrawPanelRigthSide.MessageBox();
+            int heightForMessage = 0;
+            int widthForMessage = 0;
+            int xForMessageBox = 0;
+
+            if (variablesForCommits.pressRight == 0)
+            {
+                var size = new DrawPanelRigthSide.MessageBox();
+                heightForMessage = size.height;
+                xForMessageBox = size.edgeOne + 1;
+                widthForMessage = size.width - 2;
+            }
+            else
+            {
+                var size = new DrawPanelLeftSide.MessageBox();
+                heightForMessage = size.height;
+                xForMessageBox = size.edgeOne + 1;
+                widthForMessage = size.width - 2;
+            }
+
             var messageList = new GetCommits.Elements();
             messageList.Message = commitElements.Message[index];
             messageList.Description = commitElements.Description[index];
 
-            if (indexes.right == true)
+            if (variablesForCommits.right == true)
             {
                 Console.SetCursorPosition(1, Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1);
             }
@@ -24,18 +42,18 @@
 
             if (messageList.Description != "")
             {
-                message = $"{messageList.Message}.Description: {messageList.Description}"; ;
+                message = $"{messageList.Message}.Description: {messageList.Description}";
             }
             else
             {
                 message = messageList.Message;
             }
 
-            for (int i = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1; i < size.height; i++)
+            for (int i = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2) + 1; i < heightForMessage; i++)
             {
-                if (message.Length - lengthForNow > Console.WindowWidth / 2 - 10 - 2)
+                if (message.Length - lengthForNow > widthForMessage)
                 {
-                    outputMessage = message.Substring(firstIndex, size.width).TrimStart();
+                    outputMessage = message.Substring(firstIndex, widthForMessage).TrimStart();
                     firstIndex++;
                 }
                 else
@@ -44,13 +62,13 @@
                 }
 
                 lengthForNow += outputMessage.Length;
-                if (indexes.right == true)
+                if (variablesForCommits.right == true)
                 {
                     Console.SetCursorPosition(1, i);
                 }
                 else
                 {
-                    Console.SetCursorPosition(size.edgeOne + 1, i);
+                    Console.SetCursorPosition(xForMessageBox, i);
                 }
 
                 Console.Write(outputMessage);

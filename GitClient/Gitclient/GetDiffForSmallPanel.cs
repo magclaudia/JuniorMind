@@ -9,11 +9,14 @@ namespace GitClient
 {
     public class GetDiffForSmallPanel
     {
+        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
         public static void GetDiffRelatedToTheSelectedFile(GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
             variablesForFiles.indexDiff = variablesForFiles.fileIndex;
             
             string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
+            
             if(variablesForFiles.fileIndex == 0)
             {
                 DiffHelper.FilesBackground(currentFileName, variablesForFiles, variablesForCommits);
@@ -62,7 +65,7 @@ namespace GitClient
                 {
                     case "filePath":
                         {
-                            if (variablesForFiles.down == false && variablesForFiles.row == 0)
+                            if (variablesForFiles.down == false && variablesForFiles.row == dimensions.tabHeight + 1)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
@@ -77,7 +80,7 @@ namespace GitClient
                         break;
                     case "hunk":
                         {
-                            if (variablesForFiles.row == 0 && variablesForFiles.down == false)
+                            if (variablesForFiles.row == dimensions.tabHeight + 1 && variablesForFiles.down == false)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
@@ -92,7 +95,7 @@ namespace GitClient
                         break;
                     case "filesCode":
                         {
-                            if (variablesForFiles.row == 0 && variablesForFiles.down == false)
+                            if (variablesForFiles.row == dimensions.tabHeight + 1 && variablesForFiles.down == false)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }

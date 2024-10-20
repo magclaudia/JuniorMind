@@ -83,7 +83,7 @@ namespace GitClient
                 height = Console.WindowHeight - 2;
                 x = Console.WindowWidth / 2 + 3;
                 y = (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4;
-                z = 1;
+                z = 4;
             }
             else
             {
@@ -99,7 +99,7 @@ namespace GitClient
                 Console.Write(new string(' ', y));
             }
 
-            Console.SetCursorPosition(x, 1);
+            Console.SetCursorPosition(x, z);
         }
     }
 
@@ -169,7 +169,7 @@ namespace GitClient
             {
                 if (variablesForFiles.diffMoves == false)
                 {
-                    variablesForFiles.row = 0;
+                    variablesForFiles.row = dimensions.tabHeight + 2;
                 }
 
                 variablesForFiles.totalLines = list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
@@ -355,7 +355,7 @@ namespace GitClient
 
         public static int MaxValue(GetCertainList list, GetVariablesForFiles variablesForFiles)
         {
-            int height = Console.WindowHeight - 2;
+            int height = Console.WindowHeight - 2 - 4;
             return list.listOfAllDiffs[variablesForFiles.indexDiff].Count > height ? height : list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
         }
 
@@ -369,9 +369,11 @@ namespace GitClient
                 DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
                 y = size.height - 3;
             }
-           
 
-            //Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list, size);
+            if (variablesForCommit.logTab == true)
+            {
+                Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list, size);
+            }
 
             if (variablesForFiles.fileRow + 1 == Console.WindowHeight / 2 + 4 && variablesForFiles.up == true)
             {

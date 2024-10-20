@@ -66,8 +66,8 @@ namespace GitClient
                 x = Console.WindowWidth - 1;
             }
 
-            int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2)) / list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
-            Console.SetCursorPosition(x, indicatorPosition + 1);
+            int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2) - dimensions.tabHeight - 2) / list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
+            Console.SetCursorPosition(x, indicatorPosition + 1 + dimensions.tabHeight + 1);
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             char cursorSymbol = '█';
             Console.Write(cursorSymbol);
@@ -109,7 +109,8 @@ namespace GitClient
 
         public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetCertainList list, DrawPanelRigthSide.FilesBox size)
         {
-            int indicatorPosition = (variablesForFiles.fileIndex * (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
+            int indicatorPosition = (variablesForFiles.fileIndex * ((Console.WindowHeight - dimensions.tabHeight - 4) - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
+            
             if (variablesForFiles.up == true && variablesForFiles.fileRow == Console.WindowHeight / 2 + 3)
             {
                 indicatorPosition = 0;
@@ -134,6 +135,7 @@ namespace GitClient
 
                 i = 0;
                 int stop = (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) - indicatorPosition;
+                
                 while (variablesForFiles.up == true && i < stop - 2)
                 {
                     Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight - 2 - i);
