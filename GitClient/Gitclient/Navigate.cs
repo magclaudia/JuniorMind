@@ -112,7 +112,7 @@ namespace GitClient
                             {
                                 if (variablesForFiles.statusDiffOpen == false)
                                 {
-                                    if (variablesForCommits.right == true)
+                                    if (variablesForCommits.right == true || list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
                                     {
                                         break;
                                     }
