@@ -74,13 +74,13 @@ namespace GitClient
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
 
-            if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
-            {
-                variablesForCommits.logTab = true;
-                GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
-                DrawLogPanel.DrawLargePanel();
-                GetListOfCommits.GetAllCommits(commitElements.repo);
-            }
+            //if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
+            //{
+            //    variablesForCommits.logTab = true;
+            //    GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
+            //    DrawLogPanel.DrawLargePanel();
+            //    GetListOfCommits.GetAllCommits(commitElements.repo);
+            //}
         }
 
         public static void ChooseStatusTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
