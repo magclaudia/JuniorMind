@@ -166,7 +166,7 @@ namespace GitClient
                             }
                             else
                             {
-                                if (variablesForCommits.pressRight > 1)
+                                if (variablesForCommits.pressRight > 1 || list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
                                 {
                                     break;
                                 }
