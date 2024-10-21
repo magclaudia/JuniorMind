@@ -26,6 +26,7 @@ namespace GitClient
             string outputText = SetTabTextLength(statusTab, dimensions.tabWidth);
             Console.Write(outputText);
 
+
             Console.SetCursorPosition(dimensions.tabWidth + 1, 1);
             string logTab = "Log [2]";
             outputText = SetTabTextLength(logTab, dimensions.tabWidth);
