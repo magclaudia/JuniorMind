@@ -290,24 +290,21 @@ namespace GitClient
                         {
                             variablesForFiles.fileRow = 5;
                             variablesForFiles.fileIndex = 0;
-                            variablesForFiles.indexDiff = 0;
+                            variablesForFiles.indexDiff = -1;
                             variablesForFiles.index = 0;
                             variablesForFiles.down = false;
                             variablesForFiles.statusDiffOpen = false;
                             variablesForCommits.right = false;
-
+                           
                             if (variablesForCommits.logTab == true)
                             {
+                                list.ClearAllLists();
                                 variablesForCommits.pressRight = 1;
                                 variablesForCommits.logTab = false;
                                 string path = string.Empty;
-                                Console.Clear();
-                                DrawTabs.DrawOnlyTabs();
-                                Tabs.GetRepoPath(path);
-                                Tabs.GetTabsNames();
+                                GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
                                 DrawStatus.DrawPanelsForStatus();
-                                StatusTab.GetStatusChangesNames();
-                                GetAllFiles.PrintStatusFilesIfAlreadyReceived(variablesForFiles, variablesForCommits, list, 5, 0);
+                                Tabs.SetInitialState(commitElement, variablesForCommits, variablesForFiles, list);
                                 string fileFullName = "";
 
                                 if (list.unstagedChangesFiles.Count > 0)
