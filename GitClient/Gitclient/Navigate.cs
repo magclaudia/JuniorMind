@@ -122,7 +122,7 @@ namespace GitClient
                                         break;
                                     }
 
-                                    if (list.stagedChangesFiles.Count > 0 && variablesForFiles.fileIndex == list.stagedChangesFiles.Count)
+                                    if (list.stagedChangesFiles.Count > 0 && variablesForFiles.fileIndex == list.stagedChangesFiles.Count - 1)
                                     {
                                         break;
                                     }
@@ -157,7 +157,7 @@ namespace GitClient
                         {
                             if (variablesForCommits.logTab == true)
                             {
-                                if (variablesForCommits.pressRight == 2)
+                                if (variablesForCommits.pressRight == 2 || variablesForCommits.enter == false)
                                 {
                                     break;
                                 }
@@ -186,12 +186,14 @@ namespace GitClient
                                 variablesForCommits.enter = true;
                                 variablesForCommits.panelAlreadyDisplayed = false;
                                 variablesForCommits.esc = false;
+                                
                                 if (variablesForCommits.right == true)
                                 {
                                     variablesForCommits.pressRight = 0;
                                     variablesForCommits.right = false;
                                     variablesForCommits.displayPanel = true;
                                     variablesForFiles.nextFile = false;
+
                                     if (variablesForCommits.panelAlreadyDisplayed == false && variablesForCommits.displayPanel == true)
                                     {
                                         variablesForCommits.panelAlreadyDisplayed = true;

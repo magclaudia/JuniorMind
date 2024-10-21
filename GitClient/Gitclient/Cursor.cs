@@ -10,6 +10,7 @@ namespace GitClient
         public static void UpdateCursorPositionForCommitsList(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list, int blueFond)
         {
             Console.CursorVisible = false;
+
             int indicatorPosition = (variablesForCommits.currentCommitIndex * ((Console.WindowHeight - dimensions.tabHeight - 4)) / commitElements.Id.Count);
 
             if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == true && variablesForCommits.up && indicatorPosition < Console.WindowHeight - 3)
@@ -110,7 +111,12 @@ namespace GitClient
 
         public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetCertainList list, DrawPanelRigthSide.FilesBox size)
         {
-            int indicatorPosition = (variablesForFiles.fileIndex * ((Console.WindowHeight - dimensions.tabHeight - 4) - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
+            int indicatorPosition = 0;
+            if (list.listOfFiles.Count > 0)
+            {
+                indicatorPosition = (variablesForFiles.fileIndex * ((Console.WindowHeight - dimensions.tabHeight - 4) - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
+            }
+
             
             if (variablesForFiles.up == true && variablesForFiles.fileRow == Console.WindowHeight / 2 + 3)
             {
