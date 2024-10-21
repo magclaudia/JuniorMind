@@ -112,6 +112,7 @@ namespace GitClient
         public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetCertainList list, DrawPanelRigthSide.FilesBox size)
         {
             int indicatorPosition = 0;
+
             if (list.listOfFiles.Count > 0)
             {
                 indicatorPosition = (variablesForFiles.fileIndex * ((Console.WindowHeight - dimensions.tabHeight - 4) - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
