@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibGit2Sharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -74,13 +75,10 @@ namespace GitClient
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
 
-            //if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
-            //{
-            //    variablesForCommits.logTab = true;
-            //    GetDiffs.CleaningEntireDiffPanel(variablesForCommits);
-            //    DrawLogPanel.DrawLargePanel();
-            //    GetListOfCommits.GetAllCommits(commitElements.repo);
-            //}
+            if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
+            {
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list, tabs);
+            }
         }
 
         public static void ChooseStatusTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
