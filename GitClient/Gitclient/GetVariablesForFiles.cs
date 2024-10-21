@@ -33,6 +33,7 @@
         public int indexForUnstaged;
         public int indexForStaged;
         public int startAt;
+        public int stop;
         public GetVariablesForFiles()
         {
             nextFile = false;
@@ -66,6 +67,7 @@
             indexForUnstaged = 0;
             indexForStaged = 0;
             startAt = 0;
+            stop = 0;
         }
     }
 }

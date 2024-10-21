@@ -66,7 +66,7 @@ namespace GitClient
                 x = Console.WindowWidth - 1;
             }
 
-            int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2) - dimensions.tabHeight - 2) / list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
+            int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2) - dimensions.tabHeight + 2) / list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
             Console.SetCursorPosition(x, indicatorPosition + 1 + dimensions.tabHeight + 1);
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             char cursorSymbol = '█';
@@ -83,7 +83,8 @@ namespace GitClient
 
             i = 0;
             int stop = (Console.WindowHeight - 2) - indicatorPosition;
-            while (variablesForFiles.up == true && i < stop - 1)
+            
+            while (variablesForFiles.up == true && i < stop - 1 && variablesForCommits.pressRight > 1)
             {
                 Console.SetCursorPosition(x, Console.WindowHeight - 2 - i);
                 Console.Write("║");
@@ -116,7 +117,6 @@ namespace GitClient
                 indicatorPosition = 0;
             }
 
-
             if (indicatorPosition < size.height - 2)
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + indicatorPosition + 1);
@@ -126,6 +126,7 @@ namespace GitClient
                 Console.ResetColor();
 
                 int i = 1;
+
                 while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
                 {
                     Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + i);
@@ -134,11 +135,12 @@ namespace GitClient
                 }
 
                 i = 0;
-                int stop = (Console.WindowHeight - 1 - (Console.WindowHeight / 2 + 1) - 1) - indicatorPosition;
-                
-                while (variablesForFiles.up == true && i < stop - 2)
+                int stop = (Console.WindowHeight / 2) - 2 - indicatorPosition;
+
+
+                while (variablesForFiles.up == true && i < stop - 1)
                 {
-                    Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight - 2 - i);
+                    Console.SetCursorPosition(Console.WindowWidth / 2 - 1, (Console.WindowHeight - 2) - i);
                     Console.Write("║");
                     i++;
                 }
