@@ -235,34 +235,37 @@ namespace GitClient
                     filelist = list.stagedChangesFiles;
                 }
             }
-            
 
-            switch (filelist[i][0])
+            if (filelist.Count > 0)
             {
-                case 'M':
-                    {
-                        Console.SetCursorPosition(1, y);
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write(filelist[i]);
-                        Console.ResetColor();
-                    }
-                    break;
-                case '+':
-                    {
-                        Console.SetCursorPosition(1, y);
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(filelist[i]);
-                        Console.ResetColor();
-                    }
-                    break;
-                case '-':
-                    {
-                        Console.SetCursorPosition(1, y);
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(filelist[i]);
-                        Console.ResetColor();
-                    }
-                    break;
+
+                switch (filelist[i][0])
+                {
+                    case 'M':
+                        {
+                            Console.SetCursorPosition(1, y);
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write(filelist[i]);
+                            Console.ResetColor();
+                        }
+                        break;
+                    case '+':
+                        {
+                            Console.SetCursorPosition(1, y);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(filelist[i]);
+                            Console.ResetColor();
+                        }
+                        break;
+                    case '-':
+                        {
+                            Console.SetCursorPosition(1, y);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write(filelist[i]);
+                            Console.ResetColor();
+                        }
+                        break;
+                }
             }
         }
 
