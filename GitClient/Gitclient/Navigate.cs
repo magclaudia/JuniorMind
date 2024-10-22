@@ -519,7 +519,7 @@ namespace GitClient
                 filelist = list.stagedChangesFiles;
             }
 
-            if (variablesForFiles.fileRow > y)
+            if (variablesForFiles.fileRow > y && filelist.Count > 0)
             {
                 Console.SetCursorPosition(1, variablesForFiles.fileRow);
                 Console.Write(new string(' ', Console.WindowWidth / 2 - 3));
@@ -556,7 +556,7 @@ namespace GitClient
                     DiffHelper.Print(variablesForCommits, variablesForFiles, commitElement, list);
                 }
             }
-            else if (variablesForFiles.fileRow == y)
+            else if (variablesForFiles.fileRow == y  && filelist.Count > 0)
             {
                 int i = variablesForFiles.fileRow;
                 int j = i - 3;
