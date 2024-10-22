@@ -314,7 +314,7 @@ namespace GitClient
                                     fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
                                     variablesForFiles.fileRow = dimensions.unstagedStart;
                                 }
-                                else
+                                else if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count > 0)
                                 {
                                     fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
                                     variablesForFiles.fileRow = dimensions.stagedStart;
