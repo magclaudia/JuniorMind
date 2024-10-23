@@ -27,6 +27,7 @@ namespace GitClient
             if (variablesForCommit.logTab == true)
             {
                 filesList = list.listOfFiles;
+
                 while (i < filesList.Count)
                 {
                     list.listOfAllDiffs.Add(new List<string>());
@@ -39,6 +40,7 @@ namespace GitClient
                 if (variablesForFiles.unstageChanges == true)
                 {
                     filesList = list.unstagedChangesFiles;
+
                     while (i < filesList.Count)
                     {
                         list.unstagedChangesDiff.Add(new List<string>());
@@ -49,6 +51,7 @@ namespace GitClient
                 else
                 {
                     filesList = list.stagedChangesFiles;
+
                     while (i < filesList.Count)
                     {
                         list.stagedChangesDiff.Add(new List<string>());

@@ -34,6 +34,7 @@
         public int indexForStaged;
         public int startAt;
         public int stop;
+
         public GetVariablesForFiles()
         {
             nextFile = false;
@@ -45,7 +46,7 @@
             indexForFiles = 0;
             countFilesContain = 0;
             currentLine = 1;
-            row = 3;
+            row = 2;
             fileRow = Console.WindowHeight / 2 + 4;
             numberOfNavigations = 0;
             indexForLog = 0;

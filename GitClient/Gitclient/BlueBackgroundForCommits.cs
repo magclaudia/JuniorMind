@@ -10,7 +10,7 @@ namespace GitClient
         {
             if (variablesForCommits.heightPosition > Console.WindowHeight)
             {
-                variablesForCommits.heightPosition = (Console.WindowHeight - dimensions.tabHeight) - 3;
+                variablesForCommits.heightPosition = (Console.WindowHeight - dimensions.tabHeight) - (dimensions.tabHeight + 1);
             }
 
             Console.SetCursorPosition(1, variablesForCommits.heightPosition);

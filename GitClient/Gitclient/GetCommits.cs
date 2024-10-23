@@ -17,6 +17,7 @@ namespace GitClient
         public static void PrintCommits(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
         {
             GetCommitNumber.ReturnCommitNumber(commitElement, variablesForCommits);
+            dimensions = new DrawTabs.Dimensions();
             int blueFond = 0;
             variablesForCommits.height = Console.WindowHeight;
             variablesForCommits.width = Console.WindowWidth;
@@ -73,6 +74,7 @@ namespace GitClient
                 text = $"{element.Id}{element.DateTime}{author}{element.Message}{element.Description}";
                 string listWithoutMessage = $"{element.Id}{element.DateTime}{author}";
                 string message = GetMessage(element.Description, element.Id, element.DateTime, author, element.Message);
+                
                 if (text.Length > Console.WindowWidth - 2)
                 {
                     message = message.Substring(0, Console.WindowWidth - 2 - listWithoutMessage.Length - 2).TrimEnd();

@@ -13,6 +13,7 @@
                 }
 
                 Console.SetCursorPosition(1, variablesForCommits.heightPosition);
+
                 if (i == 0)
                 {
                     ClearCommitRow(variablesForCommits);
@@ -74,6 +75,7 @@
 
                 Console.Write($"{message.TrimStart()}");
                 text = $"{id}{data}{author}{message.TrimStart()}";
+
                 if (i == 0 && variablesForCommits.up == true)
                 {
                     variablesForCommits.textForBlueFond = text;

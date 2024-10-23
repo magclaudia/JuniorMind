@@ -83,14 +83,14 @@ namespace GitClient
                 height = Console.WindowHeight - 2;
                 x = Console.WindowWidth / 2 + 3;
                 y = (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4;
-                z = 4;
+                z = 3;
             }
             else
             {
                 height = Console.WindowHeight - 2;
                 x = Console.WindowWidth / 2 + 1;
                 y = Console.WindowWidth / 2 - 2;
-                z = 4;
+                z = 3;
             }
 
             for (int i = z; i <= height; i++)
@@ -111,7 +111,6 @@ namespace GitClient
         private static string content = string.Empty;
         private static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
         private static GetVariablesForTabs tab = new GetVariablesForTabs();
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
         private static DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
 
         public static void PrintDiff(IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFile, CommitElements commitElements)
@@ -132,12 +131,10 @@ namespace GitClient
                     }
 
                     variablesForFile.fileIndex = 0;
-                    GetDiffForSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
                 }
-                else
-                {
-                    GetDiffForSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
-                }
+                
+                GetDiffForSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
+
             }
             else
             {
@@ -153,6 +150,7 @@ namespace GitClient
             variablesForFiles.height = Console.WindowHeight;
             variablesForFiles.width = Console.WindowWidth;
             string text = string.Empty;
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
             if (variablesForFiles.row == 3 && variablesForFiles.currentLine > Console.WindowHeight - 2 && variablesForFiles.diffMoves == false)
             {
@@ -163,6 +161,7 @@ namespace GitClient
             List<List<string>> filesDiff = new List<List<string>>();
             string fileFullName = "";
             int height = 0;
+            Cursor.UpdateCursorPositionForDiffsList(variablesForCommits, variablesForFiles, list);
 
             if (variablesForCommits.logTab == true)
             {
@@ -178,7 +177,6 @@ namespace GitClient
 
                 variablesForFiles.totalLines = list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
                 GetDiffsLine.GetLineThroughtDiffsLines(variablesForCommits, variablesForFiles.currentLine, variablesForFiles.totalLines, list);
-                //Cursor.UpdateCursorPositionForDiffsList(variablesForCommits, variablesForFiles, list);
 
                 filesDiff = list.listOfAllDiffs;
                 fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
@@ -207,7 +205,7 @@ namespace GitClient
                 else
                 {
                     x = Console.WindowWidth / 2 + 1;
-                    variablesForFiles.row = 3;
+                    variablesForFiles.row = dimensions.tabHeight + 1;
                 }
 
                 if (variablesForFiles.unstageChanges == true)
@@ -219,6 +217,7 @@ namespace GitClient
                 {
                     filesDiff = list.stagedChangesDiff;
                     fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
+
                 }
 
                 height = (Console.WindowHeight - 2) - (dimensions.tabHeight + 1);
@@ -253,7 +252,7 @@ namespace GitClient
                 {
                     case "filePath":
                         {
-                            if (variablesForFiles.down == false && variablesForFiles.row == 3)
+                            if (variablesForFiles.down == false && variablesForFiles.row == dimensions.tabHeight + 1)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
@@ -268,7 +267,7 @@ namespace GitClient
                         break;
                     case "hunk":
                         {
-                            if (variablesForFiles.row == 3 && variablesForFiles.down == false  && variablesForFiles.up == false)
+                            if (variablesForFiles.row == dimensions.tabHeight + 1 && variablesForFiles.down == false  && variablesForFiles.up == false)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
@@ -283,7 +282,7 @@ namespace GitClient
                         break;
                     case "filesCode":
                         {
-                            if (variablesForFiles.row == 3 && variablesForFiles.down == false)
+                            if (variablesForFiles.row == dimensions.tabHeight + 1 && variablesForFiles.down == false)
                             {
                                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                             }
@@ -332,7 +331,7 @@ namespace GitClient
 
                 variablesForFiles.row = dimensions.tabHeight + 1;
             }
-           
+
 
             if (variablesForCommits.pressRight > 1 && variablesForCommit.logTab == true || tab.initialState == false)
             {
@@ -349,20 +348,22 @@ namespace GitClient
         public static void FilesBackground(string fileFullName, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits)
         {
             int y = 0;
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
             if (variablesForCommit.logTab == true)
             {
                 variablesForFiles.nextFile = true;
                 DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
-                y = size.height - 3;
-                Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list, size);
-
+                y = size.height - dimensions.tabHeight + 1;
             }
+
+            Cursor.UpdateCursorPositionForFilesList(variablesForFiles, variablesForCommits, list, size);
 
             if (variablesForFiles.fileRow + 1 == Console.WindowHeight / 2 + 4 && variablesForFiles.up == true)
             {
                 CleaningFilePanel();
                 variablesForFiles.fileIndex = 0;
+
                 while (variablesForFiles.fileRow <= Console.WindowHeight - 2)
                 {
                     fileFullName = list.listOfFiles[variablesForFiles.fileIndex];

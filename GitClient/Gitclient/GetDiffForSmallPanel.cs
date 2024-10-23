@@ -9,7 +9,6 @@ namespace GitClient
 {
     public class GetDiffForSmallPanel
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public static void GetDiffRelatedToTheSelectedFile(GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
@@ -17,7 +16,7 @@ namespace GitClient
             
             string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
             
-            if(variablesForFiles.fileIndex == 0)
+            if (variablesForFiles.fileIndex == 0)
             {
                 DiffHelper.FilesBackground(currentFileName, variablesForFiles, variablesForCommits);
             }
@@ -27,6 +26,7 @@ namespace GitClient
 
         public static void Print(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements, string fileFullName)
         {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             variablesForFiles.totalLines = list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
 
             GetDiffsLine.GetLineThroughtDiffsLines(variablesForCommits, variablesForFiles.currentLine, variablesForFiles.totalLines, list);

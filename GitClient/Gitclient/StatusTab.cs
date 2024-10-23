@@ -10,11 +10,11 @@ namespace GitClient
 {
     public class StatusTab
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
         private static LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
 
         public static void GetUnstagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
         {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             IntPtr unstagedDiff = IntPtr.Zero;
             IntPtr indexPtr = IntPtr.Zero;
 
@@ -66,6 +66,7 @@ namespace GitClient
         public static void GetStagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
         {
             LibGit2Wrapper.GitOid commitOid;
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();    
             IntPtr commitPtr = IntPtr.Zero;
             IntPtr treePtr = IntPtr.Zero; 
             IntPtr indexPtr = IntPtr.Zero;  

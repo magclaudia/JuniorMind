@@ -31,7 +31,7 @@
             rigthCursor = 0;
             cursorPosition = 1;
             currentCommitIndex = 0;
-            heightPosition = 4;
+            heightPosition = 3;
             panelAlreadyDisplayed = false;
             displayPanel = false;
             up = false;

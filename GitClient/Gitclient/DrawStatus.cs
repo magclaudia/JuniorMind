@@ -38,16 +38,16 @@ namespace GitClient
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
                 Console.SetCursorPosition(dimensions.width / 2 - 1, i);
-                Console.Write("│");
+                Console.Write("║");
             }
 
             for (int i = 1; i < dimensions.width / 2 - 1; i++)
             {
                 Console.SetCursorPosition(i, dimensions.tabHeight + 1);
                 Console.Write("─");
-                Console.SetCursorPosition(i, dimensions.changesPanelHeight + 2);
+                Console.SetCursorPosition(i, dimensions.changesPanelHeight + 1);
                 Console.Write("─");
-                Console.SetCursorPosition(i, dimensions.changesPanelHeight + 3);
+                Console.SetCursorPosition(i, dimensions.changesPanelHeight + 2);
                 Console.Write("─");
                 Console.SetCursorPosition(i, dimensions.height);
                 Console.Write("─");

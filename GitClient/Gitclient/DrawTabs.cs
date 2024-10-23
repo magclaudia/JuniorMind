@@ -26,10 +26,10 @@ namespace GitClient
                 width = Console.WindowWidth - 1;
                 height = Console.WindowHeight - 1;
                 tabWidth = 15;
-                tabHeight = 2;
+                tabHeight = 1;
                 changesPanelWidth = width / 2 - 1;
                 changesPanelHeight = (height / 2 + 1) - tabHeight;
-                unstagedStart = 5;
+                unstagedStart = 4;
                 unstagedEnd = changesPanelHeight;
                 stagedStart = unstagedStart + unstagedEnd;
                 stagedEnd = height;

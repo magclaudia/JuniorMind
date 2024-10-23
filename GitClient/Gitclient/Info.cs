@@ -25,7 +25,7 @@
                     Console.SetCursorPosition(position.edgeOne + 1, i);
                 }
 
-                output = $"{infos[i - 4]}: {arrayOfInfos[i - 4]}";
+                output = $"{infos[i - 3]}: {arrayOfInfos[i - 3]}";
                 if (output.Length > position.width)
                 {
                     output = output.Substring(0, position.width);
@@ -37,7 +37,7 @@
 
                 Console.Write(output);
 
-                if (i == 6)
+                if (i == 5)
                 {
                     break;
                 }
