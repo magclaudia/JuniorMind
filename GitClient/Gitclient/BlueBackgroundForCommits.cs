@@ -4,13 +4,13 @@ namespace GitClient
 {
     public class BlueBackgroundForCommits
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
         public static void DisplayBlueBox(GetVariablesForCommits variablesForCommits, CommitElements listOfCommits, GetCertainList list)
         {
-            if (variablesForCommits.heightPosition > Console.WindowHeight)
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
+            if (variablesForCommits.heightPosition > Console.WindowHeight - 2)
             {
-                variablesForCommits.heightPosition = (Console.WindowHeight - dimensions.tabHeight) - (dimensions.tabHeight + 1);
+                variablesForCommits.heightPosition = (Console.WindowHeight - dimensions.tabHeight) - 1;
             }
 
             Console.SetCursorPosition(1, variablesForCommits.heightPosition);
@@ -23,7 +23,7 @@ namespace GitClient
                 Console.Write(variablesForCommits.textForBlueFond);
 
             }
-            else if (variablesForCommits.down == true && variablesForCommits.heightPosition <= variablesForCommits.height)
+            else if (variablesForCommits.down == true && variablesForCommits.heightPosition <= variablesForCommits.height - 2)
             {
                 Console.Write(variablesForCommits.textForBlueFond);
             }

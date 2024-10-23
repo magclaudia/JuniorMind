@@ -83,6 +83,7 @@ namespace GitClient
         public static void PrintRemaingingFiles(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();    
+
             int position;
             var filelist = new List<string>();
 

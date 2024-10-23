@@ -11,9 +11,9 @@ namespace GitClient
             Console.CursorVisible = true;
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
-            int indicatorPosition = (variablesForCommits.currentCommitIndex * ((Console.WindowHeight - dimensions.tabHeight - 4)) / commitElements.Id.Count);
+            int indicatorPosition = (variablesForCommits.currentCommitIndex * ((Console.WindowHeight - dimensions.tabHeight - 3)) / commitElements.Id.Count);
 
-            if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == true && variablesForCommits.up && indicatorPosition < Console.WindowHeight - 3)
+            if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == true && variablesForCommits.up && indicatorPosition < Console.WindowHeight - 4)
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + dimensions.tabHeight + 3);
                 Console.Write("║");

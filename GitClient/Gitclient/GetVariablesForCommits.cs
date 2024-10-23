@@ -25,6 +25,7 @@
         public bool esc;
         public int fileIndex;
         public bool logTab;
+        public int firstCommitInLine;
 
         public GetVariablesForCommits()
         {
@@ -51,6 +52,7 @@
             esc = false;
             fileIndex = 0;
             logTab = false;
+            firstCommitInLine = 0;
         }
     }
 }

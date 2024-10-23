@@ -37,10 +37,15 @@ namespace GitClient
             var element = new Elements();
             variablesForCommits.rigthCursor = 0;
             int index = variablesForCommits.currentCommitIndex;
+            
+            if (variablesForCommits.heightPosition == 3)
+            {
+                variablesForCommits.firstCommitInLine = variablesForCommits.currentCommitIndex;
+            }
 
             if (variablesForCommits.currentCommitIndex > variablesForCommits.heightPosition)
             {
-                variablesForCommits.currentCommitIndex = variablesForCommits.currentCommitIndex - variablesForCommits.heightPosition + 1;
+                variablesForCommits.currentCommitIndex = variablesForCommits.firstCommitInLine;
             }
             else
             {
@@ -112,9 +117,12 @@ namespace GitClient
             variablesForCommits.panelAlreadyDisplayed = true;
             int index = variablesForCommits.currentCommitIndex;
             int i = 0;
+
+            
+
             if (variablesForCommits.currentCommitIndex > variablesForCommits.heightPosition)
             {
-                variablesForCommits.currentCommitIndex = variablesForCommits.currentCommitIndex - variablesForCommits.heightPosition + 1;
+                variablesForCommits.currentCommitIndex = variablesForCommits.firstCommitInLine;
             }
             else
             {
@@ -125,12 +133,14 @@ namespace GitClient
             {
                 string text = string.Empty;
                 string listWithoutMessage = string.Empty;
-                Console.SetCursorPosition(1, variablesForCommits.rigthCursor + 1 + dimensions.tabHeight + 1);
+
+                Console.SetCursorPosition(1, variablesForCommits.rigthCursor + dimensions.tabHeight + 2);
 
                 element.Id = $"{commitElement.Id[variablesForCommits.currentCommitIndex]} ";
                 Console.Write(element.Id, Console.ForegroundColor = ConsoleColor.Magenta);
 
                 element.DateTime = $"{commitElement.DateTime[variablesForCommits.currentCommitIndex]} ";
+
                 if (element.DateTime.Length == 9)
                 {
                     element.DateTime = $"{commitElement.DateTime[variablesForCommits.currentCommitIndex]}{new string(' ', 2)} ";

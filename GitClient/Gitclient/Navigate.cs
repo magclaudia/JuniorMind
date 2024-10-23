@@ -48,7 +48,6 @@ namespace GitClient
                                         break;
                                     }
 
-
                                     HandleCommitsUpMoves(variablesForCommits, variablesForFiles, commitElement, list, blueFond);
                                 }
                             }
@@ -269,10 +268,6 @@ namespace GitClient
                                     variablesForFiles.nextFile = false;
                                     HandleRightArrowLog(variablesForCommits, variablesForFiles, commitElement, list);
                                 }
-                                //else
-                                //{
-                                //    CloseApplication();
-                                //}
                             }
                             else
                             {
@@ -988,19 +983,20 @@ namespace GitClient
                     variablesForCommits.heightPosition = dimensions.tabHeight + 2;
                 }
 
+                
                 variablesForCommits.down = true;
                 variablesForCommits.up = false;
                 bool reachLimit = false;
 
-                if (variablesForCommits.currentCommitIndex > variablesForCommits.height && variablesForCommits.cursorPosition == 0 || variablesForCommits.cursorPosition < variablesForCommits.currentCommitIndex - Console.WindowHeight - 2 && variablesForCommits.heightPosition == Console.WindowHeight - 2)
+                if (variablesForCommits.currentCommitIndex > variablesForCommits.height - 4 && variablesForCommits.cursorPosition == 0 || variablesForCommits.cursorPosition < (variablesForCommits.currentCommitIndex - Console.WindowHeight) - 4 && variablesForCommits.heightPosition == Console.WindowHeight - 2)
                 {
-                    variablesForCommits.cursorPosition = variablesForCommits.currentCommitIndex - (Console.WindowHeight - 2) + 2;
+                    variablesForCommits.cursorPosition = variablesForCommits.currentCommitIndex - (Console.WindowHeight - 4);
                     variablesForCommits.currentCommitIndex = variablesForCommits.cursorPosition;
                 }
 
                 if (variablesForCommits.heightPosition == Console.WindowHeight - 2)
                 {
-                    if (variablesForCommits.cursorPosition == commitElement.Id.Count - (Console.WindowHeight - dimensions.tabHeight - 4))
+                    if (variablesForCommits.cursorPosition == commitElement.Id.Count - (Console.WindowHeight - dimensions.tabHeight - 3))
                     {
                         variablesForCommits.cursorPosition = 2;
                     }
@@ -1028,10 +1024,11 @@ namespace GitClient
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
-            if (Console.WindowHeight != variablesForCommits.height - (dimensions.tabHeight + 2) && Console.WindowWidth != variablesForCommits.width)
+            if (Console.WindowHeight != (variablesForCommits.height - dimensions.tabHeight) - 1 && Console.WindowWidth != variablesForCommits.width)
             {
-                variablesForCommits.height = Console.WindowHeight - (dimensions.tabHeight + 2);
+                variablesForCommits.height = (variablesForCommits.height - dimensions.tabHeight) - 1;
                 variablesForCommits.width = Console.WindowWidth - 2;
+
                 Console.Clear();
                 DrawLogPanel.DrawLargePanel();
                 GetCommits.PrintCommits(variablesForCommits, variablesForFiles, listOfCommits, list);

@@ -211,6 +211,11 @@
 
             while (variablesForCommits.heightPosition <= variablesForCommits.height - 2)
             {
+                if (variablesForCommits.heightPosition == 3)
+                {
+                    variablesForCommits.firstCommitInLine = variablesForCommits.currentCommitIndex;
+                }
+
                 Console.SetCursorPosition(1, variablesForCommits.heightPosition);
                 ClearCommitRow(variablesForCommits);
 
@@ -271,6 +276,7 @@
 
                 Console.Write($"{message.TrimStart()}");
                 text = $"{id}{data}{author}{message.TrimStart()}";
+
                 if (i == 1 && variablesForCommits.down == true)
                 {
                     variablesForCommits.textForBlueFond = text;
