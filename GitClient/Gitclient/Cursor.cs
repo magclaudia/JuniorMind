@@ -1,15 +1,15 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace GitClient
 {
     public class Cursor
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
-
         public static void UpdateCursorPositionForCommitsList(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list, int blueFond)
         {
-            Console.CursorVisible = false;
+            Console.CursorVisible = true;
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
             int indicatorPosition = (variablesForCommits.currentCommitIndex * ((Console.WindowHeight - dimensions.tabHeight - 4)) / commitElements.Id.Count);
 
@@ -46,6 +46,54 @@ namespace GitClient
             DisplayCustomCursor(ConsoleColor.DarkBlue, commitElements, variablesForCommits, list);
         }
 
+        public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, DrawPanelRigthSide.FilesBox size)
+        {
+            //int indicatorPosition = 0;
+            //DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
+            //if (variablesForCommits.logTab == true)
+            //{
+            //    indicatorPosition = (variablesForFiles.fileIndex * ((Console.WindowHeight - dimensions.tabHeight - 4) - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
+            //    HandleCursorForFilesLog(variablesForFiles, variablesForCommits, list, size, indicatorPosition);
+            //}
+            //else
+            //{
+            //    if (variablesForFiles.unstageChanges == true && list.unstagedChangesFiles.Count > 0)
+            //    {
+
+            //    }
+            //    else if (variablesForFiles.stageChanges == true && list.unstagedChangesFiles.Count > 0)
+            //    {
+
+            //    }
+            //}
+        }
+
+        public static void UpdateCursorPositionForDiffsList(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
+        {
+            //DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+           
+            //if (variablesForCommits.logTab == true)
+            //{
+            //    int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2) - dimensions.tabHeight + 2) / list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
+            //    HandleCursorDiffLog(variablesForFiles, variablesForCommits, list, indicatorPosition);
+            //}
+            //else
+            //{
+            //    if (variablesForFiles.unstageChanges == true && list.unstagedChangesDiff.Count > 0)
+            //    {
+
+            //    }
+            //    else if (variablesForFiles.stageChanges == true && list.stagedChangesDiff.Count > 0)
+            //    {
+
+            //    }
+            //}
+
+
+        }
+
+       
         private static void DisplayCustomCursor(ConsoleColor color, CommitElements listOfCommits, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
             Console.ForegroundColor = ConsoleColor.DarkBlue;
@@ -55,103 +103,96 @@ namespace GitClient
             BlueBackgroundForCommits.DisplayBlueBox(variablesForCommits, listOfCommits, list);
         }
 
-        public static void UpdateCursorPositionForDiffsList(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
+        private static void HandleCursorForFilesLog(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, DrawPanelRigthSide.FilesBox size, int indicatorPosition)
         {
-            int x = 0;
-            if (variablesForCommits.pressRight == 1)
-            {
-                x = Console.WindowWidth - 2;
-            }
-            else
-            {
-                x = Console.WindowWidth - 1;
-            }
+            //if (variablesForFiles.up == true && variablesForFiles.fileRow == Console.WindowHeight / 2 + 3)
+            //{
+            //    indicatorPosition = 0;
+            //}
 
-            int indicatorPosition = (variablesForFiles.index * (Console.WindowHeight - 2) - dimensions.tabHeight + 2) / list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
-            Console.SetCursorPosition(x, indicatorPosition + 1 + dimensions.tabHeight + 1);
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
-            char cursorSymbol = '█';
-            Console.Write(cursorSymbol);
-            Console.ResetColor();
-            int i = 1;
+            //if (indicatorPosition < size.height - 2)
+            //{
+            //    Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + indicatorPosition + 1);
+            //    Console.ForegroundColor = ConsoleColor.DarkBlue;
+            //    char cursorSymbol = '█';
+            //    Console.Write(cursorSymbol);
+            //    Console.ResetColor();
 
-            while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
-            {
-                Console.SetCursorPosition(x, i);
-                Console.Write("║");
-                i++;
-            }
+            //    int i = 1;
 
-            i = 0;
-            int stop = (Console.WindowHeight - 2) - indicatorPosition;
-            
-            while (variablesForFiles.up == true && i < stop - 1 && variablesForCommits.pressRight > 1)
-            {
-                Console.SetCursorPosition(x, Console.WindowHeight - 2 - i);
-                Console.Write("║");
-                i++;
-            }
+            //    while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
+            //    {
+            //        Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + i);
+            //        Console.Write("║");
+            //        i++;
+            //    }
 
-            if (list.listStartAt.Count > 0)
-            {
-                if (list.listStartAt[variablesForFiles.indexForLog] == variablesForFiles.index && indicatorPosition >= 0)
-                {
-                    while (i < stop - 1)
-                    {
-                        Console.SetCursorPosition(x, Console.WindowHeight - 2 - i);
-                        Console.Write("║");
-                        i++;
-                    }
-                }
+            //    i = 0;
+            //    int stop = (Console.WindowHeight / 2) - 2 - indicatorPosition;
 
-            }
 
-            Console.SetCursorPosition(x, indicatorPosition);
+            //    while (variablesForFiles.up == true && i < stop - 1)
+            //    {
+            //        Console.SetCursorPosition(Console.WindowWidth / 2 - 1, (Console.WindowHeight - 2) - i);
+            //        Console.Write("║");
+            //        i++;
+            //    }
+            //}
         }
 
-        public static void UpdateCursorPositionForFilesList(GetVariablesForFiles variablesForFiles, GetCertainList list, DrawPanelRigthSide.FilesBox size)
+        private static void HandleCursorDiffLog(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, int indicatorPosition)
         {
-            int indicatorPosition = 0;
+            //DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            //int x = 0;
 
-            if (list.listOfFiles.Count > 0)
-            {
-                indicatorPosition = (variablesForFiles.fileIndex * ((Console.WindowHeight - dimensions.tabHeight - 4) - (Console.WindowHeight / 2 + 1) - 1) / list.listOfFiles.Count);
-            }
+            //if (variablesForCommits.pressRight == 1)
+            //{
+            //    x = Console.WindowWidth - 2;
+            //}
+            //else
+            //{
+            //    x = Console.WindowWidth - 1;
+            //}
 
-            
-            if (variablesForFiles.up == true && variablesForFiles.fileRow == Console.WindowHeight / 2 + 3)
-            {
-                indicatorPosition = 0;
-            }
+            //Console.SetCursorPosition(x, indicatorPosition + 1 + dimensions.tabHeight + 1);
+            //Console.ForegroundColor = ConsoleColor.DarkBlue;
+            //char cursorSymbol = '█';
+            //Console.Write(cursorSymbol);
+            //Console.ResetColor();
+            //int i = 1;
 
-            if (indicatorPosition < size.height - 2)
-            {
-                Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + indicatorPosition + 1);
-                Console.ForegroundColor = ConsoleColor.DarkBlue;
-                char cursorSymbol = '█';
-                Console.Write(cursorSymbol);
-                Console.ResetColor();
+            //while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
+            //{
+            //    Console.SetCursorPosition(x, i);
+            //    Console.Write("║");
+            //    i++;
+            //}
 
-                int i = 1;
+            //i = 0;
+            //int stop = (Console.WindowHeight - 2) - indicatorPosition;
 
-                while (i <= indicatorPosition && variablesForFiles.down == true && variablesForFiles.up == false)
-                {
-                    Console.SetCursorPosition(Console.WindowWidth / 2 - 1, Console.WindowHeight / 2 + 2 + i);
-                    Console.Write("║");
-                    i++;
-                }
+            //while (variablesForFiles.up == true && i < stop - 1 && variablesForCommits.pressRight > 1)
+            //{
+            //    Console.SetCursorPosition(x, Console.WindowHeight - 2 - i);
+            //    Console.Write("║");
+            //    i++;
+            //}
 
-                i = 0;
-                int stop = (Console.WindowHeight / 2) - 2 - indicatorPosition;
+            //if (list.listStartAt.Count > 0)
+            //{
+            //    if (list.listStartAt[variablesForFiles.indexForLog] == variablesForFiles.index && indicatorPosition >= 0)
+            //    {
+            //        while (i < stop - 1)
+            //        {
+            //            Console.SetCursorPosition(x, Console.WindowHeight - 2 - i);
+            //            Console.Write("║");
+            //            i++;
+            //        }
+            //    }
 
+            //}
 
-                while (variablesForFiles.up == true && i < stop - 1)
-                {
-                    Console.SetCursorPosition(Console.WindowWidth / 2 - 1, (Console.WindowHeight - 2) - i);
-                    Console.Write("║");
-                    i++;
-                }
-            }
+            //Console.SetCursorPosition(x, indicatorPosition);
         }
     }
 }

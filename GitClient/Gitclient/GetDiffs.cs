@@ -161,6 +161,7 @@ namespace GitClient
             List<List<string>> filesDiff = new List<List<string>>();
             string fileFullName = "";
             int height = 0;
+
             Cursor.UpdateCursorPositionForDiffsList(variablesForCommits, variablesForFiles, list);
 
             if (variablesForCommits.logTab == true)
