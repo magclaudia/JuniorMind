@@ -5,11 +5,9 @@ namespace GitClient
 {
     public class Navigate
     {
-        private static DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
-
-
         public static void NavigateThroughCommits(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, GetVariablesForTabs tab)
         {
+            DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             IntPtr commitPtr = IntPtr.Zero;
             ConsoleKeyInfo keyInfo;
@@ -509,6 +507,7 @@ namespace GitClient
         {
             var filelist = new List<string>();
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
 
             int y = 0;
 
@@ -594,6 +593,7 @@ namespace GitClient
         private static void HandleFilesDownMovesStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement, GetVariablesForTabs tab)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
             var filelist = new List<string>();
 
             int y = 0;
@@ -888,6 +888,7 @@ namespace GitClient
         private static void HandleFilesDownMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
 
             if (variablesForFiles.fileIndex < list.listOfFiles.Count - 1)
             {
