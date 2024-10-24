@@ -118,8 +118,6 @@ namespace GitClient
             int index = variablesForCommits.currentCommitIndex;
             int i = 0;
 
-            
-
             if (variablesForCommits.currentCommitIndex > variablesForCommits.heightPosition)
             {
                 variablesForCommits.currentCommitIndex = variablesForCommits.firstCommitInLine;

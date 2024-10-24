@@ -126,6 +126,7 @@
                 Console.Write($"{commitElement.Id[variablesForCommits.currentCommitIndex]} ", Console.ForegroundColor = ConsoleColor.Magenta);
 
                 string data;
+
                 if ($"{commitElement.DateTime[variablesForCommits.currentCommitIndex]} ".Length == 9)
                 {
                     data = $"{commitElement.DateTime[variablesForCommits.currentCommitIndex]}{new string(' ', 2)} ";

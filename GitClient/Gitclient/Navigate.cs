@@ -983,7 +983,6 @@ namespace GitClient
                     variablesForCommits.heightPosition = dimensions.tabHeight + 2;
                 }
 
-                
                 variablesForCommits.down = true;
                 variablesForCommits.up = false;
                 bool reachLimit = false;
