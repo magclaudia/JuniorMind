@@ -45,7 +45,7 @@ namespace GitClient
                     variablesForFiles.unstageChanges = true;
                     GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, unstagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
                     GetDiffForChanges.DiffUnstagedChanges(unstagedDiff, list, variablesForFiles, variablesForCommits, tab);
-                    variablesForFiles.indexDiff = -1;
+                    variablesForFiles.indexDiff = 0;
                     variablesForFiles.fileIndex = 0;
                 }
             }
@@ -95,20 +95,6 @@ namespace GitClient
                     Console.WriteLine("Failed to get repository index.");
                     return;
                 }
-
-                //LibGit2Wrapper.GitStrArray pathspec = new LibGit2Wrapper.GitStrArray();
-
-                //if (LibGit2Wrapper.git_index_add_all(indexPtr, ref pathspec, 0, IntPtr.Zero, IntPtr.Zero) != 0)
-                //{
-                //    Console.WriteLine("Failed to add all changes to the index.");
-                //    return;
-                //}
-
-                //if (LibGit2Wrapper.git_index_write(indexPtr) != 0)
-                //{
-                //    Console.WriteLine("Failed to write changes to the index.");
-                //    return;
-                //}
 
                 if (LibGit2Wrapper.git_diff_tree_to_index(out stagedDiff, commitElements.repo, treePtr, indexPtr, ref options) != 0)
                 {
