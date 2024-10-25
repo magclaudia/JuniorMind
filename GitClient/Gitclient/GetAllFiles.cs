@@ -48,6 +48,7 @@ namespace GitClient
 
                 switch (delta.status)
                 {
+                    case LibGit2Wrapper.GitDelta.GIT_DELTA_UNTRACKED:
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_ADDED:
                         fileWithSymbol = $"+    {fileName}";
                         PrintProjectName(size, i, filePath, fileName, variablesForCommits, variablesForFiles, tab);

@@ -87,7 +87,37 @@ namespace GitClient
         [Flags]
         public enum DiffOptionFlags
         {
-            GIT_DIFF_NORMAL = 0
+            GIT_DIFF_NORMAL = 0,
+            GIT_DIFF_REVERSE = 1,
+            GIT_DIFF_INCLUDE_IGNORED = 2,
+            GIT_DIFF_RECURSE_IGNORED_DIRS = 3,
+            GIT_DIFF_INCLUDE_UNTRACKED = 4,
+            GIT_DIFF_RECURSE_UNTRACKED_DIRS = 5,
+            GIT_DIFF_INCLUDE_UNMODIFIED = 6,
+            GIT_DIFF_INCLUDE_TYPECHANGE = 7,
+            GIT_DIFF_INCLUDE_TYPECHANGE_TREES = 8,
+            GIT_DIFF_IGNORE_FILEMODE = 9,
+            GIT_DIFF_IGNORE_SUBMODULES = 10,
+            GIT_DIFF_IGNORE_CASE = 11,
+            GIT_DIFF_INCLUDE_CASECHANGE = 12,
+            GIT_DIFF_DISABLE_PATHSPEC_MATCH = 13,
+            GIT_DIFF_SKIP_BINARY_CHECK = 14,
+            GIT_DIFF_ENABLE_FAST_UNTRACKED_DIRS = 15,
+            GIT_DIFF_UPDATE_INDEX = 16,
+            GIT_DIFF_INCLUDE_UNREADABLE = 17,
+            GIT_DIFF_INCLUDE_UNREADABLE_AS_UNTRACKED = 18,
+            GIT_DIFF_INDENT_HEURISTIC = 19,
+            GIT_DIFF_IGNORE_BLANK_LINES = 20,
+            GIT_DIFF_FORCE_TEXT = 21,
+            GIT_DIFF_FORCE_BINARY = 22,
+            GIT_DIFF_IGNORE_WHITESPACE = 23,
+            GIT_DIFF_IGNORE_WHITESPACE_CHANGE = 24,
+            GIT_DIFF_IGNORE_WHITESPACE_EOL = 25,
+            GIT_DIFF_SHOW_UNTRACKED_CONTENT = 26,
+            GIT_DIFF_SHOW_UNMODIFIED = 27,
+            GIT_DIFF_PATIENCE = 28,
+            GIT_DIFF_MINIMAL = 29,
+            GIT_DIFF_SHOW_BINARY = 30
         }
 
 

@@ -62,7 +62,6 @@ namespace GitClient
                         }
                     }
 
-                    //DrawExternalBorder.DrawBox();
                     commitElement.repo = repo;
                     GetCommits.PrintCommits(variablesForCommits, variablesForFiles, commitElement, list);
                 }

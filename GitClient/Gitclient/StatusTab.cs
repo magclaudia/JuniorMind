@@ -10,22 +10,24 @@ namespace GitClient
 {
     public class StatusTab
     {
-        private static LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
-
         public static void GetUnstagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             IntPtr unstagedDiff = IntPtr.Zero;
             IntPtr indexPtr = IntPtr.Zero;
 
+            LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
+            options.flags |= (uint)LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_INCLUDE_UNTRACKED |
+                             (uint)LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_RECURSE_UNTRACKED_DIRS;
+
             try
             {
+                //LibGit2Wrapper.git_diff_tree_to_index();
                 if (LibGit2Wrapper.git_repository_index(out indexPtr, commitElements.repo) != 0)
                 {
                     throw new Exception("Failed to get the repository index");
                 }
-
-
+                    
                 if (LibGit2Wrapper.git_diff_index_to_workdir(out unstagedDiff, commitElements.repo, indexPtr, ref options) != 0)
                 {
                     throw new Exception("Failed to get unstaged changes");
@@ -66,7 +68,8 @@ namespace GitClient
         public static void GetStagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
         {
             LibGit2Wrapper.GitOid commitOid;
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();    
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
             IntPtr commitPtr = IntPtr.Zero;
             IntPtr treePtr = IntPtr.Zero; 
             IntPtr indexPtr = IntPtr.Zero;  
