@@ -21,7 +21,7 @@
             Console.SetCursorPosition(x, dimensions.tabHeight + 1);
             Console.Write(new string(' ', length + 1));
             Console.SetCursorPosition(x, dimensions.tabHeight + 1);
-            Console.Write($" Line: {row}/{totalRows} ");
+            Console.Write($"Line: {row}/{totalRows} ");
         }
 
         public static void GetLineIfDownMoves(GetCertainList list, GetVariablesForFiles variables)

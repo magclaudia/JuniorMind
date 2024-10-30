@@ -30,7 +30,7 @@ namespace GitClient
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
                 Console.SetCursorPosition(dimensions.width / 2 - 1, i);
-                Console.Write("│");
+                Console.Write("║");
             }
 
             for (int i = dimensions.height / 2 + 3; i < dimensions.height; i++)

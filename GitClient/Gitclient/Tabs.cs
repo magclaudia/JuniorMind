@@ -63,6 +63,7 @@ namespace GitClient
                 variablesForCommits.stopWorkingOnCommits = true;
                 variablesForCommits.pressRight = 1;
                 tabs.initialState = true;
+                variablesForFiles.indexDiff = 0;
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
             else if (list.stagedChangesFiles.Count > 0)
