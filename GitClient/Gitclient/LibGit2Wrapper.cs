@@ -88,36 +88,36 @@ namespace GitClient
         public enum DiffOptionFlags
         {
             GIT_DIFF_NORMAL = 0,
-            GIT_DIFF_REVERSE = 1,
-            GIT_DIFF_INCLUDE_IGNORED = 2,
-            GIT_DIFF_RECURSE_IGNORED_DIRS = 3,
-            GIT_DIFF_INCLUDE_UNTRACKED = 4,
-            GIT_DIFF_RECURSE_UNTRACKED_DIRS = 5,
-            GIT_DIFF_INCLUDE_UNMODIFIED = 6,
-            GIT_DIFF_INCLUDE_TYPECHANGE = 7,
-            GIT_DIFF_INCLUDE_TYPECHANGE_TREES = 8,
-            GIT_DIFF_IGNORE_FILEMODE = 9,
-            GIT_DIFF_IGNORE_SUBMODULES = 10,
-            GIT_DIFF_IGNORE_CASE = 11,
-            GIT_DIFF_INCLUDE_CASECHANGE = 12,
-            GIT_DIFF_DISABLE_PATHSPEC_MATCH = 13,
-            GIT_DIFF_SKIP_BINARY_CHECK = 14,
-            GIT_DIFF_ENABLE_FAST_UNTRACKED_DIRS = 15,
-            GIT_DIFF_UPDATE_INDEX = 16,
-            GIT_DIFF_INCLUDE_UNREADABLE = 17,
-            GIT_DIFF_INCLUDE_UNREADABLE_AS_UNTRACKED = 18,
-            GIT_DIFF_INDENT_HEURISTIC = 19,
-            GIT_DIFF_IGNORE_BLANK_LINES = 20,
-            GIT_DIFF_FORCE_TEXT = 21,
-            GIT_DIFF_FORCE_BINARY = 22,
-            GIT_DIFF_IGNORE_WHITESPACE = 23,
-            GIT_DIFF_IGNORE_WHITESPACE_CHANGE = 24,
-            GIT_DIFF_IGNORE_WHITESPACE_EOL = 25,
-            GIT_DIFF_SHOW_UNTRACKED_CONTENT = 26,
-            GIT_DIFF_SHOW_UNMODIFIED = 27,
-            GIT_DIFF_PATIENCE = 28,
-            GIT_DIFF_MINIMAL = 29,
-            GIT_DIFF_SHOW_BINARY = 30
+            GIT_DIFF_REVERSE = 1 << 0,
+            GIT_DIFF_INCLUDE_IGNORED = 1 << 1,
+            GIT_DIFF_RECURSE_IGNORED_DIRS = 1 << 2,
+            GIT_DIFF_INCLUDE_UNTRACKED = 1 << 3,
+            GIT_DIFF_RECURSE_UNTRACKED_DIRS = 1 << 4,
+            GIT_DIFF_INCLUDE_UNMODIFIED = 1 << 5,
+            GIT_DIFF_INCLUDE_TYPECHANGE = 1 << 6,
+            GIT_DIFF_INCLUDE_TYPECHANGE_TREES = 1 << 7,
+            GIT_DIFF_IGNORE_FILEMODE = 1 << 8,
+            GIT_DIFF_IGNORE_SUBMODULES = 1 << 9,
+            GIT_DIFF_IGNORE_CASE = 1 << 10,
+            GIT_DIFF_INCLUDE_CASECHANGE = 1 << 11,
+            GIT_DIFF_DISABLE_PATHSPEC_MATCH = 1 << 12,
+            GIT_DIFF_SKIP_BINARY_CHECK = 1 << 13,
+            GIT_DIFF_ENABLE_FAST_UNTRACKED_DIRS = 1 << 14,
+            GIT_DIFF_UPDATE_INDEX = 1 << 15,
+            GIT_DIFF_INCLUDE_UNREADABLE = 1 << 16,
+            GIT_DIFF_INCLUDE_UNREADABLE_AS_UNTRACKED = 1 << 17,
+            GIT_DIFF_INDENT_HEURISTIC = 1 << 18,
+            GIT_DIFF_IGNORE_BLANK_LINES = 1 << 19,
+            GIT_DIFF_FORCE_TEXT = 1 << 20,
+            GIT_DIFF_FORCE_BINARY = 1 << 21,
+            GIT_DIFF_IGNORE_WHITESPACE = 1 << 22,
+            GIT_DIFF_IGNORE_WHITESPACE_CHANGE = 1 << 23,
+            GIT_DIFF_IGNORE_WHITESPACE_EOL = 1 << 24,
+            GIT_DIFF_SHOW_UNTRACKED_CONTENT = 1 << 25,
+            GIT_DIFF_SHOW_UNMODIFIED = 1 << 26,
+            GIT_DIFF_PATIENCE = 1 << 27,
+            GIT_DIFF_MINIMAL = 1 << 28,
+            GIT_DIFF_SHOW_BINARY = 1 << 29
         }
 
 
@@ -212,6 +212,17 @@ namespace GitClient
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
             public byte[] header;
         }
+
+        public enum GitObjectType
+        {
+            GIT_OBJECT_ANY = -2,
+            GIT_OBJECT_INVALID = -1,
+            GIT_OBJECT_COMMIT = 1,
+            GIT_OBJECT_TREE = 2,
+            GIT_OBJECT_BLOB = 3,
+            GIT_OBJECT_TAG = 4
+        }
+
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int DiffNotifyCallback(IntPtr diff_so_far, GitDiffDelta delta_to_add, IntPtr matched_pathspec, IntPtr payload);
@@ -340,7 +351,7 @@ namespace GitClient
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_diff_index_to_workdir(out IntPtr diff, IntPtr repo, IntPtr index, ref GitDiffOptions diff_opts);
+        public static extern int git_diff_index_to_workdir(out IntPtr diff, IntPtr repo, IntPtr index, ref GitDiffOptions options);
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
@@ -359,12 +370,35 @@ namespace GitClient
         public static extern void git_index_free(IntPtr index);
 
 
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_index_add_all(IntPtr index, ref GitStrArray pathspec, uint flags, IntPtr callback, IntPtr payload);
+        //[DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int git_index_add_all(IntPtr index, ref GitStrArray pathspec, uint flags, IntPtr callback, IntPtr payload);
+
+        //[DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int git_index_write(IntPtr index);
+
+        //[DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int git_diff_tree_to_workdir(out IntPtr diff, IntPtr repo, IntPtr tree, ref GitDiffOptions options);
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_index_write(IntPtr index);
+        public static extern int git_diff_tree_to_workdir_with_index(out IntPtr diff, IntPtr repo, IntPtr tree, ref GitDiffOptions options);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_repository_head(out IntPtr tree, IntPtr repo);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_index_read(IntPtr index, int force);
+
+        
+
+        
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_reference_peel(out IntPtr peeledObject, IntPtr reference, GitObjectType targetType);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void git_reference_free(IntPtr reference);
 
 
 

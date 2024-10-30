@@ -120,7 +120,12 @@ namespace GitClient
                                         break;
                                     }
 
-                                    if (list.stagedChangesFiles.Count > 0 && variablesForFiles.fileIndex == list.stagedChangesFiles.Count - 1)
+                                    //if (list.stagedChangesFiles.Count > 0 && variablesForFiles.fileIndex == list.stagedChangesFiles.Count - 1)
+                                    //{
+                                    //    break;
+                                    //}
+
+                                    if (variablesForFiles.fileIndex == list.unstagedChangesFiles.Count - 1 && list.stagedChangesFiles.Count == 0)
                                     {
                                         break;
                                     }
@@ -278,7 +283,7 @@ namespace GitClient
                                     variablesForCommits.right = false;
                                     variablesForCommits.esc = true;
                                     variablesForFiles.end = false;
-                                    variablesForCommits.pressRight = 0;
+                                    variablesForCommits.pressRight = 1;
                                     variablesForFiles.index = 0;
                                     Tabs.ChooseStatusTab(commitElement, variablesForCommits, variablesForFiles, list);
                                 }
@@ -508,7 +513,6 @@ namespace GitClient
             var filelist = new List<string>();
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
-
             int y = 0;
 
             if (variablesForFiles.fileIndex <= list.unstagedChangesFiles.Count - 1)
@@ -521,7 +525,7 @@ namespace GitClient
                 filelist = list.stagedChangesFiles;
             }
 
-            if (variablesForFiles.fileRow > y && filelist.Count > 0)
+            if (variablesForFiles.fileRow >= y && filelist.Count > 0)
             {
                 Console.SetCursorPosition(1, variablesForFiles.fileRow);
                 Console.Write(new string(' ', Console.WindowWidth / 2 - 3));
@@ -595,7 +599,6 @@ namespace GitClient
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
             var filelist = new List<string>();
-
             int y = 0;
 
             if (variablesForFiles.unstageChanges == true)

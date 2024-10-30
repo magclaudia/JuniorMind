@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Gitclient
 {
-    internal class test
+    internal class TestClass1
     {
     }
 }

@@ -51,6 +51,7 @@ namespace GitClient
             DrawStatus.DrawPanelsForStatus();
             StatusTab.GetStatusChangesNames();
             StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
+            variablesForFiles.indexDiff = -1;
             StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             string fileFullName = "";
 
