@@ -7,7 +7,7 @@
         public static void GetLineThroughtDiffsLines(GetVariablesForCommits variablesForCommits, int row, int totalRows, GetCertainList list)
         {
             int x = 0;
-            int length = $"Line: {row}/{totalRows} ".Length;
+            int length = $" Line: {row}/{totalRows}".Length;
 
             if (variablesForCommits.pressRight == 1)
             {
@@ -21,7 +21,7 @@
             Console.SetCursorPosition(x, dimensions.tabHeight + 1);
             Console.Write(new string(' ', length + 1));
             Console.SetCursorPosition(x, dimensions.tabHeight + 1);
-            Console.Write($"Line: {row}/{totalRows} ");
+            Console.Write($" Line: {row}/{totalRows}");
         }
 
         public static void GetLineIfDownMoves(GetCertainList list, GetVariablesForFiles variables)

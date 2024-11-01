@@ -23,12 +23,12 @@ namespace GitClient
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             Console.SetCursorPosition(1, 0);
             string statusTab = "Status [1]";
-            string outputText = SetTabTextLength(statusTab, dimensions.tabWidth);
+            string outputText = SetStatusTextLength(statusTab, dimensions.tabWidth);
             Console.Write(outputText);
 
             Console.SetCursorPosition(dimensions.tabWidth + 1, 0);
             string logTab = "Log [2]";
-            outputText = SetTabTextLength(logTab, dimensions.tabWidth);
+            outputText = SetStatusTextLength(logTab, dimensions.tabWidth);
             Console.Write(outputText);
         }
 
@@ -37,7 +37,7 @@ namespace GitClient
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             Console.SetCursorPosition((Console.WindowWidth / 2) + 3, 0);
             Console.ForegroundColor = ConsoleColor.Red;
-            string text = SetTabTextLength(repoPath, Console.WindowWidth - (dimensions.tabWidth * 2) - 2);
+            string text = SetStatusTextLength(repoPath, Console.WindowWidth - (dimensions.tabWidth * 2) - 2);
             Console.Write(text);
             Console.ResetColor();
         }
@@ -55,8 +55,19 @@ namespace GitClient
             StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             string fileFullName = "";
 
+
             if (list.unstagedChangesFiles.Count > 0)
             {
+                for (int i = 0; i < list.unstagedChangesFiles.Count; i++)
+                {
+                    if (list.stagedChangesFiles.Contains(list.unstagedChangesFiles[i]))
+                    {
+                        list.unstagedChangesFiles.Remove(list.unstagedChangesFiles[i]);
+                        list.unstagedChangesDiff.Remove(list.unstagedChangesDiff[i]);
+                    }
+                }
+
+                GetAllFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles, tabs);
                 fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
                 variablesForFiles.fileRow = dimensions.unstagedStart;
                 DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
@@ -99,7 +110,7 @@ namespace GitClient
                 {
                     variablesForFiles.unstageChanges = false;
                     variablesForFiles.stageChanges = true;
-                    GetAllFiles.PrintStatusFilesIfAlreadyReceived(variablesForFiles, variablesForCommits, list, 3, 0);
+                    GetAllFiles.PrintStatusFilesIfTheyAreAlreadyBeenReceived(variablesForFiles, variablesForCommits, list, 3, 0);
                     string fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
                     DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
                     variablesForFiles.down = false;
@@ -108,7 +119,7 @@ namespace GitClient
             }
             else
             {
-                GetAllFiles.PrintStatusFilesIfAlreadyReceived(variablesForFiles, variablesForCommits, list, 3, 0);
+                GetAllFiles.PrintStatusFilesIfTheyAreAlreadyBeenReceived(variablesForFiles, variablesForCommits, list, 3, 0);
                 string fileFullName = "";
                
                 if (variablesForFiles.unstageChanges == true)
@@ -140,7 +151,7 @@ namespace GitClient
             GetTabsNames();
         }
 
-        public static string SetTabTextLength(string name, int maxValue)
+        public static string SetStatusTextLength(string name, int maxValue)
         {
             string text;
 

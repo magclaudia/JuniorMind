@@ -8,7 +8,7 @@ namespace GitClient
     {
         public static void UpdateCursorPositionForCommitsList(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetCertainList list, int blueFond)
         {
-            Console.CursorVisible = false;
+            Console.CursorVisible = true;
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
             int indicatorPosition = (variablesForCommits.currentCommitIndex * ((Console.WindowHeight - dimensions.tabHeight - 3)) / commitElements.Id.Count);

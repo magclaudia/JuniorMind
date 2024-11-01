@@ -52,7 +52,13 @@ namespace GitClient
                 }
 
                 Console.WriteLine($"Files: {numDeltas} ");
-                GetAllFiles.PrintAllFiles(repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
+                GetAllFiles.GetListOfAllFiles(repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
+                GetAllFiles.PrintFilesForLog(list, variablesForCommits, variablesForFiles, tab);
+                if (variablesForCommits.right == true)
+                {
+                    GetVariablesForFiles variablesForFile = new GetVariablesForFiles();
+                    GetDiffs.GetFileContent(diff, variablesForFile, variablesForCommits, commitElements, list);
+                }
             }
             else
             {

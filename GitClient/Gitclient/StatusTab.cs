@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace GitClient
 {
     public class StatusTab
@@ -50,7 +42,8 @@ namespace GitClient
                 }
 
                 options.flags |= (uint)(LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_INCLUDE_UNTRACKED |
-                                        LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_RECURSE_UNTRACKED_DIRS);
+                                        LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_RECURSE_UNTRACKED_DIRS |
+                                        LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_SHOW_UNTRACKED_CONTENT);
 
                 if (LibGit2Wrapper.git_diff_tree_to_workdir_with_index(out diff, commitElements.repo, headTree, ref options) != 0)
                 {
@@ -62,14 +55,14 @@ namespace GitClient
                 if (numDeltas == 0)
                 {
                     Console.SetCursorPosition(1, dimensions.unstagedStart);
-                    string text = Tabs.SetTabTextLength(" No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+                    string text = Tabs.SetStatusTextLength(" No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                 }
                 else
                 {
                     int index = 0;
                     variablesForFiles.unstageChanges = true;
-                    GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
+                    GetAllFiles.GetListOfAllFiles(commitElements.repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
                     GetDiffForChanges.DiffUnstagedChanges(diff, list, variablesForFiles, variablesForCommits, tab);
                     variablesForFiles.indexDiff = 0;
                     variablesForFiles.fileIndex = 0;
@@ -109,6 +102,7 @@ namespace GitClient
             LibGit2Wrapper.GitOid commitOid;
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
+            
             IntPtr commitPtr = IntPtr.Zero;
             IntPtr treePtr = IntPtr.Zero;
             IntPtr indexPtr = IntPtr.Zero;
@@ -134,14 +128,17 @@ namespace GitClient
 
                 if (LibGit2Wrapper.git_repository_index(out indexPtr, commitElements.repo) != 0)
                 {
-                    Console.WriteLine("Failed to get repository index.");
-                    return;
+                    throw new Exception("Failed to get the repository index.");
+                }
+
+                if (LibGit2Wrapper.git_index_read(indexPtr, 0) != 0)
+                {
+                    throw new Exception("Failed to read index.");
                 }
 
                 if (LibGit2Wrapper.git_diff_tree_to_index(out stagedDiff, commitElements.repo, treePtr, indexPtr, ref options) != 0)
                 {
-                    Console.WriteLine("Failed to create diff.");
-                    return;
+                    throw new Exception("Failed to create diff.");
                 }
 
                 int index = 0;
@@ -150,19 +147,19 @@ namespace GitClient
                 if (numDeltas == 0)
                 {
                     Console.SetCursorPosition(1, dimensions.stagedStart);
-                    string text = Tabs.SetTabTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
+                    string text = Tabs.SetStatusTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                 }
                 else
                 {
-                    Console.SetCursorPosition(1, dimensions.stagedStart - 1);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(variablesForFiles.projName);
-                    Console.ResetColor();
+                    //Console.SetCursorPosition(1, dimensions.stagedStart - 1);
+                    //Console.ForegroundColor = ConsoleColor.White;
+                    //Console.Write(variablesForFiles.projName);
+                    //Console.ResetColor();
 
                     variablesForFiles.stageChanges = true;
                     variablesForFiles.unstageChanges = false;
-                    GetAllFiles.PrintAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
+                    GetAllFiles.GetListOfAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
                     GetDiffForChanges.DiffUnstagedChanges(stagedDiff, list, variablesForFiles, variablesForCommits, tab);
                     variablesForFiles.indexDiff = 0;
                     variablesForFiles.fileIndex = 0;
