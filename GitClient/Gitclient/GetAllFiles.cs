@@ -453,6 +453,7 @@ namespace GitClient
                 }
                 else
                 {
+                    Console.SetCursorPosition(x, y);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(fileName);
                     Console.ResetColor();
