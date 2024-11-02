@@ -11,14 +11,12 @@ namespace GitClient
     {
         private static GetVariablesForFiles files = new GetVariablesForFiles();
         private static GetCertainList list1 = new GetCertainList();
-        private static GetVariablesForTabs tab1 = new GetVariablesForTabs();    
         private static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
 
-        public static int ReturnForeachCallback(IntPtr diff, GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetVariablesForTabs tab)
+        public static int ReturnForeachCallback(IntPtr diff, GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits)
         {
             files = variablesForFiles;
             list1 = list;
-            tab1 = tab;
             variablesForCommit = variablesForCommits;
 
             int i = 0;

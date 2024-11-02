@@ -8,7 +8,6 @@ namespace GitClient
         {
             DrawPanelRigthSide.FilesBox position = new DrawPanelRigthSide.FilesBox();
             LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
-            GetVariablesForTabs tab = new GetVariablesForTabs();
            
             IntPtr parentCommitPtr = IntPtr.Zero;
             IntPtr parentTreePtr = IntPtr.Zero;
@@ -54,8 +53,8 @@ namespace GitClient
                     }
 
                     Console.WriteLine($"Files: {numDeltas} ");
-                    GetAllFiles.GetListOfAllFiles(repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
-                    GetAllFiles.PrintFilesForLog(list, variablesForCommits, variablesForFiles, tab);
+                    PrintFiles.GetListOfAllFiles(repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements);
+                    PrintFiles.PrintFilesForLog(list, variablesForCommits, variablesForFiles);
                     
                     if (variablesForCommits.right == true)
                     {

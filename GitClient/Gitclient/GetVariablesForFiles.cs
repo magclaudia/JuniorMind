@@ -34,6 +34,9 @@
         public int indexForStaged;
         public int startAt;
         public int stop;
+        public bool initialState;
+        public bool finishUpMoves;
+
 
         public GetVariablesForFiles()
         {
@@ -69,6 +72,8 @@
             indexForStaged = 0;
             startAt = 0;
             stop = 0;
+            initialState = false;
+            finishUpMoves = false;
         }
     }
 }

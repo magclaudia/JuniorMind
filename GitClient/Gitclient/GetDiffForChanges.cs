@@ -9,9 +9,9 @@ namespace GitClient
 {
     public class GetDiffForChanges
     {
-        public static void DiffUnstagedChanges(IntPtr diff, GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetVariablesForTabs tab)
+        public static void DiffUnstagedChanges(IntPtr diff, GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits)
         {
-            int result = DiffCallbackForeachFuntion.ReturnForeachCallback(diff, list, variablesForFiles, variablesForCommits, tab);
+            int result = DiffCallbackForeachFuntion.ReturnForeachCallback(diff, list, variablesForFiles, variablesForCommits);
         }
     }
 }

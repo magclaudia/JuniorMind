@@ -110,7 +110,6 @@ namespace GitClient
         private static GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
         private static string content = string.Empty;
         private static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
-        private static GetVariablesForTabs tab = new GetVariablesForTabs();
         private static DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
 
         public static void PrintDiff(IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFile, CommitElements commitElements)
@@ -123,7 +122,7 @@ namespace GitClient
                 
                 if (variablesForFiles.nextFile == false && list.listOfAllDiffs.Count == 0)
                 {
-                    int result = DiffCallbackForeachFuntion.ReturnForeachCallback(diff, filesList, variablesForFile, variablesForCommits, tab);
+                    int result = DiffCallbackForeachFuntion.ReturnForeachCallback(diff, filesList, variablesForFile, variablesForCommits);
 
                     if (result != 0)
                     {
@@ -322,7 +321,8 @@ namespace GitClient
             }
 
             variablesForFiles.down = true;
-
+            variablesForFiles.initialState = false;
+                 
             if (variablesForCommit.logTab == false)
             {
                 if (variablesForFiles.row < Console.WindowHeight - 2)
@@ -334,9 +334,9 @@ namespace GitClient
             }
 
 
-            if (variablesForCommits.pressRight > 1 && variablesForCommit.logTab == true || tab.initialState == false)
+            if (variablesForCommits.pressRight > 1 && variablesForCommit.logTab == true || variablesForFiles.initialState == false)
             {
-                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list, tab);
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
         }
 
@@ -529,7 +529,7 @@ namespace GitClient
             }
 
             CodeBackground(variablesForCommits, list, variablesForFiles, commitElements,fileFullName);
-            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list, tab);
+            Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
         }
 
         public static void TextFitInPanel(string fileFullName, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, CommitElements commitElements)
@@ -543,12 +543,12 @@ namespace GitClient
                 }
 
                 CodeBackground(variablesForCommits, list, variablesForFiles, commitElements, fileFullName);
-                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list, tab);
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
 
             if (variablesForFiles.end == true)
             {
-                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list, tab);
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
         }
 

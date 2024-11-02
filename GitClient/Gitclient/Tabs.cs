@@ -9,7 +9,6 @@ namespace GitClient
     public class Tabs
     {
         private static string path = string.Empty;
-        private static GetVariablesForTabs tabs = new GetVariablesForTabs();
 
         public static void PrintTabs(string repoPath, CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
@@ -50,9 +49,9 @@ namespace GitClient
             GetTabsNames();
             DrawStatus.DrawPanelsForStatus();
             GetStatusFiles.GetStatusChangesNames();
-            GetStatusFiles.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
+            GetStatusFiles.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
             variablesForFiles.indexDiff = -1;
-            GetStatusFiles.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
+            GetStatusFiles.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
             string fileFullName = "";
 
 
@@ -67,13 +66,13 @@ namespace GitClient
                     }
                 }
 
-                GetAllFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles, tabs);
+                PrintFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
                 fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
                 variablesForFiles.fileRow = dimensions.unstagedStart;
                 DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
                 variablesForCommits.stopWorkingOnCommits = true;
                 variablesForCommits.pressRight = 1;
-                tabs.initialState = true;
+                variablesForFiles.initialState = true;
                 variablesForFiles.indexDiff = 0;
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
@@ -84,19 +83,19 @@ namespace GitClient
                 DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
                 variablesForCommits.stopWorkingOnCommits = true;
                 variablesForCommits.pressRight = 1;
-                tabs.initialState = true;
+                variablesForFiles.initialState = true;
                 DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
 
             if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
             {
-                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list, tabs);
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
         }
 
         public static void ChooseStatusTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
-            tabs.initialState = false;
+            variablesForFiles.initialState = false;
             Console.Clear();
             DrawTabs.DrawOnlyTabs();
             GetTabsNames();
@@ -110,7 +109,8 @@ namespace GitClient
                 {
                     variablesForFiles.unstageChanges = false;
                     variablesForFiles.stageChanges = true;
-                    GetAllFiles.PrintStatusFilesIfTheyAreAlreadyBeenReceived(variablesForFiles, variablesForCommits, list, 3, 0);
+                    PrintFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
+                    //GetAllFiles.PrintStatusFilesIfTheyAreAlreadyBeenReceived(variablesForFiles, variablesForCommits, list, 3, 0);
                     string fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
                     DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
                     variablesForFiles.down = false;
@@ -119,7 +119,9 @@ namespace GitClient
             }
             else
             {
-                GetAllFiles.PrintStatusFilesIfTheyAreAlreadyBeenReceived(variablesForFiles, variablesForCommits, list, 3, 0);
+                //variablesForFiles.unstageChanges = true;
+                PrintFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
+                //GetAllFiles.PrintStatusFilesIfTheyAreAlreadyBeenReceived(variablesForFiles, variablesForCommits, list, 3, 0);
                 string fileFullName = "";
                
                 if (variablesForFiles.unstageChanges == true)
@@ -143,7 +145,7 @@ namespace GitClient
 
         public static void ChooseLogTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
-            tabs.initialState = false;
+            variablesForFiles.initialState = false;
             Console.Clear();
             GetRepoPath(path);
             DrawTabs.DrawOnlyTabs();

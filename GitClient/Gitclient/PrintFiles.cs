@@ -2,18 +2,15 @@
 
 namespace GitClient
 {
-    public class GetAllFiles
+    public class PrintFiles
     {
-        public static void GetListOfAllFiles(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements, GetVariablesForTabs tab)
+        public static void GetListOfAllFiles(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             List<string> listOFAllFiles = new List<string>();
             string filePath = "";
             
-
-            GetStatusFiles obj = new GetStatusFiles();
-
-
             for (UIntPtr i = 0; i < numDeltas.ToUInt64(); i++)
             {
                 IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
@@ -27,7 +24,6 @@ namespace GitClient
 
                 string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
                 string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
-
 
                 if (newFilePath != null)
                 {
@@ -43,6 +39,7 @@ namespace GitClient
                 }
 
                 string fileName = Path.GetFileName(filePath)!;
+                string text = "";
 
                 if (variablesForCommits.right == true && variablesForCommits.esc == false)
                 {
@@ -54,24 +51,27 @@ namespace GitClient
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_UNTRACKED:
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_ADDED:
                         {
-                            listOFAllFiles.Add($"+    {fileName}");
+                            text = ResizeFilesNamesToFitInPanel($"+    {fileName}", dimensions, variablesForCommits, variablesForFiles);
+                            listOFAllFiles.Add(text);
                         }
                         break;
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_MODIFIED:
                         {
-                            listOFAllFiles.Add($"M    {fileName}");
+                            text = ResizeFilesNamesToFitInPanel($"M    {fileName}", dimensions, variablesForCommits, variablesForFiles);
+                            listOFAllFiles.Add(text);
                         }
                         break;
                     case LibGit2Wrapper.GitDelta.GIT_DELTA_DELETED:
                         {
-                            listOFAllFiles.Add($"-    {fileName}");
+                            text = ResizeFilesNamesToFitInPanel($"-    {fileName}", dimensions, variablesForCommits, variablesForFiles);
+                            listOFAllFiles.Add(text);
                         }
                         break;
                 }
             }
 
-            string g = Path.GetDirectoryName(filePath)!;
-            variablesForFiles.projName = $"  ▾{g}";
+            string directoryName = Path.GetDirectoryName(filePath)!;
+            variablesForFiles.projName = $"  ▾{directoryName}";
             
             if (variablesForCommits.logTab == true)
             {
@@ -87,9 +87,10 @@ namespace GitClient
             }
         }
 
-        public static void PrintFilesForLog(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetVariablesForTabs tab)
+        public static void PrintFilesForLog(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             var position = new DrawPanelRigthSide.FilesBox();
+           
             if (variablesForCommits.right == true)
             {
                 Console.SetCursorPosition(1, position.edgeOneY);
@@ -100,7 +101,7 @@ namespace GitClient
             }
 
             Console.WriteLine($"Files: {list.listOfFiles.Count} ");
-            PrintProjectName(variablesForCommits, variablesForFiles, tab, list);
+            PrintProjectName(variablesForCommits, variablesForFiles, list);
             int y = 0;
             int x = 0;
             int height = Console.WindowHeight - variablesForFiles.fileRow - 1;
@@ -123,20 +124,20 @@ namespace GitClient
 
             for (int i = 0; i < height; i++)
             {
-                ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x,  y, i);
+                ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x,  y, i, list.listOfFiles);
                 y++;
             }
         }
 
-        public static void PrintFilesForStatus(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetVariablesForTabs tab)
+        public static void PrintFilesForStatus(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-            PrintProjectName(variablesForCommits, variablesForFiles, tab, list);
+            PrintProjectName(variablesForCommits, variablesForFiles, list);
             int y = 0;
             int x = 1;
             int height = dimensions.unstagedEnd - dimensions.unstagedStart + 1;
 
-            if (variablesForFiles.unstageChanges == true)
+            if (/*variablesForFiles.unstageChanges == true || */list.unstagedChangesFiles.Count > 0)
             {
                 y = dimensions.tabHeight + 3;
 
@@ -147,7 +148,7 @@ namespace GitClient
 
                 for (int i = 0; i < height; i++)
                 {
-                    ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i);
+                    ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.unstagedChangesFiles);
                     y++;
                 }
             }
@@ -155,8 +156,8 @@ namespace GitClient
 
             if (variablesForFiles.stageChanges == true || list.stagedChangesFiles.Count > 0)
             {
-                variablesForFiles.stageChanges = true;
-                variablesForFiles.unstageChanges = false;
+                //variablesForFiles.stageChanges = true;
+                //variablesForFiles.unstageChanges = false;
                 y = dimensions.stagedStart;
 
                 if (height > list.stagedChangesFiles.Count)
@@ -166,12 +167,12 @@ namespace GitClient
 
                 for (int i = 0; i < height; i++)
                 {
-                    ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i);
+                    ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.stagedChangesFiles);
                     y++;
                 }
 
-                variablesForFiles.stageChanges = false;
-                variablesForFiles.unstageChanges = true;
+                //variablesForFiles.stageChanges = false;
+                //variablesForFiles.unstageChanges = true;
             }
         }
 
@@ -180,13 +181,13 @@ namespace GitClient
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
             int position;
-            var filelist = new List<string>();
+            var filesList = new List<string>();
             int x = 1;
             int y = 0;
 
             if (variablesForCommits.logTab == true)
             {
-                filelist = list.listOfFiles;
+                filesList = list.listOfFiles;
                 position = Console.WindowHeight - 2;
                 x = 1;
                 y = variablesForFiles.fileRow;
@@ -194,7 +195,7 @@ namespace GitClient
             else if (variablesForFiles.unstageChanges == true)
             {
                 position = dimensions.unstagedEnd;
-                filelist = list.unstagedChangesFiles;
+                filesList = list.unstagedChangesFiles;
                 variablesForFiles.fileRow = dimensions.unstagedStart;
                 y = variablesForFiles.fileRow;
                 x = 1;
@@ -202,146 +203,128 @@ namespace GitClient
             else
             {
                 position = dimensions.stagedEnd;
-                filelist = list.stagedChangesFiles;
+                filesList = list.stagedChangesFiles;
                 y = variablesForFiles.fileRow;
                 x = 1;
             }
 
-            for (int i = variablesForFiles.fileIndex; i < filelist.Count; i++)
+            for (int i = variablesForFiles.fileIndex; i < filesList.Count; i++)
             {
                 if (y > position)
                 {
                     break;
                 }
 
-                ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i);
+                ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, filesList);
                 Console.SetCursorPosition(1, y + 1);
                 y++;
             }
         }
 
-        public static void PrintStatusFilesIfTheyAreAlreadyBeenReceived(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, int y, int i)
+        //public static void PrintStatusFilesIfTheyAreAlreadyBeenReceived(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, int y, int i)
+        //{
+        //    DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        //    int j = 0;
+        //    int x = 1;
+        //    bool unstagedBool = variablesForFiles.unstageChanges;
+        //    bool stagedBool = variablesForFiles.stageChanges;
+
+        //    if (variablesForFiles.fileIndex < dimensions.changesPanelHeight - 3)
+        //    {
+        //        i = 0;
+        //    }
+        //    else
+        //    {
+        //        i = variablesForFiles.fileIndex;
+        //    }
+
+        //    if (list.unstagedChangesFiles.Count > 0)
+        //    {
+        //        Console.SetCursorPosition(1, y);
+        //        Console.ForegroundColor = ConsoleColor.White;
+        //        Console.Write(variablesForFiles.projName);
+        //        Console.ResetColor();
+        //        y++;
+        //        variablesForFiles.unstageChanges = true;
+        //        variablesForFiles.stageChanges = false;
+
+        //        if (i == list.unstagedChangesFiles.Count)
+        //        {
+        //            i = dimensions.changesPanelHeight - 3;
+        //            y = dimensions.unstagedStart;
+        //        }
+
+
+        //        while (j < list.unstagedChangesFiles.Count)
+        //        {
+        //            if (j == dimensions.changesPanelHeight - 3 || i > list.unstagedChangesFiles.Count)
+        //            {
+        //                break;
+        //            }
+
+        //            ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i);
+        //            j++;
+        //            i++;
+        //            y++;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.SetCursorPosition(1, 4);
+        //        string text = Tabs.SetStatusTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+        //        Console.WriteLine(text);
+        //    }
+
+        //    if (list.stagedChangesFiles.Count > 0)
+        //    {
+        //        j = 0;
+        //        i = 0;
+
+        //        variablesForFiles.unstageChanges = false;
+        //        variablesForFiles.stageChanges = true;
+
+        //        y = dimensions.stagedStart;
+        //        Console.SetCursorPosition(1, dimensions.stagedStart - 1);
+        //        Console.ForegroundColor = ConsoleColor.White;
+        //        Console.Write(variablesForFiles.projName);
+        //        Console.ResetColor();
+
+        //        while (j < list.stagedChangesFiles.Count)
+        //        {
+        //            if (j == dimensions.changesPanelHeight - 3)
+        //            {
+        //                break;
+        //            }
+
+        //            ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i);
+        //            j++;
+        //            i++;
+        //            y++;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        dimensions = new DrawTabs.Dimensions();
+        //        Console.SetCursorPosition(1, dimensions.stagedStart);
+        //        string text = Tabs.SetStatusTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
+        //        Console.WriteLine(text);
+        //    }
+
+        //    variablesForFiles.unstageChanges = unstagedBool;
+        //    variablesForFiles.stageChanges = stagedBool;
+        //}
+
+        public static void ChooseColorForEachFiles(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, int x, int y, int i, List<string> filesList)
         {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-            int j = 0;
-            int x = 1;
-            bool unstagedBool = variablesForFiles.unstageChanges;
-            bool stagedBool = variablesForFiles.stageChanges;
-
-            if (variablesForFiles.fileIndex < dimensions.changesPanelHeight - 3)
+            if (filesList.Count > 0)
             {
-                i = 0;
-            }
-            else
-            {
-                i = variablesForFiles.fileIndex;
-            }
-
-            if (list.unstagedChangesFiles.Count > 0)
-            {
-                Console.SetCursorPosition(1, y);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(variablesForFiles.projName);
-                Console.ResetColor();
-                y++;
-                variablesForFiles.unstageChanges = true;
-                variablesForFiles.stageChanges = false;
-
-                if (i == list.unstagedChangesFiles.Count)
-                {
-                    i = dimensions.changesPanelHeight - 3;
-                    y = dimensions.unstagedStart;
-                }
-
-
-                while (j < list.unstagedChangesFiles.Count)
-                {
-                    if (j == dimensions.changesPanelHeight - 3 || i > list.unstagedChangesFiles.Count)
-                    {
-                        break;
-                    }
-
-                    ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i);
-                    j++;
-                    i++;
-                    y++;
-                }
-            }
-            else
-            {
-                Console.SetCursorPosition(1, 4);
-                string text = Tabs.SetStatusTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
-                Console.WriteLine(text);
-            }
-
-            if (list.stagedChangesFiles.Count > 0)
-            {
-                j = 0;
-                i = 0;
-
-                variablesForFiles.unstageChanges = false;
-                variablesForFiles.stageChanges = true;
-
-                y = dimensions.stagedStart;
-                Console.SetCursorPosition(1, dimensions.stagedStart - 1);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(variablesForFiles.projName);
-                Console.ResetColor();
-
-                while (j < list.stagedChangesFiles.Count)
-                {
-                    if (j == dimensions.changesPanelHeight - 3)
-                    {
-                        break;
-                    }
-
-                    ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i);
-                    j++;
-                    i++;
-                    y++;
-                }
-            }
-            else
-            {
-                dimensions = new DrawTabs.Dimensions();
-                Console.SetCursorPosition(1, dimensions.stagedStart);
-                string text = Tabs.SetStatusTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
-                Console.WriteLine(text);
-            }
-
-            variablesForFiles.unstageChanges = unstagedBool;
-            variablesForFiles.stageChanges = stagedBool;
-        }
-
-        public static void ChooseColorForEachFiles(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, int x, int y, int i)
-        {
-            var filelist = new List<string>();
-
-            if (variablesForCommits.logTab == true)
-            {
-                filelist = list.listOfFiles;
-            }
-            else
-            {
-                if (variablesForFiles.unstageChanges == true)
-                {
-                    filelist = list.unstagedChangesFiles;
-                }
-                else
-                {
-                    filelist = list.stagedChangesFiles;
-                }
-            }
-
-            if (filelist.Count > 0)
-            {
-                switch (filelist[i][0])
+                switch (filesList[i][0])
                 {
                     case 'M':
                         {
                             Console.SetCursorPosition(x, y);
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.Write(filelist[i]);
+                            Console.Write(filesList[i]);
                             Console.ResetColor();
                         }
                         break;
@@ -349,7 +332,7 @@ namespace GitClient
                         {
                             Console.SetCursorPosition(x, y);
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write(filelist[i]);
+                            Console.Write(filesList[i]);
                             Console.ResetColor();
                         }
                         break;
@@ -357,7 +340,7 @@ namespace GitClient
                         {
                             Console.SetCursorPosition(x, y);
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(filelist[i]);
+                            Console.Write(filesList[i]);
                             Console.ResetColor();
                         }
                         break;
@@ -365,7 +348,7 @@ namespace GitClient
             }
         }
 
-        private static void PrintProjectName(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetVariablesForTabs tab, GetCertainList list)
+        private static void PrintProjectName(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
@@ -395,9 +378,7 @@ namespace GitClient
 
                 if (fileName.Length > width)
                 {
-
                     fileName = fileName.Substring(0, width);
-
                 }
                 else
                 {
@@ -453,6 +434,26 @@ namespace GitClient
                     Console.ResetColor();
                 }
             }
+        }
+
+        private static string ResizeFilesNamesToFitInPanel(string text, DrawTabs.Dimensions dimensions, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        {
+            if (variablesForCommits.logTab == true)
+            {
+                if (text.Length > dimensions.widthLogRight)
+                {
+                    text = text.Substring(0, dimensions.widthLogRight);
+                }
+            }
+            else
+            {
+                if (text.Length > dimensions.changesPanelWidth - 1)
+                {
+                    text = text.Substring(0, dimensions.changesPanelWidth - 1);
+                }
+            }
+
+            return text;
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class GetStatusFiles
     {
-        public static void GetUnstagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
+        public static void GetUnstagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
@@ -61,8 +61,8 @@
                 {
                     int index = 0;
                     variablesForFiles.unstageChanges = true;
-                    GetAllFiles.GetListOfAllFiles(commitElements.repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
-                    GetDiffForChanges.DiffUnstagedChanges(diff, list, variablesForFiles, variablesForCommits, tab);
+                    PrintFiles.GetListOfAllFiles(commitElements.repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements);
+                    GetDiffForChanges.DiffUnstagedChanges(diff, list, variablesForFiles, variablesForCommits);
                     variablesForFiles.indexDiff = 0;
                     variablesForFiles.fileIndex = 0;
                 }
@@ -96,7 +96,7 @@
             }
         }
 
-        public static void GetStagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
+        public static void GetStagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             LibGit2Wrapper.GitOid commitOid;
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
@@ -153,8 +153,8 @@
                 {
                     variablesForFiles.stageChanges = true;
                     variablesForFiles.unstageChanges = false;
-                    GetAllFiles.GetListOfAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);
-                    GetDiffForChanges.DiffUnstagedChanges(stagedDiff, list, variablesForFiles, variablesForCommits, tab);
+                    PrintFiles.GetListOfAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements);
+                    GetDiffForChanges.DiffUnstagedChanges(stagedDiff, list, variablesForFiles, variablesForCommits);
                     variablesForFiles.indexDiff = 0;
                     variablesForFiles.fileIndex = 0;
 
