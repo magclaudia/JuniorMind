@@ -2,7 +2,7 @@
 
 namespace GitClient
 {
-    public class Files
+    public class GetLogFiles
     {
         public static void GetFilesAffectedByCommit(IntPtr repo, IntPtr commitPtr, int index, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {

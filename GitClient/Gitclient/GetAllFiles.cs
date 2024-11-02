@@ -9,6 +9,10 @@ namespace GitClient
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
             List<string> listOFAllFiles = new List<string>();
             string filePath = "";
+            
+
+            GetStatusFiles obj = new GetStatusFiles();
+
 
             for (UIntPtr i = 0; i < numDeltas.ToUInt64(); i++)
             {
@@ -81,12 +85,6 @@ namespace GitClient
             {
                 list.stagedChangesFiles = listOFAllFiles;
             }
-
-            //if (variablesForCommits.right == true)
-            //{
-            //    GetVariablesForFiles variablesForFile = new GetVariablesForFiles();
-            //    GetDiffs.GetFileContent(diff, variablesForFile, variablesForCommits, commitElements, list);
-            //}
         }
 
         public static void PrintFilesForLog(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetVariablesForTabs tab)
@@ -216,7 +214,6 @@ namespace GitClient
                     break;
                 }
 
-                //Console.SetCursorPosition(1, y);
                 ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i);
                 Console.SetCursorPosition(1, y + 1);
                 y++;
@@ -414,7 +411,6 @@ namespace GitClient
             }
             else
             {
-               
                 if (variablesForFiles.unstageChanges == true)
                 {
                     x = 1;
@@ -431,9 +427,7 @@ namespace GitClient
                 
                 if (fileName.Length > width)
                 {
-
                     fileName = fileName.Substring(0, width);
-
                 }
                 else
                 {
@@ -459,95 +453,6 @@ namespace GitClient
                     Console.ResetColor();
                 }
             }
-        }
-
-        private static void PrintEachFile(string fileWithSymbol, DrawPanelRigthSide.FilesBox size, ulong i, ref int step, GetVariablesForCommits variablesForCommits, GetCertainList list, GetVariablesForFiles variablesForFiles)
-        {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
-            int lengthForNow = 0;
-            int firstIndex = 0;
-            string file = "";
-            int x = 0;
-            int y = 0;
-            int width = 0;
-            int height = 0;
-
-            if (variablesForCommits.logTab == true)
-            {
-                x = size.edgeOneX + 1;
-                y = size.edgeOneY + 1;
-                width = size.width;
-                height = size.height - 3;
-                i++;
-            }
-            else
-            {
-                if (variablesForFiles.unstageChanges == true)
-                {
-                    x = 1;
-                    y = dimensions.unstagedStart;
-                }
-                else
-                {
-                    x = 1;
-                    y = dimensions.stagedStart;
-                }
-
-                width = dimensions.changesPanelWidth - 2;
-                height = dimensions.changesPanelHeight - 4;
-            }
-
-            if (fileWithSymbol.Length - lengthForNow > width)
-            {
-                if (variablesForCommits.right == true && (int)i <= height)
-                {
-                    Console.SetCursorPosition(1, y + (int)i);
-                }
-                else if (variablesForCommits.right == false && (int)i <= height)
-                {
-                    Console.SetCursorPosition(x, y + (int)i);
-                }
-
-                file = fileWithSymbol.Substring(firstIndex, width);
-                firstIndex++;
-            }
-            else
-            {
-                if (variablesForCommits.right == true && (int)i <= height)
-                {
-                    Console.SetCursorPosition(1, y + (int)i);
-                }
-                else if (variablesForCommits.right == false && (int)i <= height)
-                {
-                    Console.SetCursorPosition(x, y + (int)i);
-                }
-
-                file = fileWithSymbol.Substring(firstIndex, fileWithSymbol.Length - lengthForNow);
-            }
-
-            if (variablesForCommits.logTab == true)
-            {
-                if (variablesForCommits.right == true && variablesForCommits.esc == false)
-                {
-                    list.listOfFiles.Add(file);
-                }
-            }
-            else if (variablesForFiles.unstageChanges == true)
-            {
-                list.unstagedChangesFiles.Add(file);
-            }
-            else if (variablesForFiles.stageChanges == true)
-            {
-                list.stagedChangesFiles.Add(file);
-            }
-
-            if ((int)i <= height)
-            {
-                Console.Write(file);
-            }
-
-            firstIndex += file.Length - 1;
         }
     }
 }

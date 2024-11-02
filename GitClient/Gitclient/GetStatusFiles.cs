@@ -1,7 +1,6 @@
-﻿
-namespace GitClient
+﻿namespace GitClient
 {
-    public class StatusTab
+    public class GetStatusFiles
     {
         public static void GetUnstagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, GetVariablesForTabs tab)
         {
@@ -152,11 +151,6 @@ namespace GitClient
                 }
                 else
                 {
-                    //Console.SetCursorPosition(1, dimensions.stagedStart - 1);
-                    //Console.ForegroundColor = ConsoleColor.White;
-                    //Console.Write(variablesForFiles.projName);
-                    //Console.ResetColor();
-
                     variablesForFiles.stageChanges = true;
                     variablesForFiles.unstageChanges = false;
                     GetAllFiles.GetListOfAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements, tab);

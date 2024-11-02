@@ -49,10 +49,10 @@ namespace GitClient
             GetRepoPath(path);
             GetTabsNames();
             DrawStatus.DrawPanelsForStatus();
-            StatusTab.GetStatusChangesNames();
-            StatusTab.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
+            GetStatusFiles.GetStatusChangesNames();
+            GetStatusFiles.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             variablesForFiles.indexDiff = -1;
-            StatusTab.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
+            GetStatusFiles.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list, tabs);
             string fileFullName = "";
 
 
@@ -102,7 +102,7 @@ namespace GitClient
             GetTabsNames();
             GetRepoPath(path);
             DrawStatus.DrawPanelsForStatus();
-            StatusTab.GetStatusChangesNames();
+            GetStatusFiles.GetStatusChangesNames();
 
             if (list.unstagedChangesFiles.Count == 0)
             {
