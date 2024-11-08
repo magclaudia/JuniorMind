@@ -447,9 +447,9 @@ namespace GitClient
             }
             else
             {
-                if (text.Length > dimensions.changesPanelWidth - 1)
+                if (text.Length > dimensions.changesPanelWidth - 2)
                 {
-                    text = text.Substring(0, dimensions.changesPanelWidth - 1);
+                    text = text.Substring(0, dimensions.changesPanelWidth - 2);
                 }
             }
 
