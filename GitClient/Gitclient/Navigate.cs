@@ -10,8 +10,8 @@ namespace GitClient
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             IntPtr commitPtr = IntPtr.Zero;
-            ConsoleKeyInfo keyInfo;
             int blueFond = 0;
+            ConsoleKeyInfo keyInfo;
 
             do
             {
