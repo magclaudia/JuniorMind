@@ -55,37 +55,40 @@ namespace GitClient
             string fileFullName = "";
 
 
-            if (list.unstagedChangesFiles.Count > 0)
+            for (int i = 0; i < list.unstagedChangesFiles.Count; i++)
             {
-                for (int i = 0; i < list.unstagedChangesFiles.Count; i++)
+                if (list.stagedChangesFiles.Contains(list.unstagedChangesFiles[i]))
                 {
-                    if (list.stagedChangesFiles.Contains(list.unstagedChangesFiles[i]))
-                    {
-                        list.unstagedChangesFiles.Remove(list.unstagedChangesFiles[i]);
-                        list.unstagedChangesDiff.Remove(list.unstagedChangesDiff[i]);
-                    }
+                    list.unstagedChangesFiles.Remove(list.unstagedChangesFiles[i]);
+                    list.unstagedChangesDiff.Remove(list.unstagedChangesDiff[i]);
+                    i--;
                 }
 
-                PrintFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
+                if (list.unstagedChangesFiles.Count == 0)
+                {
+                    variablesForFiles.unstageChanges = false;
+                }
+            }
+
+            PrintFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
+           
+            if (list.unstagedChangesFiles.Count > 0)
+            {
                 fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
                 variablesForFiles.fileRow = dimensions.unstagedStart;
-                DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
-                variablesForCommits.stopWorkingOnCommits = true;
-                variablesForCommits.pressRight = 1;
-                variablesForFiles.initialState = true;
-                variablesForFiles.indexDiff = 0;
-                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
-            else if (list.stagedChangesFiles.Count > 0)
+            else
             {
                 fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
                 variablesForFiles.fileRow = dimensions.stagedStart;
-                DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
-                variablesForCommits.stopWorkingOnCommits = true;
-                variablesForCommits.pressRight = 1;
-                variablesForFiles.initialState = true;
-                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
             }
+
+            DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
+            variablesForCommits.stopWorkingOnCommits = true;
+            variablesForCommits.pressRight = 1;
+            variablesForFiles.initialState = true;
+            variablesForFiles.indexDiff = 0;
+            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
 
             if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
             {
@@ -110,7 +113,6 @@ namespace GitClient
                     variablesForFiles.unstageChanges = false;
                     variablesForFiles.stageChanges = true;
                     PrintFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
-                    //GetAllFiles.PrintStatusFilesIfTheyAreAlreadyBeenReceived(variablesForFiles, variablesForCommits, list, 3, 0);
                     string fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
                     DiffHelper.FilesBackground(fileFullName, variablesForFiles, variablesForCommits);
                     variablesForFiles.down = false;
@@ -119,11 +121,10 @@ namespace GitClient
             }
             else
             {
-                //variablesForFiles.unstageChanges = true;
                 PrintFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
                 //GetAllFiles.PrintStatusFilesIfTheyAreAlreadyBeenReceived(variablesForFiles, variablesForCommits, list, 3, 0);
                 string fileFullName = "";
-               
+
                 if (variablesForFiles.unstageChanges == true)
                 {
                     fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
