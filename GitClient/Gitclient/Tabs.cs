@@ -122,7 +122,6 @@ namespace GitClient
             else
             {
                 PrintFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
-                //GetAllFiles.PrintStatusFilesIfTheyAreAlreadyBeenReceived(variablesForFiles, variablesForCommits, list, 3, 0);
                 string fileFullName = "";
 
                 if (variablesForFiles.unstageChanges == true)

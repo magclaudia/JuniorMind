@@ -135,11 +135,12 @@ namespace GitClient
             PrintProjectName(variablesForCommits, variablesForFiles, list);
             int y = 0;
             int x = 1;
-            int height = dimensions.unstagedEnd - dimensions.unstagedStart;
+            int height = 0;
 
             if (list.unstagedChangesFiles.Count > 0)
             {
                 y = dimensions.tabHeight + 3;
+                height = dimensions.unstagedEnd - dimensions.unstagedStart;
 
                 if (height > list.unstagedChangesFiles.Count)
                 {
@@ -153,10 +154,10 @@ namespace GitClient
                 }
             }
             
-
             if (variablesForFiles.stageChanges == true || list.stagedChangesFiles.Count > 0)
             {
                 y = dimensions.stagedStart;
+                height = dimensions.stagedEnd - dimensions.stagedStart;
 
                 if (height > list.stagedChangesFiles.Count)
                 {
@@ -164,7 +165,7 @@ namespace GitClient
                 }
 
                 int i = 0;
-                if (height == variablesForFiles.fileIndex)
+                if (height == variablesForFiles.fileIndex && list.stagedChangesFiles.Count > height)
                 {
                     i = variablesForFiles.fileIndex;
                 }
@@ -336,9 +337,16 @@ namespace GitClient
                     Console.Write(fileName);
                     Console.ResetColor();
                 }
-                else
+                else if (list.unstagedChangesFiles.Count > 0 && list.stagedChangesFiles.Count == 0)
                 {
                     Console.SetCursorPosition(1, dimensions.tabHeight + 2);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(fileName);
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.SetCursorPosition(1, dimensions.tabHeight + 3);
                     string text = Tabs.SetStatusTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
                     Console.WriteLine(text);
                     Console.SetCursorPosition(x, y);
