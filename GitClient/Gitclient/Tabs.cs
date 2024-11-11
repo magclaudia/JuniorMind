@@ -54,7 +54,6 @@ namespace GitClient
             GetStatusFiles.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
             string fileFullName = "";
 
-
             for (int i = 0; i < list.unstagedChangesFiles.Count; i++)
             {
                 if (list.stagedChangesFiles.Contains(list.unstagedChangesFiles[i]))
