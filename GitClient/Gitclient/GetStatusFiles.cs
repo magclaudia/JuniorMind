@@ -61,7 +61,7 @@
                 {
                     int index = 0;
                     variablesForFiles.unstageChanges = true;
-                    PrintFiles.GetListOfAllFiles(commitElements.repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements);
+                    GetFiles.GetListOfAllFiles(commitElements.repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements);
                     GetDiffForChanges.DiffUnstagedChanges(diff, list, variablesForFiles, variablesForCommits);
                     variablesForFiles.indexDiff = 0;
                     variablesForFiles.fileIndex = 0;
@@ -153,7 +153,7 @@
                 {
                     variablesForFiles.stageChanges = true;
                     variablesForFiles.unstageChanges = false;
-                    PrintFiles.GetListOfAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements);
+                    GetFiles.GetListOfAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements);
                     GetDiffForChanges.DiffUnstagedChanges(stagedDiff, list, variablesForFiles, variablesForCommits);
                     variablesForFiles.indexDiff = 0;
                     variablesForFiles.fileIndex = 0;

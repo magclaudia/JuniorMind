@@ -42,7 +42,7 @@ namespace GitClient
                     while (i < filesList.Count)
                     {
                         list.unstagedChangesDiff.Add(new List<string>());
-                        list.startingIndexesUnstaged.Add(new List<int>());
+                        list.unstagedDiffListStartAt.Add(new List<int>());
                         i++;
                     }
                 }
@@ -53,7 +53,7 @@ namespace GitClient
                     while (i < filesList.Count)
                     {
                         list.stagedChangesDiff.Add(new List<string>());
-                        list.startingIndexesStaged.Add(new List<int>());
+                        list.stagedDiffListStartAt.Add(new List<int>());
                         i++;
                     }
                 }
@@ -102,12 +102,12 @@ namespace GitClient
                     if (files.unstageChanges == true)
                     {
                         list1.unstagedChangesDiff[files.indexDiff].Add(text);
-                        list1.startingIndexesUnstaged[files.fileIndex].Add(0);
+                        list1.unstagedDiffListStartAt[files.fileIndex].Add(0);
                     }
                     else
                     {
                         list1.stagedChangesDiff[files.indexDiff].Add(text);
-                        list1.startingIndexesStaged[files.fileIndex].Add(0);
+                        list1.stagedDiffListStartAt[files.fileIndex].Add(0);
                     }
                 }
             }

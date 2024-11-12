@@ -14,8 +14,10 @@
         public List<string> stagedChangesFiles;
         public List<List<string>> unstagedChangesDiff;
         public List<List<string>> stagedChangesDiff;
-        public List<List<int>> startingIndexesUnstaged;
-        public List<List<int>> startingIndexesStaged;
+        public List<List<int>> unstagedDiffListStartAt;
+        public List<List<int>> stagedDiffListStartAt;
+        public List<int> fileListStartAt;
+
 
         public GetCertainList()
         {
@@ -31,8 +33,9 @@
             stagedChangesFiles = new List<string>();
             unstagedChangesDiff = new List<List<string>>();
             stagedChangesDiff = new List<List<string>>();
-            startingIndexesUnstaged = new List<List<int>>();
-            startingIndexesStaged = new List<List<int>>();
+            unstagedDiffListStartAt = new List<List<int>>();
+            stagedDiffListStartAt = new List<List<int>>();
+            fileListStartAt = new List<int>();
         }
 
         public void ClearAllLists()
@@ -49,8 +52,10 @@
             stagedChangesFiles.Clear();
             unstagedChangesDiff.Clear();
             stagedChangesDiff.Clear();
-            startingIndexesUnstaged.Clear();
-            startingIndexesStaged.Clear();
+            unstagedDiffListStartAt.Clear();
+            stagedDiffListStartAt.Clear();
+            unstagedDiffListStartAt.Clear();
+            fileListStartAt.Clear();
         }
     }
 }

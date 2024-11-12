@@ -52,9 +52,9 @@ namespace GitClient
                         Console.SetCursorPosition(position.edgeOneX + 1, position.edgeOneY);
                     }
 
-                    Console.WriteLine($"Files: {numDeltas} ");
-                    PrintFiles.GetListOfAllFiles(repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements);
-                    PrintFiles.PrintFilesForLog(list, variablesForCommits, variablesForFiles);
+                    //Console.WriteLine($"Files: {numDeltas} ");
+                    GetFiles.GetListOfAllFiles(repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements);
+                    FilesPrintLogFiles.PrintFilesForLog(list, variablesForCommits, variablesForFiles);
                     
                     if (variablesForCommits.right == true)
                     {

@@ -36,6 +36,7 @@
         public int stop;
         public bool initialState;
         public bool finishUpMoves;
+        public string filePath;
 
 
         public GetVariablesForFiles()
@@ -74,6 +75,7 @@
             stop = 0;
             initialState = false;
             finishUpMoves = false;
+            filePath = string.Empty;
         }
     }
 }
