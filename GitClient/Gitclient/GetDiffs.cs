@@ -105,12 +105,10 @@ namespace GitClient
 
     public class DiffHelper
     {
-        private static string fileName = string.Empty;
         private static GetCertainList list = new GetCertainList();
         private static GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
         private static string content = string.Empty;
         private static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
-        private static DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
 
         public static void PrintDiff(IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFile, CommitElements commitElements)
         {
@@ -217,7 +215,6 @@ namespace GitClient
                 {
                     filesDiff = list.stagedChangesDiff;
                     fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
-
                 }
 
                 height = (Console.WindowHeight - 2) - (dimensions.tabHeight + 1);
@@ -290,7 +287,7 @@ namespace GitClient
                             variablesForFiles.row++;
                             Console.SetCursorPosition(x, variablesForFiles.row);
                             content = GetDiffs.ResizeTextToFitInPanel(filesDiff[variablesForFiles.indexDiff][i], variablesForCommits);
-                            SetColorForLinesOfCode(content, variablesForCommits);
+                            SetColorForLinesOfCode(content, variablesForCommits, variablesForFiles);
                         }
                         break;
                 }
@@ -345,122 +342,24 @@ namespace GitClient
             int height = Console.WindowHeight - 2 - 4;
             return list.listOfAllDiffs[variablesForFiles.indexDiff].Count > height ? height : list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
         }
+       
+        //private static void PrintRemaingingFiles()
+        //{
+        //    int position = variablesForFiles.fileRow;
+        //    for (int i = variablesForFiles.fileIndex; i < list.listOfFiles.Count; i++)
+        //    {
+        //        if (position == variablesForFiles.height)
+        //        {
+        //            break;
+        //        }
 
-        public static void FilesBackground(string fileFullName, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits)
-        {
-            int y = 0;
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
-            if (variablesForCommit.logTab == true)
-            {
-                variablesForFiles.nextFile = true;
-                DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
-                y = size.height - dimensions.tabHeight + 1;
-            }
-
-            Cursor.UpdateCursorPositionForFilesList(variablesForFiles, variablesForCommits, list, size);
-
-            if (variablesForFiles.fileRow + 1 == Console.WindowHeight / 2 + 4 && variablesForFiles.up == true)
-            {
-                CleaningFilePanel();
-                variablesForFiles.fileIndex = 0;
-
-                while (variablesForFiles.fileRow <= Console.WindowHeight - 2)
-                {
-                    fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
-                    SetColorForFiles(fileFullName, variablesForFiles);
-                    variablesForFiles.fileIndex++;
-                    variablesForFiles.fileRow++;
-                    Console.SetCursorPosition(1, variablesForFiles.fileRow);
-                }
-
-                variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
-                variablesForFiles.fileIndex = 0;
-                variablesForFiles.indexForLog = 1;
-                fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
-            }
-
-            if (list.listOfFiles.Count > y && variablesForFiles.fileIndex == y && variablesForFiles.up == false)
-            {
-                CleaningFilePanel();
-                PrintRemaingingFiles();
-                variablesForFiles.filesReachPanelLimit = true;
-            }
-
-            if (variablesForCommits.logTab == false && variablesForCommits.esc == true)
-            {
-                variablesForCommits.esc = false;
-            }
-
-            Console.SetCursorPosition(1, variablesForFiles.fileRow);
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
-            Console.Write(fileFullName);
-            Console.ResetColor();
-
-            if (variablesForFiles.filesReachPanelLimit == false && variablesForFiles.fileIndex >= 1 && variablesForFiles.fileIndex <= list.listOfFiles.Count - 1 || variablesForFiles.up == true )
-            {
-                if (variablesForFiles.up == true)
-                {
-                    variablesForFiles.fileRow++;
-                    variablesForFiles.fileIndex++;
-                    Console.SetCursorPosition(1, variablesForFiles.fileRow);
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
-                    SetColorForFiles(fileFullName, variablesForFiles);
-                }
-                else
-                {
-                    Console.SetCursorPosition(1, variablesForFiles.fileRow - 1);
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    fileFullName = list.listOfFiles[variablesForFiles.fileIndex - 1];
-                    SetColorForFiles(fileFullName, variablesForFiles);
-                }
-            }
-
-            variablesForFiles.filesReachPanelLimit = false;
-        }
-
-        private static void PrintRemaingingFiles()
-        {
-            int position = variablesForFiles.fileRow;
-            for (int i = variablesForFiles.fileIndex; i < list.listOfFiles.Count; i++)
-            {
-                if (position == variablesForFiles.height)
-                {
-                    break;
-                }
-
-                Console.SetCursorPosition(1, position);
-                Console.Write(list.listOfFiles[i]);
-                Console.SetCursorPosition(1, position + 1);
-                position++;
-            }
-        }
-
-        private static void CleaningFilePanel()
-        {
-            int width = Console.WindowWidth;
-            int maxHeight = Console.WindowHeight - 1;
-            int maxPosition = 0;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                maxPosition = 5;
-            }
-            else
-            {
-                maxPosition = 6;
-            }
-
-            for (int i = size.height + maxPosition; i < maxHeight; i++)
-            {
-                Console.SetCursorPosition(1, i);
-                Console.Write(new string(' ', (width - 2) - (width / 2) - 4));
-            }
-
-            variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
-            Console.SetCursorPosition(1, size.height + maxPosition);
-        }
-
+        //        Console.SetCursorPosition(1, position);
+        //        Console.Write(list.listOfFiles[i]);
+        //        Console.SetCursorPosition(1, position + 1);
+        //        position++;
+        //    }
+        //}
+       
         public static void CodeBackground(GetVariablesForCommits variablesForCommits, GetCertainList list, GetVariablesForFiles variablesForFiles, CommitElements commitElements, string fileFullName)
         {
             int height = Console.WindowHeight;
@@ -552,39 +451,40 @@ namespace GitClient
             }
         }
 
-        private static void SetColorForFiles(string fileFullName, GetVariablesForFiles variablesForFiles)
-        {
-            string symbol = fileFullName.Substring(0, 1);
-            switch (symbol)
-            {
-                case "+":
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.Write(fileFullName);
-                        Console.ResetColor();
-                    }
-                    break;
-                case "-":
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(fileFullName);
-                        Console.ResetColor();
-                    }
-                    break;
-                case "M":
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write(fileFullName);
-                        Console.ResetColor();
-                    }
-                    break;
-            }
-        }
+        //private static void SetColorForFiles(string fileFullName, GetVariablesForFiles variablesForFiles)
+        //{
+        //    string symbol = fileFullName.Substring(0, 1);
+        //    switch (symbol)
+        //    {
+        //        case "+":
+        //            {
+        //                Console.ForegroundColor = ConsoleColor.DarkGreen;
+        //                Console.Write(fileFullName);
+        //                Console.ResetColor();
+        //            }
+        //            break;
+        //        case "-":
+        //            {
+        //                Console.ForegroundColor = ConsoleColor.Red;
+        //                Console.Write(fileFullName);
+        //                Console.ResetColor();
+        //            }
+        //            break;
+        //        case "M":
+        //            {
+        //                Console.ForegroundColor = ConsoleColor.Yellow;
+        //                Console.Write(fileFullName);
+        //                Console.ResetColor();
+        //            }
+        //            break;
+        //    }
+        //}
 
-        public static void SetColorForLinesOfCode(string content, GetVariablesForCommits variablesForCommits)
+        public static void SetColorForLinesOfCode(string content, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             var firstChar = content.First();
             int x;
+
             if (variablesForCommits.pressRight == 1)
             {
                 x = variablesForFiles.width / 2 + 3;
@@ -593,7 +493,6 @@ namespace GitClient
             {
                 x = 1;
             }
-
 
             switch (firstChar)
             {
