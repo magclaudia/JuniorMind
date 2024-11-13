@@ -112,10 +112,31 @@ namespace GitClient
             {
                 if (list.stagedChangesFiles.Count > 0)
                 {
-                    Console.SetCursorPosition(1, dimensions.stagedStart);
+                    Console.SetCursorPosition(1, dimensions.stagedStart - 1);
                     string directoryName = Path.GetDirectoryName(variablesForFiles.filePath)!;
                     variablesForFiles.projName = $"  ▾{directoryName}";
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(variablesForFiles.projName);
+                    Console.ResetColor();
+                   
+                    int height = dimensions.stagedEnd - dimensions.stagedStart;
+                    int count = 0;
+                    int i = 0;
+                    int x = 1;
+                    int y = dimensions.stagedStart;
+
+                    while (count < height)
+                    {
+                        if (i == list.stagedChangesFiles.Count)
+                        {
+                            break;
+                        }
+
+                        GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.stagedChangesFiles);
+                        y++;
+                        i++;
+                        count++;
+                    }
 
                     variablesForFiles.unstageChanges = false;
                     variablesForFiles.stageChanges = true;
