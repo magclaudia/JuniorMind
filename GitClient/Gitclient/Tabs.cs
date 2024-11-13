@@ -110,6 +110,10 @@ namespace GitClient
 
             if (list.unstagedChangesFiles.Count == 0)
             {
+                Console.SetCursorPosition(1, dimensions.unstagedStart);
+                string text = Tabs.SetStatusTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+                Console.WriteLine(text);
+
                 if (list.stagedChangesFiles.Count > 0)
                 {
                     Console.SetCursorPosition(1, dimensions.stagedStart - 1);
