@@ -11,37 +11,37 @@ namespace GitClient
             Console.CursorVisible = true;
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
-            int indicatorPosition = (variablesForCommits.currentCommitIndex * ((Console.WindowHeight - dimensions.tabHeight - 3)) / commitElements.Id.Count);
+            //int indicatorPosition = (variablesForCommits.currentCommitIndex * ((Console.WindowHeight - dimensions.tabHeight - 3)) / commitElements.Id.Count);
 
-            if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == true && variablesForCommits.up && indicatorPosition < Console.WindowHeight - 4)
-            {
-                Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + dimensions.tabHeight + 3);
-                Console.Write("║");
-            }
-            else if (variablesForCommits.heightPosition >= 10 && variablesForCommits.displayPanel == true && variablesForCommits.down == true && indicatorPosition >= 1)
-            {
-                Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + 3);
-                Console.Write("║");
-            }
-            else if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == false && variablesForCommits.up == true && indicatorPosition < Console.WindowHeight - 3)
-            {
-                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + dimensions.tabHeight + 3);
-                Console.Write("║");
-            }
-            else if (variablesForCommits.heightPosition > 10 && variablesForCommits.displayPanel == false && variablesForCommits.down == true && indicatorPosition >= 1)
-            {
-                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + dimensions.tabHeight + 1);
-                Console.Write("║");
-            }
+            //if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == true && variablesForCommits.up && indicatorPosition < Console.WindowHeight - 4)
+            //{
+            //    Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + dimensions.tabHeight + 3);
+            //    Console.Write("║");
+            //}
+            //else if (variablesForCommits.heightPosition >= 10 && variablesForCommits.displayPanel == true && variablesForCommits.down == true && indicatorPosition >= 1)
+            //{
+            //    Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + 3);
+            //    Console.Write("║");
+            //}
+            //else if (variablesForCommits.heightPosition >= 1 && variablesForCommits.displayPanel == false && variablesForCommits.up == true && indicatorPosition < Console.WindowHeight - 3)
+            //{
+            //    Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + dimensions.tabHeight + 3);
+            //    Console.Write("║");
+            //}
+            //else if (variablesForCommits.heightPosition > 10 && variablesForCommits.displayPanel == false && variablesForCommits.down == true && indicatorPosition >= 1)
+            //{
+            //    Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + dimensions.tabHeight + 1);
+            //    Console.Write("║");
+            //}
 
-            if (variablesForCommits.displayPanel == false)
-            {
-                Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + dimensions.tabHeight + 2);
-            }
-            else
-            {
-                Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + dimensions.tabHeight + 2);
-            }
+            //if (variablesForCommits.displayPanel == false)
+            //{
+            //    Console.SetCursorPosition(Console.WindowWidth - 1, indicatorPosition + dimensions.tabHeight + 2);
+            //}
+            //else
+            //{
+            //    Console.SetCursorPosition(Console.WindowWidth / 2 + 8, indicatorPosition + dimensions.tabHeight + 2);
+            //}
 
             DisplayCustomCursor(ConsoleColor.DarkBlue, commitElements, variablesForCommits, list);
         }
@@ -71,6 +71,7 @@ namespace GitClient
 
         public static void UpdateCursorPositionForDiffsList(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
+
             //DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
            
             //if (variablesForCommits.logTab == true)
@@ -89,17 +90,14 @@ namespace GitClient
 
             //    }
             //}
-
-
         }
 
-       
         private static void DisplayCustomCursor(ConsoleColor color, CommitElements listOfCommits, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
-            char cursorSymbol = '█';
-            Console.Write(cursorSymbol);
-            Console.ResetColor();
+            //Console.ForegroundColor = ConsoleColor.DarkBlue;
+            //char cursorSymbol = '█';
+            //Console.Write(cursorSymbol);
+            //Console.ResetColor();
             BlueBackgroundForCommits.DisplayBlueBox(variablesForCommits, listOfCommits, list);
         }
 
