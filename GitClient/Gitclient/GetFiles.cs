@@ -70,7 +70,6 @@ namespace GitClient
                 }
             }
 
-           
             if (variablesForCommits.logTab == true)
             {
                 list.listOfFiles = listOFAllFiles;
@@ -83,52 +82,6 @@ namespace GitClient
             {
                 list.stagedChangesFiles = listOFAllFiles;
             }
-        }
-
-        public static void PrintRemaingingFiles(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list)
-        {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
-            int position;
-            var filesList = new List<string>();
-            int x = 1;
-            int y = 0;
-
-            if (variablesForCommits.logTab == true)
-            {
-                filesList = list.listOfFiles;
-                position = Console.WindowHeight - 2;
-                x = 1;
-                y = variablesForFiles.fileRow;
-            }
-            else if (variablesForFiles.unstageChanges == true)
-            {
-                position = dimensions.unstagedEnd;
-                filesList = list.unstagedChangesFiles;
-                y = dimensions.unstagedStart;
-                x = 1;
-            }
-            else
-            {
-                position = dimensions.stagedEnd;
-                filesList = list.stagedChangesFiles;
-                variablesForFiles.fileRow = dimensions.stagedStart;
-                y = variablesForFiles.fileRow;
-                x = 1;
-            }
-
-            for (int i = list.fileListStartAt[variablesForFiles.startAt]; i < filesList.Count; i++)
-            {
-                if (y >= position + 1)
-                {
-                    break;
-                }
-
-                ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, filesList);
-                Console.SetCursorPosition(1, y + 1);
-                y++;
-            }
-
         }
 
         public static void FilesBackground(string fileFullName, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list)
@@ -153,7 +106,6 @@ namespace GitClient
                 while (variablesForFiles.fileRow <= Console.WindowHeight - 2)
                 {
                     fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
-                   // SetColorForFiles(fileFullName, variablesForFiles);
                     variablesForFiles.fileIndex++;
                     variablesForFiles.fileRow++;
                     Console.SetCursorPosition(1, variablesForFiles.fileRow);
@@ -168,7 +120,7 @@ namespace GitClient
             if (list.listOfFiles.Count > y && variablesForFiles.fileIndex == y && variablesForFiles.up == false)
             {
                 CleaningFilePanel(variablesForFiles);
-                PrintRemaingingFiles(variablesForFiles, variablesForCommits, list);
+                FilesPrintStatusFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
                 variablesForFiles.filesReachPanelLimit = true;
             }
 
@@ -191,14 +143,12 @@ namespace GitClient
                     Console.SetCursorPosition(1, variablesForFiles.fileRow);
                     Console.BackgroundColor = ConsoleColor.Black;
                     fileFullName = list.listOfFiles[variablesForFiles.fileIndex];
-                   // SetColorForFiles(fileFullName, variablesForFiles);
                 }
                 else
                 {
                     Console.SetCursorPosition(1, variablesForFiles.fileRow - 1);
                     Console.BackgroundColor = ConsoleColor.Black;
                     fileFullName = list.listOfFiles[variablesForFiles.fileIndex - 1];
-                   // SetColorForFiles(fileFullName, variablesForFiles);
                 }
             }
 

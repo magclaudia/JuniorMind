@@ -44,6 +44,7 @@ namespace GitClient
 
         public static void SetInitialState(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
+            Console.Clear();
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             DrawTabs.DrawOnlyTabs();
             GetRepoPath(path);
@@ -133,18 +134,13 @@ namespace GitClient
                     Console.WriteLine(text);
                 }
 
-                Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
-                string directoryName = Path.GetDirectoryName(variablesForFiles.filePath)!;
-                variablesForFiles.projName = $"  ▾{directoryName}";
-                Console.Write(variablesForFiles.projName);
-
-                if (variablesForFiles.fileIndex > dimensions.unstagedEnd - dimensions.unstagedStart)
+                if (variablesForFiles.fileIndex <= dimensions.unstagedEnd - dimensions.unstagedStart)
                 {
-                    GetFiles.PrintRemaingingFiles(variablesForFiles, variablesForCommits, list);
+                    FilesPrintStatusFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
                 }
                 else
                 {
-                    FilesPrintStatusFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
+                    FilesPrintStatusFiles.ScrollThrouthFilesList(list, variablesForCommits, variablesForFiles);
                 }
 
                 string fileFullName = "";

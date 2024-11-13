@@ -103,7 +103,7 @@ namespace GitClient
                             variablesForFiles.row++;
                             Console.SetCursorPosition(x, variablesForFiles.row);
                             string content = GetDiffs.ResizeTextToFitInPanel(list.listOfAllDiffs[variablesForFiles.indexDiff][i], variablesForCommits);
-                            DiffHelper.SetColorForLinesOfCode(content, variablesForCommits);
+                            DiffHelper.SetColorForLinesOfCode(content, variablesForCommits, variablesForFiles);
                         }
                         break;
                 }

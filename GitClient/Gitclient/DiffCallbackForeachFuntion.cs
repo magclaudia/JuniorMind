@@ -67,7 +67,7 @@ namespace GitClient
             string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
             string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            string fileName = "";
+            string fileName = string.Empty;
             
             if (variablesForCommit.logTab == true)
             {

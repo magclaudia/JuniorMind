@@ -14,6 +14,7 @@ namespace GitClient
             string directoryName = Path.GetDirectoryName(variablesForFiles.filePath)!;
             variablesForFiles.projName = $"  ▾{directoryName}";
 
+            Console.ForegroundColor = ConsoleColor.White;
             if (variablesForCommits.right == true)
             {
                 Console.SetCursorPosition(1, position.edgeOneY);
@@ -28,6 +29,8 @@ namespace GitClient
                 Console.SetCursorPosition(position.edgeOneX + 1, position.edgeOneY + 1);
                 Console.WriteLine(variablesForFiles.projName);
             }
+
+            Console.ResetColor();
 
             int y = 0;
             int x = 0;
