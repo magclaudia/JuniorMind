@@ -25,6 +25,11 @@ namespace GitClient
                             {
                                 if (variablesForCommits.stopWorkingOnCommits == true && variablesForCommits.pressRight == 1)
                                 {
+                                    if (variablesForFiles.fileIndex == 0)
+                                    {
+                                        break;
+                                    }
+
                                     HandleFilesUpMovesLog(variablesForCommits, variablesForFiles, list, commitElement);
                                 }
                                 else if (variablesForCommits.pressRight == 2)
@@ -189,7 +194,10 @@ namespace GitClient
                                 variablesForCommits.enter = true;
                                 variablesForCommits.panelAlreadyDisplayed = false;
                                 variablesForCommits.esc = false;
-                                
+                                variablesForFiles.indexDiff = -1;
+                                variablesForFiles.fileIndex = 0;
+                                variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
+
                                 if (variablesForCommits.right == true)
                                 {
                                     variablesForCommits.pressRight = 0;
@@ -340,7 +348,7 @@ namespace GitClient
             for (int i = 2; i <= panel.height - 2; i++)
             {
                 Console.SetCursorPosition(1, panel.edgeOneY + i);
-                Console.Write(new string(' ', panel.width + 8));
+                Console.Write(new string(' ', panel.width + 9));
             }
 
             Console.SetCursorPosition(1, panel.edgeOneY + 2);
@@ -548,7 +556,7 @@ namespace GitClient
                         variablesForFiles.fileRow = list.unstagedChangesFiles.Count - 1 + dimensions.unstagedStart;
                     }
 
-                    variablesForFiles.filesStartAt = list.unstagedFilesStartAt.Count - 1;
+                    variablesForFiles.filesStatusStartAt = list.unstagedFilesStartAt.Count - 1;
                     variablesForFiles.indexDiff = list.unstagedChangesFiles.Count;
                     variablesForFiles.fileIndex = list.unstagedChangesFiles.Count - 1;
                 }
@@ -590,8 +598,8 @@ namespace GitClient
                     i++;
                 }
 
-                variablesForFiles.filesStartAt--;
-                variablesForFiles.fileIndex = indexes[variablesForFiles.filesStartAt];
+                variablesForFiles.filesStatusStartAt--;
+                variablesForFiles.fileIndex = indexes[variablesForFiles.filesStatusStartAt];
                 Console.SetCursorPosition(1, variablesForFiles.fileRow);
                 FilesPrintStatusFiles.ScrollThrouthFilesList(list, variablesForCommits, variablesForFiles);
                 Console.SetCursorPosition(1, y);
@@ -665,7 +673,7 @@ namespace GitClient
                         variablesForFiles.fileRow = dimensions.stagedStart;
                         variablesForFiles.fileIndex = 0;
                         variablesForFiles.indexDiff = -1;
-                        variablesForFiles.filesStartAt = 0;
+                        variablesForFiles.filesStatusStartAt = 0;
                         end = dimensions.stagedEnd;
                     }
 
@@ -694,7 +702,7 @@ namespace GitClient
 
                     if (variablesForFiles.fileRow >= end)
                     {
-                        variablesForFiles.filesStartAt++;
+                        variablesForFiles.filesStatusStartAt++;
                         variablesForFiles.fileIndex++;
                         FilesPrintStatusFiles.ScrollThrouthFilesList(list, variablesForCommits, variablesForFiles);
                     }
@@ -785,10 +793,6 @@ namespace GitClient
             if (variablesForFiles.diffMoves == true && variablesForFiles.currentLine < list.listOfAllDiffs[variablesForFiles.indexDiff].Count)
             {
                 variablesForFiles.up = false;
-                //if (variablesForFiles.row == Console.WindowHeight - 2)
-                //{
-                //    variablesForFiles.index = variablesForFiles.index - (Console.WindowHeight - 2);
-                //}
 
                 if (variablesForFiles.row == Console.WindowHeight - 3)
                 {
@@ -810,156 +814,6 @@ namespace GitClient
             }
         }
 
-        private static void HandleRightArrowLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
-        {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
-            if (variablesForCommits.enter == true)
-            {
-                variablesForCommits.pressRight++;
-                if (variablesForCommits.pressRight == 1)
-                {
-                    variablesForCommits.right = true;
-                    variablesForFiles.fileIndex = 0;
-                    variablesForFiles.row = dimensions.tabHeight + 2;
-                    variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
-                    variablesForFiles.currentLine = 1;
-                    variablesForFiles.indexForLog = 0;
-                    variablesForFiles.index = 0;
-                    variablesForFiles.down = false;
-                    GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
-                    variablesForCommits.stopWorkingOnCommits = true;
-                }
-                else
-                {
-                    int j = dimensions.tabHeight + 1;
-
-                    while (j < Console.WindowHeight)
-                    {
-                        Console.SetCursorPosition(0, j);
-                        Console.Write(new string(' ', dimensions.width + 1));
-                        j++;
-                    }
-
-                    int i = 1;
-                    DrawLogPanel.DrawLargePanel();
-                    LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
-                    variablesForFiles.down = false;
-                    variablesForFiles.fileIndex = 0;
-                    variablesForFiles.row = dimensions.tabHeight + 1;
-                    variablesForFiles.fileRow = Console.WindowHeight / 2 + 4;
-                    variablesForFiles.currentLine = 1;
-                    variablesForFiles.diffMoves = false;
-                    variablesForFiles.index = 0;
-
-                    IntPtr commitPtr = IntPtr.Zero;
-
-                    if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
-                    {
-                        GetLogFiles.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
-                    }
-
-                    variablesForCommits.pressRight = 1;
-                }
-            }
-        }
-
-        private static void HandleRightArrowStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
-        {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-            variablesForFiles.index = 0;
-            variablesForFiles.down = false;
-            variablesForCommits.right = true;
-            variablesForFiles.row = dimensions.tabHeight + 1;
-            int i = variablesForFiles.row;
-
-            while (i <= Console.WindowHeight - 1)
-            {
-                Console.SetCursorPosition(0, i);
-                Console.Write(new string(' ', Console.WindowWidth));
-                i++;
-            }
-
-            DrawLogPanel.DrawLargePanel();
-            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElement, list);
-        }
-
-        private static void HandleFilesUpMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
-        {
-            int x = 0;
-            int y = 0;
-
-            if (variablesForCommits.pressRight == 0)
-            {
-                y = variablesForFiles.fileRow;
-                x = Console.WindowWidth / 2 + 2;
-            }
-            else
-            {
-                y = variablesForFiles.fileRow;
-                x = 1;
-            }
-
-            var panel = new DrawPanelRigthSide.FilesBox();
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-            variablesForFiles.down = false;
-
-            if (variablesForFiles.fileRow == panel.edgeOneY + 2 && variablesForFiles.fileIndex > 0)
-            {
-                CleaningFilePanel(panel);
-                variablesForFiles.fileIndex = 0;
-                
-                FilesPrintLogFiles.PrintFilesForLog(list, variablesForCommits, variablesForFiles);
-                Console.SetCursorPosition(1, variablesForFiles.fileRow);
-                Console.BackgroundColor = ConsoleColor.DarkBlue;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(list.listOfFiles[variablesForFiles.fileIndex]);
-                Console.ResetColor();
-                Console.SetCursorPosition(1, variablesForFiles.fileRow);
-                
-                GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
-                IntPtr commitPtr = IntPtr.Zero;
-                int i = 1;
-                variablesForFiles.row = dimensions.tabHeight + 1;
-                variablesForFiles.nextFile = true;
-
-                LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
-                if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
-                {
-                    GetLogFiles.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
-                }
-
-            }
-
-            if (variablesForFiles.fileIndex > 0)
-            {
-                GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, variablesForFiles.fileIndex, list.listOfFiles);
-                Console.SetCursorPosition(1, y - 1);
-                Console.BackgroundColor = ConsoleColor.DarkBlue;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(list.listOfFiles[variablesForFiles.fileIndex - 1]);
-                Console.ResetColor();
-                variablesForFiles.up = true;
-                //Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list, size);
-                variablesForFiles.up = false;
-                Console.SetCursorPosition(1, y - 1);
-                variablesForFiles.fileRow--;
-                variablesForFiles.fileIndex--;
-
-                GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
-                IntPtr commitPtr = IntPtr.Zero;
-                int i = 1;
-                variablesForFiles.row = dimensions.tabHeight + 1;
-                variablesForFiles.nextFile = true;
-
-                LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
-                if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
-                {
-                    GetLogFiles.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
-                }
-            }
-        }
-
         private static void HandleFilesDownMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
@@ -973,8 +827,9 @@ namespace GitClient
                     CleaningFilePanel(panel);
                     variablesForFiles.fileRow = variablesForFiles.fileRow - panel.height + 4;
                     variablesForFiles.fileIndex++;
-                    
+                    variablesForFiles.fileLogStartAt++;
                     FilesPrintLogFiles.PrintFilesForLog(list, variablesForCommits, variablesForFiles);
+                    
                     Console.SetCursorPosition(1, variablesForFiles.fileRow);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.ForegroundColor = ConsoleColor.White;
@@ -982,12 +837,14 @@ namespace GitClient
                     Console.ResetColor();
                     Console.SetCursorPosition(1, variablesForFiles.fileRow);
                     GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
+                    
                     int i = 1;
                     IntPtr commitPtr = IntPtr.Zero;
                     variablesForFiles.row = dimensions.tabHeight + 1;
                     variablesForFiles.nextFile = true;
                     variablesForFiles.down = false;
                     LibGit2Wrapper.GitOid oid = commitElements.IdGitOid[variablesForCommits.currentCommitIndex];
+                   
                     if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElements.repo, ref oid) == 0)
                     {
                         GetLogFiles.GetFilesAffectedByCommit(commitElements.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElements);
@@ -1024,6 +881,153 @@ namespace GitClient
                     }
                 }
             }
+        }
+
+        private static void HandleFilesUpMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
+        {
+            int x = 0;
+            int y = 0;
+
+            if (variablesForCommits.pressRight == 0)
+            {
+                y = variablesForFiles.fileRow;
+                x = Console.WindowWidth / 2 + 2;
+            }
+            else
+            {
+                y = variablesForFiles.fileRow;
+                x = 1;
+            }
+
+            DrawPanelRigthSide.FilesBox panel = new DrawPanelRigthSide.FilesBox();
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            variablesForFiles.down = false;
+
+            if (/*variablesForFiles.fileIndex > 0 && */variablesForFiles.fileRow != panel.edgeOneY + 2)
+            {
+                GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, variablesForFiles.fileIndex, list.listOfFiles);
+                Console.SetCursorPosition(1, y - 1);
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(list.listOfFiles[variablesForFiles.fileIndex - 1]);
+                Console.ResetColor();
+                variablesForFiles.up = true;
+                //Cursor.UpdateCursorPositionForFilesList(variablesForFiles, list, size);
+                variablesForFiles.up = false;
+                Console.SetCursorPosition(1, y - 1);
+                variablesForFiles.fileRow--;
+                variablesForFiles.fileIndex--;
+
+                GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
+                IntPtr commitPtr = IntPtr.Zero;
+                int i = 1;
+                variablesForFiles.row = dimensions.tabHeight + 1;
+                variablesForFiles.nextFile = true;
+
+                LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
+                if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
+                {
+                    GetLogFiles.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
+                }
+            }
+            else
+            //if (variablesForFiles.fileRow == panel.edgeOneY + 2 && variablesForFiles.fileIndex > 0)
+            {
+                variablesForFiles.fileLogStartAt--;
+                CleaningFilePanel(panel);
+                variablesForFiles.fileIndex = list.logFilesStartAt[variablesForFiles.fileLogStartAt];
+                FilesPrintLogFiles.PrintFilesForLog(list, variablesForCommits, variablesForFiles);
+                Console.SetCursorPosition(1, variablesForFiles.fileRow);
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(list.listOfFiles[variablesForFiles.fileIndex]);
+                Console.ResetColor();
+                Console.SetCursorPosition(1, variablesForFiles.fileRow);
+
+                GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
+                IntPtr commitPtr = IntPtr.Zero;
+                int i = 1;
+                variablesForFiles.row = dimensions.tabHeight + 1;
+                variablesForFiles.nextFile = true;
+
+                LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
+                if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
+                {
+                    GetLogFiles.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
+                }
+            }
+        }
+
+        private static void HandleRightArrowLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
+        {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+
+            if (variablesForCommits.enter == true)
+            {
+                variablesForCommits.pressRight++;
+
+                if (variablesForCommits.pressRight == 1)
+                {
+                    variablesForCommits.right = true;
+                    variablesForFiles.row = dimensions.tabHeight + 1;
+                    variablesForFiles.currentLine = 1;
+                    variablesForFiles.indexForLog = 0;
+                    //variablesForFiles.fileLogStartAt = 0;
+                    variablesForFiles.index = 0;
+                    variablesForFiles.down = false;
+                    GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
+                    variablesForCommits.stopWorkingOnCommits = true;
+                }
+                else
+                {
+                    int j = dimensions.tabHeight + 1;
+
+                    while (j < Console.WindowHeight)
+                    {
+                        Console.SetCursorPosition(0, j);
+                        Console.Write(new string(' ', dimensions.width + 1));
+                        j++;
+                    }
+
+                    int i = 1;
+                    DrawLogPanel.DrawLargePanel();
+                    LibGit2Wrapper.GitOid oid = commitElement.IdGitOid[variablesForCommits.currentCommitIndex];
+                    variablesForFiles.down = false;
+                    variablesForFiles.row = dimensions.tabHeight + 1;
+                    variablesForFiles.currentLine = 1;
+                    variablesForFiles.diffMoves = false;
+                    variablesForFiles.index = 0;
+
+                    IntPtr commitPtr = IntPtr.Zero;
+
+                    if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
+                    {
+                        GetLogFiles.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
+                    }
+
+                    variablesForCommits.pressRight = 1;
+                }
+            }
+        }
+
+        private static void HandleRightArrowStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
+        {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            variablesForFiles.index = 0;
+            variablesForFiles.down = false;
+            variablesForCommits.right = true;
+            variablesForFiles.row = dimensions.tabHeight + 1;
+            int i = variablesForFiles.row;
+
+            while (i <= Console.WindowHeight - 1)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write(new string(' ', Console.WindowWidth));
+                i++;
+            }
+
+            DrawLogPanel.DrawLargePanel();
+            DiffHelper.Print(variablesForCommits, variablesForFiles, commitElement, list);
         }
 
         private static void HandleCommitsUpMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
