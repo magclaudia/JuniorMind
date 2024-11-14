@@ -57,8 +57,7 @@ namespace GitClient
                     
                     if (variablesForCommits.right == true)
                     {
-                        GetVariablesForFiles variablesForFile = new GetVariablesForFiles();
-                        GetDiffs.GetFileContent(diff, variablesForFile, variablesForCommits, commitElements, list);
+                        GetDiffs.GetFileContent(diff, variablesForFiles, variablesForCommits, commitElements, list);
                     }
                 }
                 else

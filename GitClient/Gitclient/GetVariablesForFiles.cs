@@ -33,7 +33,8 @@
         public int indexForUnstaged;
         public int indexForStaged;
         public int diffStartAt;
-        public int filesStartAt;
+        public int filesStatusStartAt;
+        public int fileLogStartAt;
         public int stop;
         public bool initialState;
         public bool finishUpMoves;
@@ -73,7 +74,8 @@
             indexForUnstaged = 0;
             indexForStaged = 0;
             diffStartAt = 0;
-            filesStartAt = 0;
+            filesStatusStartAt = 0;
+            fileLogStartAt = 0;
             stop = 0;
             initialState = false;
             finishUpMoves = false;

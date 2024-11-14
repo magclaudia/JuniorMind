@@ -21,7 +21,6 @@ namespace GitClient
                 }
 
                 var delta = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(deltaPtr);
-
                 string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
                 string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
 
@@ -131,6 +130,7 @@ namespace GitClient
 
             Console.SetCursorPosition(1, variablesForFiles.fileRow);
             Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write(fileFullName);
             Console.ResetColor();
 
@@ -191,19 +191,10 @@ namespace GitClient
 
         private static string ResizeFilesNamesToFitInPanel(string text, DrawTabs.Dimensions dimensions, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
-            if (variablesForCommits.logTab == true)
+
+            if (text.Length > dimensions.changesPanelWidth - 2)
             {
-                if (text.Length > dimensions.widthLogRight)
-                {
-                    text = text.Substring(0, dimensions.widthLogRight);
-                }
-            }
-            else
-            {
-                if (text.Length > dimensions.changesPanelWidth - 2)
-                {
-                    text = text.Substring(0, dimensions.changesPanelWidth - 2);
-                }
+                text = text.Substring(0, dimensions.changesPanelWidth - 2);
             }
 
             return text;
