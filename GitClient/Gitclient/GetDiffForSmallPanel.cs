@@ -13,14 +13,14 @@ namespace GitClient
         public static void GetDiffRelatedToTheSelectedFile(GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, CommitElements commitElements)
         {
             variablesForFiles.indexDiff = variablesForFiles.fileIndex;
-            
             string currentFileName = list.listOfFiles[variablesForFiles.fileIndex];
-            
-            if (variablesForFiles.fileIndex == 0)
-            {
-                GetFiles.FilesBackground(currentFileName, variablesForFiles, variablesForCommits, list);
-            }
 
+            //if (variablesForFiles.fileIndex == 0)
+            //{
+            //    GetFiles.FilesBackground(currentFileName, variablesForFiles, variablesForCommits, list);
+            //}
+
+            //GetFiles.FilesBackground(currentFileName, variablesForFiles, variablesForCommits, list);
             Print(list, variablesForCommits, variablesForFiles, commitElements, currentFileName);
         }
 
