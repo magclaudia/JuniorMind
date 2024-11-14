@@ -53,7 +53,7 @@ namespace GitClient
                 }
                 else
                 {
-                    i = list.unstagedFilesStartAt[variablesForFiles.filesStartAt];
+                    i = list.unstagedFilesStartAt[variablesForFiles.filesStatusStartAt];
                 }
                 
                 int count = 0;
@@ -100,7 +100,7 @@ namespace GitClient
 
                 if (variablesForFiles.stageChanges == true)
                 {
-                    i = list.unstagedFilesStartAt[variablesForFiles.filesStartAt];
+                    i = list.unstagedFilesStartAt[variablesForFiles.filesStatusStartAt];
                 }
                 else
                 {
@@ -150,7 +150,7 @@ namespace GitClient
                 Console.ResetColor();
 
                 int height = dimensions.unstagedEnd - dimensions.unstagedStart + 1;
-                int i = list.unstagedFilesStartAt[variablesForFiles.filesStartAt];
+                int i = list.unstagedFilesStartAt[variablesForFiles.filesStatusStartAt];
                 int count = 0;
                 int y = dimensions.unstagedStart;
                 int x = 1;
@@ -182,7 +182,7 @@ namespace GitClient
 
                 if (variablesForFiles.stageChanges == true)
                 {
-                    i = list.stagedFilesStartAt[variablesForFiles.filesStartAt];
+                    i = list.stagedFilesStartAt[variablesForFiles.filesStatusStartAt];
                 }
 
                 int height = dimensions.stagedEnd - dimensions.stagedStart;

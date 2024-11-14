@@ -14,11 +14,12 @@ namespace GitClient
         public static string ResizeTextToFitInPanel(string line, GetVariablesForCommits variablesForCommits)
         {
             int width;
+
             if (variablesForCommits.logTab == true)
             {
                 if (variablesForCommits.pressRight == 1)
                 {
-                    width = (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 5;
+                    width = (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4;
                 }
                 else
                 {
@@ -82,7 +83,7 @@ namespace GitClient
             {
                 height = Console.WindowHeight - 2;
                 x = Console.WindowWidth / 2 + 3;
-                y = (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 4;
+                y = (Console.WindowWidth - 2) - (Console.WindowWidth / 2) - 3;
                 z = 3;
             }
             else
@@ -131,7 +132,11 @@ namespace GitClient
                 }
                 
                 GetDiffForSmallPanel.GetDiffRelatedToTheSelectedFile(list, variablesForFile, variablesForCommits, commitElements);
-
+                Console.SetCursorPosition(1, variablesForFiles.fileRow);
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(list.listOfFiles[variablesForFiles.fileIndex]);
+                Console.ResetColor();
             }
             else
             {

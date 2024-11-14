@@ -6,7 +6,6 @@
         public List<string> filesNames;
         public List<List<int>> startingIndexesLog;
         public List<string> addLinesOfCode;
-        public List<int> listStartAt;
         public List<int> start;
         public List<string> addList;
         public List<List<string>> listOfAllDiffs;
@@ -26,7 +25,6 @@
             filesNames = new List<string>();
             startingIndexesLog = new List<List<int>>();
             addLinesOfCode = new List<string>();
-            listStartAt = new List<int>();
             start = new List<int>();
             addList = new List<string>();
             listOfAllDiffs = new List<List<string>>();
@@ -47,7 +45,6 @@
             filesNames.Clear();
             startingIndexesLog.Clear();
             addLinesOfCode.Clear();
-            listStartAt.Clear();
             start.Clear();
             addList.Clear();
             listOfAllDiffs.Clear();

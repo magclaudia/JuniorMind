@@ -20,7 +20,8 @@ namespace GitClient
             public int unstagedEnd;
             public int stagedStart;
             public int stagedEnd;
-            public int widthLogRight;
+            public int widthRightLog;
+            public int widthEnterLog;
 
             public Dimensions()
             {
@@ -34,7 +35,8 @@ namespace GitClient
                 unstagedEnd = changesPanelHeight;
                 stagedStart = unstagedStart + unstagedEnd;
                 stagedEnd = height;
-                widthLogRight = Console.WindowWidth - (Console.WindowWidth / 2 + 13);
+                widthRightLog = Console.WindowWidth - (Console.WindowWidth / 2 + 3);
+                widthEnterLog = Console.WindowWidth - (Console.WindowWidth / 2 + 13);
             }
         }
        

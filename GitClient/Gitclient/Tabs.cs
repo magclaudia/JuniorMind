@@ -95,11 +95,6 @@ namespace GitClient
             variablesForFiles.initialState = true;
             variablesForFiles.indexDiff = 0;
             DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
-
-            //if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
-            //{
-            //    Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
-            //}
         }
 
         public static void ChooseStatusTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
