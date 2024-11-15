@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static GitClient.DrawTabs;
 
 namespace GitClient
 {
@@ -45,39 +46,48 @@ namespace GitClient
         public static void SetInitialState(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
             Console.Clear();
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             DrawTabs.DrawOnlyTabs();
             GetRepoPath(path);
             GetTabsNames();
             DrawStatus.DrawPanelsForStatus();
             GetStatusFiles.GetStatusChangesNames();
-            GetStatusFiles.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
-            variablesForFiles.indexDiff = -1;
-            GetStatusFiles.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
-            string fileFullName = "";
-
-            for (int i = 0; i < list.unstagedChangesFiles.Count; i++)
+            
+            if (variablesForFiles.statusFilesSufferModifications == false)
             {
-                if (list.stagedChangesFiles.Contains(list.unstagedChangesFiles[i]))
+                GetStatusFiles.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
+                variablesForFiles.indexDiff = -1;
+                GetStatusFiles.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
+
+                for (int i = 0; i < list.unstagedChangesFiles.Count; i++)
                 {
-                    list.unstagedChangesFiles.Remove(list.unstagedChangesFiles[i]);
-                    list.unstagedChangesDiff.Remove(list.unstagedChangesDiff[i]);
-                    i--;
+                    if (list.stagedChangesFiles.Contains(list.unstagedChangesFiles[i]))
+                    {
+                        list.unstagedChangesFiles.Remove(list.unstagedChangesFiles[i]);
+                        list.unstagedChangesDiff.Remove(list.unstagedChangesDiff[i]);
+                        i--;
+                    }
+
+                    if (list.unstagedChangesFiles.Count == 0)
+                    {
+                        variablesForFiles.unstageChanges = false;
+                    }
                 }
 
-                if (list.unstagedChangesFiles.Count == 0)
+                if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
                 {
-                    variablesForFiles.unstageChanges = false;
+                    Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
                 }
-            }
-
-            if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
-            {
-                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
 
             FilesPrintStatusFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
-           
+            GetFileBackgoundAndDiff(list, variablesForCommits, variablesForFiles, commitElements);
+        }
+
+        public static void GetFileBackgoundAndDiff(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements)
+        {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            string fileFullName = string.Empty;
+
             if (list.unstagedChangesFiles.Count > 0)
             {
                 fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
