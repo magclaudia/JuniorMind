@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static GitClient.DrawTabs;
 
 namespace GitClient
 {
@@ -44,6 +45,7 @@ namespace GitClient
 
         public static void SetInitialState(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             Console.Clear();
             DrawTabs.DrawOnlyTabs();
             GetRepoPath(path);
@@ -61,8 +63,26 @@ namespace GitClient
                 }
             }
             
-            FilesStatus.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
-            GetFileBackgoundAndDiff(list, variablesForCommits, variablesForFiles, commitElements);
+            if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
+            {
+                string text = "";
+                Console.SetCursorPosition(1, dimensions.unstagedStart);
+                text = Tabs.SetStatusTextLength(" No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(text);
+                Console.ResetColor();
+
+                Console.SetCursorPosition(1, dimensions.stagedStart);
+                text = Tabs.SetStatusTextLength(" No changes found in the staging area.", Console.WindowWidth / 2 - 3);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(text);
+                Console.ResetColor();
+            }
+            else
+            {
+                FilesStatus.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
+                GetFileBackgoundAndDiff(list, variablesForCommits, variablesForFiles, commitElements);
+            }
         }
 
         public static void GetFileBackgoundAndDiff(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElements)
