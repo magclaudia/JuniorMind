@@ -12,14 +12,9 @@ namespace GitClient
         {
             TextToBeResize(list, variablesForCommits, variablesForFiles);
             DrawPanelRigthSide.FilesBox filesBox = new DrawPanelRigthSide.FilesBox();
+            int height = filesBox.edgeFourY - filesBox.edgeOneY - 2;
             int y = 0;
             int x = 0;
-            int height = filesBox.edgeFourY - filesBox.edgeOneY - 2;
-
-            //if (height > list.listOfFiles.Count)
-            //{
-            //    height = list.listOfFiles.Count;
-            //}
 
             if (variablesForCommits.enter == true && variablesForCommits.pressRight < 1)
             {
@@ -38,7 +33,6 @@ namespace GitClient
             if (variablesForCommits.pressRight == 1 && list.listOfFiles.Count > height)
             {
                 i = list.logFilesStartAt[variablesForFiles.fileLogStartAt];
-                //variablesForFiles.fileIndex = i;
             }
 
             while (count < height)

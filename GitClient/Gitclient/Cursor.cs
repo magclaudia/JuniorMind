@@ -69,6 +69,7 @@ namespace GitClient
             //}
         }
 
+
         public static void UpdateCursorPositionForDiffsList(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {
 

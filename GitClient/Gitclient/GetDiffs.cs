@@ -113,6 +113,26 @@ namespace GitClient
 
         public static void PrintDiff(IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFile, CommitElements commitElements)
         {
+            //
+            List<string> fileslist = new List<string>();
+            int index = 0;
+            int row = 0;
+
+            if (variablesForFiles.unstageChanges == true)
+            {
+                fileslist = filesList.unstagedChangesFiles;
+                index = variablesForFile.unstagedIndex;
+                row = variablesForFile.fileRowUnstaged;
+            }
+            else
+            {
+                fileslist = filesList.stagedChangesFiles;
+                index = variablesForFile.stagedIndex;
+                row = variablesForFile.fileRowStaged;
+            }
+
+            //
+
             if (variablesForCommits.pressRight == 1)
             {
                 list = filesList;
@@ -214,14 +234,15 @@ namespace GitClient
                 if (variablesForFiles.unstageChanges == true)
                 {
                     filesDiff = list.unstagedChangesDiff;
-                    fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
+                    fileFullName = list.unstagedChangesFiles[variablesForFiles.unstagedIndex];
                 }
                 else
                 {
                     filesDiff = list.stagedChangesDiff;
-                    fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
+                    fileFullName = list.stagedChangesFiles[variablesForFiles.stagedIndex];
                 }
 
+                //
                 height = (Console.WindowHeight - 2) - (dimensions.tabHeight + 1);
             }
 
@@ -297,7 +318,7 @@ namespace GitClient
                         break;
                 }
 
-
+                //
                 if (variablesForFiles.down == false && variablesForFiles.up == false && variablesForCommit.logTab == true)
                 {
                     variablesForFiles.stop++;
@@ -347,23 +368,6 @@ namespace GitClient
             int height = Console.WindowHeight - 2 - 4;
             return list.listOfAllDiffs[variablesForFiles.indexDiff].Count > height ? height : list.listOfAllDiffs[variablesForFiles.indexDiff].Count;
         }
-       
-        //private static void PrintRemaingingFiles()
-        //{
-        //    int position = variablesForFiles.fileRow;
-        //    for (int i = variablesForFiles.fileIndex; i < list.listOfFiles.Count; i++)
-        //    {
-        //        if (position == variablesForFiles.height)
-        //        {
-        //            break;
-        //        }
-
-        //        Console.SetCursorPosition(1, position);
-        //        Console.Write(list.listOfFiles[i]);
-        //        Console.SetCursorPosition(1, position + 1);
-        //        position++;
-        //    }
-        //}
        
         public static void CodeBackground(GetVariablesForCommits variablesForCommits, GetCertainList list, GetVariablesForFiles variablesForFiles, CommitElements commitElements, string fileFullName)
         {
@@ -455,35 +459,6 @@ namespace GitClient
                 Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
         }
-
-        //private static void SetColorForFiles(string fileFullName, GetVariablesForFiles variablesForFiles)
-        //{
-        //    string symbol = fileFullName.Substring(0, 1);
-        //    switch (symbol)
-        //    {
-        //        case "+":
-        //            {
-        //                Console.ForegroundColor = ConsoleColor.DarkGreen;
-        //                Console.Write(fileFullName);
-        //                Console.ResetColor();
-        //            }
-        //            break;
-        //        case "-":
-        //            {
-        //                Console.ForegroundColor = ConsoleColor.Red;
-        //                Console.Write(fileFullName);
-        //                Console.ResetColor();
-        //            }
-        //            break;
-        //        case "M":
-        //            {
-        //                Console.ForegroundColor = ConsoleColor.Yellow;
-        //                Console.Write(fileFullName);
-        //                Console.ResetColor();
-        //            }
-        //            break;
-        //    }
-        //}
 
         public static void SetColorForLinesOfCode(string content, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {

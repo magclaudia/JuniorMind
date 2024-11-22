@@ -5,7 +5,7 @@ namespace GitClient
 {
     public class GetListOfCommits
     {
-        public static void GetAllCommits(IntPtr repo)
+        public static void GetAllCommits(IntPtr repo, GetCertainList list)
         {
             IntPtr walker = IntPtr.Zero;
             IntPtr commitPtr = IntPtr.Zero;
@@ -13,7 +13,7 @@ namespace GitClient
             GetVariablesForCommits variablesForCommits = new GetVariablesForCommits();
             GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
             CommitElements commitElement = new CommitElements();
-            GetCertainList list = new GetCertainList();
+            //GetCertainList list = new GetCertainList();
 
             if (LibGit2Wrapper.git_revwalk_new(out walker, repo) == 0)
             {

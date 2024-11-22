@@ -32,7 +32,6 @@
                 }
 
                 Tabs.PrintTabs(repoPath, commitElements, variablesForCommits, variablesForFiles, list);
-                //GetListOfCommits.GetAllCommits(commitElements.repo);
             }
             catch (Exception ex)
             {

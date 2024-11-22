@@ -39,6 +39,11 @@
         public bool initialState;
         public bool finishUpMoves;
         public string filePath;
+        public bool statusFilesSufferModifications;
+        public int unstagedIndex;
+        public int stagedIndex;
+        public int fileRowUnstaged;
+        public int fileRowStaged;
 
 
         public GetVariablesForFiles()
@@ -65,7 +70,7 @@
             filesReachPanelLimit = false;
             indexDiff = -1;
             diffMoves = false;
-            projName = "";
+            projName = string.Empty;
             unstageChanges = false;
             stageChanges = false;
             statusDiffOpen = false;
@@ -80,6 +85,11 @@
             initialState = false;
             finishUpMoves = false;
             filePath = string.Empty;
+            statusFilesSufferModifications = false;
+            unstagedIndex = 0;
+            stagedIndex = 0;
+            fileRowUnstaged = 4;
+            fileRowStaged = 11;
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static GitClient.DrawTabs;
 
 namespace GitClient
 {
@@ -51,35 +50,18 @@ namespace GitClient
             GetTabsNames();
             DrawStatus.DrawPanelsForStatus();
             GetStatusFiles.GetStatusChangesNames();
-            
+
+            string pathToDirectory = string.Empty;
+
             if (variablesForFiles.statusFilesSufferModifications == false)
             {
-                GetStatusFiles.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
-                variablesForFiles.indexDiff = -1;
-                GetStatusFiles.GetStagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
-
-                for (int i = 0; i < list.unstagedChangesFiles.Count; i++)
-                {
-                    if (list.stagedChangesFiles.Contains(list.unstagedChangesFiles[i]))
-                    {
-                        list.unstagedChangesFiles.Remove(list.unstagedChangesFiles[i]);
-                        list.unstagedChangesDiff.Remove(list.unstagedChangesDiff[i]);
-                        i--;
-                    }
-
-                    if (list.unstagedChangesFiles.Count == 0)
-                    {
-                        variablesForFiles.unstageChanges = false;
-                    }
-                }
-
                 if (list.unstagedChangesFiles.Count == 0 && list.stagedChangesFiles.Count == 0)
                 {
-                    Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
+                    GetStatusFiles.GetUnstagedChanges(commitElements, variablesForCommits, variablesForFiles, list);
                 }
             }
-
-            FilesPrintStatusFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
+            
+            FilesStatus.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
             GetFileBackgoundAndDiff(list, variablesForCommits, variablesForFiles, commitElements);
         }
 
@@ -88,115 +70,47 @@ namespace GitClient
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             string fileFullName = string.Empty;
 
-            if (list.unstagedChangesFiles.Count > 0)
+            int height = 0;
+            int index = 0;
+
+            if (variablesForFiles.unstageChanges == true)
             {
-                fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-                variablesForFiles.fileRow = dimensions.unstagedStart;
+                height = dimensions.unstagedEnd - dimensions.unstagedStart + 1;
+                index = variablesForFiles.unstagedIndex;
             }
             else
             {
-                fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
-                variablesForFiles.fileRow = dimensions.stagedStart;
+                height = dimensions.stagedEnd - dimensions.stagedStart;
+                index = variablesForFiles.stagedIndex;
+            }
+
+            if (list.unstagedChangesFiles.Count > 0 && variablesForFiles.stageChanges == false)
+            {
+                fileFullName = list.unstagedChangesFiles[index];
+                
+                if (index == 0)
+                {
+                    variablesForFiles.fileRowUnstaged = dimensions.unstagedStart;
+                }
+            }
+            else
+            {
+                fileFullName = list.stagedChangesFiles[index];
+                
+                if (index == 0)
+                {
+                    variablesForFiles.fileRowStaged = dimensions.stagedStart;
+                }
             }
 
             GetFiles.FilesBackground(fileFullName, variablesForFiles, variablesForCommits, list);
             variablesForCommits.stopWorkingOnCommits = true;
             variablesForCommits.pressRight = 1;
             variablesForFiles.initialState = true;
-            variablesForFiles.indexDiff = 0;
+            variablesForFiles.indexDiff = index;
+            
+            
             DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
-        }
-
-        public static void ChooseStatusTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
-        {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-            variablesForFiles.initialState = false;
-            Console.Clear();
-            DrawTabs.DrawOnlyTabs();
-            GetTabsNames();
-            GetRepoPath(path);
-            DrawStatus.DrawPanelsForStatus();
-            GetStatusFiles.GetStatusChangesNames();
-
-            if (list.unstagedChangesFiles.Count == 0)
-            {
-                Console.SetCursorPosition(1, dimensions.unstagedStart);
-                string text = Tabs.SetStatusTextLength("No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
-                Console.WriteLine(text);
-
-                if (list.stagedChangesFiles.Count > 0)
-                {
-                    Console.SetCursorPosition(1, dimensions.stagedStart - 1);
-                    string directoryName = Path.GetDirectoryName(variablesForFiles.filePath)!;
-                    variablesForFiles.projName = $"  ▾{directoryName}";
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(variablesForFiles.projName);
-                    Console.ResetColor();
-                   
-                    int height = dimensions.stagedEnd - dimensions.stagedStart;
-                    int count = 0;
-                    int i = 0;
-                    int x = 1;
-                    int y = dimensions.stagedStart;
-
-                    while (count < height)
-                    {
-                        if (i == list.stagedChangesFiles.Count)
-                        {
-                            break;
-                        }
-
-                        GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.stagedChangesFiles);
-                        y++;
-                        i++;
-                        count++;
-                    }
-
-                    variablesForFiles.unstageChanges = false;
-                    variablesForFiles.stageChanges = true;
-                    string fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
-                    GetFiles.FilesBackground(fileFullName, variablesForFiles, variablesForCommits, list);
-                    variablesForFiles.down = false;
-                    DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
-                }
-            }
-            else
-            {
-                if (list.stagedChangesFiles.Count == 0)
-                {
-                    Console.SetCursorPosition(1, dimensions.stagedStart);
-                    string text = Tabs.SetStatusTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
-                    Console.WriteLine(text);
-                }
-
-                if (variablesForFiles.fileIndex <= dimensions.unstagedEnd - dimensions.unstagedStart)
-                {
-                    FilesPrintStatusFiles.PrintFilesForStatus(list, variablesForCommits, variablesForFiles);
-                }
-                else
-                {
-                    FilesPrintStatusFiles.ScrollThrouthFilesList(list, variablesForCommits, variablesForFiles);
-                }
-
-                string fileFullName = "";
-
-                if (variablesForFiles.unstageChanges == true)
-                {
-                    fileFullName = list.unstagedChangesFiles[variablesForFiles.fileIndex];
-                    variablesForFiles.unstageChanges = true;
-                    variablesForFiles.stageChanges = false;
-                }
-                else
-                {
-                    fileFullName = list.stagedChangesFiles[variablesForFiles.fileIndex];
-                    variablesForFiles.unstageChanges = false;
-                    variablesForFiles.stageChanges = true;
-                }
-
-                GetFiles.FilesBackground(fileFullName, variablesForFiles, variablesForCommits, list);
-                variablesForFiles.down = false;
-                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
-            }
         }
 
         public static void ChooseLogTab(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)

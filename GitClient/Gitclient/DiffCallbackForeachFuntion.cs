@@ -46,17 +46,6 @@ namespace GitClient
                         i++;
                     }
                 }
-                else
-                {
-                    filesList = list.stagedChangesFiles;
-
-                    while (i < filesList.Count)
-                    {
-                        list.stagedChangesDiff.Add(new List<string>());
-                        list.stagedDiffListStartAt.Add(new List<int>());
-                        i++;
-                    }
-                }
             }
 
             return LibGit2Wrapper.git_diff_foreach(diff, DiffFileCallback, DiffBinaryCallback, DiffHunkCallback, DiffLineCallback, IntPtr.Zero);
