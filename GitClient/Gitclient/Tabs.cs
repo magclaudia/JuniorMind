@@ -77,6 +77,8 @@ namespace GitClient
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(text);
                 Console.ResetColor();
+
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElements, list);
             }
             else
             {

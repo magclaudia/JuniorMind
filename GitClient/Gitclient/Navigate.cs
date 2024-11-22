@@ -823,6 +823,11 @@ namespace GitClient
                 variablesForFiles.indexDiff = 0;
             }
 
+            if (list.unstagedChangesFiles.Count == 1 && list.stagedChangesFiles.Count == 0 || variablesForFiles.unstagedIndex == list.unstagedChangesFiles.Count - 1)
+            {
+                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
+            }
+
             if (variablesForFiles.unstageChanges == true)
             {
                 if (row < dimensions.unstagedEnd)

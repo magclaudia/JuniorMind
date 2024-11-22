@@ -118,6 +118,11 @@ namespace GitClient
                         row--;
                     }
                 }
+                else if (list.unstagedChangesFiles.Count <= dimensions.unstagedEnd - dimensions.unstagedStart + 1)
+                {
+                    row = dimensions.unstagedStart;
+                    index = 0;
+                }
 
                 variablesForFiles.unstagedIndex = index;
                 variablesForFiles.fileRowUnstaged = row;
