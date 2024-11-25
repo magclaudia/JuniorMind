@@ -143,12 +143,12 @@ namespace GitClient
                                         break;
                                     }
 
-                                    if (index == filesList.Count - 1 && variablesForFiles.stageChanges == true)
+                                    if (index == filesList.Count - 1 && variablesForFiles.stageChanges == true || filesList.Count == 1 && variablesForFiles.unstageChanges)
                                     {
                                         break;
                                     }
 
-                                   
+
                                     HandleFilesDownMovesStatus(variablesForCommits, variablesForFiles, list, commitElements);
                                 }
                                 else
@@ -451,7 +451,7 @@ namespace GitClient
                 startFrom = variablesForFiles.fileRowUnstaged - (dimensions.unstagedEnd - dimensions.unstagedStart + 1);
             }
 
-            if (variablesForFiles.stagedIndex == list.stagedChangesFiles.Count)
+            if (variablesForFiles.stagedIndex == list.stagedChangesFiles.Count && variablesForFiles.stagedIndex > 0)
             {
                 variablesForFiles.stagedIndex--;
                 variablesForFiles.indexDiff--;
@@ -823,10 +823,10 @@ namespace GitClient
                 variablesForFiles.indexDiff = 0;
             }
 
-            if (list.unstagedChangesFiles.Count == 1 && list.stagedChangesFiles.Count == 0 || variablesForFiles.unstagedIndex == list.unstagedChangesFiles.Count - 1)
-            {
-                Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
-            }
+            //if (list.unstagedChangesFiles.Count == 1 && list.stagedChangesFiles.Count == 0 || variablesForFiles.unstagedIndex == list.unstagedChangesFiles.Count - 1)
+            //{
+            //    Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
+            //}
 
             if (variablesForFiles.unstageChanges == true)
             {
@@ -1150,7 +1150,6 @@ namespace GitClient
                 }
             }
             else
-            //if (variablesForFiles.fileRow == panel.edgeOneY + 2 && variablesForFiles.fileIndex > 0)
             {
                 variablesForFiles.fileLogStartAt--;
                 CleaningFilePanel(panel);
@@ -1191,7 +1190,6 @@ namespace GitClient
                     variablesForFiles.row = dimensions.tabHeight + 1;
                     variablesForFiles.currentLine = 1;
                     variablesForFiles.indexForLog = 0;
-                    //variablesForFiles.fileLogStartAt = 0;
                     variablesForFiles.index = 0;
                     variablesForFiles.down = false;
                     GetCommitDetails(variablesForCommits, variablesForFiles, commitElement, list, variablesForCommits.clear);
@@ -1237,29 +1235,6 @@ namespace GitClient
             variablesForCommits.right = true;
             variablesForFiles.row = dimensions.tabHeight + 1;
             int i = variablesForFiles.row;
-            //list.unstagedFilesStartAt.Clear();
-
-            //if (list.unstagedChangesFiles.Count > 1)
-            //{
-            //    int rowInPanel = variablesForFiles.fileRowUnstaged - 3;
-            //    list.unstagedFilesStartAt.Add(variablesForFiles.unstagedIndex - rowInPanel + 1);
-            //}
-            //else
-            //{
-            //    list.unstagedFilesStartAt.Add(0);
-            //}
-
-            //if (variablesForFiles.stageChanges == true)
-            //{
-            //    if (list.stagedChangesFiles.Count > 0 && variablesForFiles.stagedIndex > dimensions.stagedEnd - dimensions.stagedStart - 1)
-            //    {
-                    
-            //    }
-            //    else
-            //    {
-            //        list.stagedFilesStartAt.Add(0);
-            //    }
-            //}
 
             while (i <= Console.WindowHeight - 1)
             {
