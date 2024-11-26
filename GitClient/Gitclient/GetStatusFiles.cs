@@ -205,7 +205,7 @@
             Console.Write(diff);
         }
 
-        private static string SetStatusTabTextLength(string text)
+        public static string SetStatusTabTextLength(string text)
         {
             string outputText;
             if (text.Length < Console.WindowWidth / 2)

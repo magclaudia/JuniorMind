@@ -1,11 +1,17 @@
-﻿namespace GitClient
+﻿using GitClient.ui;
+
+namespace GitClient
 {
     public class GitClient
     {
         static void Main()
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Features.DisplayFeatures();
+         
+            Ui ui = new Ui();
+            ui.Show();
+
+
+         //  Features.DisplayFeatures();
         }
     }
 }
