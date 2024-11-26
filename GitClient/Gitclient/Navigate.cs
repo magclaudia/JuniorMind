@@ -143,11 +143,15 @@ namespace GitClient
                                         break;
                                     }
 
-                                    if (index == filesList.Count - 1 && variablesForFiles.stageChanges == true || filesList.Count == 1 && variablesForFiles.unstageChanges)
+                                    if (index == list.stagedChangesFiles.Count - 1 && variablesForFiles.stageChanges == true || list.unstagedChangesFiles.Count == 1 && variablesForFiles.unstageChanges && list.stagedChangesFiles.Count == 0)
                                     {
                                         break;
                                     }
 
+                                    if (index == list.unstagedChangesFiles.Count - 1 && list.stagedChangesFiles.Count == 0) 
+                                    {
+                                        break;
+                                    }
 
                                     HandleFilesDownMovesStatus(variablesForCommits, variablesForFiles, list, commitElements);
                                 }

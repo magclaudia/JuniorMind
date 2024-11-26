@@ -11,6 +11,7 @@ namespace GitClient
             DiffHelper.PrintDiff(diff, filesList, variablesForCommits, variablesForFiles, commitElements);
         }
 
+
         public static string ResizeTextToFitInPanel(string line, GetVariablesForCommits variablesForCommits)
         {
             int width;
