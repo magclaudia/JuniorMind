@@ -114,7 +114,6 @@ namespace GitClient
 
         public static void PrintDiff(IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFile, CommitElements commitElements)
         {
-            //
             List<string> fileslist = new List<string>();
             int index = 0;
             int row = 0;
@@ -131,8 +130,6 @@ namespace GitClient
                 index = variablesForFile.stagedIndex;
                 row = variablesForFile.fileRowStaged;
             }
-
-            //
 
             if (variablesForCommits.pressRight == 1)
             {
@@ -243,7 +240,6 @@ namespace GitClient
                     fileFullName = list.stagedChangesFiles[variablesForFiles.stagedIndex];
                 }
 
-                //
                 height = (Console.WindowHeight - 2) - (dimensions.tabHeight + 1);
             }
 
@@ -319,12 +315,10 @@ namespace GitClient
                         break;
                 }
 
-                //
                 if (variablesForFiles.down == false && variablesForFiles.up == false && variablesForCommit.logTab == true)
                 {
                     variablesForFiles.stop++;
                 }
-                
 
                 if (variablesForFiles.up == false && variablesForFiles.index < filesDiff[variablesForFiles.indexDiff].Count && variablesForFiles.down == true)
                 {
@@ -373,7 +367,6 @@ namespace GitClient
         public static void CodeBackground(GetVariablesForCommits variablesForCommits, GetCertainList list, GetVariablesForFiles variablesForFiles, CommitElements commitElements, string fileFullName)
         {
             int height = Console.WindowHeight;
-
             List<List<string>> filesDiff = new List<List<string>>();
 
             if (variablesForCommits.logTab == true)

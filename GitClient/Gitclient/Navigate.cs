@@ -334,7 +334,6 @@ namespace GitClient
                             }
                         }
                         break;
-
                     case ConsoleKey.D1:
                     case ConsoleKey.NumPad1:
                         {
@@ -367,7 +366,6 @@ namespace GitClient
                             }
                         }
                         break;
-
                     case ConsoleKey.D2:
                     case ConsoleKey.NumPad2:
                         {
@@ -650,7 +648,6 @@ namespace GitClient
             int height = 0;
             int startingFrom = 0;
             int row = 0;
-           // int endAt = 0;
 
             if (variablesForFiles.unstageChanges == true)
             {
