@@ -29,6 +29,7 @@ namespace GitClient
                 Console.Write("║");
             }
 
+
             Console.SetCursorPosition(0, dimensions.tabHeight + 1);
             Console.Write("┌");
             Console.SetCursorPosition(dimensions.width, dimensions.tabHeight + 1);
