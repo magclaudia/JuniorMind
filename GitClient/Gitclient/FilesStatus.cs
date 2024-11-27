@@ -152,7 +152,7 @@ namespace GitClient
 
                 if (variablesForFiles.stageChanges == true)
                 {
-                    if (list.stagedFilesStartAt.Count > 0 && list.stagedFilesStartAt[0] != 0/* && variablesForFiles.stagedIndex >= dimensions.stagedEnd - dimensions.stagedStart*/)
+                    if (list.stagedFilesStartAt.Count > 0 && list.stagedFilesStartAt[0] != 0)
                     {
                         if (list.stagedFilesStartAt.Count > dimensions.stagedEnd - dimensions.stagedStart)
                         {

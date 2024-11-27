@@ -16,6 +16,7 @@ namespace GitClient
             int index = 0;
             int row = 0;
 
+
             if (variablesForFiles.unstageChanges == true)
             {
                 filesList = list.unstagedChangesFiles;
@@ -150,10 +151,10 @@ namespace GitClient
                                         break;
                                     }
 
-                                    //if (index == list.unstagedChangesFiles.Count - 1 && list.stagedChangesFiles.Count == 0) 
-                                    //{
-                                    //    break;
-                                    //}
+                                    if (index == list.unstagedChangesFiles.Count - 1 && list.stagedChangesFiles.Count == 0)
+                                    {
+                                        break;
+                                    }
 
                                     HandleFilesDownMovesStatus(variablesForCommits, variablesForFiles, list, commitElements);
                                 }
@@ -447,7 +448,7 @@ namespace GitClient
                 variablesForFiles.unstagedIndex = 0;
                 variablesForFiles.indexDiff = 0;
                 variablesForFiles.fileRowUnstaged = dimensions.unstagedStart;
-                startFrom = variablesForFiles.fileRowUnstaged - (dimensions.unstagedEnd - dimensions.unstagedStart + 1);
+                startFrom = 0;
             }
             else
             {
@@ -649,7 +650,7 @@ namespace GitClient
             int height = 0;
             int startingFrom = 0;
             int row = 0;
-            int endAt = 0;
+           // int endAt = 0;
 
             if (variablesForFiles.unstageChanges == true)
             {
