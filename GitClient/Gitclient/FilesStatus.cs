@@ -62,7 +62,14 @@ namespace GitClient
 
                 if (variablesForFiles.stageChanges == true)
                 {
-                    i = list.unstagedFilesStartAt[list.unstagedFilesStartAt.Count - 1];
+                    if (list.unstagedFilesStartAt.Count == 0)
+                    {
+                        i = 0;
+                    }
+                    else
+                    {
+                        i = list.unstagedFilesStartAt[0];
+                    }
                 }
                 else
                 {
@@ -79,9 +86,9 @@ namespace GitClient
                     }
                     else
                     {
-                        if (list.unstagedFilesStartAt.Count > 0)
+                        if (list.unstagedChangesFiles.Count > dimensions.unstagedEnd - dimensions.unstagedStart + 1 && list.unstagedFilesStartAt.Count > 0)
                         {
-                            i = list.unstagedFilesStartAt[variablesForFiles.filesStatusStartAt];
+                            i = list.unstagedFilesStartAt[0];
                         }
                         else
                         {
@@ -98,8 +105,6 @@ namespace GitClient
                 {
                     if (i == list.unstagedChangesFiles.Count)
                     {
-                        index = i - 1;
-                        row = y - 1;
                         break;
                     }
 
@@ -117,15 +122,10 @@ namespace GitClient
                     {
                         row--;
                     }
-                }
-                else if (list.unstagedChangesFiles.Count <= dimensions.unstagedEnd - dimensions.unstagedStart + 1)
-                {
-                    row = dimensions.unstagedStart;
-                    index = 0;
-                }
 
-                variablesForFiles.unstagedIndex = index;
-                variablesForFiles.fileRowUnstaged = row;
+                    variablesForFiles.unstagedIndex = index;
+                    variablesForFiles.fileRowUnstaged = row;
+                }
             }
 
             if (variablesForFiles.stageChanges == true || list.stagedChangesFiles.Count > 0)
@@ -152,9 +152,12 @@ namespace GitClient
 
                 if (variablesForFiles.stageChanges == true)
                 {
-                    if (list.stagedFilesStartAt.Count > 0)
+                    if (list.stagedFilesStartAt.Count > 0 && list.stagedFilesStartAt[0] != 0/* && variablesForFiles.stagedIndex >= dimensions.stagedEnd - dimensions.stagedStart*/)
                     {
-                        i = list.stagedFilesStartAt[variablesForFiles.filesStatusStartAt];
+                        if (list.stagedFilesStartAt.Count > dimensions.stagedEnd - dimensions.stagedStart)
+                        {
+                            i = list.stagedFilesStartAt[0];
+                        }
                     }
                     else
                     {
@@ -168,8 +171,6 @@ namespace GitClient
                 {
                     if (i == list.stagedChangesFiles.Count)
                     {
-                        index = i--;
-                        row = y--;
                         break;
                     }
 

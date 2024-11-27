@@ -116,6 +116,7 @@ namespace GitClient
                         {
                             if (variablesForCommits.logTab == true)
                             {
+
                                 if (variablesForCommits.stopWorkingOnCommits == true && variablesForCommits.pressRight == 1)
                                 {
                                     HandleFilesDownMovesLog(variablesForCommits, variablesForFiles, list, commitElements);
@@ -138,6 +139,7 @@ namespace GitClient
                             {
                                 if (variablesForFiles.statusDiffOpen == false)
                                 {
+
                                     if (variablesForCommits.right == true || filesList.Count == 0 && filesList.Count == 0 || filesList.Count == 1 && filesList.Count == 0)
                                     {
                                         break;
@@ -148,10 +150,10 @@ namespace GitClient
                                         break;
                                     }
 
-                                    if (index == list.unstagedChangesFiles.Count - 1 && list.stagedChangesFiles.Count == 0) 
-                                    {
-                                        break;
-                                    }
+                                    //if (index == list.unstagedChangesFiles.Count - 1 && list.stagedChangesFiles.Count == 0) 
+                                    //{
+                                    //    break;
+                                    //}
 
                                     HandleFilesDownMovesStatus(variablesForCommits, variablesForFiles, list, commitElements);
                                 }
@@ -439,7 +441,6 @@ namespace GitClient
             variablesForFiles.stageChanges = false;
             variablesForFiles.unstageChanges = true;
             int startFrom = 0;
-
             
             if (list.unstagedChangesFiles.Count <= dimensions.unstagedEnd - dimensions.unstagedStart + 1)
             {
@@ -484,8 +485,16 @@ namespace GitClient
             
             int startFrom =  variablesForFiles.fileRowUnstaged - (dimensions.unstagedEnd - dimensions.unstagedStart + 1);
             int b = variablesForFiles.unstagedIndex - startFrom;
-            list.unstagedFilesStartAt.Clear();
-            list.unstagedFilesStartAt.Add(b);
+            list.stagedFilesStartAt.Clear();
+
+            if (list.stagedChangesFiles.Count > dimensions.stagedEnd - dimensions.stagedStart && list.stagedChangesFiles.Count > 0)
+            {
+                list.stagedFilesStartAt.Add(b);
+            }
+            else
+            {
+                list.stagedFilesStartAt.Add(0);
+            }
 
             if (list.unstagedChangesFiles.Count == 0)
             {
@@ -642,39 +651,14 @@ namespace GitClient
             int row = 0;
             int endAt = 0;
 
-            if (variablesForFiles.stageChanges == true && variablesForFiles.stagedIndex == 0)
-            {
-                Console.SetCursorPosition(1, variablesForFiles.fileRowStaged);
-                Console.Write(new string(' ', Console.WindowWidth / 2 - 3));
-                Console.SetCursorPosition(1, variablesForFiles.fileRowStaged);
-                GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, variablesForFiles.fileRowStaged, variablesForFiles.indexForStaged, list.stagedChangesFiles);
-                Console.SetCursorPosition(1, variablesForFiles.fileRowUnstaged);
-                Console.Write(new string(' ', Console.WindowWidth / 2 - 3));
-                Console.SetCursorPosition(1, variablesForFiles.fileRowUnstaged);
-                GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, variablesForFiles.fileRowUnstaged, list.unstagedChangesFiles.Count - 1, list.unstagedChangesFiles);
-                Console.SetCursorPosition(1, variablesForFiles.fileRowUnstaged);
-                Console.BackgroundColor = ConsoleColor.DarkBlue;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(list.unstagedChangesFiles[list.unstagedChangesFiles.Count - 1]);
-                Console.ResetColor();
-                variablesForFiles.indexDiff = list.unstagedChangesFiles.Count - 1;
-                variablesForFiles.indexForUnstaged = list.unstagedChangesFiles.Count - 1;
-                variablesForFiles.unstageChanges = true;
-                variablesForFiles.stageChanges = false;
-                GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
-                variablesForFiles.up = false;
-                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElement, list);
-            }
-
             if (variablesForFiles.unstageChanges == true)
             {
                 filesList = list.unstagedChangesFiles;
                 height = dimensions.unstagedEnd - dimensions.unstagedStart + 1;
                 startingFrom = dimensions.unstagedStart;
-                y = dimensions.unstagedStart;
+                y = dimensions.unstagedEnd;
                 index = variablesForFiles.unstagedIndex;
                 row = variablesForFiles.fileRowUnstaged;
-                endAt = dimensions.unstagedStart;
                 variablesForFiles.indexDiff = variablesForFiles.unstagedIndex;
             }
             else
@@ -682,13 +666,45 @@ namespace GitClient
                 filesList = list.stagedChangesFiles;
                 height = dimensions.stagedEnd - dimensions.stagedStart;
                 startingFrom = dimensions.stagedStart;
-                y = dimensions.stagedStart;
+                y = dimensions.stagedEnd;
                 index = variablesForFiles.stagedIndex;
                 row = variablesForFiles.fileRowStaged;
-                endAt = dimensions.stagedStart;
                 variablesForFiles.indexDiff = variablesForFiles.stagedIndex;
             }
 
+
+            if (variablesForFiles.stageChanges == true && variablesForFiles.stagedIndex == 0 && list.unstagedChangesFiles.Count > 0)
+            {
+                Console.SetCursorPosition(1, variablesForFiles.fileRowStaged);
+                Console.Write(new string(' ', Console.WindowWidth / 2 - 3));
+                Console.SetCursorPosition(1, variablesForFiles.fileRowStaged);
+                GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, variablesForFiles.fileRowStaged, variablesForFiles.indexForStaged, list.stagedChangesFiles);
+                
+                if (list.unstagedChangesFiles.Count < dimensions.unstagedEnd - dimensions.unstagedStart + 1)
+                {
+                    row = dimensions.unstagedStart + list.unstagedChangesFiles.Count - 1;
+                }
+                else
+                {
+                    row = dimensions.unstagedEnd;
+                }
+
+                Console.SetCursorPosition(1, row);
+                Console.Write(new string(' ', Console.WindowWidth / 2 - 3));
+                Console.SetCursorPosition(1, row);
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(list.unstagedChangesFiles[list.unstagedChangesFiles.Count - 1]);
+                Console.ResetColor();
+                variablesForFiles.indexDiff = list.unstagedChangesFiles.Count - 1;
+                variablesForFiles.unstagedIndex = list.unstagedChangesFiles.Count - 1;
+                variablesForFiles.fileRowUnstaged = row;
+                variablesForFiles.unstageChanges = true;
+                variablesForFiles.stageChanges = false;
+                GetDiffs.CleaningHalfOfDiffPanel(variablesForCommits);
+                variablesForFiles.up = false;
+                DiffHelper.Print(variablesForCommits, variablesForFiles, commitElement, list);
+            }
 
             if (variablesForFiles.unstageChanges == true)
             {
@@ -823,7 +839,7 @@ namespace GitClient
                 variablesForFiles.stageChanges = true;
                 variablesForFiles.unstageChanges = false;
                 variablesForFiles.fileRowStaged = dimensions.stagedStart;
-                variablesForFiles.indexForStaged = 0;
+                variablesForFiles.stagedIndex = 0;
                 variablesForFiles.indexDiff = 0;
             }
 
@@ -900,7 +916,7 @@ namespace GitClient
                     Console.SetCursorPosition(1, variablesForFiles.fileRowStaged);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(list.stagedChangesFiles[0]);
+                    Console.Write(list.stagedChangesFiles[variablesForFiles.stagedIndex]);
                     Console.ResetColor();
                     variablesForFiles.indexDiff = 0;
                     variablesForFiles.stagedIndex = 0;

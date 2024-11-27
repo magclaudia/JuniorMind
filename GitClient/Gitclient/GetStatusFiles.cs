@@ -96,98 +96,98 @@
             }
         }
 
-        public static void GetStagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
-        {
-            LibGit2Wrapper.GitOid commitOid;
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-            LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
+        //public static void GetStagedChanges(CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
+        //{
+        //    LibGit2Wrapper.GitOid commitOid;
+        //    DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        //    LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
             
-            IntPtr commitPtr = IntPtr.Zero;
-            IntPtr treePtr = IntPtr.Zero;
-            IntPtr indexPtr = IntPtr.Zero;
-            IntPtr stagedDiff = IntPtr.Zero;
+        //    IntPtr commitPtr = IntPtr.Zero;
+        //    IntPtr treePtr = IntPtr.Zero;
+        //    IntPtr indexPtr = IntPtr.Zero;
+        //    IntPtr stagedDiff = IntPtr.Zero;
 
-            try
-            {
-                if (LibGit2Wrapper.git_reference_name_to_id(out commitOid, commitElements.repo, "HEAD") != 0)
-                {
-                    throw new Exception("Failed to get HEAD commitOid");
-                }
+        //    try
+        //    {
+        //        if (LibGit2Wrapper.git_reference_name_to_id(out commitOid, commitElements.repo, "HEAD") != 0)
+        //        {
+        //            throw new Exception("Failed to get HEAD commitOid");
+        //        }
 
-                if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElements.repo, ref commitOid) != 0)
-                {
-                    throw new Exception("Failed to lookup commit");
-                }
+        //        if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElements.repo, ref commitOid) != 0)
+        //        {
+        //            throw new Exception("Failed to lookup commit");
+        //        }
 
-                if (LibGit2Wrapper.git_commit_tree(out treePtr, commitPtr) != 0)
-                {
-                    throw new Exception("Failed to get the commit tree");
-                }
+        //        if (LibGit2Wrapper.git_commit_tree(out treePtr, commitPtr) != 0)
+        //        {
+        //            throw new Exception("Failed to get the commit tree");
+        //        }
 
 
-                if (LibGit2Wrapper.git_repository_index(out indexPtr, commitElements.repo) != 0)
-                {
-                    throw new Exception("Failed to get the repository index.");
-                }
+        //        if (LibGit2Wrapper.git_repository_index(out indexPtr, commitElements.repo) != 0)
+        //        {
+        //            throw new Exception("Failed to get the repository index.");
+        //        }
 
-                if (LibGit2Wrapper.git_index_read(indexPtr, 0) != 0)
-                {
-                    throw new Exception("Failed to read index.");
-                }
+        //        if (LibGit2Wrapper.git_index_read(indexPtr, 0) != 0)
+        //        {
+        //            throw new Exception("Failed to read index.");
+        //        }
 
-                if (LibGit2Wrapper.git_diff_tree_to_index(out stagedDiff, commitElements.repo, treePtr, indexPtr, ref options) != 0)
-                {
-                    throw new Exception("Failed to create diff.");
-                }
+        //        if (LibGit2Wrapper.git_diff_tree_to_index(out stagedDiff, commitElements.repo, treePtr, indexPtr, ref options) != 0)
+        //        {
+        //            throw new Exception("Failed to create diff.");
+        //        }
 
-                int index = 0;
-                UIntPtr numDeltas = LibGit2Wrapper.git_diff_num_deltas(stagedDiff);
+        //        int index = 0;
+        //        UIntPtr numDeltas = LibGit2Wrapper.git_diff_num_deltas(stagedDiff);
 
-                if (numDeltas == 0)
-                {
-                    Console.SetCursorPosition(1, dimensions.stagedStart);
-                    string text = Tabs.SetStatusTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
-                    Console.WriteLine(text);
-                }
-                else
-                {
-                    variablesForFiles.stageChanges = true;
-                    variablesForFiles.unstageChanges = false;
-                    GetFiles.GetListOfAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements);
-                    GetDiffForChanges.DiffUnstagedChanges(stagedDiff, list, variablesForFiles, variablesForCommits);
-                    variablesForFiles.indexDiff = 0;
-                    variablesForFiles.fileIndex = 0;
+        //        if (numDeltas == 0)
+        //        {
+        //            Console.SetCursorPosition(1, dimensions.stagedStart);
+        //            string text = Tabs.SetStatusTextLength("No changes found in the staging area.", Console.WindowWidth / 2 - 3);
+        //            Console.WriteLine(text);
+        //        }
+        //        else
+        //        {
+        //            variablesForFiles.stageChanges = true;
+        //            variablesForFiles.unstageChanges = false;
+        //            GetFiles.GetListOfAllFiles(commitElements.repo, numDeltas, stagedDiff, index, variablesForCommits, variablesForFiles, list, commitElements);
+        //            GetDiffForChanges.DiffUnstagedChanges(stagedDiff, list, variablesForFiles, variablesForCommits);
+        //            variablesForFiles.indexDiff = 0;
+        //            variablesForFiles.fileIndex = 0;
 
-                    if (list.unstagedChangesFiles.Count > 0)
-                    {
-                        variablesForFiles.unstageChanges = true;
-                        variablesForFiles.stageChanges = false;
-                    }
-                }
-            }
-            finally
-            {
-                if (stagedDiff != IntPtr.Zero)
-                {
-                    LibGit2Wrapper.git_diff_free(stagedDiff);
-                }
+        //            if (list.unstagedChangesFiles.Count > 0)
+        //            {
+        //                variablesForFiles.unstageChanges = true;
+        //                variablesForFiles.stageChanges = false;
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        if (stagedDiff != IntPtr.Zero)
+        //        {
+        //            LibGit2Wrapper.git_diff_free(stagedDiff);
+        //        }
 
-                if (indexPtr != IntPtr.Zero)
-                {
-                    LibGit2Wrapper.git_index_free(indexPtr);
-                }
+        //        if (indexPtr != IntPtr.Zero)
+        //        {
+        //            LibGit2Wrapper.git_index_free(indexPtr);
+        //        }
 
-                if (treePtr != IntPtr.Zero)
-                {
-                    LibGit2Wrapper.git_tree_free(treePtr);
-                }
+        //        if (treePtr != IntPtr.Zero)
+        //        {
+        //            LibGit2Wrapper.git_tree_free(treePtr);
+        //        }
 
-                if (commitPtr != IntPtr.Zero)
-                {
-                    LibGit2Wrapper.git_commit_free(commitPtr);
-                }
-            }
-        }
+        //        if (commitPtr != IntPtr.Zero)
+        //        {
+        //            LibGit2Wrapper.git_commit_free(commitPtr);
+        //        }
+        //    }
+        //}
 
         public static void GetStatusChangesNames()
         {

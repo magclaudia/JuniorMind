@@ -130,7 +130,6 @@ namespace GitClient
             variablesForFiles.initialState = true;
             variablesForFiles.indexDiff = index;
             
-            
             DiffHelper.Print(variablesForCommits, variablesForFiles, commitElements, list);
         }
 

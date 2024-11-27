@@ -12,6 +12,7 @@
             int widthForMessage = 0;
             int xForMessageBox = 0;
 
+
             if (variablesForCommits.pressRight == 0)
             {
                 var size = new DrawPanelRigthSide.MessageBox();
