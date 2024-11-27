@@ -99,7 +99,7 @@ namespace GitClient
                 
                 int count = 0;
                 y = dimensions.unstagedStart;
-                height = 4;
+                height = dimensions.unstagedEnd - dimensions.unstagedStart + 1;
 
                 while (count < height)
                 {
@@ -154,7 +154,7 @@ namespace GitClient
                 {
                     if (list.stagedFilesStartAt.Count > 0 && list.stagedFilesStartAt[0] != 0)
                     {
-                        if (list.stagedFilesStartAt.Count > dimensions.stagedEnd - dimensions.stagedStart)
+                        if (index >= dimensions.stagedEnd - dimensions.stagedStart)
                         {
                             i = list.stagedFilesStartAt[0];
                         }
@@ -187,6 +187,7 @@ namespace GitClient
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             List<string> filesList = new List<string>();
             List<int> startingIndexes = new List<int>();
+           
             int y = 0;
             int x = 1;
             int index = 0;
