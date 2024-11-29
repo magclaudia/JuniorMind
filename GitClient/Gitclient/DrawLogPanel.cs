@@ -11,6 +11,7 @@ namespace GitClient
     {
         public static void DrawLargePanel()
         {
+            
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
             for (int i = 1; i < dimensions.width; i++)
