@@ -182,7 +182,7 @@ namespace GitClient
             string fileFullName = "";
             int height = 0;
 
-            Cursor.UpdateCursorPositionForDiffsList(variablesForCommits, variablesForFiles, list);
+            //Cursor.UpdateCursorPositionForDiffsList(variablesForCommits, variablesForFiles, list);
 
             if (variablesForCommits.logTab == true)
             {
@@ -385,8 +385,8 @@ namespace GitClient
                 }
             }
 
-
             int x;
+
             if (variablesForCommits.pressRight == 1 && variablesForCommits.logTab == true)
             {
                 x = variablesForFiles.width / 2 + 3;

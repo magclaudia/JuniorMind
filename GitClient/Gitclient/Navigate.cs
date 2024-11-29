@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LibGit2Sharp;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -15,7 +16,6 @@ namespace GitClient
             int blueFond = 0;
             int index = 0;
             int row = 0;
-
 
             if (variablesForFiles.unstageChanges == true)
             {
@@ -176,7 +176,10 @@ namespace GitClient
                                         break;
                                     }
 
-                                    HandleDiffDownMovesStatus(variablesForCommits, variablesForFiles, list, commitElements);
+                                    if (variablesForFiles.enterPress == 0)
+                                    {
+                                        HandleDiffDownMovesStatus(variablesForCommits, variablesForFiles, list, commitElements);
+                                    }
                                 }
                             }
                         }
@@ -288,11 +291,37 @@ namespace GitClient
                             {
                                 if (variablesForFiles.unstageChanges == true)
                                 {
-                                    HandleFileTransferFromUnstagedToStaged(commitElements, list, variablesForCommits, variablesForFiles);
+                                    if (variablesForCommits.right == true)
+                                    {
+                                        variablesForFiles.enterPress++;
+                                        HandleHunkTransferFromUnstagedToStaged(commitElements, list, variablesForCommits, variablesForFiles);
+                                    }
+                                    else
+                                    {
+                                        if (list.stagedChangesFiles.Contains(list.unstagedChangesFiles[variablesForFiles.unstagedIndex]))
+                                        {
+                                            break;
+                                        }
+
+                                        HandleFileTransferFromUnstagedToStaged(commitElements, list, variablesForCommits, variablesForFiles);
+                                    }
                                 }
                                 else
                                 {
-                                    HandleFileTransferFromStagedToUnstaged(commitElements, list, variablesForCommits, variablesForFiles);
+                                    if (variablesForCommits.right == true)
+                                    {
+                                        variablesForFiles.enterPress++;
+                                        HandleHunkTransferFromStagedToUnstaged(commitElements, list, variablesForCommits, variablesForFiles);
+                                    }
+                                    else
+                                    {
+                                        if (list.unstagedChangesFiles.Contains(list.stagedChangesFiles[variablesForFiles.stagedIndex]))
+                                        {
+                                            break;
+                                        }
+
+                                        HandleFileTransferFromStagedToUnstaged(commitElements, list, variablesForCommits, variablesForFiles);
+                                    }
                                 }
                             }
                         }
@@ -325,6 +354,7 @@ namespace GitClient
                                     variablesForFiles.end = false;
                                     variablesForCommits.pressRight = 1;
                                     variablesForFiles.index = 0;
+                                    variablesForFiles.enterPress = 0;
                                     Tabs.SetInitialState(commitElements, variablesForCommits, variablesForFiles, list);
                                 }
                                 else
@@ -421,6 +451,177 @@ namespace GitClient
             if (LibGit2Wrapper.git_commit_lookup(out commitPtr, commitElement.repo, ref oid) == 0)
             {
                 GetLogFiles.GetFilesAffectedByCommit(commitElement.repo, commitPtr, i, variablesForCommits, variablesForFiles, list, commitElement);
+            }
+        }
+
+        private static void HandleHunkTransferFromUnstagedToStaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            List<string> diff = new List<string>();
+            List<string> diffToBeAddedToStaged = new List<string>();
+            string fileToBeTransfer = list.unstagedChangesFiles[variablesForFiles.unstagedIndex];
+            diff = list.unstagedChangesDiff[variablesForFiles.unstagedIndex];
+            string path = diff[0];
+            int index = variablesForFiles.stagedIndex;
+           
+            if (diff[variablesForFiles.index].StartsWith('@') && variablesForFiles.enterPress == 1)
+            {
+                int count = variablesForFiles.index;
+                int indexForStaged = 0;
+
+                if (!list.stagedChangesFiles.Contains(fileToBeTransfer))
+                {
+                    list.stagedChangesFiles.Add(fileToBeTransfer);
+                    
+                    if (list.stagedChangesFiles.Count > 1)
+                    {
+                        index++;
+                    }
+
+                    list.stagedChangesDiff.Add(new List<string>());
+                    diffToBeAddedToStaged = list.stagedChangesDiff[index];
+                    diffToBeAddedToStaged.Add(path);
+                }
+
+                indexForStaged = variablesForFiles.stagedIndex;
+                diffToBeAddedToStaged.Add(diff[count]);
+                count++;
+
+                while (!diff[count].StartsWith('@'))
+                {
+                    diffToBeAddedToStaged.Add(diff[count]);
+                    
+                    if (diff[count].StartsWith('@') || count == diff.Count - 1)
+                    {
+                        break;
+                    }
+
+                    count++;
+                }
+
+                for (int i = 0; i < diffToBeAddedToStaged.Count; i++)
+                {
+                    if (diff.Contains(diffToBeAddedToStaged[i]))
+                    {
+                        diff.RemoveAt(variablesForFiles.index);
+                    }
+                }
+
+                if (diff.Count > 1)
+                {
+                    list.unstagedChangesDiff[variablesForFiles.unstagedIndex] = diff;
+                    //list.unstagedChangesDiff.RemoveAt(variablesForFiles.unstagedIndex);
+
+                    if (!list.stagedChangesDiff.Contains(diffToBeAddedToStaged))
+                    {
+                        list.stagedChangesDiff[indexForStaged].AddRange(diffToBeAddedToStaged);
+                    }
+                }
+                else
+                {
+                    list.unstagedChangesFiles.Remove(fileToBeTransfer);
+                    list.unstagedChangesDiff.RemoveAt(variablesForFiles.unstagedIndex);
+                    
+                    if (!list.stagedChangesFiles.Contains(fileToBeTransfer))
+                    {
+                        list.stagedChangesFiles.Add(fileToBeTransfer);
+                        index++;
+                    }
+
+                    list.stagedChangesDiff[indexForStaged].AddRange(diffToBeAddedToStaged);
+                }
+
+                variablesForFiles.down = false;
+                variablesForFiles.statusFilesSufferModifications = true;
+            }
+        }
+
+        private static void HandleHunkTransferFromStagedToUnstaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        {
+            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+            List<string> diff = new List<string>();
+            List<string> diffToBeAddedToUnstaged = new List<string>();
+            string fileToBeTransfer = list.stagedChangesFiles[variablesForFiles.stagedIndex];
+            //diffToBeAddedToUnstaged = list.stagedChangesDiff[variablesForFiles.stagedIndex];
+            diff = list.stagedChangesDiff[variablesForFiles.stagedIndex];
+            string path = diff[0];
+            int index = variablesForFiles.unstagedIndex;
+
+            if (diff[variablesForFiles.index].StartsWith('@') && variablesForFiles.enterPress == 1)
+            {
+                int count = variablesForFiles.index;
+                int indexForUnstaged = 0;
+
+                if (!list.unstagedChangesFiles.Contains(fileToBeTransfer))
+                {
+                    list.unstagedChangesFiles.Add(fileToBeTransfer);
+
+                    if (list.unstagedChangesFiles.Count > 1)
+                    {
+                        index++;
+                    }
+
+                    list.unstagedChangesDiff.Add(new List<string>());
+                    diffToBeAddedToUnstaged = list.unstagedChangesDiff[index];
+                    diffToBeAddedToUnstaged.Add(path);
+                }
+
+                indexForUnstaged = index;
+                diffToBeAddedToUnstaged.Add(diff[count]);
+                count++;
+
+                while (!diff[count].StartsWith('@'))
+                {
+                    diffToBeAddedToUnstaged.Add(diff[count]);
+
+                    if (diff[count].StartsWith('@') || count == diff.Count - 1)
+                    {
+                        break;
+                    }
+
+                    count++;
+                }
+
+                for (int i = 0; i < diffToBeAddedToUnstaged.Count; i++)
+                {
+                    if (diff.Contains(diffToBeAddedToUnstaged[i]))
+                    {
+                        diff.RemoveAt(variablesForFiles.index);
+                    }
+                }
+
+                if (diff.Count > 1)
+                {
+                    list.stagedChangesDiff[variablesForFiles.stagedIndex] = diff;
+                    //list.stagedChangesDiff.Add(diff);
+
+                    if (!list.unstagedChangesDiff.Contains(diffToBeAddedToUnstaged))
+                    {
+                        list.unstagedChangesDiff[indexForUnstaged].AddRange(diffToBeAddedToUnstaged);
+                    }
+                }
+                else
+                {
+                    list.stagedChangesFiles.Remove(fileToBeTransfer);
+                    list.stagedChangesDiff.RemoveAt(variablesForFiles.stagedIndex);
+
+                    if (!list.unstagedChangesFiles.Contains(fileToBeTransfer))
+                    {
+                        list.unstagedChangesFiles.Add(fileToBeTransfer);
+                        index++;
+                    }
+
+                    list.unstagedChangesDiff[indexForUnstaged].AddRange(diffToBeAddedToUnstaged);
+                   
+                    if (list.stagedChangesFiles.Count == 0)
+                    {
+                        variablesForFiles.stageChanges = false;
+                        variablesForFiles.unstageChanges = true;
+                    }
+                }
+
+                variablesForFiles.down = false;
+                variablesForFiles.statusFilesSufferModifications = true;
             }
         }
 
@@ -593,6 +794,7 @@ namespace GitClient
             else
             {
                 diff = list.stagedChangesDiff;
+                list.stagedDiffListStartAt = list.unstagedDiffListStartAt;
                 indexes = list.stagedDiffListStartAt;
                 variablesForFiles.lastLine = 0;
             }
