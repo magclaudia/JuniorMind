@@ -1,4 +1,6 @@
-﻿using GitClient;
+﻿using Gitclient.model;
+using Gitclient.repository;
+using GitClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,17 +17,18 @@ namespace GitClient.ui
     // o sa tine repo
 
     {
-        private List<string> listOfUnstagedFiles = new List<string>();
+        private LibGit2Repository libGit2Repository;
 
-        public UnstagedChangesService() 
+
+        public UnstagedChangesService(LibGit2Repository libGit2Repository) 
         {
-
+            this.libGit2Repository = libGit2Repository;
         }
 
-        public string GetUstagedFiles()
+        public List<UnstagedChange> GetCurrentUnstagedChanges(int startIndex, int endIndex)
         {
-            var list = GetFiles.GetListOfAllFiles;
-            return "Files 1, File 2";
+            // map and return between indexes
+            return libGit2Repository.getAllUnstagedChanges();
         }
     }
 }

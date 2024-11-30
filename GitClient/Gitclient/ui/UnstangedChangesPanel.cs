@@ -1,4 +1,5 @@
-﻿using GitClient;
+﻿using Gitclient.model;
+using GitClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace GitClient.ui
 
         public void Show()
         {
-            OnViewChanged();
+            Refresh();
         }
 
         private int GetCurrentStartIndex()
@@ -45,12 +46,12 @@ namespace GitClient.ui
             return 10;
         }
 
-        private void OnViewChanged()
+        private void Refresh()
         {
-            // de apelat cand apare un nou element la final
-            //List<UnstagedChanges> unstagedChanges = unstangedChangesService.GetCurrentUnstagedChanges(startIndex, endIndex);
-            //Draw(unstagedChanges);
-            DrawPanel();
+            // de apelat cand se schimba ceva in ce trebuie afisat
+            List<UnstagedChange> unstagedChanges = unstangedChangesService.GetCurrentUnstagedChanges(startIndex, endIndex);
+
+            DrawPanel(unstagedChanges);
         }
 
         private void Navigate()
@@ -59,8 +60,8 @@ namespace GitClient.ui
             // daca current index == end index +1 sau current index == start index-1
             // verifica sa nu treci de 0 in jos si la fel pentru end index
 
-   
-            OnViewChanged();
+
+            Refresh();
         }
 
         //private void Draw(List<UnstagedChanges> unstagedChanges)
@@ -68,7 +69,7 @@ namespace GitClient.ui
         //    // creeaza chenarul de unstanged changes cu lista asta de chages
         //}
 
-        private void DrawPanel()
+        private void DrawPanel(List<UnstagedChange>  unstagedChanges)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             
@@ -100,6 +101,11 @@ namespace GitClient.ui
             string unstaged = GetStatusFiles.SetStatusTabTextLength("Unstaged Changes: ");
             Console.SetCursorPosition(1, dimensions.tabHeight + 1);
             Console.Write(unstaged);
+
+            foreach(var c in unstagedChanges)
+            {
+                Console.WriteLine(c.toDisplay());
+            }
         }
     }
 }
