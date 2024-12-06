@@ -18,6 +18,8 @@
         public List<int> unstagedFilesStartAt;
         public List<int> stagedFilesStartAt;
         public List<int> logFilesStartAt;
+        public List<List<string>> hunksList;
+        public List<string> currentHunk;
 
         public GetCertainList()
         {
@@ -37,6 +39,8 @@
             unstagedFilesStartAt = new List<int>();
             stagedFilesStartAt = new List<int>();
             logFilesStartAt = new List<int>();
+            hunksList = new List<List<string>>();
+            currentHunk = new List<string>();
         }
 
         public void ClearAllLists()
@@ -58,6 +62,8 @@
             unstagedFilesStartAt.Clear();
             stagedChangesDiff.Clear();
             logFilesStartAt.Clear();
+            hunksList.Clear();
+            currentHunk.Clear();
         }
     }
 }

@@ -107,7 +107,15 @@ namespace GitClient
 
             if (list.unstagedChangesFiles.Count > 0 && variablesForFiles.stageChanges == false)
             {
-                fileFullName = list.unstagedChangesFiles[index];
+                if (index == list.unstagedChangesFiles.Count)
+                {
+                    variablesForFiles.unstagedIndex--;
+                    variablesForFiles.fileRowUnstaged--;
+                    variablesForFiles.indexDiff = variablesForFiles.unstagedIndex;
+                    index = variablesForFiles.unstagedIndex;
+                }
+
+                fileFullName = list.unstagedChangesFiles[variablesForFiles.unstagedIndex];
                 
                 if (index == 0)
                 {

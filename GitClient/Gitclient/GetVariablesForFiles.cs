@@ -44,7 +44,8 @@
         public int stagedIndex;
         public int fileRowUnstaged;
         public int fileRowStaged;
-        public int enterPress;
+        public int currentIndexDiff;
+        public bool emptyDiff;
 
 
         public GetVariablesForFiles()
@@ -91,7 +92,8 @@
             stagedIndex = 0;
             fileRowUnstaged = 4;
             fileRowStaged = 11;
-            enterPress = 0;
+            currentIndexDiff = 0;
+            emptyDiff = false;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace GitClient
                 row = variablesForFiles.fileRowStaged;
                 variablesForFiles.indexDiff = variablesForFiles.stagedIndex;
             }
-
+            
             if (list.unstagedChangesFiles.Count > 0)
             {
                 if (list.stagedChangesFiles.Count == 0)
@@ -60,43 +60,29 @@ namespace GitClient
 
                 int i = 0;
 
-                if (variablesForFiles.stageChanges == true)
+                if (list.unstagedFilesStartAt.Count > 0)
                 {
-                    if (list.unstagedFilesStartAt.Count == 0)
+                    if (variablesForFiles.unstagedIndex == 0)
                     {
                         i = 0;
                     }
                     else
                     {
-                        i = list.unstagedFilesStartAt[0];
-                    }
-                }
-                else
-                {
-                    if (list.stagedChangesFiles.Count > 0)
-                    {
-                        foreach (int startingIndex in list.unstagedFilesStartAt)
+                        if (list.unstagedChangesFiles.Count == list.unstagedFilesStartAt[0])
                         {
-                            if (index >= startingIndex && index - startingIndex < dimensions.unstagedStart)
-                            {
-                                i = startingIndex;
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (list.unstagedChangesFiles.Count > dimensions.unstagedEnd - dimensions.unstagedStart + 1 && list.unstagedFilesStartAt.Count > 0)
-                        {
+                            list.unstagedFilesStartAt[0] = variablesForFiles.unstagedIndex;
                             i = list.unstagedFilesStartAt[0];
                         }
-                        else
+
+                        i = list.unstagedFilesStartAt[0];
+                       
+                        if (i < 0)
                         {
                             i = 0;
                         }
                     }
                 }
-                
+
                 int count = 0;
                 y = dimensions.unstagedStart;
                 height = dimensions.unstagedEnd - dimensions.unstagedStart + 1;
@@ -112,19 +98,6 @@ namespace GitClient
                     i++;
                     count++;
                     y++;
-                }
-
-                if (index == list.unstagedChangesFiles.Count)
-                {
-                    index--;
-                   
-                    if (row > dimensions.unstagedStart)
-                    {
-                        row--;
-                    }
-
-                    variablesForFiles.unstagedIndex = index;
-                    variablesForFiles.fileRowUnstaged = row;
                 }
             }
 
@@ -152,16 +125,15 @@ namespace GitClient
 
                 if (variablesForFiles.stageChanges == true)
                 {
-                    if (list.stagedFilesStartAt.Count > 0 && list.stagedFilesStartAt[0] != 0)
+                    if (list.stagedChangesFiles.Count > height && list.stagedFilesStartAt.Count > 0)
                     {
-                        if (index >= dimensions.stagedEnd - dimensions.stagedStart)
+
+                        if (list.stagedFilesStartAt[0] < 0)
                         {
-                            i = list.stagedFilesStartAt[0];
+                            list.stagedFilesStartAt[0] = 0;
                         }
-                    }
-                    else
-                    {
-                        i = 0;
+
+                        i = list.stagedFilesStartAt[0];
                     }
                 }
                
@@ -241,7 +213,7 @@ namespace GitClient
                 {
                     if (i == filesList.Count)
                     {
-                        row = y - 1;
+                        //row = y - 1;
                         break;
                     }
 

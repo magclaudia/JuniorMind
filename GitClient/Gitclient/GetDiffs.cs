@@ -456,7 +456,11 @@ namespace GitClient
 
         public static void SetColorForLinesOfCode(string content, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
-            var firstChar = content.First();
+            var firstChar = ' ';
+            if (content != "")
+            {
+                firstChar = content.First();
+            }
             int x;
 
             if (variablesForCommits.pressRight == 1)
@@ -482,6 +486,15 @@ namespace GitClient
                 case '-':
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(content);
+                        Console.SetCursorPosition(x, variablesForFiles.row);
+                        Console.ResetColor();
+                    }
+                    break;
+
+                case '@':
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write(content);
                         Console.SetCursorPosition(x, variablesForFiles.row);
                         Console.ResetColor();
