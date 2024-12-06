@@ -44,6 +44,8 @@ namespace GitClient
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine(text);
                     Console.ResetColor();
+                    variablesForFiles.stageChanges = false;
+                    variablesForFiles.unstageChanges = true;
                 }
 
                 Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
@@ -101,7 +103,7 @@ namespace GitClient
                 }
             }
 
-            if (variablesForFiles.stageChanges == true || list.stagedChangesFiles.Count > 0)
+            if (variablesForFiles.stageChanges == true && list.stagedChangesFiles.Count > 0 || list.stagedChangesFiles.Count > 0)
             {
                 if (list.unstagedChangesFiles.Count == 0)
                 {

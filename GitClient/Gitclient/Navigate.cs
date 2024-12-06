@@ -327,7 +327,6 @@ namespace GitClient
                                             break;
                                         }
 
-                                        
                                         HandleFileTransferFromUnstagedToStaged(commitElements, list, variablesForCommits, variablesForFiles);
                                     }
                                 }
@@ -335,6 +334,12 @@ namespace GitClient
                                 {
                                     if (variablesForCommits.right == true)
                                     {
+                                        if (list.stagedChangesFiles.Count == 0)
+                                        {
+                                            break;
+                                        }
+
+                                        variablesForFiles.currentIndexDiff = variablesForFiles.index;
                                         HandleHunkTransferFromStagedToUnstaged(commitElements, list, variablesForCommits, variablesForFiles);
                                     }
                                     else
@@ -563,6 +568,10 @@ namespace GitClient
                     else
                     {
                         variablesForFiles.stagedIndex = 0;
+                        if (!list.stagedChangesFiles.Contains(fileToBeTransfer))
+                        {
+                            list.stagedChangesFiles.Add(fileToBeTransfer);
+                        }
                     }
 
                     variablesForFiles.emptyDiff = true;
@@ -622,92 +631,145 @@ namespace GitClient
         private static void HandleHunkTransferFromStagedToUnstaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-            List<string> diff = new List<string>();
             List<string> diffToBeAddedToUnstaged = new List<string>();
+
             string fileToBeTransfer = list.stagedChangesFiles[variablesForFiles.stagedIndex];
-            diff = list.stagedChangesDiff[variablesForFiles.stagedIndex];
-            string path = diff[0];
-            int index = variablesForFiles.unstagedIndex;
+            string path = list.stagedChangesDiff[variablesForFiles.stagedIndex][0];
+            string currentLine = list.stagedChangesDiff[variablesForFiles.stagedIndex][variablesForFiles.currentIndexDiff];
+            int currentHunkIndex = 0;
+            int index = list.unstagedChangesFiles.IndexOf(fileToBeTransfer);
 
-            if (diff[variablesForFiles.index].StartsWith('@'))
+            if (currentLine != path)
             {
-                int count = variablesForFiles.index;
-                int indexForUnstaged = 0;
-
                 if (!list.unstagedChangesFiles.Contains(fileToBeTransfer))
                 {
-                    list.unstagedChangesFiles.Add(fileToBeTransfer);
-
-                    if (list.unstagedChangesFiles.Count > 1)
-                    {
-                        index++;
-                    }
-
                     list.unstagedChangesDiff.Add(new List<string>());
-                    diffToBeAddedToUnstaged = list.unstagedChangesDiff[index];
-                    diffToBeAddedToUnstaged.Add(path);
+
+                    if (list.unstagedChangesFiles.Count == 0)
+                    {
+                        index = variablesForFiles.unstagedIndex;
+                    }
                 }
 
-                indexForUnstaged = index;
-                diffToBeAddedToUnstaged.Add(diff[count]);
-                count++;
-
-                while (!diff[count].StartsWith('@'))
+                for (int i = 0; i < list.hunksList.Count; i++)
                 {
-                    diffToBeAddedToUnstaged.Add(diff[count]);
-
-                    if (diff[count].StartsWith('@') || count == diff.Count - 1)
+                    if (index < 0)
                     {
+                        index = list.unstagedChangesDiff.Count - 1;
+                    }
+
+                    if (list.hunksList[i].Contains(currentLine))
+                    {
+                        currentHunkIndex = i;
+                        variablesForFiles.currentIndexDiff = list.stagedChangesDiff[variablesForFiles.stagedIndex].IndexOf(list.hunksList[i][0]);
+
+                        if (list.unstagedChangesDiff[index].Count == 0)
+                        {
+                            list.unstagedChangesDiff[index].Add(path);
+                        }
+
+                        for (int j = 0; j < list.hunksList[i].Count; j++)
+                        {
+                            list.unstagedChangesDiff[index].Add(list.hunksList[i][j]);
+                        }
+
                         break;
                     }
-
-                    count++;
                 }
 
-                for (int i = 0; i < diffToBeAddedToUnstaged.Count; i++)
+                bool emptyDiff = false;
+
+                for (int i = 0; i < list.hunksList[currentHunkIndex].Count; i++)
                 {
-                    if (diff.Contains(diffToBeAddedToUnstaged[i]))
+                    list.stagedChangesDiff[variablesForFiles.stagedIndex].RemoveAt(variablesForFiles.currentIndexDiff);
+
+                    if (list.stagedChangesDiff[variablesForFiles.stagedIndex].Count == 1)
                     {
-                        diff.RemoveAt(variablesForFiles.index);
+                        emptyDiff = true;
                     }
                 }
 
-                if (diff.Count > 1)
-                {
-                    list.stagedChangesDiff[variablesForFiles.stagedIndex] = diff;
-                    //list.stagedChangesDiff.Add(diff);
+                list.hunksList.RemoveAt(currentHunkIndex);
 
-                    if (!list.unstagedChangesDiff.Contains(diffToBeAddedToUnstaged))
-                    {
-                        list.unstagedChangesDiff[list.unstagedChangesDiff.Count - 1].AddRange(diffToBeAddedToUnstaged);
-                    }
-                }
-                else
+                if (list.stagedChangesDiff[variablesForFiles.stagedIndex].Count == 1)
                 {
-                    list.stagedChangesFiles.Remove(fileToBeTransfer);
+                    list.stagedChangesFiles.RemoveAt(variablesForFiles.stagedIndex);
                     list.stagedChangesDiff.RemoveAt(variablesForFiles.stagedIndex);
+
+                    if (variablesForFiles.stagedIndex > 0)
+                    {
+                        variablesForFiles.stagedIndex--;
+
+                        if (variablesForFiles.fileRowStaged > dimensions.stagedStart)
+                        {
+                            variablesForFiles.fileRowStaged--;
+                        }
+                        else if (variablesForFiles.fileRowStaged == dimensions.stagedStart)
+                        {
+                            list.stagedFilesStartAt.Clear();
+                            list.stagedFilesStartAt.Add(variablesForFiles.stagedIndex);
+                        }
+                    }
+                    else
+                    {
+                        variablesForFiles.unstagedIndex = 0;
+
+                        if (!list.unstagedChangesFiles.Contains(fileToBeTransfer))
+                        {
+                            list.unstagedChangesFiles.Add(fileToBeTransfer);
+                        }
+                    }
+
+                    variablesForFiles.emptyDiff = true;
+                }
+                
+                if (list.stagedChangesDiff.Count > 0)
+                {
+                    variablesForFiles.index = 0;
+                    variablesForFiles.row = dimensions.tabHeight + 1;
+                    variablesForFiles.currentIndexDiff = variablesForFiles.index;
 
                     if (!list.unstagedChangesFiles.Contains(fileToBeTransfer))
                     {
                         list.unstagedChangesFiles.Add(fileToBeTransfer);
-                        index++;
                     }
 
-                    if (!list.unstagedChangesDiff.Contains(diffToBeAddedToUnstaged))
+                    if (list.stagedChangesDiff[variablesForFiles.stagedIndex].Count == list.hunksList.Count)
                     {
-                        list.unstagedChangesDiff[list.unstagedChangesDiff.Count - 1].AddRange(diffToBeAddedToUnstaged);
+                        list.stagedChangesFiles.Remove(fileToBeTransfer);
                     }
 
-
-                    if (list.stagedChangesFiles.Count == 0)
-                    {
-                        variablesForFiles.stageChanges = false;
-                        variablesForFiles.unstageChanges = true;
-                    }
+                    variablesForFiles.down = false;
+                    variablesForFiles.statusFilesSufferModifications = true;
                 }
 
-                variablesForFiles.down = false;
-                variablesForFiles.statusFilesSufferModifications = true;
+                for (int i = dimensions.tabHeight + 2; i < dimensions.height; i++)
+                {
+                    Console.SetCursorPosition(1, i);
+                    Console.Write(new string(' ', dimensions.width - 1));
+                }
+
+                if (emptyDiff == false)
+                {
+                    Console.SetCursorPosition(1, dimensions.tabHeight + 2);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    path = GetDiffs.ResizeTextToFitInPanel(path, variablesForCommits);
+                    Console.Write(path);
+                    Console.ResetColor();
+
+                    for (int i = 1; i < dimensions.height - (dimensions.tabHeight + 2); i++)
+                    {
+                        if (i == list.stagedChangesDiff[variablesForFiles.stagedIndex].Count)
+                        {
+                            break;
+                        }
+
+                        Console.SetCursorPosition(1, dimensions.tabHeight + 2 + i);
+                        string content = GetDiffs.ResizeTextToFitInPanel(list.stagedChangesDiff[variablesForFiles.stagedIndex][i].TrimEnd(), variablesForCommits);
+                        DiffHelper.SetColorForLinesOfCode(content, variablesForCommits, variablesForFiles);
+                    }
+                }
             }
         }
 
