@@ -10,25 +10,30 @@ using System.Threading.Tasks;
 namespace GitClient.ui
 {
     public class UnstagedChangesService
-
-        // in constructor initializez atributul lista de mai jos cu toate changes, venite de la api
-    // tine un atribut List de usntaged changes si le incarca pe toate din API
-    // ai metoda getCurrentUnstagedChanges care returneaza din lista cu toate, pe alea intee start si end index
-    // o sa tine repo
-
     {
-        private LibGit2Repository libGit2Repository;
+        private readonly LibGit2Repository libGit2Repository;
 
-
-        public UnstagedChangesService(LibGit2Repository libGit2Repository) 
+        public UnstagedChangesService(LibGit2Repository libGit2Repository)
         {
             this.libGit2Repository = libGit2Repository;
         }
 
+        public List<UnstagedChange> GetAllUnstagedChanges()
+        {
+            return libGit2Repository.GetAllUnstagedChanges();
+        }
+
         public List<UnstagedChange> GetCurrentUnstagedChanges(int startIndex, int endIndex)
         {
-            // map and return between indexes
-            return libGit2Repository.getAllUnstagedChanges();
+            List<UnstagedChange> allChanges = libGit2Repository.GetAllUnstagedChanges();
+
+            if (startIndex < 0 || endIndex > allChanges.Count)
+            {
+                endIndex = allChanges.Count - 1;
+            }
+
+            int numberOdFiles = endIndex - startIndex + 1 > 0 ? endIndex - startIndex + 1 : allChanges.Count;
+            return allChanges.GetRange(startIndex, numberOdFiles);
         }
     }
 }

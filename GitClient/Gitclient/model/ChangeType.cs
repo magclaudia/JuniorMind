@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Gitclient.model
 {
-    public enum ChangeType
-    {
-        ADDED,
-        DELETED,
-        MODIFIED
-    }
+    //public enum ChangeType
+    //{
+    //    ADDED,
+    //    DELETED,
+    //    MODIFIED,
+    //    UNKNOWN
+    //}
 }

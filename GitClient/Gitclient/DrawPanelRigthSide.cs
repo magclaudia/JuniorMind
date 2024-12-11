@@ -2,9 +2,9 @@
 {
     public class DrawPanelRigthSide
     {
-        private static int plusLegthForLargePanel = 10;
-        private static int border = 2;
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        public static int plusLegthForLargePanel = 10;
+        public static int border = 2;
+        public static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public struct InfoPanel
         {
@@ -188,7 +188,7 @@
             ListOfAllCommitsPanel();
         }
 
-        private static void ListOfAllCommitsPanel()
+        public static void ListOfAllCommitsPanel()
         {
             var commitsPanel = new CommitsPanel();
             Console.SetCursorPosition(0, dimensions.tabHeight + 1);

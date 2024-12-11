@@ -49,7 +49,7 @@ namespace GitClient
             }
         }
 
-        private static void TextToBeResize(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        public static void TextToBeResize(GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             DrawPanelRigthSide.FilesBox position = new DrawPanelRigthSide.FilesBox();
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
@@ -97,7 +97,7 @@ namespace GitClient
             }
         }
 
-        private static string HandleResizingText(string text, DrawTabs.Dimensions dimensions, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        public static string HandleResizingText(string text, DrawTabs.Dimensions dimensions, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             if (variablesForCommits.right == true)
             {

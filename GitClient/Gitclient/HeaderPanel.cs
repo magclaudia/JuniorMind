@@ -2,7 +2,7 @@
 {
     public class HeaderPanel
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        public static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
 
         public static void Header(GetVariablesForCommits indexes)

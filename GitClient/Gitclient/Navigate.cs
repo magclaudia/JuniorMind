@@ -461,7 +461,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleHunkTransferFromUnstagedToStaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        public static void HandleHunkTransferFromUnstagedToStaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             List<string> diff = new List<string>();
@@ -548,7 +548,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleHunkTransferFromStagedToUnstaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        public static void HandleHunkTransferFromStagedToUnstaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             List<string> diff = new List<string>();
@@ -640,7 +640,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleFileTransferFromStagedToUnstaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        public static void HandleFileTransferFromStagedToUnstaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             List<string> diffToBeAdded = new List<string>();
@@ -684,7 +684,7 @@ namespace GitClient
             Tabs.SetInitialState(commitElements, variablesForCommits, variablesForFiles, list);
         }
 
-        private static void HandleFileTransferFromUnstagedToStaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        public static void HandleFileTransferFromUnstagedToStaged(CommitElements commitElements, GetCertainList list, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             List<string> diffToBeAdded = new List<string>();
@@ -727,13 +727,13 @@ namespace GitClient
 
             Tabs.SetInitialState(commitElements, variablesForCommits, variablesForFiles, list);
         }
-        private static void CloseApplication()
+        public static void CloseApplication()
         {
             Console.Clear();
             Environment.Exit(0);
         }
 
-        private static void HandleDiffUpMovesStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
+        public static void HandleDiffUpMovesStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
         {
             List<List<string>> diff = new List<List<string>>();
             List<List<int>> indexes = new List<List<int>>();
@@ -792,7 +792,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleDiffDownMovesStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
+        public static void HandleDiffDownMovesStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
         {
             List<List<string>> diff = new List<List<string>>();
             List<List<int>> indexes = new List<List<int>>();
@@ -852,7 +852,7 @@ namespace GitClient
             DiffHelper.Print(variablesForCommits, variablesForFiles, commitElement, list);
         }
 
-        private static void HandleFilesUpStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
+        public static void HandleFilesUpStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
         {
             List<string> filesList = new List<string>();
             List<int> indexes = new List<int>();
@@ -1016,7 +1016,7 @@ namespace GitClient
             DiffHelper.Print(variablesForCommits, variablesForFiles, commitElement, list);
         }
 
-        private static void HandleFilesDownMovesStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
+        public static void HandleFilesDownMovesStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
@@ -1188,7 +1188,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleDiffUpMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
+        public static void HandleDiffUpMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {
             variablesForFiles.up = true;
             variablesForFiles.down = false;
@@ -1221,7 +1221,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleDiffDownMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
+        public static void HandleDiffDownMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
@@ -1268,7 +1268,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleFilesDownMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
+        public static void HandleFilesDownMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             DrawPanelRigthSide.FilesBox size = new DrawPanelRigthSide.FilesBox();
@@ -1337,7 +1337,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleFilesUpMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
+        public static void HandleFilesUpMovesLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElement)
         {
             int x = 0;
             int y = 0;
@@ -1411,7 +1411,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleRightArrowLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
+        public static void HandleRightArrowLog(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
@@ -1462,7 +1462,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleRightArrowStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
+        public static void HandleRightArrowStatus(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             variablesForFiles.index = 0;
@@ -1482,7 +1482,7 @@ namespace GitClient
             DiffHelper.Print(variablesForCommits, variablesForFiles, commitElement, list);
         }
 
-        private static void HandleCommitsUpMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
+        public static void HandleCommitsUpMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
@@ -1519,7 +1519,7 @@ namespace GitClient
             }
         }
 
-        private static void HandleCommitsDownMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
+        public static void HandleCommitsDownMoves(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
@@ -1566,7 +1566,7 @@ namespace GitClient
             }
         }
 
-        private static void VerifySize(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements listOfCommits, GetCertainList list)
+        public static void VerifySize(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements listOfCommits, GetCertainList list)
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 

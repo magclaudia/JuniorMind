@@ -4,9 +4,9 @@ namespace GitClient
 {
     public class DrawPanelLeftSide
     {
-        private static int plusLegthForLargePanel = 10;
-        private static int border = 2;
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        public static int plusLegthForLargePanel = 10;
+        public static int border = 2;
+        public static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public struct InfoPanel
         {
@@ -187,7 +187,7 @@ namespace GitClient
             ListOfAllCommitsPanel();
         }
 
-        private static void ListOfAllCommitsPanel()
+        public static void ListOfAllCommitsPanel()
         {
             var commitsPanel = new CommitsPanel();
             Console.SetCursorPosition(Console.WindowWidth / 2 + 2, dimensions.tabHeight + 1);

@@ -9,9 +9,9 @@ namespace GitClient
 {
     public class DiffCallbackForeachFuntion
     {
-        private static GetVariablesForFiles files = new GetVariablesForFiles();
-        private static GetCertainList list1 = new GetCertainList();
-        private static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
+        public static GetVariablesForFiles files = new GetVariablesForFiles();
+        public static GetCertainList list1 = new GetCertainList();
+        public static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
 
         public static int ReturnForeachCallback(IntPtr diff, GetCertainList list, GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits)
         {

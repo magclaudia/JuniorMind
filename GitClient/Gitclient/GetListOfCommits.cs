@@ -78,7 +78,7 @@ namespace GitClient
             LibGit2Wrapper.git_revwalk_free(walker);
         }
 
-        private static string GetCommitId(LibGit2Wrapper.GitOid id)
+        public static string GetCommitId(LibGit2Wrapper.GitOid id)
         {
             StringBuilder sb = new StringBuilder();
             foreach (byte b in id.Id)
@@ -90,7 +90,7 @@ namespace GitClient
             return $"{commitIdFullLine.Remove(7)}";
         }
 
-        private static string GetCommitAuthor(IntPtr commit)
+        public static string GetCommitAuthor(IntPtr commit)
         {
             IntPtr signaturePtr = LibGit2Wrapper.git_commit_author(commit);
             if (signaturePtr == IntPtr.Zero)
@@ -112,7 +112,7 @@ namespace GitClient
             return commitAuthor;
         }
 
-        private static string GetDateAndTime(IntPtr commit)
+        public static string GetDateAndTime(IntPtr commit)
         {
             var date = DateTimeOffset.FromUnixTimeSeconds(LibGit2Wrapper.git_commit_time(commit));
             var adjustedDate = date.ToOffset(new TimeSpan(3, 0, 0));

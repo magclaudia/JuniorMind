@@ -331,7 +331,7 @@
             Console.SetCursorPosition(1, variablesForCommits.heightPosition);
         }
 
-        private static void ClearMessagePanel()
+        public static void ClearMessagePanel()
         {
             var messagePanel = new DrawPanelRigthSide.MessageBox();
             int height = Console.WindowHeight / 2 - ((Console.WindowHeight / 2) / 2 - 1);
@@ -342,7 +342,7 @@
             }
         }
 
-        private static void ClearFilePanel()
+        public static void ClearFilePanel()
         {
             var filePanel = new DrawPanelRigthSide.FilesBox();
 
@@ -353,7 +353,7 @@
             }
         }
 
-        private static string ReturnMessage(string description, string message)
+        public static string ReturnMessage(string description, string message)
         {
             if (description != "")
             {

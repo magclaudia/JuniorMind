@@ -2,7 +2,7 @@
 {
     public class Info
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        public static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public static void GetInfo(GetVariablesForCommits indexes, CommitElements listOfCommits)
         {

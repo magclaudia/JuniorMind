@@ -6,11 +6,9 @@ namespace GitClient
     {
         static void Main()
         {
-         
             Ui ui = new Ui();
+            Console.Clear();
             ui.Show();
-
-
          //  Features.DisplayFeatures();
         }
     }

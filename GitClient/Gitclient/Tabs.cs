@@ -9,7 +9,7 @@ namespace GitClient
 {
     public class Tabs
     {
-        private static string path = string.Empty;
+        public static string path = string.Empty;
 
         public static void PrintTabs(string repoPath, CommitElements commitElements, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list)
         {

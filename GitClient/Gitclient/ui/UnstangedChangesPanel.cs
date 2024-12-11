@@ -1,8 +1,11 @@
 ﻿using Gitclient.model;
+using Gitclient.repository;
+using Gitclient.ui;
 using GitClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,69 +13,127 @@ namespace GitClient.ui
 {
     public class UnstangedChangesPanel
     {
+        private int totalNumberOfFiles;
         private int startIndex;
-        private int endIndex;
         private int currentIndex;
+        private int endIndex;
+        private int panelSize;
+        private int x;
+        private int y;
+        //private (int x, int y) cursorPosition;
+        private UnstagedChangesService unstagedChangesService;
+        private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        private SetTextLegth textLegth = new SetTextLegth();
+        private GetColorForText color = new GetColorForText();
+        private BlueBox blueBox = new BlueBox();
+        private Indicator indicator = new Indicator();
 
-        private UnstagedChangesService unstangedChangesService;
-
-        public UnstangedChangesPanel(UnstagedChangesService unstangedChangesService)
+        public UnstangedChangesPanel(UnstagedChangesService unstagedChangesService)
         {
-            this.unstangedChangesService = unstangedChangesService;
-            this.startIndex = 0;
+            this.totalNumberOfFiles = unstagedChangesService.GetAllUnstagedChanges().Count;
+            this.startIndex = GetStartIndex();
             this.currentIndex = GetCurrentIndex();
-            this.endIndex = GetCurrentEndIndex();
+            this.endIndex = GetEndIndex();
+            this.x = 1;
+            this.y = dimensions.unstagedStart;
+            //this.cursorPosition = (x, y + 1);
+            this.unstagedChangesService = unstagedChangesService;
+            this.panelSize = dimensions.unstagedEnd - dimensions.unstagedStart + 1;
+        }
+
+        public int GetStartIndex()
+        {
+            return 0;
+        }
+
+        public int GetCurrentIndex()
+        {
+            return currentIndex;
+        }
+
+        public int GetEndIndex()
+        {
+            return currentIndex < totalNumberOfFiles ? dimensions.unstagedEnd - dimensions.unstagedStart
+                : totalNumberOfFiles;
         }
 
         public void Show()
         {
             Refresh();
+            Navigate();
         }
 
-        private int GetCurrentStartIndex()
+        public void Refresh()
         {
-            // sa returneze in fucntie de consola
-            return 0;
-        }
-
-        private int GetCurrentIndex()
-        {
-            return 0;
-        }
-
-        private int GetCurrentEndIndex()
-        {
-            // calculeaza in functie de dimensiune
-            return 10;
-        }
-
-        private void Refresh()
-        {
-            // de apelat cand se schimba ceva in ce trebuie afisat
-            List<UnstagedChange> unstagedChanges = unstangedChangesService.GetCurrentUnstagedChanges(startIndex, endIndex);
-
+            List<UnstagedChange> unstagedChanges = unstagedChangesService.GetCurrentUnstagedChanges(startIndex, endIndex);
             DrawPanel(unstagedChanges);
         }
 
-        private void Navigate()
+        public void Navigate()
         {
-            // update current index end index start index
-            // daca current index == end index +1 sau current index == start index-1
-            // verifica sa nu treci de 0 in jos si la fel pentru end index
+            ConsoleKeyInfo keyInfo;
+            ClearConsoleChoosenSpace clear = new ClearConsoleChoosenSpace();
+            
+            do
+            {
+                keyInfo = Console.ReadKey(true);
 
+                switch (keyInfo.Key)
+                {
+                    case ConsoleKey.DownArrow:
+                       
+                        if (currentIndex < totalNumberOfFiles - 1)
+                        {
+                            currentIndex++;
+                            //cursorPosition = (x, y);
+                            
+                            if (y < dimensions.unstagedEnd || y == dimensions.unstagedEnd)
+                            {
+                                y++;
+                            }
 
-            Refresh();
+                            if (currentIndex > endIndex)
+                            {
+                                startIndex++;
+                                endIndex++;
+                            }
+                        }
+                        break;
+
+                    case ConsoleKey.UpArrow:
+                        if (currentIndex > 0)
+                        {
+                            currentIndex--;
+                           // cursorPosition = (x, y);
+                            
+                            if (y <= dimensions.unstagedEnd)
+                            {
+                                y--;
+                            }
+
+                            if (currentIndex < startIndex && startIndex > 0)
+                            {
+                                startIndex--;
+                                endIndex--;
+                            }
+                        }
+                        break;
+                }
+
+                if (currentIndex >= 1 && currentIndex < totalNumberOfFiles && y >= 1)
+                {
+                    clear.Clear(currentIndex - 1, x, y - 1, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd);
+                }
+
+                Refresh();
+                indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1);
+
+            } while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        //private void Draw(List<UnstagedChanges> unstagedChanges)
-        //{
-        //    // creeaza chenarul de unstanged changes cu lista asta de chages
-        //}
 
-        private void DrawPanel(List<UnstagedChange>  unstagedChanges)
+        public void DrawPanel(List<UnstagedChange> currentUnstagedChanges)
         {
-            DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-            
             for (int i = dimensions.tabHeight + 2; i < dimensions.height / 2 + 1; i++)
             {
                 Console.SetCursorPosition(0, i);
@@ -81,7 +142,7 @@ namespace GitClient.ui
                 Console.Write("║");
             }
 
-            for (int i = 1; i < dimensions.width / 2 - 1; i++)
+            for (int i = 1; i < dimensions.changesPanelWidth; i++)
             {
                 Console.SetCursorPosition(i, dimensions.tabHeight + 1);
                 Console.Write("─");
@@ -98,14 +159,62 @@ namespace GitClient.ui
             Console.SetCursorPosition(dimensions.width / 2 - 1, dimensions.height / 2 + 1);
             Console.Write("┘");
 
-            string unstaged = GetStatusFiles.SetStatusTabTextLength("Unstaged Changes: ");
+            string text = textLegth.Text("Unstaged Changes: ", dimensions.changesPanelWidth);
             Console.SetCursorPosition(1, dimensions.tabHeight + 1);
-            Console.Write(unstaged);
+            Console.Write(text);
 
-            foreach(var c in unstagedChanges)
+            UnstagedPath();
+            GetUnstagedFiles(currentUnstagedChanges);
+        }
+
+        private void GetUnstagedFiles(List<UnstagedChange> currentUnstagedChanges)
+        {
+            if (y <= dimensions.unstagedEnd && currentIndex > 0)
             {
-                Console.WriteLine(c.toDisplay());
+                y--;
+                currentIndex--;
+
+                string displayText = textLegth.Text(currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+                Console.SetCursorPosition(1, y);
+                Console.ForegroundColor = color.SetColor(displayText[0]);
+                Console.Write(displayText);
+                y++;
+                currentIndex++;
+                displayText = textLegth.Text(currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+                blueBox.SetBlueBox((1, y), displayText, dimensions.changesPanelWidth - 2);
             }
+            else
+            {
+                for (int i = 0; i < currentUnstagedChanges.Count; i++)
+                {
+                    int y = dimensions.unstagedStart + i;
+                    string displayText = textLegth.Text(currentUnstagedChanges[i].Display(), dimensions.changesPanelWidth - 2);
+
+                    if (startIndex + i == currentIndex)
+                    {
+                        blueBox.SetBlueBox((1, y), displayText, dimensions.changesPanelWidth - 2);
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(1, y);
+                        Console.ForegroundColor = color.SetColor(displayText[0]);
+                        Console.Write(displayText);
+                    }
+                }
+            }
+
+            indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1);
+            Console.ResetColor();
+        }
+
+        private void UnstagedPath()
+        {
+            GetProjectPath projectPath = new GetProjectPath();
+
+            string path = $"  ▾{projectPath.ProjectPath(Environment.CurrentDirectory)}";
+            path = textLegth.Text(path, dimensions.changesPanelWidth - 1);
+            Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
+            Console.Write(path);
         }
     }
 }

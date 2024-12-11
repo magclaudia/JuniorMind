@@ -8,10 +8,11 @@ using Gitclient.repository;
 
 namespace GitClient.ui
 {
-    internal class PanelFactory
+    public class PanelFactory
     {
         private static LibGit2Repository libGit2Repository = new LibGit2Repository();
         private static UnstagedChangesService unstagedChangesService = new UnstagedChangesService(libGit2Repository);
+        
         public static UnstangedChangesPanel CreateUnstagedChangesPanel()
         {
             return new UnstangedChangesPanel(unstagedChangesService);

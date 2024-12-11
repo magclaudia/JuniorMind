@@ -3,7 +3,7 @@ namespace GitClient
 {
     public class GetCommits
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        public static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public struct Elements
         {
@@ -32,7 +32,7 @@ namespace GitClient
             }
         }
 
-        private static void DisplayCommitsOnEntireConsole(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
+        public static void DisplayCommitsOnEntireConsole(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
         {
             var element = new Elements();
             variablesForCommits.rigthCursor = 0;
@@ -108,7 +108,7 @@ namespace GitClient
             Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
         }
 
-        private static void DisplayCommitsWithPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
+        public static void DisplayCommitsWithPanel(GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, CommitElements commitElement, GetCertainList list, int blueFond)
         {
             var element = new Elements();
             var size = new DrawPanelRigthSide.CommitsPanel();
@@ -204,7 +204,7 @@ namespace GitClient
             Navigate.NavigateThroughCommits(variablesForCommits, variablesForFiles, commitElement, list);
         }
 
-        private static string GetMessage(string description, string id, string data, string author, string message)
+        public static string GetMessage(string description, string id, string data, string author, string message)
         {
             if (description != "")
             {

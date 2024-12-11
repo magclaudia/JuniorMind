@@ -241,7 +241,7 @@ namespace GitClient
             }
         }
 
-        private static string ResizeFilesNamesToFitInPanel(string text, DrawTabs.Dimensions dimensions, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
+        public static string ResizeFilesNamesToFitInPanel(string text, DrawTabs.Dimensions dimensions, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles)
         {
             if (text.Length > dimensions.changesPanelWidth - 2)
             {

@@ -107,10 +107,10 @@ namespace GitClient
 
     public class DiffHelper
     {
-        private static GetCertainList list = new GetCertainList();
-        private static GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
-        private static string content = string.Empty;
-        private static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
+        public static GetCertainList list = new GetCertainList();
+        public static GetVariablesForFiles variablesForFiles = new GetVariablesForFiles();
+        public static string content = string.Empty;
+        public static GetVariablesForCommits variablesForCommit = new GetVariablesForCommits();
 
         public static void PrintDiff(IntPtr diff, GetCertainList filesList, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFile, CommitElements commitElements)
         {

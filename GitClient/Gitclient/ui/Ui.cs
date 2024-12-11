@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gitclient.ui;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,9 @@ namespace GitClient.ui
         public void Show()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
+            TabsPanel tabs = new TabsPanel();
+            tabs.Show();
+
             UnstangedChangesPanel unstangedChangesPanel = PanelFactory.CreateUnstagedChangesPanel();
             unstangedChangesPanel.Show();
         }

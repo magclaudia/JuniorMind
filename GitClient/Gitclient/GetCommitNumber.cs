@@ -2,7 +2,7 @@
 {
     public class GetCommitNumber
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        public static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public static void ReturnCommitNumber(CommitElements listOfCommits, GetVariablesForCommits indexes)
         {

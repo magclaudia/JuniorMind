@@ -93,7 +93,7 @@ namespace GitClient
             //}
         }
 
-        private static void DisplayCustomCursor(ConsoleColor color, CommitElements listOfCommits, GetVariablesForCommits variablesForCommits, GetCertainList list)
+        public static void DisplayCustomCursor(ConsoleColor color, CommitElements listOfCommits, GetVariablesForCommits variablesForCommits, GetCertainList list)
         {
             //Console.ForegroundColor = ConsoleColor.DarkBlue;
             //char cursorSymbol = '█';
@@ -102,7 +102,7 @@ namespace GitClient
             BlueBackgroundForCommits.DisplayBlueBox(variablesForCommits, listOfCommits, list);
         }
 
-        private static void HandleCursorForFilesLog(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, DrawPanelRigthSide.FilesBox size, int indicatorPosition)
+        public static void HandleCursorForFilesLog(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, DrawPanelRigthSide.FilesBox size, int indicatorPosition)
         {
             //if (variablesForFiles.up == true && variablesForFiles.fileRow == Console.WindowHeight / 2 + 3)
             //{
@@ -139,7 +139,7 @@ namespace GitClient
             //}
         }
 
-        private static void HandleCursorDiffLog(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, int indicatorPosition)
+        public static void HandleCursorDiffLog(GetVariablesForFiles variablesForFiles, GetVariablesForCommits variablesForCommits, GetCertainList list, int indicatorPosition)
         {
             //DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             //int x = 0;

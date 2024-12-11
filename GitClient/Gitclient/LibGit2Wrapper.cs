@@ -4,7 +4,7 @@ namespace GitClient
 {
     public class LibGit2Wrapper
     {
-        private const string libgit2 = "git2";
+        public const string libgit2 = "git2";
 
         static LibGit2Wrapper()
         {
@@ -402,7 +402,7 @@ namespace GitClient
 
 
 
-        private static void LoadLibrary()
+        public static void LoadLibrary()
         {
             string libName;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

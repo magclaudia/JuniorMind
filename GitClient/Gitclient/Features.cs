@@ -7,7 +7,7 @@
             AccessRepository();
         }
 
-        private static void AccessRepository()
+        public static void AccessRepository()
         {
             var repoPath = FindDirectoryContainingGitFolder(Environment.CurrentDirectory);
 
@@ -42,7 +42,7 @@
             LibGit2Wrapper.git_repository_free(commitElements.repo);
         }
 
-        private static string? FindDirectoryContainingGitFolder(string directory)
+        public static string? FindDirectoryContainingGitFolder(string directory)
         {
             if (directory == null)
             {

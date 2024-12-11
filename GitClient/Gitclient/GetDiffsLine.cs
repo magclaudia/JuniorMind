@@ -2,7 +2,7 @@
 {
     public class GetDiffsLine
     {
-        private static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
+        public static DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public static void GetLineThroughtDiffsLines(GetVariablesForCommits variablesForCommits, int row, int totalRows, GetCertainList list)
         {

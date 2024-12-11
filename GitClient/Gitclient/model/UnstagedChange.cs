@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Gitclient.repository;
+using Gitclient.ui;
+using GitClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,20 +11,18 @@ namespace Gitclient.model
 {
     public class UnstagedChange
     {
-        private ChangeType changeType;
-        private string fileName;
-        private string path;
+        public string symbol;
+        public string fileName;
 
-        public UnstagedChange(ChangeType changeType, string fileName, string path)
+        public UnstagedChange(string changeType, string fileName)
         {
-            this.path = path;
-            this.changeType = changeType;
+            this.symbol = changeType;
             this.fileName = fileName;
         }
 
-        public string toDisplay()
+        public string Display()
         {
-            return this.fileName + " " + path + " " + changeType;
+            return this.symbol + "    " + this.fileName;
         }
     }
 }
