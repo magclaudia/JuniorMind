@@ -60,16 +60,26 @@ namespace GitClient.ui
         public void Show()
         {
             Refresh();
-            Navigate();
+            
+            if (totalNumberOfFiles > 0)
+            {
+                Navigate();
+            }
         }
 
-        public void Refresh()
+        private void Refresh()
         {
-            List<UnstagedChange> unstagedChanges = unstagedChangesService.GetCurrentUnstagedChanges(startIndex, endIndex);
+            List<UnstagedChange> unstagedChanges = new List<UnstagedChange>();
+            
+            if (totalNumberOfFiles > 0)
+            {
+                unstagedChanges = unstagedChangesService.GetCurrentUnstagedChanges(startIndex, endIndex);
+            }
+
             DrawPanel(unstagedChanges);
         }
 
-        public void Navigate()
+        private void Navigate()
         {
             ConsoleKeyInfo keyInfo;
             ClearConsoleChoosenSpace clear = new ClearConsoleChoosenSpace();
@@ -118,6 +128,11 @@ namespace GitClient.ui
                             }
                         }
                         break;
+                    case ConsoleKey.Escape:
+                        {
+                            CloseApplication();
+                        }
+                        break;
                 }
 
                 if (currentIndex >= 1 && currentIndex < totalNumberOfFiles && y >= 1)
@@ -132,7 +147,7 @@ namespace GitClient.ui
         }
 
 
-        public void DrawPanel(List<UnstagedChange> currentUnstagedChanges)
+        private void DrawPanel(List<UnstagedChange> currentUnstagedChanges)
         {
             for (int i = dimensions.tabHeight + 2; i < dimensions.height / 2 + 1; i++)
             {
@@ -163,8 +178,11 @@ namespace GitClient.ui
             Console.SetCursorPosition(1, dimensions.tabHeight + 1);
             Console.Write(text);
 
-            UnstagedPath();
-            GetUnstagedFiles(currentUnstagedChanges);
+            if (totalNumberOfFiles > 0)
+            {
+                UnstagedPath();
+                GetUnstagedFiles(currentUnstagedChanges);
+            }
         }
 
         private void GetUnstagedFiles(List<UnstagedChange> currentUnstagedChanges)
@@ -215,6 +233,12 @@ namespace GitClient.ui
             path = textLegth.Text(path, dimensions.changesPanelWidth - 1);
             Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
             Console.Write(path);
+        }
+
+        private void CloseApplication()
+        {
+            Console.Clear();
+            Environment.Exit(0);
         }
     }
 }
