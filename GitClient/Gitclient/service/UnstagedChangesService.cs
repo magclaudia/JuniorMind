@@ -11,21 +11,21 @@ namespace GitClient.ui
 {
     public class UnstagedChangesService
     {
-        private readonly LibGit2Repository libGit2Repository;
+        private readonly LibGit2UnstagedChangesRepository repository;
 
-        public UnstagedChangesService(LibGit2Repository libGit2Repository)
+        public UnstagedChangesService(LibGit2UnstagedChangesRepository libGit2Repository)
         {
-            this.libGit2Repository = libGit2Repository;
+            this.repository = libGit2Repository;
         }
 
         public List<UnstagedChange> GetAllUnstagedChanges()
         {
-            return libGit2Repository.GetAllUnstagedChanges();
+            return repository.GetAllUnstagedChanges();
         }
 
         public List<UnstagedChange> GetCurrentUnstagedChanges(int startIndex, int endIndex)
         {
-            List<UnstagedChange> allChanges = libGit2Repository.GetAllUnstagedChanges();
+            List<UnstagedChange> allChanges = repository.GetAllUnstagedChanges();
 
             if (startIndex < 0 || endIndex > allChanges.Count)
             {

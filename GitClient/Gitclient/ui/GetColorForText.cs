@@ -15,6 +15,7 @@ namespace Gitclient.ui
                 '+' => ConsoleColor.Green,
                 '-' => ConsoleColor.Red,
                 'M' => ConsoleColor.Yellow,
+                '@' => ConsoleColor.DarkBlue,
                 _ => ConsoleColor.White
             };
         }

@@ -15,7 +15,7 @@ namespace GitClient.ui
     {
         private int totalNumberOfFiles;
         private int startIndex;
-        private int currentIndex;
+        private static int currentIndex;
         private int endIndex;
         private int fileNumber;
         private int x;
@@ -32,7 +32,7 @@ namespace GitClient.ui
         {
             this.totalNumberOfFiles = unstagedChangesService.GetAllUnstagedChanges().Count;
             this.startIndex = GetStartIndex();
-            this.currentIndex = GetCurrentIndex();
+            currentIndex = GetCurrentIndex();
             this.endIndex = GetEndIndex();
             this.x = 1;
             this.y = dimensions.unstagedStart;
@@ -45,7 +45,7 @@ namespace GitClient.ui
             return 0;
         }
 
-        public int GetCurrentIndex()
+        public static int GetCurrentIndex()
         {
             return currentIndex;
         }
@@ -225,7 +225,7 @@ namespace GitClient.ui
                 if (ButtomPress.Type.deleted == false)
                 {
                     blueBox.SetBlueBox((1, y), currentIndex, currentUnstagedChanges, dimensions.changesPanelWidth - 2);
-                    indicator.GetIndicator(currentIndex, dimensions.unstagedEnd - dimensions.unstagedStart, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
+                    indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
                 }
             }
         }

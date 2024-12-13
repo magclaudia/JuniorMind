@@ -8,9 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Gitclient.repository
-
 {
-    public class LibGit2Repository
+    public class LibGit2UnstagedChangesRepository
     {
         private LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
@@ -18,13 +17,62 @@ namespace Gitclient.repository
         public List<UnstagedChange> GetAllUnstagedChanges()
         {
             List<UnstagedChange> unstagedChanges = new List<UnstagedChange>();
+            IntPtr diff = IntPtr.Zero; 
+
+            diff = GetDiff();
+            nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
             
-            IntPtr diff = IntPtr.Zero;
+            if (numDeltas == 0)
+            {
+                Console.SetCursorPosition(1, dimensions.unstagedStart);
+                string text = Tabs.SetStatusTextLength(" No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+                Console.WriteLine(text);
+            }
+            else
+            {
+                for (UIntPtr i = 0; i < numDeltas; i++)
+                {
+                    IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
+
+                    if (deltaPtr == IntPtr.Zero)
+                    {
+                        throw new Exception("Failed to get delta.");
+                    }
+
+                    var delta = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(deltaPtr);
+                    string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
+                    string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
+                    string filePath;
+
+                    if (newFilePath != null)
+                    {
+                        filePath = newFilePath;
+                    }
+                    else if (oldFilePath != null)
+                    {
+                        filePath = oldFilePath!;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Both file paths are null");
+                    }
+
+                    string fileName = Path.GetFileName(filePath)!;
+                    unstagedChanges.Add(new UnstagedChange(Symbol(delta), fileName));
+                }
+            }
+
+            return unstagedChanges;
+        }
+
+        public IntPtr GetDiff()
+        {
             IntPtr indexPtr = IntPtr.Zero;
             IntPtr headRef = IntPtr.Zero;
             IntPtr headCommit = IntPtr.Zero;
             IntPtr headTree = IntPtr.Zero;
             IntPtr repo = GetRepo();
+            IntPtr diff = IntPtr.Zero;
 
             try
             {
@@ -61,80 +109,38 @@ namespace Gitclient.repository
                 {
                     throw new Exception("Failed to get diff between tree and workdir for untracked files.");
                 }
-
-                nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
-
-                if (numDeltas == 0)
-                {
-                    Console.SetCursorPosition(1, dimensions.unstagedStart);
-                    string text = Tabs.SetStatusTextLength(" No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
-                    Console.WriteLine(text);
-                }
-                else
-                {
-                    for (UIntPtr i = 0; i < numDeltas; i++)
-                    {
-                        IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
-                       
-                        if (deltaPtr == IntPtr.Zero)
-                        {
-                            throw new Exception("Failed to get delta.");
-                        }
-
-                        var delta = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(deltaPtr);
-                        string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
-                        string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
-                        string filePath;
-
-                        if (newFilePath != null)
-                        {
-                            filePath = newFilePath;
-                        }
-                        else if (oldFilePath != null)
-                        {
-                            filePath = oldFilePath!;
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException("Both file paths are null");
-                        }
-
-                        string fileName = Path.GetFileName(filePath)!;
-                        unstagedChanges.Add(new UnstagedChange(Symbol(delta), fileName));
-                    }
-                }
-
-                return unstagedChanges;
             }
             finally
             {
-                if (indexPtr != IntPtr.Zero)
-                {
-                    LibGit2Wrapper.git_index_free(indexPtr);
-                }
+                //if (indexPtr != IntPtr.Zero)
+                //{
+                //    LibGit2Wrapper.git_index_free(indexPtr);
+                //}
 
-                if (headRef != IntPtr.Zero)
-                {
-                    LibGit2Wrapper.git_reference_free(headRef);
-                }
+                //if (headRef != IntPtr.Zero)
+                //{
+                //    LibGit2Wrapper.git_reference_free(headRef);
+                //}
 
-                if (headCommit != IntPtr.Zero)
-                {
-                    LibGit2Wrapper.git_tree_free(headCommit);
-                }
+                //if (headCommit != IntPtr.Zero)
+                //{
+                //    LibGit2Wrapper.git_tree_free(headCommit);
+                //}
 
-                if (headTree != IntPtr.Zero)
-                {
-                    LibGit2Wrapper.git_diff_free(headTree);
-                }
+                //if (headTree != IntPtr.Zero)
+                //{
+                //    LibGit2Wrapper.git_diff_free(headTree);
+                //}
 
-                if (diff != IntPtr.Zero)
-                {
-                    LibGit2Wrapper.git_diff_free(diff);
-                }
+                //if (diff != IntPtr.Zero)
+                //{
+                //    LibGit2Wrapper.git_diff_free(diff);
+                //}
 
-                LibGit2Wrapper.git_repository_free(repo);
+                //LibGit2Wrapper.git_repository_free(repo);
             }
+
+            return diff;
         }
 
         private string Symbol(LibGit2Wrapper.GitDiffDelta delta)
@@ -171,7 +177,8 @@ namespace Gitclient.repository
             }
             catch (Exception ex)
             {
-                Console.Write($"Error: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
             }
 
             return repo;
