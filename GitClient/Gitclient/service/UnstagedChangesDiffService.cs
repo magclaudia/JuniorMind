@@ -26,10 +26,10 @@ namespace Gitclient.service
             return repository.GetAllUnstagedDiff();
         }
 
-        public List<Diff> GetCurrentDiff()
+        public List<Diff> GetCurrentDiff(int currentIndex)
         {
             List<Diff> diff = repository.GetAllUnstagedDiff();
-            return diff.GetRange(0, 1);
+            return diff.GetRange(currentIndex, 1);
         }
     }
 }

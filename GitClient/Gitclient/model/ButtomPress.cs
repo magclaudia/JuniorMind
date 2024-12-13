@@ -12,12 +12,16 @@ namespace Gitclient.model
         {
             public static bool down;
             public static bool up;
+            public static bool left;
+            public static bool right;
             public static bool deleted;
 
             public Type() 
             {
                 down = false;
                 up = false;
+                left = false;
+                right = false;
                 deleted = false;
             }
         }

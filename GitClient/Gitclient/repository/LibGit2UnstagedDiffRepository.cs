@@ -34,6 +34,7 @@ namespace Gitclient.repository
             if (numDeltas != 0)
             {
                 int result = LibGit2Wrapper.git_diff_foreach(diff, DiffFileCallback, DiffBinaryCallback, DiffHunkCallback, DiffLineCallback, IntPtr.Zero);
+                unstagedDiff.Clear();
 
                 if (result != 0)
                 {

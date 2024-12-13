@@ -13,6 +13,7 @@ namespace Gitclient.ui
 
         public void GetIndicator(int currentIndex, int heigth, int totalNumberOfFiles, int x, int y, int endAt)
         {
+            Console.CursorVisible = true;
             int i = y;
 
             while (i <= endAt)
@@ -22,7 +23,6 @@ namespace Gitclient.ui
                 i++;
             }
 
-            Console.CursorVisible = false;
             int indicatorPosition = (currentIndex * heigth) / totalNumberOfFiles;
             int positionOfIndicator = y + indicatorPosition <= heigth ? y + indicatorPosition : heigth;
             Console.SetCursorPosition(x, positionOfIndicator);
