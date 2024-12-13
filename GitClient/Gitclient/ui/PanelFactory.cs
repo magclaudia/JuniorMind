@@ -13,9 +13,9 @@ namespace GitClient.ui
         private static LibGit2Repository libGit2Repository = new LibGit2Repository();
         private static UnstagedChangesService unstagedChangesService = new UnstagedChangesService(libGit2Repository);
         
-        public static UnstangedChangesPanel CreateUnstagedChangesPanel()
+        public static UnstagedChangesPanel CreateUnstagedChangesPanel()
         {
-            return new UnstangedChangesPanel(unstagedChangesService);
+            return new UnstagedChangesPanel(unstagedChangesService);
         }
     }
 }

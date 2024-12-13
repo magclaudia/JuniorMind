@@ -14,8 +14,7 @@ namespace GitClient.ui
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             TabsPanel tabs = new TabsPanel();
             tabs.Show();
-
-            UnstangedChangesPanel unstangedChangesPanel = PanelFactory.CreateUnstagedChangesPanel();
+            UnstagedChangesPanel unstangedChangesPanel = PanelFactory.CreateUnstagedChangesPanel();
             unstangedChangesPanel.Show();
         }
     }

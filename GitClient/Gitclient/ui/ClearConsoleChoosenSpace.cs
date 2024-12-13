@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Gitclient.model;
+using GitClient.ui;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +12,9 @@ namespace Gitclient.ui
     {
         public void Clear(int curentIndex, int x, int y, int startFrom, int width, int EndAt)
         {
-            if (y == EndAt)
+            ButtomPress.Type.deleted = true;
+            
+            if (y == EndAt && ButtomPress.Type.down == true || y == startFrom && ButtomPress.Type.up == true)
             {
                 while (startFrom <= EndAt)
                 {

@@ -32,7 +32,7 @@ namespace GitClient.ui
                 endIndex = allChanges.Count - 1;
             }
 
-            int numberOdFiles = endIndex - startIndex + 1 > 0 ? endIndex - startIndex + 1 : allChanges.Count;
+            int numberOdFiles = endIndex - startIndex + 1 > 0 ? endIndex - startIndex + 1 : allChanges.Count - 1;
             return allChanges.GetRange(startIndex, numberOdFiles);
         }
     }
