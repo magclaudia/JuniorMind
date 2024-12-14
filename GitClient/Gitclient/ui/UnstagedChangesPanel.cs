@@ -23,6 +23,7 @@ namespace GitClient.ui
         private int fileNumber;
         private int x;
         private int y;
+        private int countingPressingEsc;
         private UnstagedChangesService unstagedChangesService;
         private List<UnstagedChange> currentUnstagedChanges = new List<UnstagedChange>();
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
@@ -43,6 +44,7 @@ namespace GitClient.ui
             this.fileNumber = GetCurrentFile();
             this.x = 1;
             this.y = dimensions.unstagedStart;
+            this.countingPressingEsc = 0;
             this.unstagedChangesService = unstagedChangesService;
 
             this.diffRepository = new LibGit2UnstagedDiffRepository();
@@ -197,7 +199,20 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.Escape:
                         {
-                            CloseApplication();
+                            countingPressingEsc++;
+
+                            if (ButtomPress.Type.right == true)
+                            {
+                                clear.ClearDiff();
+                                ButtomPress.Type.right = false;
+                                Refresh();
+                                diff.Show(currentIndex);
+                            }
+                            
+                            if (countingPressingEsc > 1)
+                            {
+                                CloseApplication();
+                            }
                         }
                         break;
                 }
