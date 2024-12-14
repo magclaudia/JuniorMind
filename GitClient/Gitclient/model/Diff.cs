@@ -12,14 +12,15 @@ namespace Gitclient.model
     public class Diff
     {
         public List<string> diffs;
+        private int index;
         public Diff(List<string> diffs)
         {
             this.diffs = diffs;
         }
 
-        public List<string> Display()
+        public string Display()
         {
-            return diffs;
+            return diffs[index];
         }
     }
 }

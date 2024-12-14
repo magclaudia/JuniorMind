@@ -1,9 +1,12 @@
 ﻿using Gitclient.model;
 using Gitclient.repository;
+using Gitclient.service;
 using Gitclient.ui;
 using GitClient;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,7 +18,7 @@ namespace GitClient.ui
     {
         private int totalNumberOfFiles;
         private int startIndex;
-        private static int currentIndex;
+        private int currentIndex;
         private int endIndex;
         private int fileNumber;
         private int x;
@@ -28,16 +31,23 @@ namespace GitClient.ui
         private BlueBox blueBox = new BlueBox();
         private Indicator indicator = new Indicator();
 
+        private LibGit2UnstagedDiffRepository diffRepository;
+        private UnstagedChangesDiffService unstagedChangesDiffService;
+        private UnstagedDiff diff;
         public UnstagedChangesPanel(UnstagedChangesService unstagedChangesService)
         {
             this.totalNumberOfFiles = unstagedChangesService.GetAllUnstagedChanges().Count;
             this.startIndex = GetStartIndex();
-            currentIndex = GetCurrentIndex();
+            this.currentIndex = GetCurrentIndex();
             this.endIndex = GetEndIndex();
+            this.fileNumber = GetCurrentFile();
             this.x = 1;
             this.y = dimensions.unstagedStart;
             this.unstagedChangesService = unstagedChangesService;
-            this.fileNumber = GetCurrentFile();
+
+            this.diffRepository = new LibGit2UnstagedDiffRepository();
+            this.unstagedChangesDiffService = new UnstagedChangesDiffService(diffRepository);
+            this.diff = new UnstagedDiff(unstagedChangesDiffService);
         }
 
         public int GetStartIndex()
@@ -45,7 +55,7 @@ namespace GitClient.ui
             return 0;
         }
 
-        public static int GetCurrentIndex()
+        public int GetCurrentIndex()
         {
             return currentIndex;
         }
@@ -53,7 +63,7 @@ namespace GitClient.ui
         public int GetEndIndex()
         {
             return currentIndex < totalNumberOfFiles ? dimensions.unstagedEnd - dimensions.unstagedStart
-                : totalNumberOfFiles;
+                : totalNumberOfFiles - 1;
         }
 
         public int GetCurrentFile()
@@ -86,7 +96,8 @@ namespace GitClient.ui
         {
             ConsoleKeyInfo keyInfo;
             ClearConsoleChoosenSpace clear = new ClearConsoleChoosenSpace();
-            
+            int indexForDiff = 0;
+
             do
             {
                 keyInfo = Console.ReadKey(true);
@@ -94,72 +105,94 @@ namespace GitClient.ui
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.DownArrow:
-                        if (fileNumber < totalNumberOfFiles && fileNumber > 0)
                         {
-                            ButtomPress.Type.down = true;
-                            ButtomPress.Type.up = false;
-                            clear.Clear(currentIndex, x, y, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd);
-
-                            if (y == dimensions.unstagedEnd && endIndex < totalNumberOfFiles - 1)
-                            {
-                                startIndex++;
-                                endIndex++;
-                                Refresh();
-                            }
-                            else
-                            {
-                                GetUnstagedFiles(currentUnstagedChanges);
-                                indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
-                            }
-
-                            if (y < dimensions.unstagedEnd)
-                            {
-                                currentIndex++;
-                                y++;
-                            }
-
                             if (fileNumber < totalNumberOfFiles && fileNumber > 0)
                             {
-                                fileNumber++;
-                            }
+                                ButtomPress.Type.down = true;
+                                ButtomPress.Type.up = false;
+                                clear.ClearFiles(currentIndex, x, y, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd);
+                                clear.ClearDiff();
 
-                            blueBox.SetBlueBox((1, y), currentIndex, currentUnstagedChanges, dimensions.changesPanelWidth - 2);
-                            indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
+                                if (y == dimensions.unstagedEnd && endIndex < totalNumberOfFiles - 1)
+                                {
+                                    startIndex++;
+                                    endIndex++;
+                                    indexForDiff++;
+                                    Refresh();
+                                }
+                                else
+                                {
+                                    GetUnstagedFiles(currentUnstagedChanges);
+                                    indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
+                                }
+
+                                if (y < dimensions.unstagedEnd)
+                                {
+                                    currentIndex++;
+                                    y++;
+                                    indexForDiff++;
+                                }
+
+                                if (fileNumber < totalNumberOfFiles && fileNumber > 0)
+                                {
+                                    fileNumber++;
+                                }
+
+                                blueBox.SetBlueBox((1, y), currentIndex, currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+                                indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
+                                diff.Show(indexForDiff);
+                            }
                         }
                         break;
 
                     case ConsoleKey.UpArrow:
-                        if (fileNumber > 1)
                         {
-                            ButtomPress.Type.down = false;
-                            ButtomPress.Type.up = true;
-
-                            clear.Clear(currentIndex, x, y, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd);
-                            
-                            if (y == dimensions.unstagedStart && startIndex > 0)
+                            if (fileNumber > 1)
                             {
-                                startIndex--;
-                                endIndex--;
-                                Refresh();
-                            }
-                            else
-                            {
-                                GetUnstagedFiles(currentUnstagedChanges);
-                            }
+                                ButtomPress.Type.down = false;
+                                ButtomPress.Type.up = true;
 
-                            if (y > dimensions.unstagedStart)
-                            {
-                                currentIndex--;
-                                y--;
-                            }
+                                clear.ClearFiles(currentIndex, x, y, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd);
+                                clear.ClearDiff();
 
-                            if (fileNumber > 0)
-                            {
-                                fileNumber--;
-                            }
+                                if (y == dimensions.unstagedStart && startIndex > 0)
+                                {
+                                    startIndex--;
+                                    endIndex--;
+                                    indexForDiff--;
+                                    Refresh();
+                                }
+                                else
+                                {
+                                    GetUnstagedFiles(currentUnstagedChanges);
+                                }
 
-                            blueBox.SetBlueBox((1, y), currentIndex, currentUnstagedChanges, dimensions.changesPanelWidth - 2);
-                            indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
+                                if (y > dimensions.unstagedStart)
+                                {
+                                    currentIndex--;
+                                    y--;
+                                    indexForDiff--;
+                                }
+
+                                if (fileNumber > 0)
+                                {
+                                    fileNumber--;
+                                }
+
+                                blueBox.SetBlueBox((1, y), currentIndex, currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+                                indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
+                                diff.Show(indexForDiff);
+                            }
+                        }
+                        break;
+                    case ConsoleKey.RightArrow:
+                        {
+                            if (ButtomPress.Type.right == false)
+                            {
+                                ButtomPress.Type.right = true;
+                                clear.ClearDiff();
+                                diff.Show(currentIndex);
+                            }
                         }
                         break;
                     case ConsoleKey.Escape:
@@ -224,7 +257,7 @@ namespace GitClient.ui
                 
                 if (ButtomPress.Type.deleted == false)
                 {
-                    blueBox.SetBlueBox((1, y), currentIndex, currentUnstagedChanges, dimensions.changesPanelWidth - 2);
+                    blueBox.SetBlueBox((1, y), currentIndex, currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                     indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
                 }
             }

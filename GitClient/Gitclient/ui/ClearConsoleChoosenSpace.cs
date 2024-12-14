@@ -1,4 +1,5 @@
 ﻿using Gitclient.model;
+using GitClient;
 using GitClient.ui;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace Gitclient.ui
 {
     public class ClearConsoleChoosenSpace
     {
+        private DrawTabs.Dimensions dimensions = new Dimensions();
+
         public void ClearFiles(int curentIndex, int x, int y, int startFrom, int width, int EndAt)
         {
             ButtomPress.Type.deleted = true;
@@ -33,19 +36,29 @@ namespace Gitclient.ui
 
         public void ClearDiff()
         {
-            int startFrom = 3;
+            int startFrom = dimensions.tabHeight + 2;
             int EndAt = Console.WindowHeight - 2;
             int x = 0;
             int width = 0;
 
             if (ButtomPress.Type.right == true)
             {
+                startFrom = dimensions.tabHeight + 1;
+                x = 0;
+                width = Console.WindowWidth;
+                EndAt = Console.WindowHeight - 1;
 
+                while (startFrom <= EndAt)
+                {
+                    Console.SetCursorPosition(x, startFrom);
+                    Console.Write(new string(' ', width));
+                    startFrom++;
+                }
             }
             else
             {
                 x = Console.WindowWidth / 2 + 2;
-                width = Console.WindowWidth / 2 - 2;
+                width = Console.WindowWidth / 2 - 3;
 
                 while (startFrom <= EndAt)
                 {
