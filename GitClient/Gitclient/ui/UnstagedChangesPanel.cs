@@ -193,7 +193,11 @@ namespace GitClient.ui
                             {
                                 ButtomPress.Type.right = true;
                                 clear.ClearDiff();
-                                diff.Show(currentIndex);
+                                
+                                if (totalNumberOfFiles > 0)
+                                {
+                                    diff.Show(currentIndex);
+                                }
                             }
                         }
                         break;
@@ -212,6 +216,10 @@ namespace GitClient.ui
                             if (countingPressingEsc > 1)
                             {
                                 CloseApplication();
+                            }
+                            else
+                            {
+                                Navigate();
                             }
                         }
                         break;
