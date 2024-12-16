@@ -86,13 +86,7 @@ namespace GitClient.ui
                     GetAllFiles(currentUnstagedChanges);
                 }
             }
-            else
-            {
-                Console.SetCursorPosition(3, 2);
-                string text = TextSettings.GetTextLength("No changes found in the unstaged area", dimensions.changesPanelWidth - 3);
-                Console.Write(text);
-            }
-
+           
             DrawPanel(currentUnstagedChanges);
         }
 
