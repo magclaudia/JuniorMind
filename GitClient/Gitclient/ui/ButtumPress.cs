@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gitclient.model
+namespace Gitclient.ui
 {
     public static class ButtomPress
     {
@@ -15,14 +15,18 @@ namespace Gitclient.model
             public static bool left;
             public static bool right;
             public static bool deleted;
+            public static bool diffMovements;
+            public static bool escape;
 
-            public Type() 
+            public Type()
             {
                 down = false;
                 up = false;
                 left = false;
                 right = false;
                 deleted = false;
+                diffMovements = false;
+                escape = false;
             }
         }
     }

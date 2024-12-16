@@ -17,12 +17,9 @@ namespace Gitclient.repository
         private LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
         private List<Diff> unstagedDiff = new List<Diff>();
         private List<List<string>> diffList = new List<List<string>>();
-        private LibGit2UnstagedChangesRepository repository = new LibGit2UnstagedChangesRepository();
 
-        public List<Diff> GetAllUnstagedDiff()
+        public List<Diff> GetAllUnstagedDiff(IntPtr diff)
         {
-            IntPtr diff = repository.GetDiff();
-
             if (diff == IntPtr.Zero)
             {
                 throw new Exception("Failed to retrieve a valid diff object.");

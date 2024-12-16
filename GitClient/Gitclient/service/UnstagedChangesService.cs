@@ -29,23 +29,27 @@ namespace GitClient.ui
         {
             List<UnstagedChange> allChanges = repository.GetAllUnstagedChanges();
 
-            if (startIndex < 0 || endIndex > allChanges.Count)
+            if (allChanges.Count > 0)
             {
-                endIndex = allChanges.Count - 1;
-            }
+                if (startIndex < 0 || endIndex > allChanges.Count)
+                {
+                    endIndex = allChanges.Count - 1;
+                }
 
-            int numberOdFiles = 0;
+                int numberOdFiles = 0;
 
-            if (allChanges.Count <= dimensions.unstagedEnd - dimensions.unstagedStart + 1)
-            {
-                numberOdFiles = allChanges.Count;
+                numberOdFiles = allChanges.Count <= dimensions.unstagedEnd - dimensions.unstagedStart + 1 ? allChanges.Count : endIndex - startIndex + 1;
+                allChanges = allChanges.GetRange(startIndex, numberOdFiles);
             }
             else
             {
-               numberOdFiles = endIndex - startIndex + 1;
+                allChanges.Clear();
+                Console.SetCursorPosition(1, dimensions.unstagedStart);
+                string text = Tabs.SetStatusTextLength(" No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
+                Console.WriteLine(text);
             }
 
-            return allChanges.GetRange(startIndex, numberOdFiles);
+            return allChanges;
         }
     }
 }

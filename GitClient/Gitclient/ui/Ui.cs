@@ -15,8 +15,8 @@ namespace GitClient.ui
             TabsPanel tabs = new TabsPanel();
             tabs.Show();
 
-            UnstagedDiff unstagedCheangesDiff = PanelFactory.CreateUnstagedChangesDiff();
-            unstagedCheangesDiff.Show(0);
+            UnstagedDiffPanel unstagedChangesDiffPanel = PanelFactory.CreateUnstagedChangesDiffPanel();
+            unstagedChangesDiffPanel.Show(0);
 
             UnstagedChangesPanel unstangedChangesPanel = PanelFactory.CreateUnstagedChangesPanel();
             unstangedChangesPanel.Show();

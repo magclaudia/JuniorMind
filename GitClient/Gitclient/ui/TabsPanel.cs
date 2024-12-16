@@ -11,7 +11,6 @@ namespace Gitclient.ui
 {
     public class TabsPanel
     {
-        public SetTextLegth setTextLegth = new SetTextLegth();
         public GetProjectPath projectPath = new GetProjectPath();
 
         public void Show()
@@ -41,12 +40,12 @@ namespace Gitclient.ui
             
             Console.SetCursorPosition(1, 0);
             string statusTab = "Status [1]";
-            string outputText = setTextLegth.Text(statusTab, dimensions.tabWidth);
+            string outputText = TextSettings.GetTextLength(statusTab, dimensions.tabWidth);
             Console.Write(outputText);
 
             Console.SetCursorPosition(dimensions.tabWidth + 1, 0);
             string logTab = "    Log [2]";
-            outputText = setTextLegth.Text(logTab, dimensions.tabWidth);
+            outputText = TextSettings.GetTextLength(logTab, dimensions.tabWidth);
             Console.Write(outputText);
         }
 
@@ -62,7 +61,7 @@ namespace Gitclient.ui
             }
 
             Console.ForegroundColor = ConsoleColor.Red;
-            string text = setTextLegth.Text(directoryPath, Console.WindowWidth - (dimensions.tabWidth * 2) - 2);
+            string text = TextSettings.GetTextLength(directoryPath, Console.WindowWidth - (dimensions.tabWidth * 2) - 2);
             int startPosition = Console.WindowWidth - 2 - text.Length;
             Console.SetCursorPosition(startPosition, 0);
             Console.Write(text);

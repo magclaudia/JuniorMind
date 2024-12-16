@@ -12,10 +12,11 @@ namespace Gitclient.model
     public class Diff
     {
         public List<string> diffs;
-        private int index;
+        public int index;
         public Diff(List<string> diffs)
         {
             this.diffs = diffs;
+            index = 0;
         }
 
         public string Display()

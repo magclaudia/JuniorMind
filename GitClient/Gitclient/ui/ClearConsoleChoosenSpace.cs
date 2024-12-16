@@ -34,14 +34,20 @@ namespace Gitclient.ui
             }
         }
 
-        public void ClearDiff()
+        public void ClearDiff (int y)
         {
             int startFrom = dimensions.tabHeight + 2;
             int EndAt = Console.WindowHeight - 2;
             int x = 0;
             int width = 0;
 
-            if (ButtomPress.Type.right == true)
+            if (ButtomPress.Type.diffMovements == true && y < EndAt && ButtomPress.Type.down == true || y > dimensions.tabHeight + 2 && ButtomPress.Type.up == true && ButtomPress.Type.diffMovements == true)
+            {
+                x = 1;
+                Console.SetCursorPosition(x, y);
+                Console.Write(new string(' ', Console.WindowWidth - 3));
+            }
+            else if (ButtomPress.Type.right == true)
             {
                 startFrom = dimensions.tabHeight + 1;
                 x = 0;

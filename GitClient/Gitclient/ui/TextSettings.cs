@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Gitclient.ui
 {
-    public class GetColorForText
+    public class TextSettings
     {
-        public ConsoleColor SetColor(char symbol)
+        public static string GetTextLength(string text, int width)
+        {
+            return  text.Length < width ?  text : text.Substring(0, width);
+        }
+
+        public static ConsoleColor SetColor(char symbol)
         {
             return symbol switch
             {

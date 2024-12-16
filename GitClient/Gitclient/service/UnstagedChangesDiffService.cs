@@ -14,21 +14,23 @@ namespace Gitclient.service
 {
     public class UnstagedChangesDiffService
     {
-        private readonly LibGit2UnstagedDiffRepository repository;
+        private readonly LibGit2UnstagedDiffRepository repositoryDiff;
+        private readonly LibGit2UnstagedChangesRepository repositoryChanges;
 
-        public UnstagedChangesDiffService(LibGit2UnstagedDiffRepository libGit2UnstagedDiff)
+        public UnstagedChangesDiffService(LibGit2UnstagedDiffRepository repositoryDiff, LibGit2UnstagedChangesRepository repositoryChanges)
         {
-            this.repository = libGit2UnstagedDiff;
+            this.repositoryDiff = repositoryDiff;
+            this.repositoryChanges = repositoryChanges;
         }
 
         public List<Diff> GetAllUnstagedDiff()
         {
-            return repository.GetAllUnstagedDiff();
+            return repositoryDiff.GetAllUnstagedDiff(repositoryChanges.GetDiff());
         }
 
         public List<Diff> GetCurrentDiff(int currentIndex)
         {
-            List<Diff> diff = repository.GetAllUnstagedDiff();
+            List<Diff> diff = repositoryDiff.GetAllUnstagedDiff(repositoryChanges.GetDiff());
             return diff.GetRange(currentIndex, 1);
         }
     }

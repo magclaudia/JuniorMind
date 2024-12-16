@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace GitClient.ui
 {
     public class UnstagedChangesPanel
     {
+        private UnstagedChangesDiffService unstagedChangesDiffService;
+        private UnstagedChangesService unstagedChangesService;
         private int totalNumberOfFiles;
         private int startIndex;
         private int currentIndex;
@@ -23,33 +26,28 @@ namespace GitClient.ui
         private int fileNumber;
         private int x;
         private int y;
-        private int countingPressingEsc;
-        private UnstagedChangesService unstagedChangesService;
+        //private int countingPressingEsc;
         private List<UnstagedChange> currentUnstagedChanges = new List<UnstagedChange>();
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-        private SetTextLegth textLegth = new SetTextLegth();
-        private GetColorForText color = new GetColorForText();
         private BlueBox blueBox = new BlueBox();
         private Indicator indicator = new Indicator();
+        private TabsPanel tabs = new TabsPanel();
+        private UnstagedDiffPanel diff;
 
-        private LibGit2UnstagedDiffRepository diffRepository;
-        private UnstagedChangesDiffService unstagedChangesDiffService;
-        private UnstagedDiff diff;
-        public UnstagedChangesPanel(UnstagedChangesService unstagedChangesService)
+
+        public UnstagedChangesPanel(UnstagedChangesService unstagedChangesService, UnstagedChangesDiffService unstagedChangesDiffService)
         {
-            this.totalNumberOfFiles = unstagedChangesService.GetAllUnstagedChanges().Count;
-            this.startIndex = GetStartIndex();
-            this.currentIndex = GetCurrentIndex();
-            this.endIndex = GetEndIndex();
-            this.fileNumber = GetCurrentFile();
-            this.x = 1;
-            this.y = dimensions.unstagedStart;
-            this.countingPressingEsc = 0;
             this.unstagedChangesService = unstagedChangesService;
-
-            this.diffRepository = new LibGit2UnstagedDiffRepository();
-            this.unstagedChangesDiffService = new UnstagedChangesDiffService(diffRepository);
-            this.diff = new UnstagedDiff(unstagedChangesDiffService);
+            this.unstagedChangesDiffService = unstagedChangesDiffService;
+            totalNumberOfFiles = unstagedChangesService.GetAllUnstagedChanges().Count;
+            startIndex = GetStartIndex();
+            currentIndex = GetCurrentIndex();
+            endIndex = GetEndIndex();
+            fileNumber = GetCurrentFile();
+            x = 1;
+            y = dimensions.unstagedStart;
+            //countingPressingEsc = 0;
+            diff = new UnstagedDiffPanel(unstagedChangesDiffService, unstagedChangesService);
         }
 
         public int GetStartIndex()
@@ -85,7 +83,7 @@ namespace GitClient.ui
             {
                 currentUnstagedChanges = unstagedChangesService.GetCurrentUnstagedChanges(startIndex, endIndex);
             }
-            
+
             if (currentIndex == 0)
             {
                 GetAllFiles(currentUnstagedChanges);
@@ -113,7 +111,7 @@ namespace GitClient.ui
                                 ButtomPress.Type.down = true;
                                 ButtomPress.Type.up = false;
                                 clear.ClearFiles(currentIndex, x, y, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd);
-                                clear.ClearDiff();
+                                clear.ClearDiff(y);
 
                                 if (y == dimensions.unstagedEnd && endIndex < totalNumberOfFiles - 1)
                                 {
@@ -155,7 +153,7 @@ namespace GitClient.ui
                                 ButtomPress.Type.up = true;
 
                                 clear.ClearFiles(currentIndex, x, y, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd);
-                                clear.ClearDiff();
+                                clear.ClearDiff(y);
 
                                 if (y == dimensions.unstagedStart && startIndex > 0)
                                 {
@@ -191,36 +189,32 @@ namespace GitClient.ui
                         {
                             if (ButtomPress.Type.right == false)
                             {
-                                ButtomPress.Type.right = true;
-                                clear.ClearDiff();
-                                
                                 if (totalNumberOfFiles > 0)
                                 {
-                                    diff.Show(currentIndex);
+                                    ButtomPress.Type.right = true;
+                                    clear.ClearDiff(y);
+                                    diff.Show(indexForDiff);
+                                    diff.Navigate();
+                                    Restore();
+                                    ButtomPress.Type.escape = false;
+                                    blueBox.SetBlueBox((1, y), currentIndex, currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                                 }
                             }
                         }
                         break;
                     case ConsoleKey.Escape:
                         {
-                            countingPressingEsc++;
+                            //countingPressingEsc++;
+                            //if (countingPressingEsc > 1)
+                            //{
+                            //    
+                            //}
+                            //else
+                            //{
+                            //    Navigate();
+                            //}
 
-                            if (ButtomPress.Type.right == true)
-                            {
-                                clear.ClearDiff();
-                                ButtomPress.Type.right = false;
-                                Refresh();
-                                diff.Show(currentIndex);
-                            }
-                            
-                            if (countingPressingEsc > 1)
-                            {
-                                CloseApplication();
-                            }
-                            else
-                            {
-                                Navigate();
-                            }
+                            CloseApplication();
                         }
                         break;
                 }
@@ -228,6 +222,11 @@ namespace GitClient.ui
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
 
+        public void Restore()
+        {
+            Refresh();
+            diff.Show(currentIndex);
+        }
 
         private void DrawPanel(List<UnstagedChange> currentUnstagedChanges)
         {
@@ -256,7 +255,7 @@ namespace GitClient.ui
             Console.SetCursorPosition(dimensions.width / 2 - 1, dimensions.height / 2 + 1);
             Console.Write("┘");
 
-            string text = textLegth.Text("Unstaged Changes: ", dimensions.changesPanelWidth);
+            string text = TextSettings.GetTextLength("Unstaged Changes: ", dimensions.changesPanelWidth);
             Console.SetCursorPosition(1, dimensions.tabHeight + 1);
             Console.Write(text);
 
@@ -269,7 +268,7 @@ namespace GitClient.ui
 
         private void GetUnstagedFiles(List<UnstagedChange> currentUnstagedChanges)
         {
-            if (y == dimensions.unstagedEnd && ButtomPress.Type.down == true || y == dimensions.unstagedStart && ButtomPress.Type.up == true)
+            if (y == dimensions.unstagedEnd && ButtomPress.Type.down == true || y == dimensions.unstagedStart && ButtomPress.Type.up == true || ButtomPress.Type.escape == true)
             {
                 GetAllFiles(currentUnstagedChanges);
                 //indicator.GetIndicator(fileNumber, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
@@ -291,9 +290,9 @@ namespace GitClient.ui
             for (int i = 0; i < currentUnstagedChanges.Count; i++)
             {
                 int y = dimensions.unstagedStart + i;
-                string displayText = textLegth.Text(currentUnstagedChanges[i].Display(), dimensions.changesPanelWidth - 2);
+                string displayText = TextSettings.GetTextLength(currentUnstagedChanges[i].Display(), dimensions.changesPanelWidth - 2);
                 Console.SetCursorPosition(1, y);
-                Console.ForegroundColor = color.SetColor(displayText[0]);
+                Console.ForegroundColor = TextSettings.SetColor(displayText[0]);
                 Console.Write(displayText);
                 Console.ResetColor();
             }
@@ -301,9 +300,9 @@ namespace GitClient.ui
 
         private void GetOneFileAtTime(List<UnstagedChange> currentUnstagedChanges)
         {
-            string displayText = textLegth.Text(currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+            string displayText = TextSettings.GetTextLength(currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
             Console.SetCursorPosition(1, y);
-            Console.ForegroundColor = color.SetColor(displayText[0]);
+            Console.ForegroundColor = TextSettings.SetColor(displayText[0]);
             Console.Write(displayText);
             Console.ResetColor();
         }
@@ -313,7 +312,7 @@ namespace GitClient.ui
             GetProjectPath projectPath = new GetProjectPath();
 
             string path = $"  ▾{projectPath.ProjectPath(Environment.CurrentDirectory)}";
-            path = textLegth.Text(path, dimensions.changesPanelWidth - 1);
+            path = TextSettings.GetTextLength(path, dimensions.changesPanelWidth - 1);
             Console.SetCursorPosition(1, dimensions.unstagedStart - 1);
             Console.Write(path);
             Console.ResetColor();

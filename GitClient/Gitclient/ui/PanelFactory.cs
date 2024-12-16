@@ -16,16 +16,16 @@ namespace GitClient.ui
         private static UnstagedChangesService unstagedChangesService = new UnstagedChangesService(libGit2RepositoryForChanges);
        
         private static LibGit2UnstagedDiffRepository libGit2RepositoryUnstagedDiff = new LibGit2UnstagedDiffRepository();
-        private static UnstagedChangesDiffService unstagedDiffService = new UnstagedChangesDiffService(libGit2RepositoryUnstagedDiff);
+        private static UnstagedChangesDiffService unstagedDiffService = new UnstagedChangesDiffService(libGit2RepositoryUnstagedDiff, libGit2RepositoryForChanges);
         
         public static UnstagedChangesPanel CreateUnstagedChangesPanel()
         {
-            return new UnstagedChangesPanel(unstagedChangesService);
+            return new UnstagedChangesPanel(unstagedChangesService, unstagedDiffService);
         }
 
-        public static UnstagedDiff CreateUnstagedChangesDiff()
+        public static UnstagedDiffPanel CreateUnstagedChangesDiffPanel()
         {
-            return new UnstagedDiff(unstagedDiffService);
+            return new UnstagedDiffPanel(unstagedDiffService, unstagedChangesService);
         }
     }
 }

@@ -22,13 +22,7 @@ namespace Gitclient.repository
             diff = GetDiff();
             nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
             
-            if (numDeltas == 0)
-            {
-                Console.SetCursorPosition(1, dimensions.unstagedStart);
-                string text = Tabs.SetStatusTextLength(" No changes found in the unstaging area.", Console.WindowWidth / 2 - 3);
-                Console.WriteLine(text);
-            }
-            else
+            if (numDeltas > 0)
             {
                 for (UIntPtr i = 0; i < numDeltas; i++)
                 {
@@ -168,17 +162,9 @@ namespace Gitclient.repository
 
             LibGit2Wrapper.git_libgit2_init();
 
-            try
+            if (LibGit2Wrapper.git_repository_open(out repo, repoPath!) != 0)
             {
-                if (LibGit2Wrapper.git_repository_open(out repo, repoPath!) != 0)
-                {
-                    throw new Exception("Failed to open the repository.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);
+                throw new Exception("Failed to open the repository.");
             }
 
             return repo;
