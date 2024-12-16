@@ -88,8 +88,8 @@ namespace GitClient.ui
             }
             else
             {
-                Console.SetCursorPosition(4, 6);
-                string text = TextSettings.GetTextLength("No changes found in the unstaged area", dimensions.changesPanelWidth - 3);
+                Console.SetCursorPosition(3, 6);
+                string text = TextSettings.GetTextLength("No changes found in the unstaged area", dimensions.changesPanelWidth - 4);
                 Console.Write(text);
             }
 
