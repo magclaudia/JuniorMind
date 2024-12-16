@@ -26,7 +26,6 @@ namespace GitClient.ui
         private int fileNumber;
         private int x;
         private int y;
-        //private int countingPressingEsc;
         private List<UnstagedChange> currentUnstagedChanges = new List<UnstagedChange>();
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
         private BlueBox blueBox = new BlueBox();
@@ -46,7 +45,6 @@ namespace GitClient.ui
             fileNumber = GetCurrentFile();
             x = 1;
             y = dimensions.unstagedStart;
-            //countingPressingEsc = 0;
             diff = new UnstagedDiffPanel(unstagedChangesDiffService, unstagedChangesService);
         }
 
@@ -82,11 +80,17 @@ namespace GitClient.ui
             if (totalNumberOfFiles > 0)
             {
                 currentUnstagedChanges = unstagedChangesService.GetCurrentUnstagedChanges(startIndex, endIndex);
+               
+                if (currentIndex == 0)
+                {
+                    GetAllFiles(currentUnstagedChanges);
+                }
             }
-
-            if (currentIndex == 0)
+            else
             {
-                GetAllFiles(currentUnstagedChanges);
+                Console.SetCursorPosition(3, 2);
+                string text = TextSettings.GetTextLength("No changes found in the unstaged area", dimensions.changesPanelWidth - 3);
+                Console.Write(text);
             }
 
             DrawPanel(currentUnstagedChanges);
@@ -204,16 +208,6 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.Escape:
                         {
-                            //countingPressingEsc++;
-                            //if (countingPressingEsc > 1)
-                            //{
-                            //    
-                            //}
-                            //else
-                            //{
-                            //    Navigate();
-                            //}
-
                             CloseApplication();
                         }
                         break;
