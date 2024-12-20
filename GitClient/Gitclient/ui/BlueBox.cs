@@ -10,7 +10,7 @@ namespace Gitclient.ui
 {
     public class BlueBox
     {
-        public void SetBlueBox((int x, int y) cursorPosition, int currentIndex, string text, int panelWidth)
+        public void SetBlueBox((int x, int y) cursorPosition, string text, int panelWidth)
         {
             //int width = ButtomPress.Type.right == true ? Console.WindowWidth - 3 : dimensions.changesPanelWidth - 2;
             Console.BackgroundColor = ConsoleColor.DarkBlue;

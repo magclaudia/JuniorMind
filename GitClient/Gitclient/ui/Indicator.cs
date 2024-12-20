@@ -16,7 +16,7 @@ namespace Gitclient.ui
             Console.CursorVisible = true;
             int i = y;
 
-            while (i <= endAt)
+            while (i < endAt)
             {
                 Console.SetCursorPosition(x, i);
                 Console.Write("║");

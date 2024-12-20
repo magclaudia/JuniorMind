@@ -85,7 +85,7 @@ namespace Gitclient.ui
 
                                 currentIndex++;
                                 string textForBluexBox = currentDiff[0].diffs[currentIndex];
-                                blueBox.SetBlueBox((1, y), currentIndex, textForBluexBox, Console.WindowWidth - 3);
+                                blueBox.SetBlueBox((1, y), textForBluexBox, Console.WindowWidth - 3);
                                 indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y - 1, height - 1);
                             }
                         }
@@ -113,8 +113,8 @@ namespace Gitclient.ui
 
                                 currentIndex--;
                                 string textForBluexBox = currentDiff[0].diffs[currentIndex];
-                                blueBox.SetBlueBox((1, y), currentIndex, textForBluexBox, Console.WindowWidth - 3);
-                                indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y - 1, height - 1);
+                                blueBox.SetBlueBox((1, y), textForBluexBox, Console.WindowWidth - 3);
+                                indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y, height);
                             }
                         }
                         break;
@@ -154,7 +154,7 @@ namespace Gitclient.ui
                 if (ButtomPress.Type.right == true)
                 {
                     string textForBluexBox = currentDiff[0].Display();
-                    blueBox.SetBlueBox((1, dimensions.tabHeight + 2), currentIndex, textForBluexBox, Console.WindowWidth - 3);
+                    blueBox.SetBlueBox((1, dimensions.tabHeight + 2), textForBluexBox, Console.WindowWidth - 3);
                     y = dimensions.tabHeight + 2;
                 }
             }
@@ -250,7 +250,7 @@ namespace Gitclient.ui
             Console.SetCursorPosition(positionOfDiffName, dimensions.tabHeight + 1);
             Console.Write(text);
 
-            if (ButtomPress.Type.right == true)
+            if (ButtomPress.Type.right == true && currentIndex == 0)
             {
                 indicator.GetIndicator(currentIndex, Console.WindowHeight - 1, currentDiff[0].diffs.Count(), Console.WindowWidth - 1, dimensions.tabHeight + 2, Console.WindowHeight - 2);
             }
