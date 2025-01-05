@@ -1,5 +1,4 @@
-﻿using GitClient;
-using GitClient.ui;
+﻿using GitClient.ui;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gitclient.model
+namespace GitClient.model
 {
     public class Diff
     {
