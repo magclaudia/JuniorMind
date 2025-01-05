@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gitclient.repository
+namespace GitClient.repository
 {
     public class GetProjectPath
     {
