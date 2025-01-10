@@ -1,24 +1,22 @@
-﻿using Gitclient.model;
-using GitClient;
+﻿using GitClient.model;
 using GitClient.ui;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static GitClient.DrawTabs;
 
-namespace Gitclient.ui
+namespace GitClient.ui
 {
     public class ClearConsoleChoosenSpace
     {
-        private DrawTabs.Dimensions dimensions = new Dimensions();
+        private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public void ClearFiles(int curentIndex, int x, int y, int startFrom, int width, int EndAt)
         {
             ButtomPress.Type.deleted = true;
             
-            if (y == EndAt && ButtomPress.Type.down == true || y == startFrom && ButtomPress.Type.up == true)
+            if (y == EndAt && ButtomPress.Type.down == true || y == startFrom && ButtomPress.Type.up == true || ButtomPress.Type.enter == true)
             {
                 while (startFrom <= EndAt)
                 {

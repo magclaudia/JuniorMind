@@ -401,6 +401,18 @@ namespace GitClient
         public static extern void git_reference_free(IntPtr reference);
 
 
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_index_add_bypath(IntPtr index, string path);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_index_remove_bypath(IntPtr index, string path);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_index_write(IntPtr index);
+        
+
 
         public static void LoadLibrary()
         {

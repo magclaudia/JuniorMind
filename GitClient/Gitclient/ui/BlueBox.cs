@@ -1,12 +1,11 @@
-﻿using Gitclient.model;
-using GitClient;
+﻿using GitClient.model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gitclient.ui
+namespace GitClient.ui
 {
     public class BlueBox
     {

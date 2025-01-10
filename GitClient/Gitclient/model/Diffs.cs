@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace GitClient.model
 {
-    public class Diff
+    public class Diffs
     {
         public List<string> diffs;
         public int index;
-        public Diff(List<string> diffs)
+
+        public Diffs(List<string> diffs)
         {
             this.diffs = diffs;
             index = 0;

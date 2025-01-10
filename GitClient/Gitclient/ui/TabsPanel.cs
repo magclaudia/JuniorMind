@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Gitclient.repository;
-using GitClient;
+using GitClient.repository;
 
-namespace Gitclient.ui
+namespace GitClient.ui
 {
     public class TabsPanel
     {
@@ -20,7 +19,7 @@ namespace Gitclient.ui
             GetProjectPath();
         }
 
-        public void DrawTabsPanel()
+        private void DrawTabsPanel()
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
@@ -34,7 +33,7 @@ namespace Gitclient.ui
             Console.Write("│");
         }
 
-        public void GetTabsNames()
+        private void GetTabsNames()
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             
@@ -49,7 +48,7 @@ namespace Gitclient.ui
             Console.Write(outputText);
         }
 
-        public void GetProjectPath()
+        private void GetProjectPath()
         {
             DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
             string directoryPath = projectPath.ProjectPath(Environment.CurrentDirectory);

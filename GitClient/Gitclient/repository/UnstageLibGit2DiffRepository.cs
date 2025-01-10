@@ -1,24 +1,33 @@
-﻿using Gitclient.model;
-using Gitclient.ui;
-using GitClient;
+﻿using GitClient.model;
+using GitClient.ui;
+using LibGit2Sharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static GitClient.LibGit2Wrapper;
 
-namespace Gitclient.repository
+namespace GitClient.repository
 {
-    public class LibGit2UnstagedDiffRepository
+    public class UnstageLibGit2DiffRepository
     {
-        private LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
-        private List<Diff> unstagedDiff = new List<Diff>();
-        private List<List<string>> diffList = new List<List<string>>();
+        private LibGit2Repository libGit2Repository;
+        private LibGit2Wrapper.GitDiffOptions options;
+        private List<Diffs> unstagedDiff;
+        private List<List<string>> unstagediffList;
 
-        public List<Diff> GetAllUnstagedDiff(IntPtr diff)
+        public UnstageLibGit2DiffRepository(LibGit2Repository libGit2Repository)
+        {
+            this.libGit2Repository = libGit2Repository;
+            options = new LibGit2Wrapper.GitDiffOptions();
+            unstagedDiff = new List<Diffs>();
+            unstagediffList = new List<List<string>>();
+        }
+
+        public List<Diffs> GetAllUnstagedDiff(IntPtr diff)
         {
             if (diff == IntPtr.Zero)
             {
@@ -27,11 +36,13 @@ namespace Gitclient.repository
 
             nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
             long testVariable = (long)numDeltas;
+            
+            unstagediffList.Clear();
+            unstagedDiff.Clear();
 
             if (numDeltas != 0)
             {
                 int result = LibGit2Wrapper.git_diff_foreach(diff, DiffFileCallback, DiffBinaryCallback, DiffHunkCallback, DiffLineCallback, IntPtr.Zero);
-                unstagedDiff.Clear();
 
                 if (result != 0)
                 {
@@ -39,9 +50,9 @@ namespace Gitclient.repository
                 }
             }
             
-            foreach (var list in diffList)
+            foreach (var list in unstagediffList)
             {
-                unstagedDiff.Add(new Diff(list));
+                unstagedDiff.Add(new Diffs(list));
             }
 
             return unstagedDiff;
@@ -63,19 +74,19 @@ namespace Gitclient.repository
                 text = newFilePath;
             }
 
-            if (diffList.Count > 0)
+            if (unstagediffList.Count > 0)
             {
-                if (diffList[diffList.Count - 1].Any(path => path.EndsWith(".cs")))
+                if (unstagediffList[unstagediffList.Count - 1].Any(path => path.EndsWith(".cs")))
                 {
-                    diffList.Add(new List<string>());
+                    unstagediffList.Add(new List<string>());
                 }
 
-                diffList[diffList.Count - 1].Add(text);
+                unstagediffList[unstagediffList.Count - 1].Add(text);
             }
             else
             {
-                diffList.Add(new List<string>());
-                diffList[0].Add(text);
+                unstagediffList.Add(new List<string>());
+                unstagediffList[0].Add(text);
             }
 
             return 0;
@@ -97,7 +108,7 @@ namespace Gitclient.repository
                 text = text.Remove(text.IndexOf('\n'));
             }
 
-            diffList[diffList.Count - 1].Add(text);
+            unstagediffList[unstagediffList.Count - 1].Add(text);
 
             return 0;
         }
@@ -119,7 +130,7 @@ namespace Gitclient.repository
 
             string text = $"{(char)line.origin} {content}";
 
-            diffList[diffList.Count - 1].Add(text.TrimEnd());
+            unstagediffList[unstagediffList.Count - 1].Add(text.TrimEnd());
 
             return 0;
         }

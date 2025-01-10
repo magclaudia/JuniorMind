@@ -1,11 +1,10 @@
-﻿using GitClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gitclient.ui
+namespace GitClient.ui
 {
     public class Indicator
     {
