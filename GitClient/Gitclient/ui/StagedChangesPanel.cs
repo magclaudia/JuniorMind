@@ -30,7 +30,6 @@ namespace GitClient.ui
         private static int lastValueOfindexForDiff;
         private int x;
         private int y;
-        private int countingIndex;
 
         public StagedChangesPanel(StatusDiffService diffService, StatusService changesService)
         {
@@ -50,7 +49,6 @@ namespace GitClient.ui
             blueBox = new BlueBox();
             indicator = new Indicator();
             stageDiff = new DiffPanel(diffService, changesService);
-            countingIndex = 0;
         }
 
         public int GetStartIndex()
@@ -175,7 +173,6 @@ namespace GitClient.ui
                                     fileNumber++;
                                 }
 
-                                countingIndex++;
                                 blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                                 indicator.GetIndicator(currentIndex, dimensions.stagedStart, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.stagedStart, dimensions.stagedEnd - 1);
                                 stageDiff.Show(indexForDiff);
