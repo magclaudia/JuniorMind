@@ -245,8 +245,10 @@ namespace GitClient.ui
                             clear.ClearFiles(x, dimensions.unstagedStart - 1, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
                             clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
                             clear.ClearDiff(y);
+                            totalNumberOfFiles = statusService.GetAllUnstagedChanges().Count;
 
-                            if (indexForDiff > 0)
+
+                            if (indexForDiff > 0 && totalNumberOfFiles > 0)
                             {
                                 y--;
                                 currentIndex--;
@@ -256,8 +258,17 @@ namespace GitClient.ui
                                 Refresh();
                                 communicationService.SetLastIndexForDiff(indexForDiff);
                             }
+                            else if (indexForDiff == 0 && totalNumberOfFiles > 0)
+                            {
+                                OnFileSelectionChanged(indexForDiff, isStaged: false);
+                                Refresh();
+                                communicationService.SetLastIndexForDiff(indexForDiff);
+                            }
                             else
                             {
+                                Console.SetCursorPosition(2, dimensions.changesPanelHeight / 2 + dimensions.tabHeight);
+                                string text = TextSettings.GetTextLength("No changes found in the unstaged area.", dimensions.changesPanelWidth - 4);
+                                Console.Write(text);
                                 OnFileSelectionChanged(indexForDiff, isStaged: true);
                                 ButtomPress.Type.workingInStagePanel = true;
                             }

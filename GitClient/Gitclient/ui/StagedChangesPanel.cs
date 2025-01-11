@@ -102,6 +102,7 @@ namespace GitClient.ui
         private void Refresh()
         {
             totalNumberOfFiles = statusService.GetAllStageChanges().Count;
+
             if (totalNumberOfFiles > 0)
             {
                 currentStagedChanges.Clear();
