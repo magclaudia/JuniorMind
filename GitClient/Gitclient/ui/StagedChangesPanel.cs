@@ -34,12 +34,12 @@ namespace GitClient.ui
         private int x;
         private int y;
 
-        public StagedChangesPanel(StatusDiffService diffService, StatusService changesService)
+        public StagedChangesPanel(StatusDiffService diffService, StatusService statusService)
         {
             this.diffService = diffService;
-            this.statusService = changesService;
+            this.statusService = statusService;
             currentStagedChanges = new List<ChangeAttribute>();
-            totalNumberOfFiles = changesService.GetAllStageChanges().Count;
+            totalNumberOfFiles = statusService.GetAllStageChanges().Count;
             dimensions = new DrawTabs.Dimensions();
             startIndex = GetStartIndex();
             currentIndex = GetCurrentIndex();
@@ -101,7 +101,7 @@ namespace GitClient.ui
 
         private void Refresh()
         {
-            if (totalNumberOfFiles > 0)
+            if (statusService.GetAllStageChanges().Count > 0)
             {
                 currentStagedChanges.Clear();
                 currentStagedChanges = statusService.GetCurrentChanges(startIndex, endIndex, "stage");
@@ -128,6 +128,9 @@ namespace GitClient.ui
             ConsoleKeyInfo keyInfo;
             ClearConsoleChoosenSpace clear = new ClearConsoleChoosenSpace();
             int countingNumberOfPressingUp = 0;
+            totalNumberOfFiles = statusService.GetAllStageChanges().Count;
+
+
 
             do
             {
