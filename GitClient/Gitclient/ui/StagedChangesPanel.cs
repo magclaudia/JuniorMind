@@ -329,33 +329,33 @@ namespace GitClient.ui
             }
         }
 
-        private void GetStageFiles(List<ChangeAttribute> currentStageChanges)
-        {
-            //if (y == dimensions.stagedEnd && ButtomPress.Type.down == true || y == dimensions.stagedStart && ButtomPress.Type.up == true || ButtomPress.Type.escape == true)
+        //private void GetStageFiles(List<ChangeAttribute> currentStageChanges)
+        //{
+        //    //if (y == dimensions.stagedEnd && ButtomPress.Type.down == true || y == dimensions.stagedStart && ButtomPress.Type.up == true || ButtomPress.Type.escape == true)
            
-            if (ButtomPress.Type.workingInStagePanel == true)
-            {
-                GetAllFiles(currentStagedChanges);
-                blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
-                indicator.GetIndicator(currentIndex, dimensions.stagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.stagedStart - 1, dimensions.stagedEnd);
-            }
-            //else
-            //{
-            //    GetOneFileAtTime(currentStagedChanges);
+        //    if (ButtomPress.Type.workingInStagePanel == true)
+        //    {
+        //        GetAllFiles(currentStagedChanges);
+        //        blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+        //        indicator.GetIndicator(currentIndex, dimensions.stagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.stagedStart - 1, dimensions.stagedEnd);
+        //    }
+        //    //else
+        //    //{
+        //    //    GetOneFileAtTime(currentStagedChanges);
 
-            //    //if (ButtomPress.Type.workingInStagePanel == true && currentIndex > 0)
-            //    //{
-            //    //    indicator.GetIndicator(currentIndex, dimensions.stagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.stagedStart - 1, dimensions.stagedEnd);
-            //    //    blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
-            //    //}
-            //}
+        //    //    //if (ButtomPress.Type.workingInStagePanel == true && currentIndex > 0)
+        //    //    //{
+        //    //    //    indicator.GetIndicator(currentIndex, dimensions.stagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.stagedStart - 1, dimensions.stagedEnd);
+        //    //    //    blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+        //    //    //}
+        //    //}
 
-            //if (ButtomPress.Type.enter == true)
-            //{
-            //    blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
-            //    ButtomPress.Type.enter = false;
-            //}
-        }
+        //    //if (ButtomPress.Type.enter == true)
+        //    //{
+        //    //    blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+        //    //    ButtomPress.Type.enter = false;
+        //    //}
+        //}
 
         private void GetAllFiles(List<ChangeAttribute> currentStagedChanges)
         {

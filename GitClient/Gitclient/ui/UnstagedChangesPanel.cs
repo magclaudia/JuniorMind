@@ -253,6 +253,8 @@ namespace GitClient.ui
                                 indexForDiff--;
                                 fileNumber--;
                                 OnFileSelectionChanged(indexForDiff, isStaged: false);
+                                Refresh();
+                                communicationService.SetLastIndexForDiff(indexForDiff);
                             }
                             else
                             {
@@ -266,8 +268,6 @@ namespace GitClient.ui
                             }
                             
                             
-                            Refresh();
-                            communicationService.SetLastIndexForDiff(indexForDiff);
                             indexForDiff = 0;
                             communicationService.NavigateToStagedPanel();
                         }
