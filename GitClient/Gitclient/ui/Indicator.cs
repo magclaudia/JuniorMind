@@ -8,8 +8,6 @@ namespace GitClient.ui
 {
     public class Indicator
     {
-        private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
-
         public void GetIndicator(int currentIndex, int heigth, int totalNumberOfFiles, int x, int y, int endAt)
         {
             Console.CursorVisible = true;

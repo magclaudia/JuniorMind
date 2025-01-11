@@ -262,7 +262,7 @@ namespace GitClient.ui
                                 ButtomPress.Type.workingInStagePanel = true;
                             }
 
-                            if (statusService.GetAllUnstagedChanges().Count == 0)
+                            if (statusService.GetAllUnstagedChanges().Count() == 0)
                             {
                                 fileNumber = 0;
                             }
