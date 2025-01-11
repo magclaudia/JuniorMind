@@ -12,11 +12,11 @@ namespace GitClient.ui
     {
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
-        public void ClearFiles(int curentIndex, int x, int y, int startFrom, int width, int EndAt)
+        public void ClearFiles(int x, int y, int startFrom, int width, int EndAt, string cleaningArea)
         {
             ButtomPress.Type.deleted = true;
             
-            if (y == EndAt && ButtomPress.Type.down == true || y == startFrom && ButtomPress.Type.up == true || ButtomPress.Type.enter == true)
+            if (cleaningArea == "cleaningAllPanelArea")
             {
                 while (startFrom <= EndAt)
                 {

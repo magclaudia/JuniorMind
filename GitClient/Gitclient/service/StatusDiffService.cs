@@ -16,12 +16,18 @@ namespace GitClient.service
         private readonly UnstageLibGit2DiffRepository unstageDiffRepository;
         private readonly StageLibGit2DiffRepository stageDiffRepository;
         private readonly LibGit2Repository libGit2Repository;
+        private static int indexForDiff;
 
         public StatusDiffService(UnstageLibGit2DiffRepository unstageDiffRepositoryDiff, StageLibGit2DiffRepository stageDiffRepository, LibGit2Repository libGit2Repository)
         {
             this.unstageDiffRepository = unstageDiffRepositoryDiff;
             this.libGit2Repository = libGit2Repository;
             this.stageDiffRepository = stageDiffRepository;
+        }
+
+        public int GetDiffIndex(int diffIndex)
+        {
+            return indexForDiff;
         }
 
         public List<Diffs> GetAllStageDiffs()

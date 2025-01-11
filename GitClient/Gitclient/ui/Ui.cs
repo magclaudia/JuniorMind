@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gitclient.ui;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,32 +9,44 @@ namespace GitClient.ui
 {
     public class Ui
     {
-        public void Show()
+        private Dictionary<UiLayoutTypes, List<UiComponent>> layoutTypes = new Dictionary<UiLayoutTypes, List<UiComponent>>();
+        private UnstagedChangesPanel unstangedChangesPanel;
+        private StagedChangesPanel stagedChangesPanel;
+        private DiffPanel diffPanel;
+
+        public Ui() 
+        {
+            unstangedChangesPanel = PanelFactory.CreateUnstagedChangesPanel();
+            stagedChangesPanel = PanelFactory.CreateStagedChangesPanel();
+            diffPanel = PanelFactory.StatusDiffPanel();
+            diffPanel.SubcribeToPanel(unstangedChangesPanel, stagedChangesPanel);
+            layoutTypes.Add(UiLayoutTypes.GitStatus, new List<UiComponent>() { diffPanel, stagedChangesPanel, unstangedChangesPanel });
+            layoutTypes.Add(UiLayoutTypes.DiffStatus, new List<UiComponent>() { diffPanel });
+        }
+
+        private void NavigateToStagedFiles()
+        {
+            stagedChangesPanel.Show();
+        }
+
+        public void Show(UiLayoutTypes layout)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             TabsPanel tabs = new TabsPanel();
             tabs.Show();
 
-            StagedChangesPanel stagedChangesPanel = PanelFactory.CreateStagedChangesPanel();
-            DiffPanel diffPanel = PanelFactory.StatusDiffPanel();
-            UnstagedChangesPanel unstangedChangesPanel = PanelFactory.CreateUnstagedChangesPanel();
-
-            if (ButtomPress.Type.workingInStagePanel == true)
+            if (layoutTypes.ContainsKey(layout))
             {
-                int index = stagedChangesPanel.SaveLastIndexForDiff();
-                diffPanel.Show(index);
-                unstangedChangesPanel.Show();
-                stagedChangesPanel.SaveLastYValue();
-                stagedChangesPanel.SaveFileNumberLastValue();
-                stagedChangesPanel.Show();
+                List<UiComponent> panels = layoutTypes[layout];
+                
+                foreach(var panel in panels)
+                {
+                    panel.Show();
+                }
             }
             else
             {
-                int index = unstangedChangesPanel.SaveLastIndexForDiff();
-                diffPanel.Show(index);
-                stagedChangesPanel.Show();
-                unstangedChangesPanel.SaveLastYValue();
-                unstangedChangesPanel.Show();
+                throw new Exception("Key not found.");
             }
         }
     }

@@ -8,7 +8,8 @@ namespace GitClient
         {
             Ui ui = new Ui();
             Console.Clear();
-            ui.Show();
+            
+            ui.Show(UiLayoutTypes.GitStatus);
          //  Features.DisplayFeatures();
         }
     }

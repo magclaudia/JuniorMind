@@ -1,4 +1,5 @@
-﻿using GitClient.model;
+﻿using Gitclient.ui;
+using GitClient.model;
 using GitClient.service;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace GitClient.ui
 {
-    public class DiffPanel
+    public class DiffPanel : UiComponent
     {
-        private StatusDiffService unstagedChangesDiffService;
-        private StatusService unstagedChangesService;
+        private StatusDiffService statusDiffService;
+        private StatusService statusService;
         private DrawTabs.Dimensions dimensions;
         private List<Diffs> currentDiff;
         private BlueBox blueBox;
@@ -22,13 +23,13 @@ namespace GitClient.ui
         private int y = 4;
         private int startIndex;
         private int currentIndex;
-        private int diffSize;
+       // private int diffSize;
 
 
-        public DiffPanel(StatusDiffService unstagedChangesDiffService, StatusService unstagedChangesService) 
+        public DiffPanel(StatusDiffService statusDiffService, StatusService statusService) 
         {
-            this.unstagedChangesDiffService = unstagedChangesDiffService;
-            this.unstagedChangesService = unstagedChangesService;
+            this.statusDiffService = statusDiffService;
+            this.statusService = statusService;
             dimensions = new DrawTabs.Dimensions();
             currentDiff = new List<Diffs>();
             blueBox = new BlueBox();
@@ -38,7 +39,13 @@ namespace GitClient.ui
             y = dimensions.tabHeight + 2;
             startIndex = GetStartIndex();
             currentIndex = GetCurrentIndex();
-            diffSize = unstagedChangesDiffService.GetAllUnstageDiffs().Count;
+            //diffSize = statusDiffService.GetAllUnstageDiffs().Count;
+        }
+
+        public void SubcribeToPanel(UnstagedChangesPanel unstagedChangesPanel, StagedChangesPanel stagedChangesPanel)
+        {
+            unstagedChangesPanel.FileSelectionChanged += HandleFileSelectionChanged!;
+            stagedChangesPanel.FileSelectionChanged += HandleFileSelectionChanged!;
         }
 
         public int GetCurrentIndex()
@@ -46,22 +53,11 @@ namespace GitClient.ui
             return currentIndex;
         }
 
-        public void Show(int currentIndex)
+        public override void Show()
         {
             y = dimensions.tabHeight + 2;
-
-            if (ButtomPress.Type.workingInStagePanel == true)
-            {
-                diffSize = unstagedChangesDiffService.GetAllStageDiffs().Count;
-                currentDiff = unstagedChangesDiffService.GetCurrentStageDiff(currentIndex);
-            }
-            else
-            {
-                diffSize = unstagedChangesDiffService.GetAllUnstageDiffs().Count;
-                currentDiff = unstagedChangesDiffService.GetCurrentUnstageDiff(currentIndex);
-            }
-
-            Refresh(currentIndex);
+            currentDiff = statusDiffService.GetCurrentUnstageDiff(currentIndex);
+            Refresh(currentDiff, currentIndex);
         }
 
         public void Navigate()
@@ -100,7 +96,7 @@ namespace GitClient.ui
                                 currentIndex++;
                                 string textForBluexBox = currentDiff[0].diffs[currentIndex];
                                 blueBox.SetBlueBox((1, y), textForBluexBox, Console.WindowWidth - 3);
-                                indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y - 1, height - 1);
+                                //indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y - 1, height - 1);
                             }
                         }
                         break;
@@ -128,7 +124,7 @@ namespace GitClient.ui
                                 currentIndex--;
                                 string textForBluexBox = currentDiff[0].diffs[currentIndex];
                                 blueBox.SetBlueBox((1, y), textForBluexBox, Console.WindowWidth - 3);
-                                indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y, height);
+                                //indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y, height);
                             }
                         }
                         break;
@@ -141,7 +137,7 @@ namespace GitClient.ui
                             ButtomPress.Type.escape = false;
                             ButtomPress.Type.deleted = false;
                             Ui ui = new Ui();
-                            ui.Show();
+                           // ui.Show();
                         }
                         break;
                 }
@@ -149,19 +145,12 @@ namespace GitClient.ui
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        private int GetStartIndex()
+        private void Refresh(List<Diffs> currentDiff, int currentIndex)
         {
-            return 0;
-        }
-
-        private void Refresh(int currentIndex)
-        {
-            //diffSize = unstagedChangesDiffService.GetAllUnstageDiffs().Count;
-
-            if (diffSize > 0)
+            if (currentDiff.Count > 0)
             {
                 DisplayDiff(currentDiff, currentIndex);
-                
+
                 if (ButtomPress.Type.right == true)
                 {
                     string textForBluexBox = currentDiff[0].Display();
@@ -170,6 +159,21 @@ namespace GitClient.ui
             }
 
             DrawDiffPanel(currentDiff);
+        }
+
+
+        private int GetStartIndex()
+        {
+            return 0;
+        }
+
+
+        private void HandleFileSelectionChanged(object sender, FileSelectionChangedEventArgs e)
+        {
+            List<Diffs> currentDiff = e.IsStaged ? statusDiffService.GetCurrentStageDiff(e.FileIndex)
+                : statusDiffService.GetCurrentUnstageDiff(e.FileIndex);
+
+            Refresh(currentDiff, e.FileIndex);
         }
 
         private void DisplayDiff(List<Diffs> currentDiff, int currentIndex)
