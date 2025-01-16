@@ -19,7 +19,7 @@ namespace GitClient.ui
 
         public static UnstagedChangesPanel CreateUnstagedChangesPanel()
         {
-            UnstagedChangesPanel panel = new UnstagedChangesPanel(statusService, statusDiffService);
+            UnstagedChangesPanel panel = new UnstagedChangesPanel(statusService, statusDiffService, panelCommunicationService);
             panel.SetCommunicationService(panelCommunicationService);
             panelCommunicationService.RegisterUnstagedChangesPanel(panel);
             return panel;
@@ -28,7 +28,7 @@ namespace GitClient.ui
 
         public static StagedChangesPanel CreateStagedChangesPanel()
         {
-            StagedChangesPanel panel = new StagedChangesPanel(statusDiffService, statusService);
+            StagedChangesPanel panel = new StagedChangesPanel(statusDiffService, statusService, panelCommunicationService);
             panel.SetCommunicationService(panelCommunicationService);
             panelCommunicationService.RegisterStagedChangesPanel(panel);
             return panel;

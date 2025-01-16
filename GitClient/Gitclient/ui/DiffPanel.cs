@@ -65,7 +65,7 @@ namespace GitClient.ui
             }
 
             currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentUnstageDiff(fileName)[0].diffs : new List<string>();
-            Refresh(currentDiff /*currentIndex*/);
+            Refresh(currentDiff);
         }
 
         public void Navigate()
@@ -153,16 +153,15 @@ namespace GitClient.ui
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        private void Refresh(List<string> currentDiff /*int currentIndex*/)
+        private void Refresh(List<string> currentDiff)
         {
             if (currentDiff.Count > 0)
             {
-                // 
-                DisplayDiff(currentDiff/*, currentIndex*/);
+                DisplayDiff(currentDiff);
 
                 if (ButtomPress.Type.right == true)
                 {
-                    string textForBluexBox = currentDiff[0]/*.Display()*/;
+                    string textForBluexBox = currentDiff[0];
                     blueBox.SetBlueBox((1, y), textForBluexBox, Console.WindowWidth - 3);
                 }
             }
