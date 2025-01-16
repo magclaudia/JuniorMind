@@ -8,12 +8,12 @@ namespace GitClient.ui
 {
     public class FileSelectionChangedEventArgs
     {
-        public int FileIndex { get; }
+        public string FileName { get; }
         public bool IsStaged { get; }
 
-        public FileSelectionChangedEventArgs(int fileIndex, bool isStaged)
+        public FileSelectionChangedEventArgs(string fileName, bool isStaged)
         {
-            FileIndex = fileIndex;
+            FileName = fileName;
             IsStaged = isStaged;
         }
     }

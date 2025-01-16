@@ -11,7 +11,8 @@ namespace GitClient.service
     {
         private UnstagedChangesPanel unstagedChangesPanel;
         private StagedChangesPanel stagedChangesPanel;
-        private int lastIndexForDiff;
+        private string lastFileName;
+        private string fileName;
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public void RegisterUnstagedChangesPanel(UnstagedChangesPanel panel) 
@@ -24,14 +25,34 @@ namespace GitClient.service
             stagedChangesPanel = panel;
         }
 
-        public void SetLastIndexForDiff(int index)
+        //public void SetLastIndexForDiff(int index)
+        //{
+        //    lastIndexForDiff = index;
+        //}
+
+        //public int GetLastIndexForDiff()
+        //{
+        //    return lastIndexForDiff;
+        //}
+
+        public void SetLastUnstageFileName(string currentFileName)
         {
-            lastIndexForDiff = index;
+            lastFileName = currentFileName;
         }
 
-        public int GetLastIndexForDiff()
+        public string GetLastUnstageFileName()
         {
-            return lastIndexForDiff;
+            return lastFileName;
+        }
+
+        public void SetCurrentFileName(string currentFileName)
+        {
+            fileName = currentFileName;
+        }
+
+        public string GetCurrentFileName()
+        {
+            return fileName;
         }
 
         public void NavigateToUnstagedPanel()

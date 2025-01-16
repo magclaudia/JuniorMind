@@ -24,11 +24,6 @@ namespace GitClient.ui
             layoutTypes.Add(UiLayoutTypes.DiffStatus, new List<UiComponent>() { diffPanel });
         }
 
-        private void NavigateToStagedFiles()
-        {
-            stagedChangesPanel.Show();
-        }
-
         public void Show(UiLayoutTypes layout)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;

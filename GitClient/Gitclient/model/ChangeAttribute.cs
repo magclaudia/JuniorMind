@@ -13,13 +13,14 @@ namespace GitClient.model
         private string symbol { get; }
         private string fileName { get; }
         private string filePath { get; }
+
         
 
         public ChangeAttribute(string changeType, string fileName, string filePath)
         {
-            symbol = changeType;
             this.fileName = fileName;
             this.filePath = filePath;
+            symbol = changeType;
         }
 
         public string Display()

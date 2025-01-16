@@ -26,44 +26,69 @@ namespace GitClient.ui
 
         public List<ChangeAttribute> GetCurrentChanges(int startIndex, int endIndex, string typeOfChange)
         {
-            List<ChangeAttribute> allChanges = new List<ChangeAttribute>();
-            int numberOdFiles = 0;
+            List<ChangeAttribute> listOfChanges = new List<ChangeAttribute>();
+            int count = 0;
             int y = 0;
             string textToBeDisplay = "";
 
             if (typeOfChange == "unstage")
             {
-                allChanges = libGit2Repository.GetAllUnstagedChanges();
-                numberOdFiles = allChanges.Count <= dimensions.unstagedEnd - dimensions.unstagedStart + 1 ? allChanges.Count : endIndex - startIndex + 1;
+                listOfChanges = libGit2Repository.GetAllUnstagedChanges();
+                int maxVisibleChanges = dimensions.unstagedEnd - dimensions.unstagedStart + 1;
+
+                //count = listOfChanges.Count <= dimensions.unstagedEnd - dimensions.unstagedStart + 1 ? listOfChanges.Count : endIndex - startIndex + 1;
+                count = Math.Min(maxVisibleChanges, listOfChanges.Count - startIndex);
+
+                if (count + startIndex > listOfChanges.Count)
+                {
+                    count--;
+                }
+
                 y = dimensions.unstagedStart;
                 textToBeDisplay = " No changes found in the unstaging area.";
             }
             else
             {
-                allChanges = libGit2Repository.GetAllStageChanges();
-                numberOdFiles = allChanges.Count <= dimensions.stagedEnd - dimensions.stagedStart ? allChanges.Count : endIndex - startIndex;
+                listOfChanges = libGit2Repository.GetAllStageChanges();
+                int maxVisibleChanges = dimensions.stagedEnd - dimensions.stagedStart;
+
+                count = Math.Min(maxVisibleChanges, listOfChanges.Count - startIndex);
+
+                if (count + startIndex > listOfChanges.Count)
+                {
+                    count--;
+                }
+
                 y = dimensions.stagedStart;
                 textToBeDisplay = " No changes found in the staging area.";
             }
 
-            if (allChanges.Count > 0)
+            if (listOfChanges.Count > 0)
             {
-                if (startIndex < 0 || endIndex > allChanges.Count)
-                {
-                    endIndex = allChanges.Count - 1;
-                }
+                //if (startIndex < 0 || endIndex > listOfChanges.Count)
+                //{
+                //    endIndex = listOfChanges.Count - 1;
+                //}
 
-                allChanges = allChanges.GetRange(startIndex, numberOdFiles);
+
+                if (startIndex >= 0 && count > 0)
+                {
+                    listOfChanges = listOfChanges.GetRange(startIndex, count);
+                }
+                else
+                {
+                    listOfChanges = new List<ChangeAttribute>(); // Return an empty list if the range is invalid
+                }
             }
             else
             {
-                allChanges.Clear();
+                listOfChanges.Clear();
                 Console.SetCursorPosition(1, dimensions.unstagedStart);
                 string text = Tabs.SetStatusTextLength(textToBeDisplay, Console.WindowWidth / 2 - 3);
                 Console.WriteLine(text);
             }
 
-            return allChanges;
+            return listOfChanges;
         }
 
         public List<ChangeAttribute> GetAllStageChanges()
@@ -73,7 +98,12 @@ namespace GitClient.ui
 
         public void StageFile(ChangeAttribute unstagedFile)
         {
-            libGit2Repository.StageUnstagedChange(unstagedFile);
+            libGit2Repository.StageFile(unstagedFile);
+        }
+
+        public void UnstageFile(ChangeAttribute stageFile)
+        {
+            libGit2Repository.UnstageFile(stageFile);
         }
     }
 }

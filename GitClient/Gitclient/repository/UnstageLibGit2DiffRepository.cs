@@ -1,6 +1,5 @@
 ﻿using GitClient.model;
 using GitClient.ui;
-using LibGit2Sharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,18 +15,18 @@ namespace GitClient.repository
     {
         private LibGit2Repository libGit2Repository;
         private LibGit2Wrapper.GitDiffOptions options;
-        private List<Diffs> unstagedDiff;
-        private List<List<string>> unstagediffList;
+        private List<FileDiff> unstagedDiff;
+        private Dictionary<string, List<string>> eachFileDiff;
 
         public UnstageLibGit2DiffRepository(LibGit2Repository libGit2Repository)
         {
             this.libGit2Repository = libGit2Repository;
             options = new LibGit2Wrapper.GitDiffOptions();
-            unstagedDiff = new List<Diffs>();
-            unstagediffList = new List<List<string>>();
+            unstagedDiff = new List<FileDiff>();
+            eachFileDiff = new Dictionary<string, List<string>>();
         }
 
-        public List<Diffs> GetAllUnstagedDiff(IntPtr diff)
+        public List<FileDiff> GetAllUnstagedDiff(IntPtr diff)
         {
             if (diff == IntPtr.Zero)
             {
@@ -37,7 +36,6 @@ namespace GitClient.repository
             nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
             long testVariable = (long)numDeltas;
             
-            unstagediffList.Clear();
             unstagedDiff.Clear();
 
             if (numDeltas != 0)
@@ -49,10 +47,10 @@ namespace GitClient.repository
                     throw new Exception("Failed to iterate over diff.");
                 }
             }
-            
-            foreach (var list in unstagediffList)
+
+            foreach (var entry in eachFileDiff)
             {
-                unstagedDiff.Add(new Diffs(list));
+                unstagedDiff.Add(new FileDiff(entry.Value, entry.Key));
             }
 
             return unstagedDiff;
@@ -63,7 +61,8 @@ namespace GitClient.repository
             string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
             string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
             string text = "";
-            
+            string? filePath = Path.GetFileName(Marshal.PtrToStringAnsi(delta.new_file.path));
+
             if (string.IsNullOrEmpty(oldFilePath) && string.IsNullOrEmpty(newFilePath))
             {
                 throw new Exception("Paths are null or empty.");
@@ -74,19 +73,10 @@ namespace GitClient.repository
                 text = newFilePath;
             }
 
-            if (unstagediffList.Count > 0)
-            {
-                if (unstagediffList[unstagediffList.Count - 1].Any(path => path.EndsWith(".cs")))
-                {
-                    unstagediffList.Add(new List<string>());
-                }
 
-                unstagediffList[unstagediffList.Count - 1].Add(text);
-            }
-            else
+            if (!string.IsNullOrEmpty(filePath) && !eachFileDiff.ContainsKey(filePath))
             {
-                unstagediffList.Add(new List<string>());
-                unstagediffList[0].Add(text);
+                eachFileDiff[filePath] = [text];
             }
 
             return 0;
@@ -102,13 +92,18 @@ namespace GitClient.repository
             byte[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
             string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
             string text = hunkHeader;
+            string? filePath = Path.GetFileName(Marshal.PtrToStringAnsi(delta.new_file.path));
 
             if (text.Contains('\n'))
             {
                 text = text.Remove(text.IndexOf('\n'));
             }
 
-            unstagediffList[unstagediffList.Count - 1].Add(text);
+
+            if (!string.IsNullOrEmpty(filePath) && eachFileDiff.ContainsKey(filePath))
+            {
+                eachFileDiff[filePath].Add(text);
+            }
 
             return 0;
         }
@@ -116,7 +111,8 @@ namespace GitClient.repository
         private int DiffLineCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, ref LibGit2Wrapper.GitDiffLine line, IntPtr payload)
         {
             string content = Marshal.PtrToStringAnsi(line.content, (int)line.content_len);
-
+            string? filePath = Path.GetFileName(Marshal.PtrToStringAnsi(delta.new_file.path));
+           
             if (content.StartsWith('\t'))
             {
                 string output = content.Replace("\t", new string(' ', 4));
@@ -128,9 +124,12 @@ namespace GitClient.repository
                 content = content[..content.IndexOf("\n\t")];
             }
 
-            string text = $"{(char)line.origin} {content}";
+            string text = $"{(char)line.origin} {content}".TrimEnd();
 
-            unstagediffList[unstagediffList.Count - 1].Add(text.TrimEnd());
+            if (!string.IsNullOrEmpty(filePath) && eachFileDiff.ContainsKey(filePath))
+            {
+                eachFileDiff[filePath].Add(text);
+            }
 
             return 0;
         }

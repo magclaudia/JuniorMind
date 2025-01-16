@@ -16,52 +16,69 @@ namespace GitClient.service
         private readonly UnstageLibGit2DiffRepository unstageDiffRepository;
         private readonly StageLibGit2DiffRepository stageDiffRepository;
         private readonly LibGit2Repository libGit2Repository;
-        private static int indexForDiff;
+        private PanelCommunicationService communicationService;
+        private int lastIndexForDiff;
+        private string fileName;
 
-        public StatusDiffService(UnstageLibGit2DiffRepository unstageDiffRepositoryDiff, StageLibGit2DiffRepository stageDiffRepository, LibGit2Repository libGit2Repository)
+        public StatusDiffService(UnstageLibGit2DiffRepository unstageDiffRepositoryDiff, StageLibGit2DiffRepository stageDiffRepository, LibGit2Repository libGit2Repository, PanelCommunicationService communicationService)
         {
             this.unstageDiffRepository = unstageDiffRepositoryDiff;
             this.libGit2Repository = libGit2Repository;
             this.stageDiffRepository = stageDiffRepository;
+            this.communicationService = communicationService;
         }
 
-        public int GetDiffIndex(int diffIndex)
-        {
-            return indexForDiff;
-        }
-
-        public List<Diffs> GetAllStageDiffs()
+        public List<FileDiff> GetAllStageDiffs()
         {
             return stageDiffRepository.GetAllStageDiffs();
         }
 
-        public List<Diffs> GetCurrentStageDiff(int currentIndex)
+        public List<FileDiff> GetCurrentStageDiff(string fileName)
         {
-            List<Diffs> diff = GetAllStageDiffs();
+            List<FileDiff> list = new List<FileDiff>();
+            List<FileDiff> diff = GetAllStageDiffs();
 
-            if (diff.Count() > 0)
+            foreach(var entry in diff)
             {
-                return diff.GetRange(currentIndex, 1);
+                if (entry.fileName == fileName)
+                {
+                    list.Add(entry);
+                    communicationService.SetCurrentFileName(entry.fileName);
+                    break;
+                }
             }
 
-            return diff;
+            return list;
         }
 
-        public List<Diffs> GetAllUnstageDiffs()
+        public List<FileDiff> GetAllUnstageDiffs()
         {
             return unstageDiffRepository.GetAllUnstagedDiff(libGit2Repository.GetDiff());
         }
 
-        public List<Diffs> GetCurrentUnstageDiff(int currentIndex)
+        public List<FileDiff> GetCurrentUnstageDiff(string fileName)
         {
-            List<Diffs> diff = unstageDiffRepository.GetAllUnstagedDiff(libGit2Repository.GetDiff());
+            List<FileDiff> list = new List<FileDiff>();
+            List<FileDiff> diff = unstageDiffRepository.GetAllUnstagedDiff(libGit2Repository.GetDiff());
             
-            if (diff.Count() > 0)
+            foreach (var entry in diff)
             {
-                return diff.GetRange(currentIndex, 1);
+                if (entry.fileName == fileName)
+                {
+                    list.Add(entry);
+                    SetCurrentFileName(entry.fileName);
+                    break;
+                }
             }
 
-            return diff;
+            return list;
         }
+
+        public void SetCurrentFileName(string file) 
+        {
+            fileName = file;    
+        }
+
+
     }
 }

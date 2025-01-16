@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 
 namespace GitClient
 {
@@ -73,7 +74,7 @@ namespace GitClient
         public struct GitStrArray
         {
             public IntPtr strings;
-            public UIntPtr count;
+            public uint count;
         }
 
 
@@ -222,7 +223,6 @@ namespace GitClient
             GIT_OBJECT_BLOB = 3,
             GIT_OBJECT_TAG = 4
         }
-
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int DiffNotifyCallback(IntPtr diff_so_far, GitDiffDelta delta_to_add, IntPtr matched_pathspec, IntPtr payload);
@@ -411,7 +411,15 @@ namespace GitClient
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_index_write(IntPtr index);
-        
+
+
+
+        //[DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int git_index_remove(IntPtr index, string path, int stage);
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_reset_default(IntPtr repo, IntPtr target, ref GitStrArray pathspec);
+
 
 
         public static void LoadLibrary()

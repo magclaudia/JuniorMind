@@ -14,8 +14,9 @@ namespace GitClient.ui
     {
         private StatusDiffService statusDiffService;
         private StatusService statusService;
+
         private DrawTabs.Dimensions dimensions;
-        private List<Diffs> currentDiff;
+        private List<string> currentDiff;
         private BlueBox blueBox;
         private int height;
         private Indicator indicator;
@@ -23,15 +24,15 @@ namespace GitClient.ui
         private int y = 4;
         private int startIndex;
         private int currentIndex;
-       // private int diffSize;
 
 
         public DiffPanel(StatusDiffService statusDiffService, StatusService statusService) 
         {
             this.statusDiffService = statusDiffService;
             this.statusService = statusService;
+
             dimensions = new DrawTabs.Dimensions();
-            currentDiff = new List<Diffs>();
+            currentDiff = new List<string>();
             blueBox = new BlueBox();
             height = Console.WindowHeight - dimensions.tabHeight;
             indicator = new Indicator();
@@ -39,7 +40,6 @@ namespace GitClient.ui
             y = dimensions.tabHeight + 2;
             startIndex = GetStartIndex();
             currentIndex = GetCurrentIndex();
-            //diffSize = statusDiffService.GetAllUnstageDiffs().Count;
         }
 
         public void SubcribeToPanel(UnstagedChangesPanel unstagedChangesPanel, StagedChangesPanel stagedChangesPanel)
@@ -56,8 +56,17 @@ namespace GitClient.ui
         public override void Show()
         {
             y = dimensions.tabHeight + 2;
-            currentDiff = statusDiffService.GetCurrentUnstageDiff(currentIndex);
-            Refresh(currentDiff, currentIndex);
+            string fileName = "";
+
+            if (ButtomPress.Type.workingInUnstagePanel == false && ButtomPress.Type.workingInStagePanel == false && statusDiffService.GetAllUnstageDiffs().Count > 0)
+            {
+                List<FileDiff> fileDiffs = statusDiffService.GetAllUnstageDiffs();
+                fileName = fileDiffs[0].fileName;
+            }
+
+            currentDiff = statusDiffService.GetCurrentUnstageDiff(fileName)[0].diffs;
+
+            Refresh(currentDiff /*currentIndex*/);
         }
 
         public void Navigate()
@@ -74,7 +83,7 @@ namespace GitClient.ui
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            if (currentIndex < currentDiff[0].diffs.Count - 1)
+                            if (currentIndex < currentDiff/*[0].diffs*/.Count - 1)
                             {
                                 ButtomPress.Type.down = true;
                                 ButtomPress.Type.up = false;
@@ -94,7 +103,7 @@ namespace GitClient.ui
                                 }
 
                                 currentIndex++;
-                                string textForBluexBox = currentDiff[0].diffs[currentIndex];
+                                string textForBluexBox = currentDiff[currentIndex];
                                 blueBox.SetBlueBox((1, y), textForBluexBox, Console.WindowWidth - 3);
                                 //indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y - 1, height - 1);
                             }
@@ -122,7 +131,7 @@ namespace GitClient.ui
                                 }
 
                                 currentIndex--;
-                                string textForBluexBox = currentDiff[0].diffs[currentIndex];
+                                string textForBluexBox = currentDiff[currentIndex];
                                 blueBox.SetBlueBox((1, y), textForBluexBox, Console.WindowWidth - 3);
                                 //indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y, height);
                             }
@@ -145,15 +154,16 @@ namespace GitClient.ui
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-        private void Refresh(List<Diffs> currentDiff, int currentIndex)
+        private void Refresh(List<string> currentDiff /*int currentIndex*/)
         {
             if (currentDiff.Count > 0)
             {
-                DisplayDiff(currentDiff, currentIndex);
+                // 
+                DisplayDiff(currentDiff/*, currentIndex*/);
 
                 if (ButtomPress.Type.right == true)
                 {
-                    string textForBluexBox = currentDiff[0].Display();
+                    string textForBluexBox = currentDiff[0]/*.Display()*/;
                     blueBox.SetBlueBox((1, y), textForBluexBox, Console.WindowWidth - 3);
                 }
             }
@@ -170,15 +180,15 @@ namespace GitClient.ui
 
         private void HandleFileSelectionChanged(object sender, FileSelectionChangedEventArgs e)
         {
-            List<Diffs> currentDiff = e.IsStaged ? statusDiffService.GetCurrentStageDiff(e.FileIndex)
-                : statusDiffService.GetCurrentUnstageDiff(e.FileIndex);
+            List<string> currentDiff = e.IsStaged ? statusDiffService.GetCurrentStageDiff(e.FileName)[0].diffs
+                : statusDiffService.GetCurrentUnstageDiff(e.FileName)[0].diffs;
 
-            Refresh(currentDiff, e.FileIndex);
+            Refresh(currentDiff);
         }
 
-        private void DisplayDiff(List<Diffs> currentDiff, int currentIndex)
+        private void DisplayDiff(List<string> currentDiff/*, int currentIndex*/)
         {
-            int stopAt = currentDiff[0].diffs.Count() > height ? height : currentDiff[0].diffs.Count();
+            int stopAt = currentDiff.Count() > height ? height : currentDiff.Count();
             int width = 0;
 
             if (ButtomPress.Type.right == true)
@@ -198,7 +208,7 @@ namespace GitClient.ui
                 
                 if (y < height)
                 {
-                    string displayText = TextSettings.GetTextLength(currentDiff[0].diffs[i], width);
+                    string displayText = TextSettings.GetTextLength(currentDiff[i], width);
                     Console.SetCursorPosition(x, y);
                     
                     if (displayText == "")
@@ -216,7 +226,7 @@ namespace GitClient.ui
             }
         }
 
-        private void DrawDiffPanel(List<Diffs> currentDiff)
+        private void DrawDiffPanel(List<string> currentDiff)
         {
             int width = 0;
             int positionOfDiffName = 0;
@@ -265,11 +275,11 @@ namespace GitClient.ui
 
             if (ButtomPress.Type.right == true && currentIndex == 0)
             {
-                indicator.GetIndicator(currentIndex, Console.WindowHeight - 1, currentDiff[0].diffs.Count(), Console.WindowWidth - 1, dimensions.tabHeight + 2, Console.WindowHeight - 2);
+                indicator.GetIndicator(currentIndex, Console.WindowHeight - 1, currentDiff.Count(), Console.WindowWidth - 1, dimensions.tabHeight + 2, Console.WindowHeight - 2);
             }
         }
 
-        private void GetNewLineDiff(List<Diffs> currentDiff)
+        private void GetNewLineDiff(List<string> currentDiff)
         {
             if (y == height - 1 && ButtomPress.Type.down == true || y == 3 && ButtomPress.Type.up == true)
             {
@@ -292,17 +302,17 @@ namespace GitClient.ui
             }
         }
 
-        private void GetAllDiffLines(List<Diffs> currentDiff)
+        private void GetAllDiffLines(List<string> currentDiff)
         {
             int index = startIndex; 
             for (int i = 0; i < height - 1; i++)
             {
-                if (i == currentDiff[0].diffs.Count || y == height || index == currentDiff[0].diffs.Count)
+                if (i == currentDiff.Count || y == height || index == currentDiff.Count)
                 {
                     break;
                 }
 
-                string displayText = TextSettings.GetTextLength(currentDiff[0].diffs[index], Console.WindowWidth - 3);
+                string displayText = TextSettings.GetTextLength(currentDiff[index], Console.WindowWidth - 3);
                 Console.SetCursorPosition(1, y);
                 
                 if (displayText != "")
@@ -321,9 +331,9 @@ namespace GitClient.ui
             }
         }
 
-        private void GetOneLineAtTime(List<Diffs> currentDiff)
+        private void GetOneLineAtTime(List<string> currentDiff)
         {
-            string displayText = TextSettings.GetTextLength(currentDiff[0].diffs[currentIndex], Console.WindowWidth - 3);
+            string displayText = TextSettings.GetTextLength(currentDiff[currentIndex], Console.WindowWidth - 3);
             Console.SetCursorPosition(1, y);
             
             if (displayText != "")
