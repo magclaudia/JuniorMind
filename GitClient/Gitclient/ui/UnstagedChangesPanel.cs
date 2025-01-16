@@ -135,7 +135,7 @@ namespace GitClient.ui
 
             if (totalNumberOfFiles == 0)
             {
-                OnFileSelectionChanged(currentUnstagedChanges[currentIndex].GetFileName(), isStaged: true);
+                //OnFileSelectionChanged(currentUnstagedChanges[currentIndex].GetFileName(), isStaged: true);
                 ButtomPress.Type.workingInStagePanel = true;
                 communicationService.NavigateToStagedPanel();
             }
