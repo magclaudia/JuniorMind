@@ -64,8 +64,7 @@ namespace GitClient.ui
                 fileName = fileDiffs[0].fileName;
             }
 
-            currentDiff = statusDiffService.GetCurrentUnstageDiff(fileName)[0].diffs;
-
+            currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentUnstageDiff(fileName)[0].diffs : new List<string>();
             Refresh(currentDiff /*currentIndex*/);
         }
 
