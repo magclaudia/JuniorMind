@@ -13,17 +13,13 @@ namespace GitClient.model
         private string Symbol { get; }
         private string FileName { get; }
         private string FilePath { get; }
-        public bool IsStaged { get; }
-        public bool IsUnstaged { get; }
 
 
-        public ChangeAttribute(string changeType, string fileName, string filePath, bool isStaged = false, bool isUnstaged = false)
+        public ChangeAttribute(string changeType, string fileName, string filePath)
         {
             FileName = fileName;
             FilePath = filePath;
             Symbol = changeType;
-            IsStaged = isStaged;
-            IsUnstaged = isUnstaged;
         }
 
         public string Display()
