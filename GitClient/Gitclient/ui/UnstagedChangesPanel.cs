@@ -278,7 +278,6 @@ namespace GitClient.ui
                             {
                                 y--;
                                 currentIndex--;
-                                //indexForDiff--;
                                // fileNumber--;
                                 endIndex--;
                                 OnFileSelectionChanged(currentUnstagedChanges[currentIndex].GetFileName(), isStaged: false);
@@ -308,7 +307,6 @@ namespace GitClient.ui
                                 fileNumber = 0;
                             }
                             
-                            //
 
                             //indexForDiff = 0;
                             communicationService.NavigateToStagedPanel();

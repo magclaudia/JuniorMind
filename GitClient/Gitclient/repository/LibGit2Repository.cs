@@ -5,16 +5,22 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using GitClient.model;
-using static GitClient.LibGit2Wrapper;
 
 namespace GitClient.repository
 {
     public class LibGit2Repository
     {
-        private LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
+
+        private LibGit2Wrapper.GitDiffOptions options;
+
+        public LibGit2Repository()
+        {
+            options = new LibGit2Wrapper.GitDiffOptions();
+        }
 
         public List<ChangeAttribute> GetAllUnstagedChanges()
         {
+            List<ChangeAttribute> stagedChanges = GetAllStageChanges();
             List<ChangeAttribute> unstagedChanges = new List<ChangeAttribute>();
             IntPtr diff = GetDiff();
 
@@ -32,24 +38,22 @@ namespace GitClient.repository
                     }
 
                     var delta = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(deltaPtr);
-                    string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
-                    string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
-                    string filePath;
 
-                    if (newFilePath != null)
-                    {
-                        filePath = newFilePath;
-                    }
-                    else if (oldFilePath != null)
-                    {
-                        filePath = oldFilePath!;
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Both file paths are null");
-                    }
+                    string filePath = Marshal.PtrToStringAnsi(delta.new_file.path)
+                              ?? Marshal.PtrToStringAnsi(delta.old_file.path)
+                              ?? throw new InvalidOperationException("File path is null");
 
                     string fileName = Path.GetFileName(filePath)!;
+
+                    //
+
+                    if (stagedChanges.Any(s => s.GetFilePath() == filePath))
+                    {
+                        continue;
+                    }
+
+                    //
+
                     unstagedChanges.Add(new ChangeAttribute(Symbol(delta), fileName, filePath));
                 }
             }
@@ -114,9 +118,9 @@ namespace GitClient.repository
                         }
 
                         var delta = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(deltaPtr);
-                        string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
-                        string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
-                        string filePath = newFilePath ?? oldFilePath ?? throw new InvalidOperationException("Both file paths are null");
+                        string filePath = Marshal.PtrToStringAnsi(delta.new_file.path)
+                                  ?? Marshal.PtrToStringAnsi(delta.old_file.path)
+                                  ?? throw new InvalidOperationException("File path is null");
 
                         string fileName = Path.GetFileName(filePath)!;
                         stagedChanges.Add(new ChangeAttribute(Symbol(delta), fileName, filePath));
@@ -137,7 +141,7 @@ namespace GitClient.repository
             IntPtr repo = GetRepo();
             string filePath = unstagedFile.GetFilePath();
             IntPtr index = IntPtr.Zero;
-           
+
             try
             {
                 if (LibGit2Wrapper.git_repository_index(out index, repo) != 0)
@@ -215,7 +219,7 @@ namespace GitClient.repository
                 IntPtr nativeArray = Marshal.AllocCoTaskMem(IntPtr.Size * strArray.Length);
                 Marshal.Copy(strArray, 0, nativeArray, strArray.Length);
 
-                var pathspec = new GitStrArray
+                var pathspec = new LibGit2Wrapper.GitStrArray
                 {
                     strings = nativeArray,
                     count = 1
@@ -245,7 +249,7 @@ namespace GitClient.repository
             }
 
         }
-      
+
 
         public IntPtr GetDiff()
         {
@@ -283,9 +287,9 @@ namespace GitClient.repository
                     throw new Exception("Failed to get tree from HEAD commit.");
                 }
 
-                //options.flags |= (uint)(LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_INCLUDE_UNTRACKED |
-                //                        LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_RECURSE_UNTRACKED_DIRS |
-                //                        LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_SHOW_UNTRACKED_CONTENT);
+                options.flags |= (uint)(LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_INCLUDE_UNTRACKED |
+                                        LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_RECURSE_UNTRACKED_DIRS |
+                                        LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_SHOW_UNTRACKED_CONTENT);
 
                 if (LibGit2Wrapper.git_diff_index_to_workdir(out diff, repo, index, ref options) != 0)
                 {
