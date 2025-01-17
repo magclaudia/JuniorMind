@@ -65,19 +65,13 @@ namespace GitClient.ui
 
             if (listOfChanges.Count > 0)
             {
-                //if (startIndex < 0 || endIndex > listOfChanges.Count)
-                //{
-                //    endIndex = listOfChanges.Count - 1;
-                //}
-
-
                 if (startIndex >= 0 && count > 0)
                 {
                     listOfChanges = listOfChanges.GetRange(startIndex, count);
                 }
                 else
                 {
-                    listOfChanges = new List<ChangeAttribute>(); // Return an empty list if the range is invalid
+                    listOfChanges = new List<ChangeAttribute>(); 
                 }
             }
             else

@@ -90,9 +90,9 @@ namespace GitClient.repository
                     throw new Exception("Failed to read index.");
                 }
 
-                //options.flags |= (uint)(LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_INCLUDE_UNTRACKED |
-                //                       LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_RECURSE_UNTRACKED_DIRS |
-                //                       LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_SHOW_UNTRACKED_CONTENT);
+                options.flags |= (uint)(LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_INCLUDE_UNTRACKED |
+                                       LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_RECURSE_UNTRACKED_DIRS |
+                                       LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_SHOW_UNTRACKED_CONTENT);
 
 
                 if (LibGit2Wrapper.git_diff_tree_to_index(out IntPtr diff, repo, treePtr, index, ref options) != 0)
@@ -136,38 +136,52 @@ namespace GitClient.repository
         {
             IntPtr repo = GetRepo();
             string filePath = unstagedFile.GetFilePath();
-
-            if (LibGit2Wrapper.git_repository_index(out IntPtr index, repo) != 0)
+            IntPtr index = IntPtr.Zero;
+           
+            try
             {
-                throw new Exception("Failed to get the repository index.");
-            }
-
-            if (LibGit2Wrapper.git_index_read(index, 0) != 0)
-            {
-                throw new Exception("Failed to read index.");
-            }
-
-            if (unstagedFile.GetSymbol() == "-")
-            {
-                if (LibGit2Wrapper.git_index_remove_bypath(index, filePath) != 0)
+                if (LibGit2Wrapper.git_repository_index(out index, repo) != 0)
                 {
-                    throw new Exception($"Failed to remove deleted file from the repository index: {filePath}");
+                    throw new Exception("Failed to get the repository index.");
+                }
+
+                if (LibGit2Wrapper.git_index_read(index, 0) != 0)
+                {
+                    throw new Exception("Failed to read index.");
+                }
+
+                if (unstagedFile.GetSymbol() == "-")
+                {
+                    if (LibGit2Wrapper.git_index_remove_bypath(index, filePath) != 0)
+                    {
+                        throw new Exception($"Failed to remove deleted file from the repository index: {filePath}");
+                    }
+                }
+                else
+                {
+                    if (LibGit2Wrapper.git_index_add_bypath(index, filePath) != 0)
+                    {
+                        throw new Exception($"Failed to add file to the repository index: {filePath}");
+                    }
+                }
+
+                if (LibGit2Wrapper.git_index_write(index) != 0)
+                {
+                    throw new Exception("Failed to write the repository index.");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error resetting file: {ex.Message}");
+            }
+            finally
+            {
+                if (index != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_index_free(index);
                 }
             }
-            else
-            {
-                if (LibGit2Wrapper.git_index_add_bypath(index, filePath) != 0)
-                {
-                    throw new Exception($"Failed to add file to the repository index: {filePath}");
-                }
-            }
-
-            if (LibGit2Wrapper.git_index_write(index) != 0)
-            {
-                throw new Exception("Failed to write the repository index.");
-            }
-
-            LibGit2Wrapper.git_index_free(index);
         }
 
 

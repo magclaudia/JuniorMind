@@ -40,7 +40,7 @@ namespace GitClient.model
 
         public string GetFilePath()
         {
-            return FileName;
+            return FilePath;
         }
     }
 }
