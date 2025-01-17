@@ -64,7 +64,7 @@ namespace GitClient.ui
                 fileName = fileDiffs[0].fileName;
             }
 
-            currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentUnstageDiff(fileName)[0].diffs : new List<string>();
+            currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentDiff(fileName, "unstage")[0].diffs : new List<string>();
             Refresh(currentDiff);
         }
 
@@ -178,8 +178,8 @@ namespace GitClient.ui
 
         private void HandleFileSelectionChanged(object sender, FileSelectionChangedEventArgs e)
         {
-            List<string> currentDiff = e.IsStaged ? statusDiffService.GetCurrentStageDiff(e.FileName)[0].diffs
-                : statusDiffService.GetCurrentUnstageDiff(e.FileName)[0].diffs;
+            List<string> currentDiff = e.IsStaged ? statusDiffService.GetCurrentDiff(e.FileName, "stage")[0].diffs
+                : statusDiffService.GetCurrentDiff(e.FileName, "unstage")[0].diffs;
 
             Refresh(currentDiff);
         }

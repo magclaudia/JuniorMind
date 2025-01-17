@@ -29,14 +29,12 @@ namespace GitClient.ui
             List<ChangeAttribute> listOfChanges = new List<ChangeAttribute>();
             int count = 0;
             int y = 0;
-            string textToBeDisplay = "";
 
             if (typeOfChange == "unstage")
             {
                 listOfChanges = libGit2Repository.GetAllUnstagedChanges();
                 int maxVisibleChanges = dimensions.unstagedEnd - dimensions.unstagedStart + 1;
 
-                //count = listOfChanges.Count <= dimensions.unstagedEnd - dimensions.unstagedStart + 1 ? listOfChanges.Count : endIndex - startIndex + 1;
                 count = Math.Min(maxVisibleChanges, listOfChanges.Count - startIndex);
 
                 if (count + startIndex > listOfChanges.Count)
@@ -45,7 +43,6 @@ namespace GitClient.ui
                 }
 
                 y = dimensions.unstagedStart;
-                textToBeDisplay = " No changes found in the unstaging area.";
             }
             else
             {
@@ -60,7 +57,6 @@ namespace GitClient.ui
                 }
 
                 y = dimensions.stagedStart;
-                textToBeDisplay = " No changes found in the staging area.";
             }
 
             if (listOfChanges.Count > 0)
