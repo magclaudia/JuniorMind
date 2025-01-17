@@ -18,18 +18,18 @@ namespace GitClient.repository
             List<ChangeAttribute> unstagedChanges = new List<ChangeAttribute>();
 
             IntPtr diff = IntPtr.Zero;
+            IntPtr deltaPtr = IntPtr.Zero;
 
             try
             {
                 diff = GetDiff();
-
                 nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
 
                 if (numDeltas > 0)
                 {
                     for (UIntPtr i = 0; i < numDeltas; i++)
                     {
-                        IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
+                        deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
 
                         if (deltaPtr == IntPtr.Zero)
                         {
@@ -69,6 +69,10 @@ namespace GitClient.repository
         {
             List<ChangeAttribute> stagedChanges = new List<ChangeAttribute>();
             IntPtr repo = GetRepo();
+            IntPtr commitPtr = IntPtr.Zero;
+            IntPtr treePtr = IntPtr.Zero;
+            IntPtr index = IntPtr.Zero;
+            IntPtr diff = IntPtr.Zero;
 
             try
             {
@@ -77,17 +81,17 @@ namespace GitClient.repository
                     throw new Exception("Failed to get HEAD commitOid.");
                 }
 
-                if (LibGit2Wrapper.git_commit_lookup(out IntPtr commitPtr, repo, ref commitOid) != 0)
+                if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref commitOid) != 0)
                 {
                     throw new Exception("Failed to lookup commit.");
                 }
 
-                if (LibGit2Wrapper.git_commit_tree(out IntPtr treePtr, commitPtr) != 0)
+                if (LibGit2Wrapper.git_commit_tree(out treePtr, commitPtr) != 0)
                 {
                     throw new Exception("Failed to get the commit tree.");
                 }
 
-                if (LibGit2Wrapper.git_repository_index(out IntPtr index, repo) != 0)
+                if (LibGit2Wrapper.git_repository_index(out index, repo) != 0)
                 {
                     throw new Exception("Failed to get the repository index.");
                 }
@@ -102,7 +106,7 @@ namespace GitClient.repository
                                        LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_SHOW_UNTRACKED_CONTENT);
 
 
-                if (LibGit2Wrapper.git_diff_tree_to_index(out IntPtr diff, repo, treePtr, index, ref options) != 0)
+                if (LibGit2Wrapper.git_diff_tree_to_index(out diff, repo, treePtr, index, ref options) != 0)
                 {
                     throw new Exception("Failed to create diff.");
                 }
@@ -130,9 +134,32 @@ namespace GitClient.repository
                     }
                 }
             }
-            catch (Exception ex)
+            finally
             {
-                Console.WriteLine($"Error getting staged changes: {ex.Message}");
+                if (repo != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_repository_free(repo);
+                }
+
+                if (commitPtr != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_commit_free(commitPtr);
+                }
+
+                if (treePtr != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_tree_free(treePtr);
+                }
+
+                if (index != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_index_free(index);
+                }
+
+                if (diff != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_diff_free(diff);
+                }
             }
 
             return stagedChanges;
@@ -142,8 +169,8 @@ namespace GitClient.repository
         public void StageFile(ChangeAttribute unstagedFile)
         {
             IntPtr repo = GetRepo();
-            string filePath = unstagedFile.GetFilePath();
             IntPtr index = IntPtr.Zero;
+            string filePath = unstagedFile.GetFilePath();
 
             try
             {
@@ -178,12 +205,13 @@ namespace GitClient.repository
                 }
 
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error resetting file: {ex.Message}");
-            }
             finally
             {
+                if (repo != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_repository_free(repo);
+                }
+
                 if (index != IntPtr.Zero)
                 {
                     LibGit2Wrapper.git_index_free(index);
@@ -195,9 +223,10 @@ namespace GitClient.repository
         public void UnstageFile(ChangeAttribute stagedFile)
         {
             IntPtr repo = GetRepo();
-            string filePath = stagedFile.GetFilePath();
             IntPtr headRef = IntPtr.Zero;
             IntPtr headCommit = IntPtr.Zero;
+            string filePath = stagedFile.GetFilePath();
+            LibGit2Wrapper.GitStrArray pathspec = new LibGit2Wrapper.GitStrArray();
 
             try
             {
@@ -222,7 +251,7 @@ namespace GitClient.repository
                 IntPtr nativeArray = Marshal.AllocCoTaskMem(IntPtr.Size * strArray.Length);
                 Marshal.Copy(strArray, 0, nativeArray, strArray.Length);
 
-                var pathspec = new LibGit2Wrapper.GitStrArray
+                pathspec = new LibGit2Wrapper.GitStrArray
                 {
                     strings = nativeArray,
                     count = 1
@@ -233,24 +262,23 @@ namespace GitClient.repository
                     throw new Exception($"Fail to reset file {filePath}.");
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error resetting file: {ex.Message}");
-            }
             finally
             {
-                // Free the repository and target commit pointers
-                //if (repo != IntPtr.Zero)
-                //{
-                //    LibGit2Wrapper.git_repository_free(repo);
-                //}
+                if (repo != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_repository_free(repo);
+                }
 
-                //if (targetCommit != IntPtr.Zero)
-                //{
-                //    Marshal.FreeCoTaskMem(targetCommit);
-                //}
+                if (headRef != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_reference_free(headRef);
+                }
+
+                if (headCommit != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_object_free(headCommit);
+                }
             }
-
         }
 
         public IntPtr GetDiff()

@@ -413,12 +413,15 @@ namespace GitClient
         public static extern int git_index_write(IntPtr index);
 
 
-
-        //[DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int git_index_remove(IntPtr index, string path, int stage);
-
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_reset_default(IntPtr repo, IntPtr target, ref GitStrArray pathspec);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void git_object_free(IntPtr objectFree);
+
+
+        
 
 
 
