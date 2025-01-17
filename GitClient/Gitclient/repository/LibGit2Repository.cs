@@ -10,51 +10,54 @@ namespace GitClient.repository
 {
     public class LibGit2Repository
     {
-
-        private LibGit2Wrapper.GitDiffOptions options;
-
-        public LibGit2Repository()
-        {
-            options = new LibGit2Wrapper.GitDiffOptions();
-        }
+        private LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
 
         public List<ChangeAttribute> GetAllUnstagedChanges()
         {
             List<ChangeAttribute> stagedChanges = GetAllStageChanges();
             List<ChangeAttribute> unstagedChanges = new List<ChangeAttribute>();
-            IntPtr diff = GetDiff();
 
-            nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
+            IntPtr diff = IntPtr.Zero;
 
-            if (numDeltas > 0)
+            try
             {
-                for (UIntPtr i = 0; i < numDeltas; i++)
+                diff = GetDiff();
+
+                nuint numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
+
+                if (numDeltas > 0)
                 {
-                    IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
-
-                    if (deltaPtr == IntPtr.Zero)
+                    for (UIntPtr i = 0; i < numDeltas; i++)
                     {
-                        throw new Exception("Failed to get delta.");
+                        IntPtr deltaPtr = LibGit2Wrapper.git_diff_get_delta(diff, i);
+
+                        if (deltaPtr == IntPtr.Zero)
+                        {
+                            throw new Exception("Failed to get delta.");
+                        }
+
+                        var delta = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(deltaPtr);
+
+                        string filePath = Marshal.PtrToStringAnsi(delta.new_file.path)
+                                  ?? Marshal.PtrToStringAnsi(delta.old_file.path)
+                                  ?? throw new InvalidOperationException("File path is null");
+
+                        string fileName = Path.GetFileName(filePath)!;
+
+                        if (stagedChanges.Any(s => s.GetFilePath() == filePath))
+                        {
+                            continue;
+                        }
+
+                        unstagedChanges.Add(new ChangeAttribute(Symbol(delta), fileName, filePath));
                     }
-
-                    var delta = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(deltaPtr);
-
-                    string filePath = Marshal.PtrToStringAnsi(delta.new_file.path)
-                              ?? Marshal.PtrToStringAnsi(delta.old_file.path)
-                              ?? throw new InvalidOperationException("File path is null");
-
-                    string fileName = Path.GetFileName(filePath)!;
-
-                    //
-
-                    if (stagedChanges.Any(s => s.GetFilePath() == filePath))
-                    {
-                        continue;
-                    }
-
-                    //
-
-                    unstagedChanges.Add(new ChangeAttribute(Symbol(delta), fileName, filePath));
+                }
+            }
+            finally
+            {
+                if (diff != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_diff_free(diff);
                 }
             }
 
@@ -250,15 +253,11 @@ namespace GitClient.repository
 
         }
 
-
         public IntPtr GetDiff()
         {
             IntPtr index = IntPtr.Zero;
-            IntPtr headTree = IntPtr.Zero;
-            IntPtr repo = GetRepo();
             IntPtr diff = IntPtr.Zero;
-            IntPtr headRef = IntPtr.Zero;
-            IntPtr headCommit = IntPtr.Zero;
+            IntPtr repo = GetRepo();
 
             try
             {
@@ -272,21 +271,6 @@ namespace GitClient.repository
                     throw new Exception("Failed to read index.");
                 }
 
-                if (LibGit2Wrapper.git_repository_head(out headRef, repo) != 0)
-                {
-                    throw new Exception("Failed to get HEAD reference.");
-                }
-
-                if (LibGit2Wrapper.git_reference_peel(out headCommit, headRef, LibGit2Wrapper.GitObjectType.GIT_OBJECT_COMMIT) != 0)
-                {
-                    throw new Exception("Failed to resolve HEAD to commit.");
-                }
-
-                if (LibGit2Wrapper.git_commit_tree(out headTree, headCommit) != 0)
-                {
-                    throw new Exception("Failed to get tree from HEAD commit.");
-                }
-
                 options.flags |= (uint)(LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_INCLUDE_UNTRACKED |
                                         LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_RECURSE_UNTRACKED_DIRS |
                                         LibGit2Wrapper.DiffOptionFlags.GIT_DIFF_SHOW_UNTRACKED_CONTENT);
@@ -298,32 +282,10 @@ namespace GitClient.repository
             }
             finally
             {
-                //if (index != IntPtr.Zero)
-                //{
-                //    LibGit2Wrapper.git_index_free(index);
-                //}
-
-                //if (headRef != IntPtr.Zero)
-                //{
-                //    LibGit2Wrapper.git_reference_free(headRef);
-                //}
-
-                //if (headCommit != IntPtr.Zero)
-                //{
-                //    LibGit2Wrapper.git_tree_free(headCommit);
-                //}
-
-                //if (headTree != IntPtr.Zero)
-                //{
-                //    LibGit2Wrapper.git_diff_free(headTree);
-                //}
-
-                //if (diff != IntPtr.Zero)
-                //{
-                //    LibGit2Wrapper.git_diff_free(diff);
-                //}
-
-                //LibGit2Wrapper.git_repository_free(repo);
+                if (index != IntPtr.Zero)
+                {
+                    LibGit2Wrapper.git_index_free(index);
+                }
             }
 
             return diff;

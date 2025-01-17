@@ -6,9 +6,16 @@ namespace GitClient
     {
         static void Main()
         {
-            Ui ui = new Ui();
-            Console.Clear();
-            ui.Show(UiLayoutTypes.GitStatus);
+            try
+            {
+                Ui ui = new Ui();
+                Console.Clear();
+                ui.Show(UiLayoutTypes.GitStatus);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}. ");
+            }
         }
     }
 }

@@ -122,9 +122,8 @@ namespace GitClient.ui
                     if (ButtomPress.Type.enter == true)
                     {
                         currentIndex = currentUnstagedChanges.Count - 1;
-                        string fileName = currentUnstagedChanges.Last().GetFileName();
-                        OnFileSelectionChanged(fileName, isStaged: false);
                         fileNumber = statusService.GetAllUnstagedChanges().Count;
+                        SetY();
                     }
 
                     blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
@@ -268,37 +267,33 @@ namespace GitClient.ui
                             ButtomPress.Type.up = false;
                             ButtomPress.Type.down = false;
                             statusService.StageFile(currentUnstagedChanges[currentIndex]);
-                           
-                            clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart-1, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
-                            clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
+                            currentUnstagedChanges = statusService.GetCurrentChanges(GetStartIndex(), GetEndIndex(), "unstage");
+                            clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart - 1, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
+                            clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart - 1, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
                             clear.ClearDiff(y);
-                            totalNumberOfFiles = statusService.GetAllUnstagedChanges().Count;
 
-                            if (currentIndex > 0 && totalNumberOfFiles > 0)
+                            if (currentIndex > 0 && currentUnstagedChanges.Count > 0)
                             {
                                 y--;
                                 currentIndex--;
-                               // fileNumber--;
+                                fileNumber--;
                                 endIndex--;
                                 OnFileSelectionChanged(currentUnstagedChanges[currentIndex].GetFileName(), isStaged: false);
                                 Refresh();
                                 blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
-                                //communicationService.SetLastIndexForDiff(indexForDiff);
                             }
-                            else if (currentIndex == 0 && totalNumberOfFiles > 0)
+                            else if (currentIndex == 0 && currentUnstagedChanges.Count > 0)
                             {
                                 Refresh();
                                 OnFileSelectionChanged(currentUnstagedChanges[currentIndex].GetFileName(), isStaged: false);
                                 blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
-
-                                //communicationService.SetLastIndexForDiff(indexForDiff);
                             }
                             else
                             {
                                 Console.SetCursorPosition(2, dimensions.changesPanelHeight / 2 + dimensions.tabHeight);
                                 string text = TextSettings.GetTextLength("No changes found in the unstaged area.", dimensions.changesPanelWidth - 4);
                                 Console.Write(text);
-                                OnFileSelectionChanged(currentUnstagedChanges[currentIndex].GetFileName(), isStaged: true);
+                                OnFileSelectionChanged(statusService.GetAllStageChanges()[currentIndex].GetFileName(), isStaged: true);
                                 ButtomPress.Type.workingInStagePanel = true;
                             }
 
@@ -307,8 +302,6 @@ namespace GitClient.ui
                                 fileNumber = 0;
                             }
                             
-
-                            //indexForDiff = 0;
                             communicationService.NavigateToStagedPanel();
                         }
                         break;
@@ -338,6 +331,18 @@ namespace GitClient.ui
         protected virtual void OnFileSelectionChanged(string fileName, bool isStaged) 
         {
             FileSelectionChanged?.Invoke(this, new FileSelectionChangedEventArgs(fileName, isStaged));
+        }
+
+        private void SetY()
+        {
+            if (totalNumberOfFiles > dimensions.unstagedEnd)
+            {
+                y = dimensions.unstagedEnd;
+            }
+            else
+            {
+                y = dimensions.tabHeight + totalNumberOfFiles + 2;
+            }
         }
 
         private void DrawPanel(List<ChangeAttribute> currentUnstagedChanges)

@@ -74,14 +74,7 @@ namespace GitClient.ui
                     listOfChanges = new List<ChangeAttribute>(); 
                 }
             }
-            else
-            {
-                listOfChanges.Clear();
-                Console.SetCursorPosition(1, dimensions.unstagedStart);
-                string text = Tabs.SetStatusTextLength(textToBeDisplay, Console.WindowWidth / 2 - 3);
-                Console.WriteLine(text);
-            }
-
+            
             return listOfChanges;
         }
 
