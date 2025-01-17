@@ -10,37 +10,37 @@ namespace GitClient.model
 {
     public class ChangeAttribute
     {
-        private string symbol { get; }
-        private string fileName { get; }
-        private string filePath { get; }
+        private string Symbol { get; }
+        private string FileName { get; }
+        private string FilePath { get; }
 
         
 
         public ChangeAttribute(string changeType, string fileName, string filePath)
         {
-            this.fileName = fileName;
-            this.filePath = filePath;
-            symbol = changeType;
+            FileName = fileName;
+            FilePath = filePath;
+            Symbol = changeType;
         }
 
         public string Display()
         {
-            return this.symbol + "    " + this.fileName;
+            return this.Symbol + "    " + this.FileName;
         }
 
         public string GetSymbol()
         {
-            return symbol;
+            return Symbol;
         }
 
         public string GetFileName()
         {
-            return fileName;
+            return FileName;
         }
 
         public string GetFilePath()
         {
-            return filePath;
+            return FileName;
         }
     }
 }
