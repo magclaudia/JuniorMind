@@ -262,7 +262,8 @@ namespace GitClient.ui
                                 if (totalNumberOfFiles > 0)
                                 {
                                     ButtomPress.Type.right = true;
-                                    clear.ClearDiff(y);
+                                    Console.Clear();
+                                    communicationService.NavigateToTabPanel();
                                     communicationService.SetCurrentIndex(currentIndex);
                                     communicationService.NavigateToDiffPanel();
                                 }

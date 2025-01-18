@@ -12,6 +12,7 @@ namespace GitClient.service
         private UnstagedChangesPanel unstagedChangesPanel;
         private StagedChangesPanel stagedChangesPanel;
         private DiffPanel diffPanel;
+        private TabsPanel tabsPanel;
         private string lastFileName;
         private string fileName;
         private int index;
@@ -30,6 +31,11 @@ namespace GitClient.service
         public void RegisterDiffPanel(DiffPanel panel)
         {
             diffPanel = panel;  
+        }
+
+        public void RegisterTabPanel(TabsPanel panel)
+        {
+            tabsPanel = panel;
         }
 
         public void SetLastUnstageFileName(string currentFileName)
@@ -98,8 +104,17 @@ namespace GitClient.service
             }
         }
 
+        public void NavigateToTabPanel()
+        {
+            if (tabsPanel != null)
+            {
+                tabsPanel.Show();
+            }
+        }
+
         public void NavigateToStatusInitialState()
         {
+            tabsPanel.Show();
             diffPanel.Show();
 
             if (ButtomPress.Type.workingInStagePanel == true)

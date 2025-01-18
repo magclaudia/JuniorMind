@@ -51,7 +51,6 @@ namespace GitClient.ui
                 x = 0;
                 width = Console.WindowWidth;
                 EndAt = Console.WindowHeight - 1;
-                Console.WriteLine("Ddd");
 
                 while (startFrom <= EndAt)
                 {

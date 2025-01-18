@@ -130,7 +130,6 @@ namespace GitClient.ui
                 }
                 else if (ButtomPress.Type.workingInUnstagePanel == true)
                 {
-                    //ButtomPress.Type.escape = false;
                     blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                 }
             }
@@ -317,7 +316,8 @@ namespace GitClient.ui
                                 if (totalNumberOfFiles > 0)
                                 {
                                     ButtomPress.Type.right = true;
-                                    clear.ClearDiff(y);
+                                    Console.Clear();
+                                    communicationService.NavigateToTabPanel();
                                     communicationService.SetCurrentIndex(currentIndex);
                                     communicationService.NavigateToDiffPanel();
                                 }
@@ -391,7 +391,7 @@ namespace GitClient.ui
 
         private void GetUnstagedFiles(List<ChangeAttribute> currentUnstagedChanges)
         {
-            if (y == dimensions.unstagedEnd && ButtomPress.Type.down == true || y == dimensions.unstagedStart && ButtomPress.Type.up == true || ButtomPress.Type.escape == true)
+            if (y == dimensions.unstagedEnd && ButtomPress.Type.down == true || y == dimensions.unstagedStart && ButtomPress.Type.up == true)
             {
                 GetAllFiles(currentUnstagedChanges);
                 blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);

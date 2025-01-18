@@ -13,6 +13,7 @@ namespace GitClient.ui
         private UnstagedChangesPanel unstangedChangesPanel;
         private StagedChangesPanel stagedChangesPanel;
         private DiffPanel diffPanel;
+        private TabsPanel tabsPanel;
 
         public Ui() 
         {
@@ -20,6 +21,7 @@ namespace GitClient.ui
             stagedChangesPanel = PanelFactory.CreateStagedChangesPanel();
             diffPanel = PanelFactory.StatusDiffPanel();
             diffPanel.SubcribeToPanel(unstangedChangesPanel, stagedChangesPanel);
+            tabsPanel = PanelFactory.Tabs();
             layoutTypes.Add(UiLayoutTypes.GitStatus, new List<UiComponent>() { diffPanel, stagedChangesPanel, unstangedChangesPanel });
             layoutTypes.Add(UiLayoutTypes.DiffStatus, new List<UiComponent>() { diffPanel });
         }

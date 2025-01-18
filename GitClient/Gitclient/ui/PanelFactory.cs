@@ -39,5 +39,13 @@ namespace GitClient.ui
             panelCommunicationService.RegisterDiffPanel(panel);
             return panel;
         }
+
+        public static TabsPanel Tabs()
+        {
+            TabsPanel panel = new TabsPanel();
+            panel.SetCommunicationService(panelCommunicationService);
+            panelCommunicationService.RegisterTabPanel(panel);
+            return panel;
+        }
     }
 }

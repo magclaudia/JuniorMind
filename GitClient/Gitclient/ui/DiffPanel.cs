@@ -153,9 +153,8 @@ namespace GitClient.ui
                     case ConsoleKey.Escape:
                         {
                             ButtomPress.Type.diffMovements = false;
-                            clear.ClearDiff(y);
+                            Console.Clear();
                             ButtomPress.Type.right = false;
-                           // ButtomPress.Type.escape = true;
                             currentIndex = communicationService.GetCurrentIndex();
                             communicationService.NavigateToStatusInitialState();
                         }
@@ -203,7 +202,7 @@ namespace GitClient.ui
 
         private void DisplayDiff(List<string> currentDiff)
         {
-            int stopAt = currentDiff.Count() > height ? height : currentDiff.Count();
+            int stopAt = currentDiff.Count() > height - 2 ? height - 2 : currentDiff.Count();
             int width = 0;
 
             if (ButtomPress.Type.right == true)

@@ -5,18 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GitClient.repository;
+using GitClient.service;
 
 namespace GitClient.ui
 {
     public class TabsPanel
     {
         public GetProjectPath projectPath = new GetProjectPath();
+        private PanelCommunicationService communicationService = new PanelCommunicationService();
 
         public void Show()
         {
             DrawTabsPanel();
             GetTabsNames();
             GetProjectPath();
+        }
+
+        public void SetCommunicationService(PanelCommunicationService service)
+        {
+            communicationService = service;
         }
 
         private void DrawTabsPanel()

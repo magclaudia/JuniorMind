@@ -16,7 +16,6 @@ namespace GitClient.ui
             public static bool right;
             public static bool deleted;
             public static bool diffMovements;
-            public static bool escape;
             public static bool enter;
             public static bool workingInUnstagePanel;
             public static bool workingInStagePanel;
@@ -29,7 +28,6 @@ namespace GitClient.ui
                 right = false;
                 deleted = false;
                 diffMovements = false;
-                escape = false;
                 enter = false;
                 workingInUnstagePanel = false;
                 workingInStagePanel = false;
