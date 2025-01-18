@@ -13,8 +13,8 @@ namespace GitClient.service
         private StagedChangesPanel stagedChangesPanel;
         private DiffPanel diffPanel;
         private TabsPanel tabsPanel;
-        private string lastFileName;
-        private string fileName;
+        private string lastFileName = string.Empty;
+        private string fileName = string.Empty;
         private int index;
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
