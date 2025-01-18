@@ -13,24 +13,23 @@ namespace GitClient.service
 {
     public class StatusDiffService
     {
-        private readonly UnstageLibGit2DiffRepository unstageDiffRepository;
-        private readonly StageLibGit2DiffRepository stageDiffRepository;
-        private readonly LibGit2Repository libGit2Repository;
+        private readonly LibGit2RepositoryDiff libGit2RepositoryDiff;
+       // private readonly StageLibGit2DiffRepository stageDiffRepository;
+        private readonly LibGit2RepositoryChanges libGit2Repository;
         private PanelCommunicationService communicationService;
-        private string fileName;
 
-        public StatusDiffService(UnstageLibGit2DiffRepository unstageDiffRepositoryDiff, StageLibGit2DiffRepository stageDiffRepository, LibGit2Repository libGit2Repository, PanelCommunicationService communicationService)
+
+        public StatusDiffService(LibGit2RepositoryDiff libGit2RepositoryDiff,/* StageLibGit2DiffRepository stageDiffRepository, */LibGit2RepositoryChanges libGit2Repository, PanelCommunicationService communicationService)
         {
-            this.unstageDiffRepository = unstageDiffRepositoryDiff;
+            this.libGit2RepositoryDiff = libGit2RepositoryDiff;
             this.libGit2Repository = libGit2Repository;
-            this.stageDiffRepository = stageDiffRepository;
+           // this.stageDiffRepository = stageDiffRepository;
             this.communicationService = communicationService;
-            fileName = string.Empty;
         }
 
         public List<FileDiff> GetAllStageDiffs()
         {
-            return stageDiffRepository.GetAllStageDiffs();
+            return libGit2RepositoryDiff.GetAllStageDiffs();
         }
 
         public List<FileDiff> GetCurrentDiff(string fileName, string currentPanel)
@@ -40,7 +39,7 @@ namespace GitClient.service
 
             if (currentPanel == "unstage")
             {
-                diff = unstageDiffRepository.GetAllUnstagedDiff(libGit2Repository.GetDiff());
+                diff = libGit2RepositoryDiff.GetAllUnstagedDiff(libGit2Repository.GetDiff());
             }
             else 
             {
@@ -60,50 +59,9 @@ namespace GitClient.service
             return list;
         }
 
-        //public List<FileDiff> GetCurrentStageDiff(string fileName)
-        //{
-        //    List<FileDiff> list = new List<FileDiff>();
-        //    List<FileDiff> diff = GetAllStageDiffs();
-
-        //    foreach(var entry in diff)
-        //    {
-        //        if (entry.fileName == fileName)
-        //        {
-        //            list.Add(entry);
-        //            communicationService.SetCurrentFileName(entry.fileName);
-        //            break;
-        //        }
-        //    }
-
-        //    return list;
-        //}
-
         public List<FileDiff> GetAllUnstageDiffs()
         {
-            return unstageDiffRepository.GetAllUnstagedDiff(libGit2Repository.GetDiff());
-        }
-
-        //public List<FileDiff> GetCurrentUnstageDiff(string fileName)
-        //{
-        //    List<FileDiff> list = new List<FileDiff>();
-        //    List<FileDiff> diff = unstageDiffRepository.GetAllUnstagedDiff(libGit2Repository.GetDiff());
-            
-        //    foreach (var entry in diff)
-        //    {
-        //        if (entry.fileName == fileName)
-        //        {
-        //            list.Add(entry);
-        //            SetCurrentFileName(entry.fileName);
-        //            break;
-        //        }
-        //    }
-
-        //    return list;
-        //}
-
-        public void SetCurrentFileName(string file) 
-        {
-            fileName = file;    
+            return libGit2RepositoryDiff.GetAllUnstagedDiff(libGit2Repository.GetDiff());
         }
     }
 }

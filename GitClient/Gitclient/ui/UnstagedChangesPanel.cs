@@ -200,7 +200,7 @@ namespace GitClient.ui
                                 OnFileSelectionChanged(communicationService.GetCurrentFileName(), isStaged: false);
                             }
                             
-                            if (currentIndex == totalNumberOfFiles - 1)
+                            if (fileNumber == totalNumberOfFiles)
                             {
                                 checkLastFile++;
                             }
@@ -247,7 +247,6 @@ namespace GitClient.ui
                                 {
                                     currentIndex--;
                                     y--;
-                                    //indexForDiff--;
                                 }
 
                                 if (fileNumber > 0)
@@ -271,12 +270,13 @@ namespace GitClient.ui
                             clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart - 1, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
                             clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart - 1, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
                             clear.ClearDiff(y);
+                            fileNumber--;
 
                             if (currentIndex > 0 && currentUnstagedChanges.Count > 0)
                             {
                                 y--;
                                 currentIndex--;
-                                fileNumber--;
+                                //fileNumber--;
                                 endIndex--;
                                 OnFileSelectionChanged(currentUnstagedChanges[currentIndex].GetFileName(), isStaged: false);
                                 Refresh();
@@ -313,7 +313,7 @@ namespace GitClient.ui
                                 {
                                     ButtomPress.Type.right = true;
                                     clear.ClearDiff(y);
-                                    blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+                                    communicationService.NavigateToDiffPanel();
                                 }
                             }
                         }
@@ -401,12 +401,6 @@ namespace GitClient.ui
                     blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                 }
             }
-
-            //if (ButtomPress.Type.enter == true)
-            //{
-            //    blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
-            //    ButtomPress.Type.enter = false;
-            //}
         }
             
         public void GetAllFiles(List<ChangeAttribute> currentUnstagedChanges)

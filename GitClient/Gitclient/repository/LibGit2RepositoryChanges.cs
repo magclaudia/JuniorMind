@@ -8,7 +8,7 @@ using GitClient.model;
 
 namespace GitClient.repository
 {
-    public class LibGit2Repository
+    public class LibGit2RepositoryChanges
     {
         private LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
 

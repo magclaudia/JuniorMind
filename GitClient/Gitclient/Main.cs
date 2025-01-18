@@ -15,6 +15,7 @@ namespace GitClient
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}. ");
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }

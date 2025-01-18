@@ -96,7 +96,7 @@ namespace GitClient.ui
             else
             {
                 Console.SetCursorPosition(2, dimensions.unstagedEnd + 4);
-                string text = TextSettings.GetTextLength("No changes found in the stage area.", dimensions.changesPanelWidth - 4);
+                string text = TextSettings.GetTextLength("No changes found in the staged area.", dimensions.changesPanelWidth - 4);
                 Console.Write(text);
             }
 
@@ -193,7 +193,6 @@ namespace GitClient.ui
                                     fileNumber--;
                                 }
 
-                                //communicationService.SetCurrentFileName(currentStagedChanges[currentIndex].GetFileName());
                                 blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                                 indicator.GetIndicator(currentIndex, dimensions.stagedEnd - 1, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.stagedStart, dimensions.stagedEnd);
                                 OnFileSelectionChanged(currentStagedChanges[currentIndex].GetFileName(), isStaged: true);
@@ -213,7 +212,6 @@ namespace GitClient.ui
                                 clear.ClearDiff(y);
                                 string lastUntageFileName = statusService.GetAllUnstagedChanges().Last().GetFileName();
                                 OnFileSelectionChanged(lastUntageFileName, isStaged: false);
-                                //clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart - 1, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
                                 ButtomPress.Type.workingInStagePanel = false;
                                 ButtomPress.Type.workingInUnstagePanel = false;
                                 clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");

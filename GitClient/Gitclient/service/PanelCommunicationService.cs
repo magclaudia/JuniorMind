@@ -11,6 +11,7 @@ namespace GitClient.service
     {
         private UnstagedChangesPanel unstagedChangesPanel;
         private StagedChangesPanel stagedChangesPanel;
+        private DiffPanel diffPanelFullSize;
         private string lastFileName;
         private string fileName;
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
@@ -25,15 +26,10 @@ namespace GitClient.service
             stagedChangesPanel = panel;
         }
 
-        //public void SetLastIndexForDiff(int index)
-        //{
-        //    lastIndexForDiff = index;
-        //}
-
-        //public int GetLastIndexForDiff()
-        //{
-        //    return lastIndexForDiff;
-        //}
+        public void RegisterDiffPanel(DiffPanel panel)
+        {
+            diffPanelFullSize = panel;  
+        }
 
         public void SetLastUnstageFileName(string currentFileName)
         {
@@ -80,6 +76,14 @@ namespace GitClient.service
                 Console.SetCursorPosition(2, dimensions.unstagedEnd + 4);
                 string text = TextSettings.GetTextLength("No changes found in the stage area.", dimensions.changesPanelWidth - 4);
                 Console.Write(text);
+            }
+        }
+
+        public void NavigateToDiffPanel()
+        {
+            if (diffPanelFullSize != null)
+            {
+                diffPanelFullSize.Show();
             }
         }
     }

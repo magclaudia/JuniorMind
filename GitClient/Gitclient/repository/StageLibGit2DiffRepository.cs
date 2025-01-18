@@ -11,12 +11,12 @@ namespace GitClient.repository
 {
     public class StageLibGit2DiffRepository
     {
-        private LibGit2Repository libGit2Repository;
+        private LibGit2RepositoryChanges libGit2Repository;
         private LibGit2Wrapper.GitDiffOptions options;
         private List<FileDiff> stageDiffs;
         private Dictionary<string, List<string>> eachFileDiff;
 
-        public StageLibGit2DiffRepository(LibGit2Repository libGit2Repository)
+        public StageLibGit2DiffRepository(LibGit2RepositoryChanges libGit2Repository)
         {
             this.libGit2Repository = libGit2Repository;
             options = new LibGit2Wrapper.GitDiffOptions();

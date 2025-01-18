@@ -10,12 +10,12 @@ namespace GitClient.ui
 {
     public class PanelFactory
     {
-        private static LibGit2Repository libGit2Repository = new LibGit2Repository();
-        private static StatusService statusService = new StatusService(libGit2Repository);
-        private static UnstageLibGit2DiffRepository unstagelibGit2DiffRepository = new UnstageLibGit2DiffRepository(libGit2Repository);
-        private static StageLibGit2DiffRepository stageLibGit2DiffRepository = new StageLibGit2DiffRepository(libGit2Repository);
+        private static LibGit2RepositoryChanges libGit2RepositoryChanges = new LibGit2RepositoryChanges();
+        private static StatusService statusService = new StatusService(libGit2RepositoryChanges);
+        private static LibGit2RepositoryDiff libGit2RepositoryDiff = new LibGit2RepositoryDiff(libGit2RepositoryChanges);
+       // private static StageLibGit2DiffRepository stageLibGit2DiffRepository = new StageLibGit2DiffRepository(libGit2Repository);
         private static PanelCommunicationService panelCommunicationService = new PanelCommunicationService();
-        private static StatusDiffService statusDiffService = new StatusDiffService(unstagelibGit2DiffRepository, stageLibGit2DiffRepository, libGit2Repository, panelCommunicationService);
+        private static StatusDiffService statusDiffService = new StatusDiffService(libGit2RepositoryDiff, /*stageLibGit2DiffRepository, */libGit2RepositoryChanges, panelCommunicationService);
 
         public static UnstagedChangesPanel CreateUnstagedChangesPanel()
         {
@@ -23,7 +23,6 @@ namespace GitClient.ui
             panel.SetCommunicationService(panelCommunicationService);
             panelCommunicationService.RegisterUnstagedChangesPanel(panel);
             return panel;
-            //return new UnstagedChangesPanel(statusService, statusDiffService);
         }
 
         public static StagedChangesPanel CreateStagedChangesPanel()
@@ -32,12 +31,14 @@ namespace GitClient.ui
             panel.SetCommunicationService(panelCommunicationService);
             panelCommunicationService.RegisterStagedChangesPanel(panel);
             return panel;
-            //return new StagedChangesPanel(statusDiffService, statusService);
         }
 
         public static DiffPanel StatusDiffPanel()
         {
-            return new DiffPanel(statusDiffService, statusService);
+            DiffPanel panel = new DiffPanel(statusDiffService, statusService, panelCommunicationService);
+            panel.SetCommunicationService(panelCommunicationService);
+            panelCommunicationService.RegisterDiffPanel(panel);
+            return panel;
         }
     }
 }

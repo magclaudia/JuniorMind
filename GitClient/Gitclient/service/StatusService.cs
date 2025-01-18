@@ -10,10 +10,10 @@ namespace GitClient.ui
 {
     public class StatusService
     {
-        private readonly LibGit2Repository libGit2Repository;
+        private readonly LibGit2RepositoryChanges libGit2Repository;
         private DrawTabs.Dimensions dimensions;
 
-        public StatusService(LibGit2Repository libGit2Repository)
+        public StatusService(LibGit2RepositoryChanges libGit2Repository)
         {
             this.libGit2Repository = libGit2Repository;
             dimensions = new DrawTabs.Dimensions();
