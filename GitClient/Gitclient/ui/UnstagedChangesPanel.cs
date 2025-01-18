@@ -128,6 +128,11 @@ namespace GitClient.ui
 
                     blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                 }
+                else if (ButtomPress.Type.workingInUnstagePanel == true)
+                {
+                    //ButtomPress.Type.escape = false;
+                    blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+                }
             }
             else
             {
@@ -313,6 +318,7 @@ namespace GitClient.ui
                                 {
                                     ButtomPress.Type.right = true;
                                     clear.ClearDiff(y);
+                                    communicationService.SetCurrentIndex(currentIndex);
                                     communicationService.NavigateToDiffPanel();
                                 }
                             }

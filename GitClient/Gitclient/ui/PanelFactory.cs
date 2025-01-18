@@ -13,9 +13,8 @@ namespace GitClient.ui
         private static LibGit2RepositoryChanges libGit2RepositoryChanges = new LibGit2RepositoryChanges();
         private static StatusService statusService = new StatusService(libGit2RepositoryChanges);
         private static LibGit2RepositoryDiff libGit2RepositoryDiff = new LibGit2RepositoryDiff(libGit2RepositoryChanges);
-       // private static StageLibGit2DiffRepository stageLibGit2DiffRepository = new StageLibGit2DiffRepository(libGit2Repository);
         private static PanelCommunicationService panelCommunicationService = new PanelCommunicationService();
-        private static StatusDiffService statusDiffService = new StatusDiffService(libGit2RepositoryDiff, /*stageLibGit2DiffRepository, */libGit2RepositoryChanges, panelCommunicationService);
+        private static StatusDiffService statusDiffService = new StatusDiffService(libGit2RepositoryDiff, libGit2RepositoryChanges, panelCommunicationService);
 
         public static UnstagedChangesPanel CreateUnstagedChangesPanel()
         {

@@ -56,12 +56,24 @@ namespace GitClient.ui
         public override void Show()
         {
             y = dimensions.tabHeight + 2;
-            List<FileDiff> fileDiffs = statusDiffService.GetAllUnstageDiffs();
+            List<FileDiff> fileDiffs = new List<FileDiff>();
+            string currentPanel;
+
+            if (ButtomPress.Type.workingInStagePanel == true)
+            {
+                fileDiffs = statusDiffService.GetAllStageDiffs();
+                currentPanel = "stage";
+            }
+            else
+            {
+                fileDiffs = statusDiffService.GetAllUnstageDiffs();
+                currentPanel = "unstage";
+            }
             
             if (fileDiffs.Count > 0)
             {
                 string fileName = fileDiffs[currentIndex].fileName;
-                currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentDiff(fileName, "unstage")[0].diffs : new List<string>();
+                currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentDiff(fileName, currentPanel)[0].diffs : new List<string>();
             }
 
             Refresh(currentDiff);
@@ -107,7 +119,7 @@ namespace GitClient.ui
 
                                 currentIndex++;
                                 blueBox.SetBlueBox((1, y), currentDiff[currentIndex], Console.WindowWidth - 3);
-                                //indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y - 1, height - 1);
+                                indicator.GetIndicator(currentIndex, height - 1, currentDiff.Count, Console.WindowWidth - 1, y - 1, height - 1);
                             }
                         }
                         break;
@@ -134,18 +146,18 @@ namespace GitClient.ui
 
                                 currentIndex--;
                                 blueBox.SetBlueBox((1, y), currentDiff[currentIndex], Console.WindowWidth - 3);
-                                //indicator.GetIndicator(currentIndex, height - 1, diffSize, Console.WindowWidth - 1, y, height);
+                                indicator.GetIndicator(currentIndex, height - 1, currentDiff.Count, Console.WindowWidth - 1, y, height);
                             }
                         }
                         break;
                     case ConsoleKey.Escape:
                         {
                             ButtomPress.Type.diffMovements = false;
-                            ButtomPress.Type.escape = true;
-                            Console.Clear();
+                            clear.ClearDiff(y);
                             ButtomPress.Type.right = false;
-                            ButtomPress.Type.escape = false;
-                            ButtomPress.Type.deleted = false;
+                           // ButtomPress.Type.escape = true;
+                            currentIndex = communicationService.GetCurrentIndex();
+                            communicationService.NavigateToStatusInitialState();
                         }
                         break;
                 }

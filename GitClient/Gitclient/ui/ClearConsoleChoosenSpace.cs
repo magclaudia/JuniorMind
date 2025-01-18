@@ -51,11 +51,12 @@ namespace GitClient.ui
                 x = 0;
                 width = Console.WindowWidth;
                 EndAt = Console.WindowHeight - 1;
+                Console.WriteLine("Ddd");
 
                 while (startFrom <= EndAt)
                 {
                     Console.SetCursorPosition(x, startFrom);
-                    Console.Write(new string(' ', width));
+                    Console.Write(new string(' ', Console.WindowWidth));
                     startFrom++;
                 }
             }

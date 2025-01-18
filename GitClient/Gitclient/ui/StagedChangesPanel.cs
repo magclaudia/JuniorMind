@@ -263,13 +263,8 @@ namespace GitClient.ui
                                 {
                                     ButtomPress.Type.right = true;
                                     clear.ClearDiff(y);
-                                    //lastValueOfY = y;
-                                    //SaveFileNumberLastValue();
-                                    //SaveLastEndIndexValue();
-                                    //SaveLastIndexForDiff();
-                                    //stageDiff.Show(/*indexForDiff*/);
-                                   // stageDiff.Navigate();
-                                    blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
+                                    communicationService.SetCurrentIndex(currentIndex);
+                                    communicationService.NavigateToDiffPanel();
                                 }
                             }
                         }
