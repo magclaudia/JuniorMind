@@ -57,8 +57,13 @@ namespace GitClient.ui
         {
             y = dimensions.tabHeight + 2;
             List<FileDiff> fileDiffs = statusDiffService.GetAllUnstageDiffs();
-            string fileName = fileDiffs[currentIndex].fileName;
-            currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentDiff(fileName, "unstage")[0].diffs : new List<string>();
+            
+            if (fileDiffs.Count > 0)
+            {
+                string fileName = fileDiffs[currentIndex].fileName;
+                currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentDiff(fileName, "unstage")[0].diffs : new List<string>();
+            }
+
             Refresh(currentDiff);
 
             if (ButtomPress.Type.right == true)
