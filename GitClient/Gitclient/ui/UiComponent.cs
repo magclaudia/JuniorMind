@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gitclient.ui
+namespace GitClient.ui
 {
     public abstract class UiComponent
     {

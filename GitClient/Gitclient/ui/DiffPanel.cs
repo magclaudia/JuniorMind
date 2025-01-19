@@ -1,5 +1,4 @@
-﻿using Gitclient.ui;
-using GitClient.model;
+﻿using GitClient.model;
 using GitClient.service;
 using System;
 using System.Collections.Generic;
@@ -14,6 +13,7 @@ namespace GitClient.ui
     {
         private StatusDiffService statusDiffService;
         private StatusService statusService;
+        private HunksService hunksService;
         private PanelCommunicationService communicationService;
         private DrawTabs.Dimensions dimensions;
         private List<string> currentDiff;
@@ -26,10 +26,11 @@ namespace GitClient.ui
         private int currentIndex;
 
 
-        public DiffPanel(StatusDiffService statusDiffService, StatusService statusService, PanelCommunicationService communicationService) 
+        public DiffPanel(StatusDiffService statusDiffService, StatusService statusService, HunksService hunksService, PanelCommunicationService communicationService) 
         {
             this.statusDiffService = statusDiffService;
             this.statusService = statusService;
+            this.hunksService = hunksService;
             this.communicationService = communicationService;
             dimensions = new DrawTabs.Dimensions();
             currentDiff = new List<string>();
@@ -148,6 +149,11 @@ namespace GitClient.ui
                                 blueBox.SetBlueBox((1, y), currentDiff[currentIndex], Console.WindowWidth - 3);
                                 indicator.GetIndicator(currentIndex, height - 1, currentDiff.Count, Console.WindowWidth - 1, y, height);
                             }
+                        }
+                        break;
+                    case ConsoleKey.Enter:
+                        {
+                            hunksService.GetHunks();
                         }
                         break;
                     case ConsoleKey.Escape:

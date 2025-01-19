@@ -1,5 +1,4 @@
-﻿using Gitclient.ui;
-using GitClient.model;
+﻿using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
 using System;

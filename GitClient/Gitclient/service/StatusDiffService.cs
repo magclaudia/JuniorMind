@@ -14,16 +14,14 @@ namespace GitClient.service
     public class StatusDiffService
     {
         private readonly LibGit2RepositoryDiff libGit2RepositoryDiff;
-       // private readonly StageLibGit2DiffRepository stageDiffRepository;
         private readonly LibGit2RepositoryChanges libGit2Repository;
         private PanelCommunicationService communicationService;
 
 
-        public StatusDiffService(LibGit2RepositoryDiff libGit2RepositoryDiff,/* StageLibGit2DiffRepository stageDiffRepository, */LibGit2RepositoryChanges libGit2Repository, PanelCommunicationService communicationService)
+        public StatusDiffService(LibGit2RepositoryDiff libGit2RepositoryDiff, LibGit2RepositoryChanges libGit2Repository, PanelCommunicationService communicationService)
         {
             this.libGit2RepositoryDiff = libGit2RepositoryDiff;
             this.libGit2Repository = libGit2Repository;
-           // this.stageDiffRepository = stageDiffRepository;
             this.communicationService = communicationService;
         }
 

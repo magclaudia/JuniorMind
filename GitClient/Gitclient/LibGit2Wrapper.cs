@@ -1,4 +1,5 @@
 ﻿using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace GitClient
@@ -370,16 +371,6 @@ namespace GitClient
         public static extern void git_index_free(IntPtr index);
 
 
-        //[DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int git_index_add_all(IntPtr index, ref GitStrArray pathspec, uint flags, IntPtr callback, IntPtr payload);
-
-        //[DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int git_index_write(IntPtr index);
-
-        //[DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int git_diff_tree_to_workdir(out IntPtr diff, IntPtr repo, IntPtr tree, ref GitDiffOptions options);
-
-
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_diff_tree_to_workdir_with_index(out IntPtr diff, IntPtr repo, IntPtr tree, ref GitDiffOptions options);
 
@@ -387,10 +378,9 @@ namespace GitClient
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_repository_head(out IntPtr tree, IntPtr repo);
 
+
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_index_read(IntPtr index, int force);
-
-        
 
         
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
@@ -421,7 +411,14 @@ namespace GitClient
         public static extern void git_object_free(IntPtr objectFree);
 
 
-        
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_patch_from_diff(out IntPtr patch, IntPtr diff, int hunkIndex);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_apply(IntPtr repo, IntPtr patch, int applyLocation, IntPtr options);
+
+
 
 
 

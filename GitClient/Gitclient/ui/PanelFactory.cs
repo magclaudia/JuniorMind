@@ -12,6 +12,10 @@ namespace GitClient.ui
     {
         private static LibGit2RepositoryChanges libGit2RepositoryChanges = new LibGit2RepositoryChanges();
         private static StatusService statusService = new StatusService(libGit2RepositoryChanges);
+
+        private static LibGit2RepositoryHunks repositoryHunks = new LibGit2RepositoryHunks(libGit2RepositoryChanges);
+        private static HunksService hunksService = new HunksService(repositoryHunks);
+
         private static LibGit2RepositoryDiff libGit2RepositoryDiff = new LibGit2RepositoryDiff(libGit2RepositoryChanges);
         private static PanelCommunicationService panelCommunicationService = new PanelCommunicationService();
         private static StatusDiffService statusDiffService = new StatusDiffService(libGit2RepositoryDiff, libGit2RepositoryChanges, panelCommunicationService);
@@ -34,7 +38,7 @@ namespace GitClient.ui
 
         public static DiffPanel StatusDiffPanel()
         {
-            DiffPanel panel = new DiffPanel(statusDiffService, statusService, panelCommunicationService);
+            DiffPanel panel = new DiffPanel(statusDiffService, statusService, hunksService, panelCommunicationService);
             panel.SetCommunicationService(panelCommunicationService);
             panelCommunicationService.RegisterDiffPanel(panel);
             return panel;
