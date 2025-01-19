@@ -412,7 +412,7 @@ namespace GitClient
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_patch_from_diff(out IntPtr patch, IntPtr diff, int hunkIndex);
+        public static extern int git_patch_from_diff(out IntPtr patch, IntPtr diff, UIntPtr hunkIndex);
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
