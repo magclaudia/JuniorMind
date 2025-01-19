@@ -73,8 +73,10 @@ namespace GitClient.ui
             
             if (fileDiffs.Count > 0)
             {
+                currentIndex = communicationService.GetCurrentIndex();
                 string fileName = fileDiffs[currentIndex].fileName;
                 currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentDiff(fileName, currentPanel)[0].diffs : new List<string>();
+                currentIndex = 0;
             }
 
             Refresh(currentDiff);
@@ -104,7 +106,7 @@ namespace GitClient.ui
                                 ButtomPress.Type.down = true;
                                 ButtomPress.Type.up = false;
                                 clear.ClearDiff(y);
-                                DrawDiffPanel(currentDiff);
+                                DrawDiffPanel(currentDiff); 
 
                                 if (y == height - 1)
                                 {
@@ -162,6 +164,7 @@ namespace GitClient.ui
                             Console.Clear();
                             ButtomPress.Type.right = false;
                             currentIndex = communicationService.GetCurrentIndex();
+                            startIndex = 0;
                             communicationService.NavigateToStatusInitialState();
                         }
                         break;
