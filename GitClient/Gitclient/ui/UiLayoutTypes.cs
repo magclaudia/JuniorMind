@@ -9,6 +9,7 @@ namespace GitClient.ui
     public enum UiLayoutTypes
     {
         GitStatus,
-        DiffStatus
+        DiffStatus,
+        LogCommitList
     }
 }

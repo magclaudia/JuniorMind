@@ -11,11 +11,15 @@ namespace GitClient.service
     {
         private UnstagedChangesPanel unstagedChangesPanel;
         private StagedChangesPanel stagedChangesPanel;
+        private Ui ui;
         private DiffPanel diffPanel;
         private TabsPanel tabsPanel;
         private string lastFileName = string.Empty;
         private string fileName = string.Empty;
         private int index;
+        private string filePath = string.Empty;
+        private int hunkIndex;
+        private List<string> hunk = new List<string>();
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public void RegisterUnstagedChangesPanel(UnstagedChangesPanel panel) 
@@ -36,6 +40,11 @@ namespace GitClient.service
         public void RegisterTabPanel(TabsPanel panel)
         {
             tabsPanel = panel;
+        }
+
+        public void RegisterUi(Ui panel)
+        {
+            ui = panel;
         }
 
         public void SetLastUnstageFileName(string currentFileName)
@@ -63,9 +72,39 @@ namespace GitClient.service
             index = currentIndex;
         }
 
+        public void SetFilePath(string filePathGiven)
+        {
+            filePath = filePathGiven;
+        }
+
+        public string GetFilePath()
+        {
+            return filePath;
+        }
+
         public int GetCurrentIndex()
         {
             return index;
+        }
+
+        public void SetHunkIndex(int hunkIndexGiven)
+        {
+            hunkIndex = hunkIndexGiven;
+        }
+
+        public int GetHunkIndex()
+        {
+            return hunkIndex;
+        }
+
+        public void SetHunkToBeTransfer(List<string> listOfHunk)
+        {
+            hunk = listOfHunk;
+        }
+
+        public List<string> GetHunkToBeTransfer()
+        {
+            return hunk;
         }
 
         public void NavigateToUnstagedPanel()
@@ -127,6 +166,12 @@ namespace GitClient.service
                 stagedChangesPanel.Show();
                 unstagedChangesPanel.Show();
             }
+        }
+
+        public void DisplayLog()
+        {
+            Console.Clear();
+            ui.Show(UiLayoutTypes.LogCommitList);
         }
     }
 }

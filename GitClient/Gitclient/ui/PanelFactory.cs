@@ -13,13 +13,14 @@ namespace GitClient.ui
         private static LibGit2RepositoryChanges libGit2RepositoryChanges = new LibGit2RepositoryChanges();
         private static StatusService statusService = new StatusService(libGit2RepositoryChanges);
 
-        private static LibGit2RepositoryHunks repositoryHunks = new LibGit2RepositoryHunks(libGit2RepositoryChanges);
-        private static HunksService hunksService = new HunksService(repositoryHunks);
-
         private static LibGit2RepositoryDiff libGit2RepositoryDiff = new LibGit2RepositoryDiff(libGit2RepositoryChanges);
         private static PanelCommunicationService panelCommunicationService = new PanelCommunicationService();
         private static StatusDiffService statusDiffService = new StatusDiffService(libGit2RepositoryDiff, libGit2RepositoryChanges, panelCommunicationService);
+        
+        private static LibGit2RepositoryHunks repositoryHunks = new LibGit2RepositoryHunks(libGit2RepositoryChanges);
+        private static HunksService hunksService = new HunksService(repositoryHunks, panelCommunicationService);
 
+        
         public static UnstagedChangesPanel CreateUnstagedChangesPanel()
         {
             UnstagedChangesPanel panel = new UnstagedChangesPanel(statusService, statusDiffService, panelCommunicationService);
@@ -34,6 +35,12 @@ namespace GitClient.ui
             panel.SetCommunicationService(panelCommunicationService);
             panelCommunicationService.RegisterStagedChangesPanel(panel);
             return panel;
+        }
+
+        public static CommitsPanel CreateCommitsPanel()
+        {
+            CommitsPanel commitsPanel = new CommitsPanel();
+            return commitsPanel;    
         }
 
         public static DiffPanel StatusDiffPanel()
@@ -51,5 +58,12 @@ namespace GitClient.ui
             panelCommunicationService.RegisterTabPanel(panel);
             return panel;
         }
+
+        public static void RegisterUi(Ui ui)
+        {
+            panelCommunicationService.RegisterUi(ui);
+        }
+
+        
     }
 }

@@ -225,6 +225,7 @@ namespace GitClient
             GIT_OBJECT_TAG = 4
         }
 
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int DiffNotifyCallback(IntPtr diff_so_far, GitDiffDelta delta_to_add, IntPtr matched_pathspec, IntPtr payload);
 
@@ -416,9 +417,11 @@ namespace GitClient
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_apply(IntPtr repo, IntPtr patch, int applyLocation, IntPtr options);
+        public static extern int git_apply(IntPtr repo, IntPtr diff, int applyLocation, IntPtr options);
 
-
+        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_patch_get_hunk(out GitDiffHunk outHunk, out UIntPtr linesInHunk, IntPtr patch,              
+           UIntPtr hunkIndex);
 
 
 

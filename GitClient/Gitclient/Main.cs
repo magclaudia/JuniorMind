@@ -9,6 +9,7 @@ namespace GitClient
             try
             {
                 Ui ui = new Ui();
+                PanelFactory.RegisterUi(ui);
                 Console.Clear();
                 ui.Show(UiLayoutTypes.GitStatus);
             }

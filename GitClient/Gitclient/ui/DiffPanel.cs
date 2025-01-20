@@ -1,5 +1,6 @@
 ﻿using GitClient.model;
 using GitClient.service;
+using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,6 +18,7 @@ namespace GitClient.ui
         private PanelCommunicationService communicationService;
         private DrawTabs.Dimensions dimensions;
         private List<string> currentDiff;
+        private List<string> hunk;
         private BlueBox blueBox;
         private Indicator indicator;
         private int height;
@@ -24,6 +26,7 @@ namespace GitClient.ui
         private int y;
         private int startIndex;
         private int currentIndex;
+        private int hunkIndex;
 
 
         public DiffPanel(StatusDiffService statusDiffService, StatusService statusService, HunksService hunksService, PanelCommunicationService communicationService) 
@@ -34,6 +37,7 @@ namespace GitClient.ui
             this.communicationService = communicationService;
             dimensions = new DrawTabs.Dimensions();
             currentDiff = new List<string>();
+            hunk = new List<string>();
             blueBox = new BlueBox();
             height = Console.WindowHeight - dimensions.tabHeight;
             indicator = new Indicator();
@@ -41,6 +45,7 @@ namespace GitClient.ui
             y = dimensions.tabHeight + 2;
             startIndex = GetStartIndex();
             currentIndex = GetCurrentIndex();
+            hunkIndex = 0;
         }
 
         public void SubcribeToPanel(UnstagedChangesPanel unstagedChangesPanel, StagedChangesPanel stagedChangesPanel)
@@ -59,6 +64,7 @@ namespace GitClient.ui
             y = dimensions.tabHeight + 2;
             List<FileDiff> fileDiffs = new List<FileDiff>();
             string currentPanel;
+            hunk.Clear();
 
             if (ButtomPress.Type.workingInStagePanel == true)
             {
@@ -121,6 +127,7 @@ namespace GitClient.ui
                                 }
 
                                 currentIndex++;
+                                IsHunkHeader(currentDiff[currentIndex]);
                                 blueBox.SetBlueBox((1, y), currentDiff[currentIndex], Console.WindowWidth - 3);
                                 indicator.GetIndicator(currentIndex, height - 1, currentDiff.Count, Console.WindowWidth - 1, y - 1, height - 1);
                             }
@@ -155,7 +162,17 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.Enter:
                         {
-                            hunksService.GetHunks();
+                            if (currentIndex > 0)
+                            {
+                                int fileIndex = communicationService.GetCurrentIndex();
+                                var filePath = statusService.GetAllUnstagedChanges()[fileIndex].GetFilePath();
+                                communicationService.SetFilePath(filePath);
+                                SetListsOfHunks(currentDiff[currentIndex]);
+                                communicationService.SetHunkIndex(hunkIndex);
+                                communicationService.SetHunkToBeTransfer(hunk);
+                                communicationService.GetCurrentIndex();
+                                hunksService.GetHunks();
+                            }
                         }
                         break;
                     case ConsoleKey.Escape:
@@ -172,6 +189,7 @@ namespace GitClient.ui
             }
             while (keyInfo.Key != ConsoleKey.Escape);
         }
+
 
         private void Refresh(List<string> currentDiff)
         {
@@ -200,6 +218,37 @@ namespace GitClient.ui
             return 0;
         }
 
+        private void SetListsOfHunks(string line)
+        {
+            int index = currentIndex;
+            
+            List<List<string>> listOfHunks = new List<List<string>>();
+
+            listOfHunks = currentDiff.Aggregate(new List<List<string>>(), (acc, line) =>
+            {
+                if (line.StartsWith("@@"))
+                {
+                    acc.Add(new List<string> { line });
+                }
+                else if (acc.Any())
+                {
+                    acc.Last().Add(line);
+                }
+
+                return acc;
+            });
+
+            hunk = listOfHunks.First(list => list.Contains(line));
+            hunkIndex = listOfHunks.IndexOf(hunk);
+        }
+
+        private void IsHunkHeader(string line)
+        {
+            if (line.StartsWith("@@") && !hunk.Contains(line))
+            {
+                hunkIndex++;
+            }
+        }
 
         private void HandleFileSelectionChanged(object sender, FileSelectionChangedEventArgs e)
         {

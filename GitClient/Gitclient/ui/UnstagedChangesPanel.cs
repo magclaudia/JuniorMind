@@ -35,7 +35,6 @@ namespace GitClient.ui
         private int countingIndex;
         private int checkLastFile;
 
-
         public UnstagedChangesPanel(StatusService statusService, StatusDiffService statusDiffService, PanelCommunicationService communicationService)
         {
             this.statusService = statusService;
@@ -321,6 +320,13 @@ namespace GitClient.ui
                                     communicationService.NavigateToDiffPanel();
                                 }
                             }
+                        }
+                        break;
+                    case ConsoleKey.D2:
+                    case ConsoleKey.NumPad2:
+                        {
+                            communicationService.DisplayLog();
+
                         }
                         break;
                     case ConsoleKey.Escape:
