@@ -11,7 +11,6 @@ namespace GitClient.ui
     {
         public void SetBlueBox((int x, int y) cursorPosition, string text, int panelWidth)
         {
-            //int width = ButtomPress.Type.right == true ? Console.WindowWidth - 3 : dimensions.changesPanelWidth - 2;
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(cursorPosition.x, cursorPosition.y);

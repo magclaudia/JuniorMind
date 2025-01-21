@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GitClient.service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace GitClient.ui
         public static void SetColorLog(string text)
         {
             List<string> splitText = Regex.Matches(text, @"\S+\s*").Select(match => match.Value).ToList();
-            string message = string.Join(" ", splitText.Skip(3));
+            string message = string.Join("", splitText.Skip(3));
             Dictionary<string, ConsoleColor> keyValuePairs = new Dictionary<string, ConsoleColor>();
 
             keyValuePairs.Add(splitText[0], ConsoleColor.Magenta);

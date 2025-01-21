@@ -72,5 +72,22 @@ namespace GitClient.ui
                 }
             }
         }
+
+        public void ClearOneCommit(int x, int y, int width)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.Write(new string(' ', width));
+        }
+
+        public void ClearCommitFullWindow(int x, int y, int width, int heigth)
+        {
+            int startFrom = 3;
+            while (startFrom < heigth)
+            {
+                Console.SetCursorPosition(x, startFrom);
+                Console.Write(new string(' ', width));
+                startFrom++;
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using GitClient.ui;
@@ -27,13 +28,13 @@ namespace Gitclient.model
             this.Author = author;
             this.Message = message;
             space = new string(' ', 2);
-            timeSpace = space;
+            timeSpace = SetSpace();
         }
 
         public string Display()
         {
-            return this.Id + SetSpace() + this.DateAndTime + space + this.Author + space + "       " + this.Message;
-        }
+            return this.Id + timeSpace + this.DateAndTime + space + this.Author + "          " + this.Message;
+        } 
 
         public string GetCode()
         {
@@ -57,7 +58,7 @@ namespace Gitclient.model
 
         public string SetSpace()
         {
-            return DateAndTime.Contains(":") ? timeSpace += "  " : space;
+            return DateAndTime.Contains(":") ? timeSpace += space + "  " : space;
         }
     }
 }
