@@ -89,5 +89,16 @@ namespace GitClient.ui
                 startFrom++;
             }
         }
+
+        public void ClearCommitPanel()
+        {
+            int startFrom = 2;
+            while (startFrom < Console.WindowHeight)
+            {
+                Console.SetCursorPosition(0, startFrom);
+                Console.Write(new string(' ', Console.WindowWidth));
+                startFrom++;
+            }
+        }
     }
 }

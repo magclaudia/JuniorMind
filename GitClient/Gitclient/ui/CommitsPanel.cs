@@ -16,9 +16,10 @@ namespace GitClient.ui
     {
         private CommitsLisLibGit2Repository libgit2Repository;
         private CommitsListService commitsListService;
-        private int startIndex;
-        private int endIndex;
-        private int currentIndex;
+        private CommitsWithDescription commitsWithDescription;
+        private  int startIndex;
+        private  int endIndex;
+        private  int currentIndex;
         private List<CommitsElements> currentCommits;
         private BlueBox blueBox;
         private Indicator indicator;
@@ -26,11 +27,11 @@ namespace GitClient.ui
         private int y = 3;
         private int commitNumber;
 
-
         public CommitsPanel()
         {
             libgit2Repository = new CommitsLisLibGit2Repository();
             commitsListService = new CommitsListService(libgit2Repository);
+            commitsWithDescription = new CommitsWithDescription(libgit2Repository, commitsListService);
             startIndex = GetStartIndex();
             endIndex = GetEndIndex();
             currentIndex = CurrentIndex();
@@ -71,7 +72,7 @@ namespace GitClient.ui
             if (CommitLayouts.IsFullListOFCommits == true)
             {
                 currentCommits = commitsListService.GetCurrentListOfCommits(startIndex, endIndex);
-                DisplayCommitsOnEntireWindow();
+                DisplayCommits();
                 indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 2);
                 blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth - 3);
                 GetCommitNumber();
@@ -164,6 +165,8 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.Enter:
                         {
+                            clear.ClearCommitPanel();
+                            commitsWithDescription.Show(startIndex, endIndex, currentIndex, y, commitNumber);
                         }
                         break;
                     case ConsoleKey.RightArrow:
@@ -189,7 +192,7 @@ namespace GitClient.ui
             TextSettings.SetColorLog(displayText);
         }
 
-        private void DisplayCommitsOnEntireWindow()
+        private void DisplayCommits()
         {
             int width = Console.WindowWidth - 3;
             int height = Console.WindowHeight;
