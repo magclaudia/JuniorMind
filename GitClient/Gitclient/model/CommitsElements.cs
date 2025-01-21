@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GitClient.ui;
 
 namespace Gitclient.model
 {
@@ -12,7 +14,11 @@ namespace Gitclient.model
         public string Id { get;  }
         public string DateAndTime { get;  }
         public string Author { get; }
-        public string Message { get; }   
+        public string Message { get; }
+
+        private string space;
+        private string timeSpace;
+
 
         public CommitsElements(string id, string date, string author, string message) 
         {
@@ -20,11 +26,13 @@ namespace Gitclient.model
             this.DateAndTime = date;
             this.Author = author;
             this.Message = message;
+            space = new string(' ', 2);
+            timeSpace = space;
         }
 
         public string Display()
         {
-            return this.Id + "    " + this.DateAndTime + "       " + this.Author + "            " + this.Message;
+            return this.Id + SetSpace() + this.DateAndTime + space + this.Author + space + "       " + this.Message;
         }
 
         public string GetCode()
@@ -45,6 +53,11 @@ namespace Gitclient.model
         public string GetMessage() 
         {
             return this.Message;
+        }
+
+        public string SetSpace()
+        {
+            return DateAndTime.Contains(":") ? timeSpace += "  " : space;
         }
     }
 }

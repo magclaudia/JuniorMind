@@ -19,62 +19,56 @@ namespace GitClient.repository
 
             try
             {
-                if (LibGit2Wrapper.git_revwalk_new(out walker, repo) == 0)
-                {
-                    if (LibGit2Wrapper.git_revwalk_push_head(walker) == 0)
-                    {
-                        while (LibGit2Wrapper.git_revwalk_next(out id, walker) == 0)
-                        {
-                            if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref id) == 0)
-                            {
-                                string commitMessage = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!;
-                                string[] messageParts = commitMessage.Split(new[] { '\n' }, 2);
-
-                                if (messageParts[0].Contains("\n\n"))
-                                {
-                                    int index = messageParts[0].IndexOf('\n');
-                                    message = messageParts[0].Remove(index);
-                                }
-                                else
-                                {
-                                    message = messageParts[0].TrimEnd();
-                                }
-
-                                string description;
-
-                                if (messageParts.Length > 1)
-                                {
-                                    description = messageParts[1].Trim();
-                                }
-                                else
-                                {
-                                    description = string.Empty;
-                                }
-                            }
-                            else
-                            {
-                                throw new Exception("Fail to look up the commit.");
-                            }
-                        }
-
-                       listOFCommits.Add(new CommitsElements(GetCommitId(id), GetDateAndTime(commitPtr), GetCommitAuthor(commitPtr), message));
-                    }
-                    else
-                    {
-                        throw new Exception("Could not find repository HEAD");
-                    }
-                }
-                else
+                if (LibGit2Wrapper.git_revwalk_new(out walker, repo) != 0)
                 {
                     throw new Exception("Could not create revision walker");
                 }
 
-                LibGit2Wrapper.git_revwalk_free(walker);
+                if (LibGit2Wrapper.git_revwalk_push_head(walker) != 0)
+                {
+                    throw new Exception("Could not find repository HEAD");
+                }
+
+                while (LibGit2Wrapper.git_revwalk_next(out id, walker) == 0)
+                {
+                    if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref id) == 0)
+                    {
+                        string commitMessage = Marshal.PtrToStringAnsi(LibGit2Wrapper.git_commit_message(commitPtr))!;
+                        string[] messageParts = commitMessage.Split(new[] { '\n' }, 2);
+
+                        if (messageParts[0].Contains("\n\n"))
+                        {
+                            int index = messageParts[0].IndexOf('\n');
+                            message = messageParts[0].Remove(index);
+                        }
+                        else
+                        {
+                            message = messageParts[0].TrimEnd();
+                        }
+
+                        string description;
+
+                        if (messageParts.Length > 1)
+                        {
+                            description = messageParts[1].Trim();
+                        }
+                        else
+                        {
+                            description = string.Empty;
+                        }
+
+                        listOFCommits.Add(new CommitsElements(GetCommitId(id), GetDateAndTime(commitPtr), GetCommitAuthor(commitPtr), message));
+                    }
+                    else
+                    {
+                        throw new Exception("Fail to look up the commit.");
+                    }
+                }
             }
             finally
             {
                 LibGit2Wrapper.git_commit_free(commitPtr);
-
+                LibGit2Wrapper.git_revwalk_free(walker);
             }
 
             return listOFCommits;

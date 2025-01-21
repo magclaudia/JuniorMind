@@ -289,7 +289,7 @@ namespace GitClient.ui
                     }
                     else
                     {
-                        Console.ForegroundColor = i == 0 ? ConsoleColor.Gray : TextSettings.SetColor(displayText[0]);
+                        Console.ForegroundColor = i == 0 ? ConsoleColor.Gray : TextSettings.SetColorStatus(displayText[0]);
                     }
 
                     Console.Write(displayText);
@@ -389,7 +389,7 @@ namespace GitClient.ui
                 
                 if (displayText != "")
                 {
-                    Console.ForegroundColor = TextSettings.SetColor(displayText[0]);
+                    Console.ForegroundColor = TextSettings.SetColorStatus(displayText[0]);
                 }
                 else
                 {
@@ -410,7 +410,7 @@ namespace GitClient.ui
             
             if (displayText != "")
             {
-                Console.ForegroundColor = displayText.EndsWith(".cs") ? ConsoleColor.DarkGray : TextSettings.SetColor(displayText[0]);
+                Console.ForegroundColor = displayText.EndsWith(".cs") ? ConsoleColor.DarkGray : TextSettings.SetColorStatus(displayText[0]);
             }
             else
             {

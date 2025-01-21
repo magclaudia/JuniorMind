@@ -326,7 +326,6 @@ namespace GitClient.ui
                     case ConsoleKey.NumPad2:
                         {
                             communicationService.DisplayLog();
-
                         }
                         break;
                     case ConsoleKey.Escape:
@@ -421,7 +420,7 @@ namespace GitClient.ui
                 int index = dimensions.unstagedStart + i;
                 string displayText = TextSettings.GetTextLength(currentUnstagedChanges[i].Display(), dimensions.changesPanelWidth - 2);
                 Console.SetCursorPosition(1, index);
-                Console.ForegroundColor = TextSettings.SetColor(displayText[0]);
+                Console.ForegroundColor = TextSettings.SetColorStatus(displayText[0]);
                 Console.Write(displayText);
                 Console.ResetColor();
                 
@@ -436,7 +435,7 @@ namespace GitClient.ui
         {
             string displayText = TextSettings.GetTextLength(currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
             Console.SetCursorPosition(1, y);
-            Console.ForegroundColor = TextSettings.SetColor(displayText[0]);
+            Console.ForegroundColor = TextSettings.SetColorStatus(displayText[0]);
             Console.Write(displayText);
             Console.ResetColor();
         }

@@ -328,7 +328,7 @@ namespace GitClient.ui
                 int y = dimensions.stagedStart + i;
                 string displayText = TextSettings.GetTextLength(currentStagedChanges[i].Display(), dimensions.changesPanelWidth - 2);
                 Console.SetCursorPosition(1, y);
-                Console.ForegroundColor = TextSettings.SetColor(displayText[0]);
+                Console.ForegroundColor = TextSettings.SetColorStatus(displayText[0]);
                 Console.Write(displayText);
                 Console.ResetColor();
             }
@@ -338,7 +338,7 @@ namespace GitClient.ui
         {
             string displayText = TextSettings.GetTextLength(currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
             Console.SetCursorPosition(1, y);
-            Console.ForegroundColor = TextSettings.SetColor(displayText[0]);
+            Console.ForegroundColor = TextSettings.SetColorStatus(displayText[0]);
             Console.Write(displayText);
             Console.ResetColor();
         }
