@@ -152,12 +152,12 @@ namespace GitClient.ui
                                 if (y == 3 && startIndex > 0)
                                 {
                                     startIndex--;
-                                    clear.ClearCommitFullWindow(1, y, Console.WindowWidth - 2, Console.WindowHeight - 1);
+                                    clear.ClearCommitFullWindow(1, y, Console.WindowWidth / 2 + 6, Console.WindowHeight - 1);
                                     Refresh();
                                 }
                                 else
                                 {
-                                    clear.ClearOneCommit(1, y, Console.WindowWidth - 2);
+                                    clear.ClearOneCommit(1, y, Console.WindowWidth / 2 + 6);
                                     DisplayOneCommit();
                                 }
 
@@ -172,9 +172,16 @@ namespace GitClient.ui
                                     commitNumber--;
                                 }
 
+                                clear.ClearInfoPanel();
+                                clear.ClearMessagePanel();
+                                clear.ClearFiles(Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 + 6, Console.WindowHeight / 2 + 6, Console.WindowWidth / 3 + 6, Console.WindowHeight - 2, "cleaningAllPanelArea");
+                                GetInfo();
+                                GetMessage();
+                                GetFiles();
+                                GetFilesNumber();
                                 GetCommitNumber();
-                                blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth - 3);
-                                indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 1);
+                                blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth / 2 + 5);
+                                indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth / 2 + 7, y, Console.WindowHeight - 1);
                             }
                         }
                         break;
@@ -307,7 +314,7 @@ namespace GitClient.ui
         private void GetCommitNumber()
         {
             Console.SetCursorPosition(1, 2);
-            Console.Write($"Commit: {commitNumber}/{totalCommits}");
+            Console.Write($"Commit: {commitNumber} / {totalCommits} ");
         }
         private void GetFilesNumber()
         {
