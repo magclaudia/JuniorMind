@@ -124,7 +124,7 @@ namespace GitClient
                 }
             }
 
-            GetFiles.FilesBackground(fileFullName, variablesForFiles, variablesForCommits, list);
+            DisplayFiles.FilesBackground(fileFullName, variablesForFiles, variablesForCommits, list);
             variablesForCommits.stopWorkingOnCommits = true;
             variablesForCommits.pressRight = 1;
             variablesForFiles.initialState = true;

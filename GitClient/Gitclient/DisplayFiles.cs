@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GitClient
 {
-    public class GetFiles
+    public class DisplayFiles
     {
         public static void GetListOfAllFiles(IntPtr repo, UIntPtr numDeltas, IntPtr diff, int a, GetVariablesForCommits variablesForCommits, GetVariablesForFiles variablesForFiles, GetCertainList list, CommitElements commitElements)
         {

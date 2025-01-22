@@ -91,7 +91,7 @@ namespace GitClient.ui
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            if (commitNumber < totalCommits)
+                            if (commitNumber < totalCommits && CommitLayouts.IsFullListOFCommits == true)
                             {
                                 ButtomPress.Type.down = true;
                                 ButtomPress.Type.up = false;
@@ -128,7 +128,7 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.UpArrow:
                         {
-                            if (commitNumber > 1)
+                            if (commitNumber > 1 && CommitLayouts.IsFullListOFCommits == true)
                             {
                                 ButtomPress.Type.down = false;
                                 ButtomPress.Type.up = true;

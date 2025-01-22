@@ -42,7 +42,7 @@ namespace GitClient
                     break;
                 }
 
-                GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.listOfFiles);
+                DisplayFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.listOfFiles);
                 y++;
                 i++;
                 count++;

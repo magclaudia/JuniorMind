@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
+using static GitClient.DrawTabs;
 
 namespace GitClient.ui
 {
@@ -23,6 +24,7 @@ namespace GitClient.ui
         private int y = 3;
         private int commitNumber;
         private int filesNumber;
+        private List<ChangeAttribute> listOfFiles;
 
 
         public CommitsWithDescription(CommitsLibGit2Repository libgit2Repository, CommitsService commitsService) 
@@ -39,7 +41,7 @@ namespace GitClient.ui
             totalCommits = commitsService.GetAllCommits().Count;
             commitNumber = 1;
             filesNumber = commitsService.GetAllFilesForCommit(commitNumber - 1).Count;
-
+            listOfFiles = commitsService.GetAllFilesForCommit(commitNumber - 1);
         }
 
         public int GetStartIndex()
@@ -60,6 +62,7 @@ namespace GitClient.ui
 
         public void Show(int start, int end, int index, int starty, int commitNr)
         {
+            CommitLayouts.IsFullListOFCommits = false;
             DrawBorderForCommitListWithDescription();
             startIndex = start;
             endIndex = end;
@@ -77,8 +80,12 @@ namespace GitClient.ui
             DisplayCommits();
             indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth / 2 + 7, y, Console.WindowHeight - 2);
             blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth / 2 + 5);
+            GetInfo();
+            GetMessage();
+            
             GetCommitNumber();
             GetFilesNumber();
+            DisplayFiles();
         }
 
         private void DisplayCommits()
@@ -100,18 +107,88 @@ namespace GitClient.ui
             }
         }
 
+        private void DisplayFiles()
+        {
+            int width = Console.WindowWidth / 3 + 1;
+            int height = Console.WindowHeight - 1;
+            int stopAt = filesNumber > height ? height : filesNumber;
+            GetPath();
+
+            for (int i = 0; i < stopAt; i++)
+            {
+                int y = Console.WindowHeight / 2 + 6 + i;
+
+                if (y < height)
+                {
+                    string displayText = TextSettings.GetTextLength(listOfFiles[i].Display(), width);
+                    Console.SetCursorPosition(Console.WindowWidth / 2 + 10, y);
+                    Console.ForegroundColor = TextSettings.SetColorStatus(displayText[0]);
+                    Console.Write(displayText);
+                    Console.ResetColor();
+                }
+            }
+        }
+
+        private void GetInfo()
+        {
+            int width = Console.WindowWidth / 3 + 1;
+            int height = Console.WindowHeight / 4;
+            Dictionary<string, string> display = new Dictionary<string, string>();
+            display.Add("Author: ", currentCommits[currentIndex].Author);
+            display.Add("Date/Time: ", currentCommits[currentIndex].DateAndTime);
+            display.Add("sha: ", currentCommits[currentIndex].DateAndTime);
+
+            for (int i = 0; i < 3; i++)
+            {
+                int y = 3 + i;
+
+                if (y < height)
+                {
+                    Console.SetCursorPosition(Console.WindowWidth / 2 + 10, y);
+                    string text = display.ElementAt(i).Key + display.ElementAt(i).Value;
+                    string displayText = TextSettings.GetTextLength($"{text}", width);
+                    Console.Write(displayText);
+                }
+            }
+        }
+        private void GetMessage()
+        {
+            int width = Console.WindowWidth / 3 + 1;
+            int height = Console.WindowHeight / 2 + 1;
+            int y = Console.WindowHeight / 4 + 3;
+
+            if (currentCommits[currentIndex].Message.Length > width)
+            {
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 10, y);
+                int index = 0;
+                string displayText = currentCommits[currentIndex].Message.Substring(index, width);
+                Console.Write(displayText);
+            }
+            else
+            {
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 10, y);
+                Console.Write(currentCommits[currentIndex].Message);
+            }
+        }
         private void GetCommitNumber()
         {
             Console.SetCursorPosition(1, 2);
             Console.Write($"Commit: {commitNumber}/{totalCommits}");
         }
-
         private void GetFilesNumber()
         {
             Console.SetCursorPosition(Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 + 4);
-            Console.Write($"Files: {filesNumber}");
+            Console.Write($"Files: {filesNumber} ");
         }
-
+        private void GetPath()
+        {
+            GetProjectPath projectPath = new GetProjectPath();
+            string path = $"  ▾{projectPath.ProjectPath(Environment.CurrentDirectory)}";
+            path = TextSettings.GetTextLength(path, Console.WindowWidth / 3 + 1);
+            Console.SetCursorPosition(Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 + 5);
+            Console.Write(path);
+            Console.ResetColor();
+        }
         private void DrawBorderForCommitListWithDescription()
         {
             for (int i = 3; i < Console.WindowHeight - 1; i++)

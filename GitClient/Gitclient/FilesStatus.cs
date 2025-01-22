@@ -108,7 +108,7 @@ namespace GitClient
                         break;
                     }
 
-                    GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.unstagedChangesFiles);
+                    DisplayFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.unstagedChangesFiles);
                     i++;
                     count++;
                     y++;
@@ -174,7 +174,7 @@ namespace GitClient
                         break;
                     }
 
-                    GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.stagedChangesFiles);
+                    DisplayFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, list.stagedChangesFiles);
                     y++;
                     i++;
                     count++;
@@ -245,7 +245,7 @@ namespace GitClient
                         break;
                     }
 
-                    GetFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, filesList);
+                    DisplayFiles.ChooseColorForEachFiles(variablesForFiles, variablesForCommits, list, x, y, i, filesList);
                     i++;
                     count++;
                     y++;

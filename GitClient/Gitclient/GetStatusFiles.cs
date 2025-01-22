@@ -61,7 +61,7 @@
                 {
                     int index = 0;
                     variablesForFiles.unstageChanges = true;
-                    GetFiles.GetListOfAllFiles(commitElements.repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements);
+                    DisplayFiles.GetListOfAllFiles(commitElements.repo, numDeltas, diff, index, variablesForCommits, variablesForFiles, list, commitElements);
                     GetDiffForChanges.DiffUnstagedChanges(diff, list, variablesForFiles, variablesForCommits);
                     variablesForFiles.indexDiff = 0;
                     variablesForFiles.fileIndex = 0;
