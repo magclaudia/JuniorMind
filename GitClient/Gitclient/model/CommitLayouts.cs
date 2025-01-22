@@ -9,7 +9,7 @@ namespace GitClient.model
 {
     public struct CommitLayouts
     {
-        public static bool IsFullListOFCommits = true;
+        public static bool IsFullListOFCommits = false;
         public static bool HaveDescription = false;
         public static bool ChooseCommit = false;
         public static bool IsDisplayFullScreenDiff = false; 

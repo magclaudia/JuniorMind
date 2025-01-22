@@ -14,6 +14,7 @@ namespace GitClient.ui
     {
         private CommitsLibGit2Repository libgit2Repository;
         private CommitsService commitsService;
+        private PanelCommunicationService panelCommunicationService;
         private int startIndex;
         private int endIndex;
         private int currentIndex;
@@ -27,10 +28,11 @@ namespace GitClient.ui
         private List<ChangeAttribute> listOfFiles;
 
 
-        public CommitsWithDescription(CommitsLibGit2Repository libgit2Repository, CommitsService commitsService) 
+        public CommitsWithDescription(CommitsLibGit2Repository libgit2Repository, CommitsService commitsService, PanelCommunicationService panelCommunicationService) 
         {
             this.libgit2Repository = libgit2Repository;
             this.commitsService = commitsService;
+            this.panelCommunicationService = panelCommunicationService;
             currentCommits = new List<CommitsElements>();
             startIndex = GetStartIndex();
             endIndex = GetEndIndex();
@@ -188,6 +190,13 @@ namespace GitClient.ui
                     case ConsoleKey.Enter:
                         {
                             clear.ClearCommitPanel();
+                            CommitLayouts.IsFullListOFCommits = true;
+                            panelCommunicationService.SetStartIndex(startIndex);
+                            panelCommunicationService.SetEndIndex(endIndex);
+                            panelCommunicationService.SetCurrentIndex(currentIndex);
+                            panelCommunicationService.SetY(y);
+                            panelCommunicationService.SetCommitNumber(commitNumber);
+                            panelCommunicationService.NavigateToCommitsPanel();
                         }
                         break;
                     case ConsoleKey.RightArrow:

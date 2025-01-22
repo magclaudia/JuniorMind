@@ -20,7 +20,10 @@ namespace GitClient.ui
         private static LibGit2RepositoryHunks repositoryHunks = new LibGit2RepositoryHunks(libGit2RepositoryChanges);
         private static HunksService hunksService = new HunksService(repositoryHunks, panelCommunicationService);
 
-        
+        private static CommitsLibGit2Repository commitsLibGit2Repository = new CommitsLibGit2Repository();
+        private static CommitsService commitsService = new CommitsService(commitsLibGit2Repository);
+
+
         public static UnstagedChangesPanel CreateUnstagedChangesPanel()
         {
             UnstagedChangesPanel panel = new UnstagedChangesPanel(statusService, statusDiffService, panelCommunicationService);
@@ -39,8 +42,10 @@ namespace GitClient.ui
 
         public static CommitsPanel CreateCommitsPanel()
         {
-            CommitsPanel commitsPanel = new CommitsPanel();
-            return commitsPanel;    
+            CommitsPanel panel = new CommitsPanel(commitsLibGit2Repository, commitsService, panelCommunicationService);
+            panel.SetCommunicationService(panelCommunicationService);
+            panelCommunicationService.RegisterCommitsPanel(panel);
+            return panel;    
         }
 
         public static DiffPanel StatusDiffPanel()
@@ -63,7 +68,5 @@ namespace GitClient.ui
         {
             panelCommunicationService.RegisterUi(ui);
         }
-
-        
     }
 }

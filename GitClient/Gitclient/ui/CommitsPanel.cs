@@ -14,8 +14,9 @@ namespace GitClient.ui
     public class CommitsPanel : UiComponent
     {
         private CommitsLibGit2Repository libgit2Repository;
-        private CommitsService commitsListService;
+        private CommitsService commitsService;
         private CommitsWithDescription commitsWithDescription;
+        private PanelCommunicationService panelCommunicationService;
         private  int startIndex;
         private  int endIndex;
         private  int currentIndex;
@@ -26,19 +27,25 @@ namespace GitClient.ui
         private int y = 3;
         private int commitNumber;
 
-        public CommitsPanel()
+        public CommitsPanel(CommitsLibGit2Repository libGit2Repository, CommitsService commitsService, PanelCommunicationService panelCommunicationService)
         {
-            libgit2Repository = new CommitsLibGit2Repository();
-            commitsListService = new CommitsService(libgit2Repository);
-            commitsWithDescription = new CommitsWithDescription(libgit2Repository, commitsListService);
+            this.libgit2Repository = libGit2Repository;
+            this.commitsService = commitsService;
+            this.panelCommunicationService = panelCommunicationService;
+            commitsWithDescription = new CommitsWithDescription(libgit2Repository, this.commitsService, panelCommunicationService);
             startIndex = GetStartIndex();
             endIndex = GetEndIndex();
             currentIndex = CurrentIndex();
             currentCommits = new List<CommitsElements>();
             blueBox = new BlueBox();
             indicator = new Indicator();
-            totalCommits = commitsListService.GetAllCommits().Count;
+            totalCommits = this.commitsService.GetAllCommits().Count;
             commitNumber = 1;
+        }
+
+        public void SetCommunicationService(PanelCommunicationService service)
+        {
+            panelCommunicationService = service;
         }
 
         public int GetStartIndex()
@@ -60,22 +67,40 @@ namespace GitClient.ui
         public override void Show()
         {
             DrawBorderForFullSizeCommitList();
+           
+            if (CommitLayouts.IsFullListOFCommits == true)
+            {
+                startIndex = panelCommunicationService.GetStartIndex();
+                endIndex = panelCommunicationService.GetEndIndex();
+                currentIndex = panelCommunicationService.GetCurrentIndex();
+                y = panelCommunicationService.GetY();
+                commitNumber = panelCommunicationService.GetCommitNumber();
+            }
+
             Refresh();
             Navigate();
         }
 
         public void Refresh() 
         {
-            commitsListService.GetAllCommits();
-            
-            if (CommitLayouts.IsFullListOFCommits == true)
-            {
-                currentCommits = commitsListService.GetCurrentListOfCommits(startIndex, endIndex);
-                DisplayCommits();
-                indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 2);
-                blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth - 3);
-                GetCommitNumber();
-            }
+            CommitLayouts.IsFullListOFCommits = true;
+            commitsService.GetAllCommits();
+            currentCommits = commitsService.GetCurrentListOfCommits(startIndex, endIndex);
+            DisplayCommits();
+            indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 2);
+            blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth - 3);
+            GetCommitNumber();
+        }
+
+        public void ReturnFromDescription(int startIndex, int endIndex, int currentIndex, int y, int commitNumber)
+        {
+            this.startIndex = startIndex;
+            this.endIndex = endIndex;
+            this.currentIndex = currentIndex;
+            this.y = y;
+            this.commitNumber = commitNumber;
+
+            Show();
         }
 
         private void Navigate()
@@ -182,6 +207,7 @@ namespace GitClient.ui
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
 
+
         private void DisplayOneCommit()
         {
             int width = Console.WindowWidth - 3;
@@ -241,7 +267,7 @@ namespace GitClient.ui
         private void GetCommitNumber()
         {
             Console.SetCursorPosition(1, 2);
-            Console.Write($"Commit: {commitNumber}/{totalCommits}");
+            Console.Write($"Commit: {commitNumber} / {totalCommits} ");
         }
 
         private void CloseApplication()

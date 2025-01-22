@@ -8,7 +8,6 @@ namespace GitClient
         {
             DrawPanelRigthSide.FilesBox position = new DrawPanelRigthSide.FilesBox();
             LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
-           
             IntPtr parentCommitPtr = IntPtr.Zero;
             IntPtr parentTreePtr = IntPtr.Zero;
             IntPtr treePtr = IntPtr.Zero;
