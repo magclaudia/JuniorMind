@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Gitclient.model;
 using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
@@ -14,8 +13,8 @@ namespace GitClient.ui
 {
     public class CommitsPanel : UiComponent
     {
-        private CommitsLisLibGit2Repository libgit2Repository;
-        private CommitsListService commitsListService;
+        private CommitsLibGit2Repository libgit2Repository;
+        private CommitsService commitsListService;
         private CommitsWithDescription commitsWithDescription;
         private  int startIndex;
         private  int endIndex;
@@ -29,8 +28,8 @@ namespace GitClient.ui
 
         public CommitsPanel()
         {
-            libgit2Repository = new CommitsLisLibGit2Repository();
-            commitsListService = new CommitsListService(libgit2Repository);
+            libgit2Repository = new CommitsLibGit2Repository();
+            commitsListService = new CommitsService(libgit2Repository);
             commitsWithDescription = new CommitsWithDescription(libgit2Repository, commitsListService);
             startIndex = GetStartIndex();
             endIndex = GetEndIndex();

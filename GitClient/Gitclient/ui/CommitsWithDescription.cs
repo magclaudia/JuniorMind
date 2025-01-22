@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Gitclient.model;
 using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
@@ -12,8 +11,8 @@ namespace GitClient.ui
 {
     public class CommitsWithDescription
     {
-        private CommitsLisLibGit2Repository libgit2Repository;
-        private CommitsListService commitsListService;
+        private CommitsLibGit2Repository libgit2Repository;
+        private CommitsService commitsListService;
         private int startIndex;
         private int endIndex;
         private int currentIndex;
@@ -23,10 +22,13 @@ namespace GitClient.ui
         private int totalCommits;
         private int y = 3;
         private int commitNumber;
-        public CommitsWithDescription(CommitsLisLibGit2Repository libgit2Repository, CommitsListService commitsListService) 
+        private int filesNumber;
+
+
+        public CommitsWithDescription(CommitsLibGit2Repository libgit2Repository, CommitsService commitsService) 
         {
             this.libgit2Repository = libgit2Repository;
-            this.commitsListService = commitsListService;
+            this.commitsListService = commitsService;
             currentCommits = new List<CommitsElements>();
             startIndex = GetStartIndex();
             endIndex = GetEndIndex();
@@ -34,8 +36,10 @@ namespace GitClient.ui
             currentCommits = new List<CommitsElements>();
             blueBox = new BlueBox();
             indicator = new Indicator();
-            totalCommits = commitsListService.GetAllCommits().Count;
-            commitNumber = 1; 
+            totalCommits = commitsService.GetAllCommits().Count;
+            commitNumber = 1;
+            filesNumber = commitsService.GetAllFilesForCommit(commitNumber - 1).Count;
+
         }
 
         public int GetStartIndex()
@@ -74,6 +78,7 @@ namespace GitClient.ui
             indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth / 2 + 7, y, Console.WindowHeight - 2);
             blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth / 2 + 5);
             GetCommitNumber();
+            GetFilesNumber();
         }
 
         private void DisplayCommits()
@@ -99,6 +104,12 @@ namespace GitClient.ui
         {
             Console.SetCursorPosition(1, 2);
             Console.Write($"Commit: {commitNumber}/{totalCommits}");
+        }
+
+        private void GetFilesNumber()
+        {
+            Console.SetCursorPosition(Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 + 4);
+            Console.Write($"Files: {filesNumber}");
         }
 
         private void DrawBorderForCommitListWithDescription()

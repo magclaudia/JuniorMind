@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GitClient.ui;
 
-namespace Gitclient.model
+namespace GitClient.model
 {
     public class CommitsElements
     {

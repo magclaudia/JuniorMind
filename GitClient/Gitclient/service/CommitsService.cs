@@ -1,16 +1,14 @@
-﻿
-using Gitclient.model;
-using GitClient.model;
+﻿using GitClient.model;
 using GitClient.repository;
 using static GitClient.DrawTabs;
 
 namespace GitClient.service
 {
-    public class CommitsListService
+    public class CommitsService
     {
-        private CommitsLisLibGit2Repository libgit2Repository; 
+        private CommitsLibGit2Repository libgit2Repository; 
 
-        public CommitsListService(CommitsLisLibGit2Repository libgit2Repository) 
+        public CommitsService(CommitsLibGit2Repository libgit2Repository) 
         {
             this.libgit2Repository = libgit2Repository;
         }
@@ -44,6 +42,11 @@ namespace GitClient.service
             }
 
             return commits;
+        }
+
+        public List<ChangeAttribute> GetAllFilesForCommit(int index)
+        {
+            return libgit2Repository.GetAllFilesForCommit(index);
         }
     }
 }
