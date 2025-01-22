@@ -93,6 +93,7 @@ namespace GitClient.ui
         public void ClearCommitPanel()
         {
             int startFrom = 2;
+
             while (startFrom < Console.WindowHeight)
             {
                 Console.SetCursorPosition(0, startFrom);
@@ -105,7 +106,7 @@ namespace GitClient.ui
         {
             int startFrom = 3;
            
-            while(startFrom < 6)
+            while(startFrom < Console.WindowHeight / 4)
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 10, startFrom);
                 Console.Write(new string(' ', Console.WindowWidth - (Console.WindowWidth / 2 + 11)));

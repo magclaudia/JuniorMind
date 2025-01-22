@@ -131,7 +131,7 @@ namespace GitClient.ui
 
                                 clear.ClearInfoPanel();
                                 clear.ClearMessagePanel();
-                                clear.ClearFiles(Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 + 6, Console.WindowHeight / 2 + 6, Console.WindowWidth / 3 + 6, Console.WindowHeight - 2, "cleaningAllPanelArea");
+                                clear.ClearFiles(Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 + 6, Console.WindowHeight / 2 + 6, Console.WindowWidth - (Console.WindowWidth / 2 + 11), Console.WindowHeight - 2, "cleaningAllPanelArea");
                                 GetInfo();
                                 GetMessage();
                                 GetFiles();
@@ -174,7 +174,7 @@ namespace GitClient.ui
 
                                 clear.ClearInfoPanel();
                                 clear.ClearMessagePanel();
-                                clear.ClearFiles(Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 + 6, Console.WindowHeight / 2 + 6, Console.WindowWidth / 3 + 6, Console.WindowHeight - 2, "cleaningAllPanelArea");
+                                clear.ClearFiles(Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 + 6, Console.WindowHeight / 2 + 6, Console.WindowWidth - (Console.WindowWidth / 2 + 11), Console.WindowHeight - 2, "cleaningAllPanelArea");
                                 GetInfo();
                                 GetMessage();
                                 GetFiles();
@@ -279,7 +279,7 @@ namespace GitClient.ui
         private void GetMessage()
         {
             int width = Console.WindowWidth - (Console.WindowWidth / 2 + 11);
-            int height = Console.WindowHeight / 2 - 4;
+            int height = Console.WindowHeight / 2 - 1;
             int y = Console.WindowHeight / 4 + 3;
             int index = 0;
 
