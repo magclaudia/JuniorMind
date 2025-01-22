@@ -100,5 +100,29 @@ namespace GitClient.ui
                 startFrom++;
             }
         }
+
+        public void ClearInfoPanel()
+        {
+            int startFrom = 3;
+           
+            while(startFrom < 6)
+            {
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 10, startFrom);
+                Console.Write(new string(' ', Console.WindowWidth - (Console.WindowWidth / 2 + 11)));
+                startFrom++;
+            }
+        }
+
+        public void ClearMessagePanel()
+        {
+            int startFrom = Console.WindowHeight / 4 + 3;
+
+            while(startFrom < Console.WindowHeight / 2 + 2)
+            {
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 10, startFrom);
+                Console.Write(new string(' ', Console.WindowWidth - (Console.WindowWidth / 2 + 11)));
+                startFrom++;
+            }
+        }
     }
 }

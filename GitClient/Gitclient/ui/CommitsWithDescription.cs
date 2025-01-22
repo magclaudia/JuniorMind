@@ -13,7 +13,7 @@ namespace GitClient.ui
     public class CommitsWithDescription
     {
         private CommitsLibGit2Repository libgit2Repository;
-        private CommitsService commitsListService;
+        private CommitsService commitsService;
         private int startIndex;
         private int endIndex;
         private int currentIndex;
@@ -30,7 +30,7 @@ namespace GitClient.ui
         public CommitsWithDescription(CommitsLibGit2Repository libgit2Repository, CommitsService commitsService) 
         {
             this.libgit2Repository = libgit2Repository;
-            this.commitsListService = commitsService;
+            this.commitsService = commitsService;
             currentCommits = new List<CommitsElements>();
             startIndex = GetStartIndex();
             endIndex = GetEndIndex();
@@ -75,8 +75,8 @@ namespace GitClient.ui
 
         public void Refresh()
         {
-            commitsListService.GetAllCommits();
-            currentCommits = commitsListService.GetCurrentListOfCommits(startIndex, endIndex);
+            commitsService.GetAllCommits();
+            currentCommits = commitsService.GetCurrentListOfCommits(startIndex, endIndex);
             DisplayCommits();
             indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth / 2 + 7, y, Console.WindowHeight - 2);
             blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth / 2 + 5);
@@ -84,7 +84,7 @@ namespace GitClient.ui
             GetMessage();
             GetCommitNumber();
             GetFilesNumber();
-            DisplayFiles();
+            GetFiles();
         }
 
         private void Navigate()
@@ -100,21 +100,21 @@ namespace GitClient.ui
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            if (commitNumber < totalCommits && CommitLayouts.IsFullListOFCommits == true)
+                            if (commitNumber < totalCommits && CommitLayouts.IsFullListOFCommits == false)
                             {
                                 ButtomPress.Type.down = true;
                                 ButtomPress.Type.up = false;
 
                                 if (y == Console.WindowHeight - 2 && endIndex < totalCommits)
                                 {
-                                    clear.ClearCommitFullWindow(1, y, Console.WindowWidth - 2, Console.WindowHeight - 1);
+                                    clear.ClearCommitFullWindow(1, y, Console.WindowWidth / 2 + 6, Console.WindowHeight - 1);
                                     startIndex++;
                                     endIndex++;
                                     Refresh();
                                 }
                                 else
                                 {
-                                    clear.ClearOneCommit(1, y, Console.WindowWidth - 2);
+                                    clear.ClearOneCommit(1, y, Console.WindowWidth / 2 + 6);
                                     DisplayOneCommit();
                                 }
 
@@ -129,15 +129,22 @@ namespace GitClient.ui
                                     commitNumber++;
                                 }
 
+                                clear.ClearInfoPanel();
+                                clear.ClearMessagePanel();
+                                clear.ClearFiles(Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 + 6, Console.WindowHeight / 2 + 6, Console.WindowWidth / 3 + 6, Console.WindowHeight - 2, "cleaningAllPanelArea");
+                                GetInfo();
+                                GetMessage();
+                                GetFiles();
+                                GetFilesNumber();
                                 GetCommitNumber();
-                                blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth - 3);
-                                indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 2);
+                                blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth / 2 + 5);
+                                indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth / 2 + 7, y, Console.WindowHeight - 2);
                             }
                         }
                         break;
                     case ConsoleKey.UpArrow:
                         {
-                            if (commitNumber > 1 && CommitLayouts.IsFullListOFCommits == true)
+                            if (commitNumber > 1 && CommitLayouts.IsFullListOFCommits == false)
                             {
                                 ButtomPress.Type.down = false;
                                 ButtomPress.Type.up = true;
@@ -217,8 +224,10 @@ namespace GitClient.ui
                 }
             }
         }
-        private void DisplayFiles()
+        private void GetFiles()
         {
+            listOfFiles = commitsService.GetAllFilesForCommit(commitNumber - 1);
+            filesNumber = listOfFiles.Count;
             int width = Console.WindowWidth - (Console.WindowWidth / 2 + 11);
             int height = Console.WindowHeight - 1;
             int stopAt = filesNumber > height ? height : filesNumber;
