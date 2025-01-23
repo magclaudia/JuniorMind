@@ -37,7 +37,6 @@ namespace GitClient.ui
             startIndex = GetStartIndex();
             endIndex = GetEndIndex();
             currentIndex = CurrentIndex();
-            currentCommits = new List<CommitsElements>();
             blueBox = new BlueBox();
             indicator = new Indicator();
             totalCommits = commitsService.GetAllCommits().Count;

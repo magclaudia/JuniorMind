@@ -13,6 +13,7 @@ namespace GitClient.service
             this.libgit2Repository = libgit2Repository;
         }
 
+
         public List<CommitsElements> GetAllCommits()
         {
             return libgit2Repository.GetAllCommits();
@@ -48,5 +49,12 @@ namespace GitClient.service
         {
             return libgit2Repository.GetAllFilesForCommit(index);
         }
+
+        public List<FileDiff> GetAllCommitsDiff()
+        {
+            return libgit2Repository.GetAllDiffs();
+        }
+
+
     }
 }

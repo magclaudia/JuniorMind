@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using static GitClient.LibGit2Wrapper;
 
 namespace GitClient.repository
 {
@@ -11,6 +12,9 @@ namespace GitClient.repository
     {
         LibGit2Wrapper.GitOid id = new LibGit2Wrapper.GitOid();
         List<LibGit2Wrapper.GitOid> oids = new List<LibGit2Wrapper.GitOid>();
+        private IntPtr diff = IntPtr.Zero;
+        private Dictionary<string, List<string>> keyValuePairs = new Dictionary<string, List<string>>();
+
 
         public List<CommitsElements> GetAllCommits()
         {
@@ -88,7 +92,6 @@ namespace GitClient.repository
             IntPtr parentCommitPtr = IntPtr.Zero;
             IntPtr parentTreePtr = IntPtr.Zero;
             IntPtr treePtr = IntPtr.Zero;
-            IntPtr diff = IntPtr.Zero;
             IntPtr commitPtr = IntPtr.Zero;
             IntPtr deltaPtr = IntPtr.Zero;
             IntPtr repo = GetRepo();
@@ -123,6 +126,7 @@ namespace GitClient.repository
                 {
                     throw new Exception("Failed to get the diff.");
                 }
+
 
                 UIntPtr numDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
                
@@ -181,6 +185,102 @@ namespace GitClient.repository
             }
 
             return filesList;
+        }
+
+        public List<FileDiff> GetAllDiffs()
+        {
+            keyValuePairs.Clear();
+            List<FileDiff> fileDiffs = new List<FileDiff>();
+
+            int result = LibGit2Wrapper.git_diff_foreach(diff, DiffFileCallback, DiffBinaryCallback, DiffHunkCallback, DiffLineCallback, IntPtr.Zero);
+
+            if (result != 0)
+            {
+                throw new Exception("Failed to iterate over diff.");
+            }
+
+            foreach (var entry in keyValuePairs)
+            {
+                fileDiffs.Add(new FileDiff(entry.Value, entry.Key));
+            }
+
+            return fileDiffs;
+        }
+
+        private int DiffFileCallback(ref LibGit2Wrapper.GitDiffDelta delta, float progress, IntPtr payload)
+        {
+            string? oldFilePath = Marshal.PtrToStringAnsi(delta.old_file.path);
+            string? newFilePath = Marshal.PtrToStringAnsi(delta.new_file.path);
+            string text = "";
+            string? filePath = Path.GetFileName(Marshal.PtrToStringAnsi(delta.new_file.path));
+
+            if (string.IsNullOrEmpty(oldFilePath) && string.IsNullOrEmpty(newFilePath))
+            {
+                throw new Exception("Paths are null or empty.");
+            }
+
+            if (!string.IsNullOrEmpty(newFilePath))
+            {
+                text = newFilePath;
+            }
+
+            if (!string.IsNullOrEmpty(filePath) && !keyValuePairs.ContainsKey(filePath))
+            {
+                keyValuePairs[filePath] = [text];
+            }
+
+            return 0;
+        }
+
+        private int DiffBinaryCallback(ref LibGit2Wrapper.GitDiffDelta delta, IntPtr binary, IntPtr payload)
+        {
+            return 0;
+        }
+
+        private int DiffHunkCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, IntPtr payload)
+        {
+            byte[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
+            string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
+            string text = hunkHeader;
+            string? filePath = Path.GetFileName(Marshal.PtrToStringAnsi(delta.new_file.path));
+
+            if (text.Contains('\n'))
+            {
+                text = text.Remove(text.IndexOf('\n'));
+            }
+
+            if (!string.IsNullOrEmpty(filePath) && keyValuePairs.ContainsKey(filePath))
+            {
+                keyValuePairs[filePath].Add(text);
+            }
+
+            return 0;
+        }
+
+        private int DiffLineCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, ref LibGit2Wrapper.GitDiffLine line, IntPtr payload)
+        {
+            string content = Marshal.PtrToStringAnsi(line.content, (int)line.content_len);
+            string? filePath = Path.GetFileName(Marshal.PtrToStringAnsi(delta.new_file.path));
+
+            if (content.StartsWith('\t'))
+            {
+                string output = content.Replace("\t", new string(' ', 4));
+                content = output + content;
+            }
+
+            if (content.Contains("\n\t"))
+            {
+                content = content[..content.IndexOf("\n\t")];
+            }
+
+            string text = $"{(char)line.origin} {content}".TrimEnd();
+
+            if (!string.IsNullOrEmpty(filePath) && keyValuePairs.ContainsKey(filePath))
+            {
+                keyValuePairs[filePath].Add(text);
+            }
+
+            return 0;
         }
 
         public IntPtr GetRepo()
