@@ -13,6 +13,7 @@ namespace GitClient.ui
 {
     public class CommitsPanel : UiComponent
     {
+        public event EventHandler<CommitSelectionChangedEventArgs> CommitSelectionChanged;
         private CommitsLibGit2Repository libgit2Repository;
         private CommitsService commitsService;
         private CommitsWithDescription commitsWithDescription;
@@ -23,9 +24,13 @@ namespace GitClient.ui
         private List<CommitsElements> currentCommits;
         private BlueBox blueBox;
         private Indicator indicator;
+        private DrawPanels panel;
         private int totalCommits;
         private int y = 3;
         private int commitNumber;
+        private int width = Console.WindowWidth - 3;
+        private int enterCount = 0;
+        
 
         public CommitsPanel(CommitsLibGit2Repository libGit2Repository, CommitsService commitsService, PanelCommunicationService panelCommunicationService)
         {
@@ -39,6 +44,7 @@ namespace GitClient.ui
             currentCommits = new List<CommitsElements>();
             blueBox = new BlueBox();
             indicator = new Indicator();
+            panel = new DrawPanels();
             totalCommits = this.commitsService.GetAllCommits().Count;
             commitNumber = 1;
         }
@@ -46,6 +52,11 @@ namespace GitClient.ui
         public void SetCommunicationService(PanelCommunicationService service)
         {
             panelCommunicationService = service;
+        }
+
+        protected virtual void OnCommitSelectionChanged(bool enter, bool right, bool left, bool diff, int startIndex, int endIndex, int currentIndex, int y, int commitNumber)
+        {
+            CommitSelectionChanged.Invoke(this, new CommitSelectionChangedEventArgs(enter, right, left, diff, startIndex, endIndex, currentIndex, y, commitNumber));
         }
 
         public int GetStartIndex()
@@ -66,17 +77,6 @@ namespace GitClient.ui
 
         public override void Show()
         {
-            DrawBorderForFullSizeCommitList();
-           
-            if (CommitLayouts.IsFullListOFCommits == true)
-            {
-                startIndex = panelCommunicationService.GetStartIndex();
-                endIndex = panelCommunicationService.GetEndIndex();
-                currentIndex = panelCommunicationService.GetCurrentIndex();
-                y = panelCommunicationService.GetY();
-                commitNumber = panelCommunicationService.GetCommitNumber();
-            }
-
             Refresh();
             Navigate();
         }
@@ -84,23 +84,13 @@ namespace GitClient.ui
         public void Refresh() 
         {
             CommitLayouts.IsFullListOFCommits = true;
+            panel.DrawBorderForFullSizeCommitList();
             commitsService.GetAllCommits();
             currentCommits = commitsService.GetCurrentListOfCommits(startIndex, endIndex);
-            DisplayCommits();
-            indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 2);
+            DisplayCommits(width);
+            indicator.GetIndicator(commitNumber, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 2);
             blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth - 3);
             GetCommitNumber();
-        }
-
-        public void ReturnFromDescription(int startIndex, int endIndex, int currentIndex, int y, int commitNumber)
-        {
-            this.startIndex = startIndex;
-            this.endIndex = endIndex;
-            this.currentIndex = currentIndex;
-            this.y = y;
-            this.commitNumber = commitNumber;
-
-            Show();
         }
 
         private void Navigate()
@@ -116,22 +106,29 @@ namespace GitClient.ui
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            if (commitNumber < totalCommits && CommitLayouts.IsFullListOFCommits == true)
+                            if (commitNumber < totalCommits)
                             {
-                                ButtomPress.Type.down = true;
-                                ButtomPress.Type.up = false;
+                                ReadButtonsPressing.Type.down = true;
+                                ReadButtonsPressing.Type.up = false;
 
                                 if (y == Console.WindowHeight - 2 && endIndex < totalCommits)
                                 {
-                                    clear.ClearCommitFullWindow(1, y, Console.WindowWidth - 2, Console.WindowHeight - 1);
                                     startIndex++;
                                     endIndex++;
-                                    Refresh();
+
+                                    if (CommitLayouts.IsFullListOFCommits == true)
+                                    {
+                                        clear.ClearCommitFullWindow(1, y, Console.WindowWidth - 1, Console.WindowHeight);
+                                        Refresh();
+                                    }
                                 }
                                 else
                                 {
-                                    clear.ClearOneCommit(1, y, Console.WindowWidth - 2);
-                                    DisplayOneCommit();
+                                    if (CommitLayouts.IsFullListOFCommits == true)
+                                    {
+                                        clear.ClearOneCommit(1, y + 1, Console.WindowWidth - 2);
+                                        DisplayOneCommit(width);
+                                    }
                                 }
 
                                 if (y < Console.WindowHeight - 2)
@@ -140,34 +137,51 @@ namespace GitClient.ui
                                     y++;
                                 }
 
-                                if (commitNumber < totalCommits && commitNumber > 0)
+                                if (commitNumber < totalCommits)
                                 {
                                     commitNumber++;
                                 }
 
-                                GetCommitNumber();
-                                blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth - 3);
-                                indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 2);
+
+
+                                if (y <= Console.WindowHeight - 2 && CommitLayouts.IsFullListOFCommits == false)
+                                {
+                                    OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, startIndex, endIndex, currentIndex, y, commitNumber);
+                                }
+                                else
+                                {
+                                    GetCommitNumber();
+                                    blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), width);
+                                    indicator.GetIndicator(commitNumber, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, 3, Console.WindowHeight - 1);
+                                }
                             }
                         }
                         break;
                     case ConsoleKey.UpArrow:
                         {
-                            if (commitNumber > 1 && CommitLayouts.IsFullListOFCommits == true)
+                            if (commitNumber > 1)
                             {
-                                ButtomPress.Type.down = false;
-                                ButtomPress.Type.up = true;
+                                ReadButtonsPressing.Type.down = false;
+                                ReadButtonsPressing.Type.up = true;
 
                                 if (y == 3 && startIndex > 0)
                                 {
                                     startIndex--;
-                                    clear.ClearCommitFullWindow(1, y, Console.WindowWidth - 2, Console.WindowHeight - 1);
-                                    Refresh();
+                                    endIndex--;
+
+                                    if (CommitLayouts.IsFullListOFCommits == true)
+                                    {
+                                        clear.ClearCommitFullWindow(1, y, Console.WindowWidth - 1, Console.WindowHeight);
+                                        Refresh();
+                                    }
                                 }
                                 else
                                 {
-                                    clear.ClearOneCommit(1, y, Console.WindowWidth - 2);
-                                    DisplayOneCommit();
+                                    if (CommitLayouts.IsFullListOFCommits == true)
+                                    {
+                                        clear.ClearOneCommit(1, y - 1, Console.WindowWidth - 1);
+                                        DisplayOneCommit(width);
+                                    }
                                 }
 
                                 if (y > 3)
@@ -181,20 +195,47 @@ namespace GitClient.ui
                                     commitNumber--;
                                 }
 
-                                GetCommitNumber();
-                                blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), Console.WindowWidth - 3);
-                                indicator.GetIndicator(currentIndex, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 1);
+                                if (y >= 3 && CommitLayouts.IsFullListOFCommits == false)
+                                {
+                                    OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, startIndex, endIndex, currentIndex, y, commitNumber);
+                                }
+                                else if (CommitLayouts.IsFullListOFCommits == true)
+                                {
+                                    GetCommitNumber();
+                                    blueBox.SetBlueBox((1, y), currentCommits[currentIndex].Display(), width);
+                                    indicator.GetIndicator(commitNumber, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 1);
+                                }
                             }
                         }
                         break;
                     case ConsoleKey.Enter:
                         {
-                            clear.ClearCommitPanel();
-                            commitsWithDescription.Show(startIndex, endIndex, currentIndex, y, commitNumber);
+                            ReadButtonsPressing.Type.enter = true;
+                            enterCount++;
+                           
+                            if (enterCount == 1)
+                            {
+                                clear.ClearCommitPanel();
+                                OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, startIndex, endIndex, currentIndex, y, commitNumber);
+                                CommitLayouts.IsFullListOFCommits = false;
+                            }
+                            else
+                            {
+                                clear.ClearCommitFullWindow(0, y, Console.WindowWidth, Console.WindowHeight);
+                                width = Console.WindowWidth - 3;
+                                enterCount = 0;
+                                Refresh();
+                            }
                         }
                         break;
                     case ConsoleKey.RightArrow:
                         {
+                            if (ReadButtonsPressing.Type.enter == true)
+                            {
+                                clear.ClearCommitPanel();
+                                OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, currentIndex, y, commitNumber);
+                                ReadButtonsPressing.Type.enter = false;
+                            }
                         }
                         break;
                     case ConsoleKey.Escape:
@@ -207,19 +248,16 @@ namespace GitClient.ui
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
 
-
-        private void DisplayOneCommit()
+        private void DisplayOneCommit(int width)
         {
-            int width = Console.WindowWidth - 3;
             int height = Console.WindowHeight;
             string displayText = TextSettings.GetTextLength(currentCommits[currentIndex].Display(), width);
             Console.SetCursorPosition(1, y);
             TextSettings.SetColorLog(displayText);
         }
 
-        private void DisplayCommits()
+        private void DisplayCommits(int width)
         {
-            int width = Console.WindowWidth - 3;
             int height = Console.WindowHeight;
             int stopAt = currentCommits.Count() > height ? height: currentCommits.Count();
 
@@ -234,34 +272,6 @@ namespace GitClient.ui
                     TextSettings.SetColorLog(displayText);
                 }
             }
-        }
-
-        private void DrawBorderForFullSizeCommitList()
-        {
-            for (int i = 3; i < Console.WindowHeight - 1; i++)
-            {
-                Console.SetCursorPosition(0, i);
-                Console.Write("│");
-                Console.SetCursorPosition(Console.WindowWidth - 1, i);
-                Console.Write("║");
-            }
-
-            for (int i = 1; i < Console.WindowWidth - 1; i++)
-            {
-                Console.SetCursorPosition(i, 2);
-                Console.Write("─");
-                Console.SetCursorPosition(i, Console.WindowHeight - 1);
-                Console.Write("─");
-            }
-
-            Console.SetCursorPosition(0, 2);
-            Console.Write("┌");
-            Console.SetCursorPosition(0, Console.WindowHeight - 1);
-            Console.Write("└");
-            Console.SetCursorPosition(Console.WindowWidth - 1, 2);
-            Console.Write("┐");
-            Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
-            Console.Write("┘");
         }
 
         private void GetCommitNumber()

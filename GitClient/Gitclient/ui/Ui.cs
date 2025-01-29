@@ -15,12 +15,15 @@ namespace GitClient.ui
         private DiffPanel diffPanel;
         private TabsPanel tabsPanel;
         private CommitsPanel commitsPanel;
+        private CommitsWithDescription commitsWithDescription;
 
         public Ui() 
         {
             unstangedChangesPanel = PanelFactory.CreateUnstagedChangesPanel();
             stagedChangesPanel = PanelFactory.CreateStagedChangesPanel();
             commitsPanel = PanelFactory.CreateCommitsPanel();
+            commitsWithDescription = PanelFactory.CommitsWithDescription();
+            commitsWithDescription.SubscribeToPanel(commitsPanel);
             diffPanel = PanelFactory.StatusDiffPanel();
             diffPanel.SubcribeToPanel(unstangedChangesPanel, stagedChangesPanel);
             tabsPanel = PanelFactory.Tabs();

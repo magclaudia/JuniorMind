@@ -14,7 +14,7 @@ namespace GitClient.ui
 
         public void ClearFiles(int x, int y, int startFrom, int width, int EndAt, string cleaningArea)
         {
-            ButtomPress.Type.deleted = true;
+            ReadButtonsPressing.Type.deleted = true;
             
             if (cleaningArea == "cleaningAllPanelArea")
             {
@@ -39,13 +39,13 @@ namespace GitClient.ui
             int x = 0;
             int width = 0;
 
-            if (ButtomPress.Type.diffMovements == true && y < EndAt && ButtomPress.Type.down == true || y > dimensions.tabHeight + 2 && ButtomPress.Type.up == true && ButtomPress.Type.diffMovements == true)
+            if (ReadButtonsPressing.Type.diffMovements == true && y < EndAt && ReadButtonsPressing.Type.down == true || y > dimensions.tabHeight + 2 && ReadButtonsPressing.Type.up == true && ReadButtonsPressing.Type.diffMovements == true)
             {
                 x = 1;
                 Console.SetCursorPosition(x, y);
                 Console.Write(new string(' ', Console.WindowWidth - 3));
             }
-            else if (ButtomPress.Type.right == true)
+            else if (ReadButtonsPressing.Type.right == true)
             {
                 startFrom = dimensions.tabHeight + 1;
                 x = 0;
@@ -75,13 +75,26 @@ namespace GitClient.ui
 
         public void ClearOneCommit(int x, int y, int width)
         {
-            Console.SetCursorPosition(x, y);
+            int index = ReadButtonsPressing.Type.down == true ? y - 1 : y + 1; 
+            Console.SetCursorPosition(x, index);
             Console.Write(new string(' ', width));
         }
 
         public void ClearCommitFullWindow(int x, int y, int width, int heigth)
         {
+            int startFrom = 2;
+            while (startFrom < heigth)
+            {
+                Console.SetCursorPosition(x, startFrom);
+                Console.Write(new string(' ', width));
+                startFrom++;
+            }
+        }
+
+        public void ClearCommitWithDescription(int x, int width, int heigth)
+        {
             int startFrom = 3;
+
             while (startFrom < heigth)
             {
                 Console.SetCursorPosition(x, startFrom);
@@ -119,6 +132,18 @@ namespace GitClient.ui
             int startFrom = Console.WindowHeight / 4 + 3;
 
             while(startFrom < Console.WindowHeight / 2 + 2)
+            {
+                Console.SetCursorPosition(Console.WindowWidth / 2 + 10, startFrom);
+                Console.Write(new string(' ', Console.WindowWidth - (Console.WindowWidth / 2 + 11)));
+                startFrom++;
+            }
+        }
+
+        public void ClearFilesPanelForCommits()
+        {
+            int startFrom = Console.WindowHeight / 2 + 6;
+
+            while (startFrom < Console.WindowHeight - 1)
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 + 10, startFrom);
                 Console.Write(new string(' ', Console.WindowWidth - (Console.WindowWidth / 2 + 11)));

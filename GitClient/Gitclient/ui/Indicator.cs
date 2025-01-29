@@ -11,7 +11,7 @@ namespace GitClient.ui
         public void GetIndicator(int currentIndex, int heigth, int totalNumberOfFiles, int x, int y, int endAt)
         {
             Console.CursorVisible = true;
-            int i = 3;
+            int i = y;
 
             while (i < endAt)
             {

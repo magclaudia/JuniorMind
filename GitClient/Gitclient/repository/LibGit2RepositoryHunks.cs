@@ -53,7 +53,7 @@ namespace GitClient.repository
             const int GIT_APPLY_LOCATION_WORKDIR = 1;
 
 
-            int applyLocation = ButtomPress.Type.workingInStagePanel == true ? GIT_APPLY_LOCATION_INDEX : GIT_APPLY_LOCATION_WORKDIR;
+            int applyLocation = ReadButtonsPressing.Type.workingInStagePanel == true ? GIT_APPLY_LOCATION_INDEX : GIT_APPLY_LOCATION_WORKDIR;
 
             int applyResult = LibGit2Wrapper.git_apply(repo, diff, applyLocation, IntPtr.Zero);
             

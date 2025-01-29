@@ -214,7 +214,7 @@ namespace GitClient.service
             tabsPanel.Show();
             diffPanel.Show();
 
-            if (ButtomPress.Type.workingInStagePanel == true)
+            if (ReadButtonsPressing.Type.workingInStagePanel == true)
             {
                 unstagedChangesPanel.Show();
                 stagedChangesPanel.Show();

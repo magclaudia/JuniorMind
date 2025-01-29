@@ -94,6 +94,7 @@ namespace GitClient.repository
             IntPtr treePtr = IntPtr.Zero;
             IntPtr commitPtr = IntPtr.Zero;
             IntPtr deltaPtr = IntPtr.Zero;
+            IntPtr diffPtr = IntPtr.Zero;
             IntPtr repo = GetRepo();
             id = oids[index];
 
@@ -191,6 +192,7 @@ namespace GitClient.repository
         {
             keyValuePairs.Clear();
             List<FileDiff> fileDiffs = new List<FileDiff>();
+            IntPtr diff = GetDiff();
 
             int result = LibGit2Wrapper.git_diff_foreach(diff, DiffFileCallback, DiffBinaryCallback, DiffHunkCallback, DiffLineCallback, IntPtr.Zero);
 
@@ -205,6 +207,25 @@ namespace GitClient.repository
             }
 
             return fileDiffs;
+        }
+
+        public List<FileDiff> GetCurrentDiffForSelectedFile(int index, string fileName)
+        {
+            List<FileDiff> diff = new List<FileDiff>();
+            List<FileDiff> list = new List<FileDiff>();
+
+            diff = GetAllDiffs();
+
+            foreach (var entry in diff)
+            {
+                if (entry.fileName == fileName)
+                {
+                    list.Add(entry);
+                    break;
+                }
+            }
+
+            return list;
         }
 
         private int DiffFileCallback(ref LibGit2Wrapper.GitDiffDelta delta, float progress, IntPtr payload)
@@ -304,6 +325,51 @@ namespace GitClient.repository
             return repo;
         }
 
+        public IntPtr GetDiff()
+        {
+            LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
+            IntPtr parentCommitPtr = IntPtr.Zero;
+            IntPtr parentTreePtr = IntPtr.Zero;
+            IntPtr treePtr = IntPtr.Zero;
+            IntPtr diff = IntPtr.Zero;
+            IntPtr commitPtr = IntPtr.Zero;
+            IntPtr repo = GetRepo();
+
+            if (LibGit2Wrapper.git_reference_name_to_id(out var oid, repo, "HEAD") != 0)
+            {
+                throw new Exception("Failed to resolve HEAD reference.");
+            }
+
+            if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) != 0)
+            {
+                throw new Exception("Failed to lookup HEAD commit.");
+            }
+
+            if (LibGit2Wrapper.git_commit_tree(out treePtr, commitPtr) != 0)
+            {
+                throw new Exception("Failed to get the commit tree.");
+            }
+
+            if (LibGit2Wrapper.git_commit_parentcount(commitPtr) > 0)
+            {
+                if (LibGit2Wrapper.git_commit_parent(out parentCommitPtr, commitPtr, 0) != 0)
+                {
+                    throw new Exception("Failed to get the parent commit.");
+                }
+
+                if (LibGit2Wrapper.git_commit_tree(out parentTreePtr, parentCommitPtr) != 0)
+                {
+                    throw new Exception("Failed to get the parent commit tree.");
+                }
+            }
+
+            if (LibGit2Wrapper.git_diff_tree_to_tree(out diff, repo, parentTreePtr, treePtr, ref options) != 0)
+            {
+                throw new Exception("Failed to get the diff.");
+            }
+
+            return diff;
+        }
         private string GetCommitId(LibGit2Wrapper.GitOid id)
         {
             StringBuilder sb = new StringBuilder();

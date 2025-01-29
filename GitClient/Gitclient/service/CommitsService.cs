@@ -50,11 +50,14 @@ namespace GitClient.service
             return libgit2Repository.GetAllFilesForCommit(index);
         }
 
-        public List<FileDiff> GetAllCommitsDiff()
+        public List<FileDiff> GetAllLogDiff()
         {
             return libgit2Repository.GetAllDiffs();
         }
 
-
+        public List<FileDiff> GetCurrentDiffForSelectedFile(int index, string fileName) 
+        {
+            return libgit2Repository.GetCurrentDiffForSelectedFile(index, fileName);
+        }
     }
 }

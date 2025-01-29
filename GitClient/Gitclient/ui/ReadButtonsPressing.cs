@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GitClient.ui
 {
-    public static class ButtomPress
+    public static class ReadButtonsPressing
     {
         public struct Type
         {
@@ -19,19 +19,6 @@ namespace GitClient.ui
             public static bool enter;
             public static bool workingInUnstagePanel;
             public static bool workingInStagePanel;
-
-            public Type()
-            {
-                down = false;
-                up = false;
-                left = false;
-                right = false;
-                deleted = false;
-                diffMovements = false;
-                enter = false;
-                workingInUnstagePanel = false;
-                workingInStagePanel = false;
-            }
         }
     }
 }

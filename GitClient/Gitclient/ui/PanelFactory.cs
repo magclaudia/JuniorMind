@@ -48,6 +48,12 @@ namespace GitClient.ui
             return panel;    
         }
 
+        public static CommitsWithDescription CommitsWithDescription() 
+        {
+            CommitsWithDescription panel = new CommitsWithDescription(commitsLibGit2Repository, commitsService, panelCommunicationService);
+            return panel;
+        }
+
         public static DiffPanel StatusDiffPanel()
         {
             DiffPanel panel = new DiffPanel(statusDiffService, statusService, hunksService, panelCommunicationService);
