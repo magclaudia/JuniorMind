@@ -188,11 +188,11 @@ namespace GitClient.repository
             return filesList;
         }
 
-        public List<FileDiff> GetAllDiffs()
+        public List<FileDiff> GetAllDiffs(int index)
         {
             keyValuePairs.Clear();
             List<FileDiff> fileDiffs = new List<FileDiff>();
-            IntPtr diff = GetDiff();
+            IntPtr diff = GetDiff(index);
 
             int result = LibGit2Wrapper.git_diff_foreach(diff, DiffFileCallback, DiffBinaryCallback, DiffHunkCallback, DiffLineCallback, IntPtr.Zero);
 
@@ -214,7 +214,7 @@ namespace GitClient.repository
             List<FileDiff> diff = new List<FileDiff>();
             List<FileDiff> list = new List<FileDiff>();
 
-            diff = GetAllDiffs();
+            diff = GetAllDiffs(index);
 
             foreach (var entry in diff)
             {
@@ -325,7 +325,7 @@ namespace GitClient.repository
             return repo;
         }
 
-        public IntPtr GetDiff()
+        public IntPtr GetDiff(int index)
         {
             LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
             IntPtr parentCommitPtr = IntPtr.Zero;
@@ -335,12 +335,14 @@ namespace GitClient.repository
             IntPtr commitPtr = IntPtr.Zero;
             IntPtr repo = GetRepo();
 
-            if (LibGit2Wrapper.git_reference_name_to_id(out var oid, repo, "HEAD") != 0)
-            {
-                throw new Exception("Failed to resolve HEAD reference.");
-            }
+            //if (LibGit2Wrapper.git_reference_name_to_id(out var oid, repo, "HEAD") != 0)
+            //{
+            //    throw new Exception("Failed to resolve HEAD reference.");
+            //}
 
-            if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref oid) != 0)
+            id = oids[index];
+
+            if (LibGit2Wrapper.git_commit_lookup(out commitPtr, repo, ref id) != 0)
             {
                 throw new Exception("Failed to lookup HEAD commit.");
             }

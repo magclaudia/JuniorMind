@@ -99,7 +99,7 @@ namespace GitClient.ui
             int width = 0;
             int positionOfDiffName = 0;
 
-            if (ReadButtonsPressing.Type.right == true)
+            if (ReadButtonsPressingOrActions.Type.rightOnce == true)
             {
                 x = 0;
                 width = Console.WindowWidth - 1;
@@ -141,7 +141,7 @@ namespace GitClient.ui
             Console.SetCursorPosition(positionOfDiffName, dimensions.tabHeight + 1);
             Console.Write(text);
 
-            if (ReadButtonsPressing.Type.right == true && currentIndex == 0)
+            if (ReadButtonsPressingOrActions.Type.rightOnce == true && currentIndex == 0)
             {
                 indicator.GetIndicator(currentIndex, Console.WindowHeight - 1, currentDiff.Count(), Console.WindowWidth - 1, dimensions.tabHeight + 2, Console.WindowHeight - 2);
             }

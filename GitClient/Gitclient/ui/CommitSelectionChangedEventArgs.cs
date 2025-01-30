@@ -15,15 +15,15 @@ namespace GitClient.ui
         public int StartIndex { get; }
         public int EndIndex { get; }
         public int CurrentIndex { get; }
+        public int FileIndex { get; set; }
         public bool Enter { get; }
         public bool Right { get; }
         public bool Left { get; }
         public bool Diff { get; }
         public int Y { get; set; }
-
         public int CommitNumber { get; set; }
 
-        public CommitSelectionChangedEventArgs(bool enter, bool right, bool left, bool diff, int startIndex, int endIndex, int currentIndex, int y, int commitNumber)
+        public CommitSelectionChangedEventArgs(bool enter, bool right, bool left, bool diff, int startIndex, int endIndex, int currentIndex, int fileIndex, int y, int commitNumber)
         {
             Enter = enter;
             Right = right;
@@ -32,6 +32,7 @@ namespace GitClient.ui
             StartIndex = startIndex;
             EndIndex = endIndex;
             CurrentIndex = currentIndex;
+            FileIndex = fileIndex;
             Y = y;
             CommitNumber = commitNumber;
         }
