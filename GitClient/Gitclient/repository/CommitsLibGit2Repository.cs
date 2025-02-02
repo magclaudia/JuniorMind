@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using static GitClient.LibGit2Wrapper;
 
 namespace GitClient.repository
 {
@@ -22,7 +21,8 @@ namespace GitClient.repository
             IntPtr walker = IntPtr.Zero;
             IntPtr commitPtr = IntPtr.Zero;
             IntPtr repo = GetRepo();
-            string message = "";
+            string message;
+            oids.Clear();
 
             try
             {

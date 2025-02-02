@@ -63,12 +63,12 @@ namespace GitClient.ui
             {
                 if (ReadButtonsPressingOrActions.Type.rightOnce == true)
                 {
-                    x = Console.WindowWidth / 2 + 1;
-                }
-                else
-                {
                     x = Console.WindowWidth / 2 + 2;
                 }
+                //else
+                //{
+                //    x = Console.WindowWidth / 2 + 2;
+                //}
 
                 width = Console.WindowWidth / 2 - 3;
 

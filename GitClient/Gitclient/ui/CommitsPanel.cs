@@ -35,6 +35,7 @@ namespace GitClient.ui
         private int width = Console.WindowWidth - 3;
         private int enterCount = 0;
         private int fileNumber;
+        private int filesStartingIndex;
         private int totalFiles;
         
 
@@ -58,6 +59,7 @@ namespace GitClient.ui
             totalCommits = this.commitsService.GetAllCommits().Count;
             commitNumber = 1;
             fileNumber = 1;
+            filesStartingIndex = 0;
             totalFiles = commitsService.GetAllFilesForCommit(commitNumber - 1).Count;
         }
 
@@ -66,9 +68,9 @@ namespace GitClient.ui
             panelCommunicationService = service;
         }
 
-        protected virtual void OnCommitSelectionChanged(bool enter, bool right, bool left, bool diff, int startIndex, int endIndex, int currentIndex, int fileIndex, int y, int commitNumber)
+        protected virtual void OnCommitSelectionChanged(bool enter, bool right, bool left, bool diff, int startIndex, int endIndex, int currentIndex, int fileIndex, int y, int commitNumber, int fileNumber, int filesStartingIndex)
         {
-            CommitSelectionChanged.Invoke(this, new CommitSelectionChangedEventArgs(enter, right, left, diff, startIndex, endIndex, currentIndex, fileIndex, y, commitNumber));
+            CommitSelectionChanged.Invoke(this, new CommitSelectionChangedEventArgs(enter, right, left, diff, startIndex, endIndex, currentIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex));
         } 
 
         public int GetStartIndex()
@@ -127,11 +129,6 @@ namespace GitClient.ui
                             }
                             else
                             {
-                                if (y <= 4)
-                                {
-                                    y = Console.WindowHeight / 2 + 5;
-                                }
-
                                 FilesDownMoves();
                             }
                         }
@@ -147,12 +144,7 @@ namespace GitClient.ui
                             }
                             else
                             {
-                                //if (y <= 4)
-                                //{
-                                //    y = Console.WindowHeight / 2 + 5;
-                                //}
-
-                                FilesDownMoves();
+                                FilesUpMoves();
                             }
                         }
                         break;
@@ -164,8 +156,7 @@ namespace GitClient.ui
                             if (enterCount == 1)
                             {
                                 clear.ClearCommitPanel();
-                                OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber);
-                                /* CommitLayouts.IsFullListOFCommits*/
+                                OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
                                 ReadButtonsPressingOrActions.Type.displayListOfCommitsOnEntirePanel = false;
                             }
                             else
@@ -176,6 +167,7 @@ namespace GitClient.ui
                                 Refresh();
                             }
                         }
+
                         break;
                     case ConsoleKey.RightArrow:
                         {
@@ -184,7 +176,8 @@ namespace GitClient.ui
                             if (ReadButtonsPressingOrActions.Type.enter == true)
                             {
                                 clear.ClearCommitPanel();
-                                OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber);
+                                y = Console.WindowHeight / 2 + 5;
+                                OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
                                 ReadButtonsPressingOrActions.Type.enter = false;
                             }
                         }
@@ -236,7 +229,7 @@ namespace GitClient.ui
 
                 if (y <= Console.WindowHeight - 2 && ReadButtonsPressingOrActions.Type.displayListOfCommitsOnEntirePanel == false)
                 {
-                    OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber);
+                    OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
                 }
                 else
                 {
@@ -249,21 +242,22 @@ namespace GitClient.ui
 
         private void FilesDownMoves()
         {
-            totalFiles = commitsService.GetAllFilesForCommit(commitIndex).Count;
-            currentFiles = commitsService.GetCurrentFiles(startIndex, commitIndex);
+            totalFiles = commitsService.GetAllFilesForCommit(commitNumber - 1).Count;
+            currentFiles = commitsService.GetCurrentFiles(filesStartingIndex, commitNumber - 1);
 
             if (fileNumber < totalFiles)
             {
                 if (y == Console.WindowHeight - 2)
                 {
-                    clear.ClearFiles(1, y, Console.WindowHeight / 2 + 5, Console.WindowWidth / 2 - 4, Console.WindowHeight - 2, "cleaningAllPanelArea");
+                    clear.ClearFiles(1, y, Console.WindowHeight / 2 + 5, Console.WindowWidth / 2 - 3, Console.WindowHeight - 2, "cleaningAllPanelArea");
                     clear.ClearDiff(y);
                     startIndex++;
-                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, fileNumber);
+                    filesStartingIndex++;
+                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
                 }
                 else
                 {
-                    clear.ClearFiles(1, y, startIndex, Console.WindowWidth / 2 - 4, Console.WindowHeight - 1, "cleaningOneFile");
+                    clear.ClearFiles(1, y, startIndex, Console.WindowWidth / 2 - 3, Console.WindowHeight - 1, "cleaningOneFile");
                     clear.ClearDiff(y);
                 }
 
@@ -278,9 +272,9 @@ namespace GitClient.ui
                     fileNumber++;
                 }
 
-                if (fileNumber <= currentFiles.Count)
+                if (fileNumber <= totalFiles)
                 {
-                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, fileNumber);
+                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
                 }
             }
         }
@@ -322,13 +316,57 @@ namespace GitClient.ui
 
                 if (y >= 3 && ReadButtonsPressingOrActions.Type.displayListOfCommitsOnEntirePanel == false)
                 {
-                    OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber);
+                    OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
                 }
                 else if (ReadButtonsPressingOrActions.Type.displayListOfCommitsOnEntirePanel == true)
                 {
                     GetCommitNumber();
                     blueBox.SetBlueBox((1, y), currentCommits[commitIndex].Display(), width);
                     indicator.GetIndicator(commitNumber, Console.WindowHeight - 2, totalCommits, Console.WindowWidth - 1, y, Console.WindowHeight - 1);
+                }
+            }
+        }
+
+        private void FilesUpMoves()
+        {
+            totalFiles = commitsService.GetAllFilesForCommit(commitIndex).Count;
+            currentFiles = commitsService.GetCurrentFiles(fileIndex, commitIndex);
+
+            if (fileNumber > 1)
+            {
+                bool callOnCommitSelectionChanged = false;
+
+                if (y == Console.WindowHeight / 2 + 5)
+                {
+                    clear.ClearFiles(1, y, Console.WindowHeight / 2 + 5, Console.WindowWidth / 2 - 2, Console.WindowHeight - 2, "cleaningAllPanelArea");
+                    clear.ClearDiff(y);
+                    startIndex--;
+                    fileIndex = -1;
+                    filesStartingIndex--;
+                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
+                    callOnCommitSelectionChanged = true;
+                    fileIndex = 0;
+                }
+                else
+                {
+                    clear.ClearFiles(1, y, startIndex, Console.WindowWidth / 2 - 2, Console.WindowHeight - 1, "cleaningOneFile");
+                    clear.ClearDiff(y);
+                }
+
+                if (fileIndex > 0)
+                {
+                    y--;
+                    fileIndex--;
+                }
+
+                if (fileNumber <= totalFiles)
+                {
+                    fileNumber--;
+                }
+
+                if (callOnCommitSelectionChanged == false)
+                {
+                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
                 }
             }
         }

@@ -286,7 +286,7 @@ namespace GitClient.ui
 
         public void DrawBorderForCommitsAfterPressingRightOnce()
         {
-            for (int i = dimensions.tabHeight + 2; i < dimensions.height / 3 - 2; i++)
+            for (int i = dimensions.tabHeight + 2; i < Console.WindowHeight / 3 - 2; i++)
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
@@ -294,21 +294,21 @@ namespace GitClient.ui
                 Console.Write("│");
             }
 
-            for (int i = 1; i < dimensions.changesPanelWidth; i++)
+            for (int i = 1; i < Console.WindowWidth / 2 - 1; i++)
             {
                 Console.SetCursorPosition(i, dimensions.tabHeight + 1);
                 Console.Write("─");
-                Console.SetCursorPosition(i, dimensions.height / 3 - 2);
+                Console.SetCursorPosition(i, Console.WindowHeight / 3 - 2);
                 Console.Write("─");
             }
 
             Console.SetCursorPosition(0, 2);
             Console.Write("┌");
-            Console.SetCursorPosition(0, dimensions.height / 3 - 2);
+            Console.SetCursorPosition(0, Console.WindowHeight / 3 - 2);
             Console.Write("└");
             Console.SetCursorPosition(dimensions.width / 2 - 1, 2);
             Console.Write("┐");
-            Console.SetCursorPosition(dimensions.width / 2 - 1, dimensions.height / 3 - 2);
+            Console.SetCursorPosition(dimensions.width / 2 - 1, Console.WindowHeight / 3 - 2);
             Console.Write("┘");
 
             Console.SetCursorPosition(1, 2);

@@ -28,6 +28,7 @@ namespace GitClient.ui
         private int y = 3;
         private int commitNumber;
         private int fileNumber;
+        private int filesStartingIndex;
         private List<ChangeAttribute> listOfFiles;
         private ClearConsoleChoosenSpace clear;
         private int width;
@@ -55,10 +56,11 @@ namespace GitClient.ui
         }
         private void HandleCommitsSelectionChanged(object sender, CommitSelectionChangedEventArgs e)
         {
-            y = e.Y;
+            y = e.Y; 
             commitIndex = e.CurrentIndex;
             fileIndex = e.FileIndex;
             commitNumber = e.CommitNumber;
+            filesStartingIndex = e.FilesStartingIndex;
             listOfFiles = commitsService.GetAllFilesForCommit(commitNumber - 1);
             currentCommits = commitsService.GetCurrentListOfCommits(e.StartIndex, e.EndIndex);
 
@@ -69,8 +71,8 @@ namespace GitClient.ui
             }
             else if (e.Right == true)
             {
-                fileNumber = e.CommitNumber;
-                currentFiles = commitsService.GetCurrentFiles(e.StartIndex, commitIndex);
+                fileNumber = e.FileNumber;
+                currentFiles = commitsService.GetCurrentFiles(e.FilesStartingIndex, commitNumber - 1);
                 HandlePressingRightButtomOnce(e);
             }
         }
@@ -116,33 +118,39 @@ namespace GitClient.ui
         private void HandlePressingRightButtomOnce(CommitSelectionChangedEventArgs e)
         {
             int x = 1;
-            width = Console.WindowWidth / 2 - 2;
+            width = (Console.WindowWidth / 2) - 2;
             int height = Console.WindowHeight - (Console.WindowHeight / 2 + 4);
 
             if (ReadButtonsPressingOrActions.Type.enter == true)
             {
                 y = Console.WindowHeight / 2 + 5;
                 panel.DrawBorderForCommitsAfterPressingRightOnce();
-                GetInfo(x, width, Console.WindowHeight / 3 - 1);
+                GetInfo(x, width, Console.WindowHeight / 3 - 3);
                 GetMessage(x, width, Console.WindowHeight / 2 + 1);
                 GetPath(x, Console.WindowHeight / 2 + 4);
-                GetFiles(x, width, Console.WindowHeight - 1, Console.WindowHeight / 2 + 5, e.StartIndex, y);
+                GetFiles(x, width, Console.WindowHeight - 1, Console.WindowHeight / 2 + 5, e.FileIndex, y);
                 GetFilesNumber(x, Console.WindowHeight / 2 + 3);
                 indicator.GetIndicator(fileNumber, Console.WindowHeight - height, listOfFiles.Count, width, y, Console.WindowHeight - 1);
-                blueBox.SetBlueBox((1, y), currentFiles[e.FileIndex].Display(), width - 2);
-                GetFileDiff();
+                blueBox.SetBlueBox((1, y), currentFiles[fileNumber - 1].Display(), width - 3);
+                GetFileDiff(fileNumber - 1);
             }
-            else if (fileNumber >= currentFiles.Count)
+            else if (fileNumber >= currentFiles.Count - 1 && ReadButtonsPressingOrActions.Type.down == true || fileIndex == -1 && ReadButtonsPressingOrActions.Type.up == true)
             {
-                GetFiles(x, width, Console.WindowHeight - 1, Console.WindowHeight / 2 + 5, e.StartIndex, Console.WindowHeight / 2 + 5);
+                GetFiles(x, width, Console.WindowHeight - 1, Console.WindowHeight / 2 + 5, e.FilesStartingIndex, Console.WindowHeight / 2 + 5);
                 indicator.GetIndicator(fileNumber, Console.WindowHeight - height, listOfFiles.Count, width, y, Console.WindowHeight - 1);
+                
+                if (e.FileIndex == -1)
+                {
+                    e.FileIndex = 0;
+                }
+                
                 blueBox.SetBlueBox((1, y), currentFiles[e.FileIndex].Display(), width - 2);
-                GetFileDiff();
+                GetFileDiff(e.FileIndex);
             }
             else
             {
-                GetOneFile(width, height, e.FileIndex, y);
-                GetFileDiff();
+                GetOneFile(width  - 2, height, y);
+                GetFileDiff(e.FileIndex);
             }
         }
         private void DisplayOneCommit()
@@ -179,33 +187,49 @@ namespace GitClient.ui
 
                 if (y < height)
                 {
-                    string displayText = TextSettings.GetTextLength(currentFiles[i].Display(), width);
+                    string displayText = TextSettings.GetTextLength(currentFiles[i].Display(), width - 2);
                     Console.SetCursorPosition(x, y);
                     Console.ForegroundColor = TextSettings.SetColorStatus(displayText[0]);
                     Console.Write(displayText);
                     Console.ResetColor();
                 }
+                else
+                {
+                    break;
+                }
             }
         }
-        private void GetOneFile(int width, int height, int currentIndex, int y)
+        private void GetOneFile(int width, int height, int y)
         {
-            Console.SetCursorPosition(1, y - 1);
-            string fileName = currentFiles[currentIndex - 1].Display();
+            string fileName;
+
+            if (ReadButtonsPressingOrActions.Type.down == true)
+            {
+                fileName = currentFiles[fileIndex - 1].Display();
+                Console.SetCursorPosition(1, y - 1);
+            }
+            else
+            {
+                
+                fileName = currentFiles[fileIndex + 1].Display();
+                Console.SetCursorPosition(1, y + 1);
+            }
+
             string displayText = TextSettings.GetTextLength(fileName, width);
             Console.ForegroundColor = TextSettings.SetColorStatus(displayText[0]);
             Console.Write(displayText);
             Console.ResetColor();
-            indicator.GetIndicator(fileNumber, Console.WindowHeight - height, listOfFiles.Count, width, y, Console.WindowHeight - 1);
-            blueBox.SetBlueBox((1, y), currentFiles[currentIndex].Display(), width - 2);
+            indicator.GetIndicator(listOfFiles.Count, Console.WindowHeight - height, listOfFiles.Count, width + 2, y, Console.WindowHeight - 1);
+            blueBox.SetBlueBox((1, y), currentFiles[fileIndex].Display(), width);
         }
-        private void GetFileDiff()
+        private void GetFileDiff(int index)
         {
-            List<FileDiff> currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitIndex, currentFiles[fileIndex].GetFileName());
+            List<FileDiff> currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitNumber - 1, currentFiles[index].GetFileName());
             
-            int height = currentDiff[0].diffs.Count > Console.WindowHeight - 2 ? Console.WindowHeight - 1
-                   : (currentDiff[0].diffs.Count == Console.WindowHeight - 2 ? currentDiff[0].diffs.Count
+            int height = currentDiff[0].diffs.Count > Console.WindowHeight - 3 ? Console.WindowHeight - 1
+                   : (currentDiff[0].diffs.Count == Console.WindowHeight - 3 ? currentDiff[0].diffs.Count
                        : currentDiff[0].diffs.Count + 3);
-            width = Console.WindowWidth / 2 + 1;
+            width = Console.WindowWidth / 2 + 2;
 
             for (int i = 0; i < height; i++)
             {
@@ -213,7 +237,7 @@ namespace GitClient.ui
 
                 if (y < height)
                 {
-                    string displayText = TextSettings.GetTextLength(currentDiff[0].diffs[i], width - 4);
+                    string displayText = TextSettings.GetTextLength(currentDiff[0].diffs[i], width - 6);
                     Console.SetCursorPosition(width, y);
 
                     if (displayText == "")
