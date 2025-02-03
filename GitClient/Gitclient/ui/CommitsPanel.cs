@@ -37,7 +37,7 @@ namespace GitClient.ui
         private int fileNumber;
         private int filesStartingIndex;
         private int totalFiles;
-        
+        private int retainPositionOfY;
 
         public CommitsPanel(CommitsLibGit2Repository libGit2Repository, CommitsService commitsService, PanelCommunicationService panelCommunicationService)
         {
@@ -175,10 +175,26 @@ namespace GitClient.ui
 
                             if (ReadButtonsPressingOrActions.Type.enter == true)
                             {
+                                retainPositionOfY = y;
                                 clear.ClearCommitPanel();
                                 y = Console.WindowHeight / 2 + 5;
                                 OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
                                 ReadButtonsPressingOrActions.Type.enter = false;
+                            }
+                        }
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        {
+                            if (ReadButtonsPressingOrActions.Type.rightOnce == true)
+                            {
+                                ReadButtonsPressingOrActions.Type.rightOnce = false;
+                                clear.ClearCommitPanel();
+                                y = retainPositionOfY;
+                                fileIndex = 0;
+                                fileNumber = 1;
+                                filesStartingIndex = 0;
+                                OnCommitSelectionChanged(enter: false, right: false, left: true, diff: false, startIndex, endIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex);
+                                ReadButtonsPressingOrActions.Type.enter = true;
                             }
                         }
                         break;
