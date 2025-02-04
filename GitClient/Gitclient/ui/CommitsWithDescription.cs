@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
-using LibGit2Sharp;
 
 namespace GitClient.ui
 {
@@ -268,7 +267,7 @@ namespace GitClient.ui
         {
             y = e.Y;
             int index = e.DiffStartingindex;
-            List<string> currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitNumber - 1, currentFiles[fileIndex].GetFileName());
+            List<string> currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitNumber - 1, currentFiles[e.FileIndex].GetFileName());
             
             int height = currentDiff.Count > Console.WindowHeight - 3 ? Console.WindowHeight - 1
                    : (currentDiff.Count == Console.WindowHeight - 3 ? currentDiff.Count

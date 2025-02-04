@@ -54,7 +54,7 @@ namespace GitClient.service
         public List<ChangeAttribute> GetCurrentFiles(int startIndex, int index)
         {
             List<ChangeAttribute> filesList = GetAllFilesForCommit(index);
-            int maxVisibleChanges = Console.WindowHeight - (Console.WindowHeight / 2) - 5;
+            int maxVisibleChanges = Console.WindowHeight - (Console.WindowHeight / 2) - 6;
             int count = Math.Min(maxVisibleChanges, filesList.Count - startIndex);
 
             if (count + startIndex > filesList.Count)

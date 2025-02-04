@@ -229,6 +229,15 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.Escape:
                         {
+                            if (ReadButtons.Type.diffMovements == true)
+                            {
+                                ReadButtons.Type.diffMovements = false;
+                                ReadButtons.Type.enter = true;
+                                clear.ClearCommitPanel();
+                                y = retainPositionOfY;
+                                OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                            }
+
                             CloseApplication();
                         }
                         break;
