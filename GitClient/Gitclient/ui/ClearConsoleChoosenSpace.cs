@@ -59,7 +59,7 @@ namespace GitClient.ui
                     startFrom++;
                 }
             }
-            else if (ReadButtons.Type.diffMovements == true && y == EndAt)
+            else if (ReadButtons.Type.diffMovements == true && y == EndAt || y == 3 && ReadButtons.Type.diffMovements == true)
             {
                 width = Console.WindowWidth - 3;
                 startFrom = 3;

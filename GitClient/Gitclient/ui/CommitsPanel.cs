@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
-using static GitClient.DrawTabs;
 
 namespace GitClient.ui
 {
@@ -107,7 +106,6 @@ namespace GitClient.ui
         {
             ReadButtons.Type.displayListOfCommitsOnEntirePanel = true;
             ReadButtons.Type.rightStatus = false;
-            //CommitLayouts.IsFullListOFCommits = true;
             panel.DrawBorderForFullSizeCommitList();
             commitsService.GetAllCommits();
             currentCommits = commitsService.GetCurrentListOfCommits(commitStartingIndex, commitEndIndex);
@@ -154,6 +152,10 @@ namespace GitClient.ui
                             if (ReadButtons.Type.displayListOfCommitsOnEntirePanel == true || ReadButtons.Type.enter == true)
                             {
                                 CommitsUpMoves();
+                            }
+                            else if (ReadButtons.Type.diffMovements == true)
+                            {
+                                DiffUpMoves();
                             }
                             else
                             {
@@ -325,7 +327,7 @@ namespace GitClient.ui
         private void DiffDownMoves()
         {
             List<ChangeAttribute> files = commitsService.GetAllFilesForCommit(commitNumber - 1);
-            currentDiff = commitsService.GetCurrentDiffForSelectedFile(fileIndex, files[fileIndex].GetFileName());
+            currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitNumber - 1, files[fileIndex].GetFileName());
             
             if (diffNumber < currentDiff.Count)
             {
@@ -451,6 +453,48 @@ namespace GitClient.ui
             }
         }
 
+        private void DiffUpMoves()
+        {
+            List<ChangeAttribute> files = commitsService.GetAllFilesForCommit(commitNumber - 1);
+            currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitNumber - 1, files[fileIndex].GetFileName());
+
+            if (diffNumber > 1)
+            {
+                bool callOnCommitSelectionChanged = false;
+
+                if (y == 3)
+                {
+                    clear.ClearDiff(y);
+                    diffStartingIndex--;
+                    OnCommitSelectionChanged(enter: false, right: false, left: false, diff: true, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    callOnCommitSelectionChanged = true;
+                }
+                else
+                {
+                    clear.ClearDiff(y);
+                }
+
+                if (diffIndex > 0)
+                {
+                    diffIndex--;
+                }
+
+                if (y > 3)
+                {
+                    y--;
+                }
+
+                if (diffNumber <= currentDiff.Count)
+                {
+                    diffNumber--;
+                }
+
+                if (callOnCommitSelectionChanged == false)
+                {
+                    OnCommitSelectionChanged(enter: false, right: false, left: false, diff: true, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                }
+            }
+        }
         private void DisplayOneCommit(int width)
         {
             int height = Console.WindowHeight;

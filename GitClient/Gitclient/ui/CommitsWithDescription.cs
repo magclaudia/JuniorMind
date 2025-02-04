@@ -176,17 +176,23 @@ namespace GitClient.ui
         {
             List<string> currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitNumber - 1, currentFiles[e.FileIndex].GetFileName());
             //panel.DrawDiffPanel(currentDiff, 1, commitIndex);
+            int index = e.DiffIndex;
 
-            if (e.DiffIndex == 0 || e.Y == Console.WindowHeight - 2)
+            if (e.DiffIndex == 0 || e.Y == Console.WindowHeight - 2 || e.Y == 3 && ReadButtons.Type.up == true)
             {
                 GetFileDiff(1, Console.WindowWidth - 3, e);
+                
+                if (e.Y == 3 && ReadButtons.Type.up == true)
+                {
+                    index = e.DiffStartingindex;
+                }
             }
             else
             {
                 GetOneLineOfDiff(currentDiff, e);
             }
             
-            blueBox.SetBlueBox((1, e.Y), currentDiff[e.DiffIndex], Console.WindowWidth - 3);
+            blueBox.SetBlueBox((1, e.Y), currentDiff[index], Console.WindowWidth - 3);
             indicator.GetIndicator(e.DiffIndex, Console.WindowHeight - 2, currentDiff.Count, Console.WindowWidth - 1, e.Y, Console.WindowHeight - 2);
         }
         private void DisplayOneCommit()
@@ -301,11 +307,20 @@ namespace GitClient.ui
                 index++;
             }
         }
-
         private void GetOneLineOfDiff(List<string> currentDiff, CommitSelectionChangedEventArgs e)
         {
-            Console.SetCursorPosition(1, e.Y - 1);  
-            string displayText = TextSettings.GetTextLength(currentDiff[e.DiffIndex - 1], Console.WindowWidth - 3);
+            string displayText;
+
+            if (ReadButtons.Type.down == true)
+            {
+                Console.SetCursorPosition(1, e.Y - 1);
+                displayText = TextSettings.GetTextLength(currentDiff[e.DiffIndex - 1], Console.WindowWidth - 3);
+            }
+            else
+            {
+                Console.SetCursorPosition(1, e.Y + 1);
+                displayText = TextSettings.GetTextLength(currentDiff[e.DiffIndex + 1], Console.WindowWidth - 3);
+            }
             
             if (e.DiffIndex == 1)
             {
@@ -319,7 +334,6 @@ namespace GitClient.ui
             Console.Write(displayText);
             Console.ResetColor();
         }
-
         private void GetInfo(int x, int width, int height)
         {
             Dictionary<string, string> display = new Dictionary<string, string>
