@@ -18,10 +18,5 @@ namespace GitClient.model
             this.diffs = diffs;
             this.fileName = fileName;
         }
-
-        public string GetFileName() 
-        {
-            return this.fileName;
-        }
     }
 }

@@ -83,7 +83,7 @@ namespace GitClient.service
             return libgit2Repository.GetAllDiffs(index);
         }
 
-        public List<FileDiff> GetCurrentDiffForSelectedFile(int index, string fileName) 
+        public List<string> GetCurrentDiffForSelectedFile(int index, string fileName) 
         {
             return libgit2Repository.GetCurrentDiffForSelectedFile(index, fileName);
         }

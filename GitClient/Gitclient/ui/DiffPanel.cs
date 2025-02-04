@@ -68,7 +68,7 @@ namespace GitClient.ui
             string currentPanel;
             hunk.Clear();
 
-            if (ReadButtonsPressingOrActions.Type.workingInStagePanel == true)
+            if (ReadButtons.Type.workingInStagePanel == true)
             {
                 fileDiffs = statusDiffService.GetAllStageDiffs();
                 currentPanel = "stage";
@@ -89,7 +89,7 @@ namespace GitClient.ui
 
             Refresh(currentDiff);
 
-            if (ReadButtonsPressingOrActions.Type.rightOnce == true)
+            if (ReadButtons.Type.rightOnce == true)
             {
                 Navigate();
             }
@@ -103,7 +103,7 @@ namespace GitClient.ui
             do
             {
                 keyInfo = Console.ReadKey();
-                ReadButtonsPressingOrActions.Type.diffMovements = true;
+                ReadButtons.Type.diffMovements = true;
 
                 switch (keyInfo.Key)
                 {
@@ -111,8 +111,8 @@ namespace GitClient.ui
                         {
                             if (currentIndex < currentDiff.Count - 1)
                             {
-                                ReadButtonsPressingOrActions.Type.down = true;
-                                ReadButtonsPressingOrActions.Type.up = false;
+                                ReadButtons.Type.down = true;
+                                ReadButtons.Type.up = false;
                                 clear.ClearDiff(y);
                                 panels.DrawDiffPanel(currentDiff, x, currentIndex); 
 
@@ -139,8 +139,8 @@ namespace GitClient.ui
                         {
                             if (currentIndex > 0)
                             {
-                                ReadButtonsPressingOrActions.Type.down = false;
-                                ReadButtonsPressingOrActions.Type.up = true;
+                                ReadButtons.Type.down = false;
+                                ReadButtons.Type.up = true;
                                 clear.ClearDiff(y);
                                 panels.DrawDiffPanel(currentDiff, x, currentIndex);
 
@@ -179,9 +179,9 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.Escape:
                         {
-                            ReadButtonsPressingOrActions.Type.diffMovements = false;
+                            ReadButtons.Type.diffMovements = false;
                             Console.Clear();
-                            ReadButtonsPressingOrActions.Type.rightOnce = false;
+                            ReadButtons.Type.rightOnce = false;
                             currentIndex = communicationService.GetCurrentIndex();
                             startIndex = 0;
                             communicationService.NavigateToStatusInitialState();
@@ -198,7 +198,7 @@ namespace GitClient.ui
             {
                 DisplayDiff(currentDiff);
 
-                if (ReadButtonsPressingOrActions.Type.rightOnce == true)
+                if (ReadButtons.Type.rightOnce == true)
                 {
                     string textForBluexBox = currentDiff[0];
                     blueBox.SetBlueBox((1, y), textForBluexBox, Console.WindowWidth - 3);
@@ -264,7 +264,7 @@ namespace GitClient.ui
             int stopAt = currentDiff.Count() > height - 2 ? height - 2 : currentDiff.Count();
             int width = 0;
 
-            if (ReadButtonsPressingOrActions.Type.rightOnce == true)
+            if (ReadButtons.Type.rightOnce == true)
             {
                 x = 1;
                 width = Console.WindowWidth - 3;
@@ -299,67 +299,14 @@ namespace GitClient.ui
             }
         }
 
-        //private void DrawDiffPanel(List<string> currentDiff)
-        //{
-        //    int width = 0;
-        //    int positionOfDiffName = 0;
-
-        //    if (ReadButtonsPressing.Type.right == true)
-        //    {
-        //        x = 0;
-        //        width = Console.WindowWidth - 1;
-        //        positionOfDiffName = 1;
-        //    }
-        //    else
-        //    {
-        //        x = dimensions.width / 2 + 1;
-        //        width = Console.WindowWidth - dimensions.changesPanelWidth - 3;
-        //        positionOfDiffName = dimensions.width / 2 + 2;
-        //    }
-
-        //    for (int i = dimensions.tabHeight + 2; i < Console.WindowHeight - 1; i++)
-        //    {
-        //        Console.SetCursorPosition(x, i);
-        //        Console.Write("│");
-        //        Console.SetCursorPosition(Console.WindowWidth - 1, i);
-        //        Console.Write("║");
-        //    }
-
-        //    for (int i = 1; i < width; i++)
-        //    {
-        //        Console.SetCursorPosition(x + i, dimensions.tabHeight + 1);
-        //        Console.Write("─");
-        //        Console.SetCursorPosition(x + i, Console.WindowHeight - 1);
-        //        Console.Write("─");
-        //    }
-
-        //    Console.SetCursorPosition(x, dimensions.tabHeight + 1);
-        //    Console.Write("┌");
-        //    Console.SetCursorPosition(x, Console.WindowHeight - 1);
-        //    Console.Write("└");
-        //    Console.SetCursorPosition(Console.WindowWidth - 1, dimensions.tabHeight + 1);
-        //    Console.Write("┐");
-        //    Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
-        //    Console.Write("┘");
-
-        //    string text = TextSettings.GetTextLength("Diff: ", dimensions.width / 2 - 2);
-        //    Console.SetCursorPosition(positionOfDiffName, dimensions.tabHeight + 1);
-        //    Console.Write(text);
-
-        //    if (ReadButtonsPressing.Type.right == true && currentIndex == 0)
-        //    {
-        //        indicator.GetIndicator(currentIndex, Console.WindowHeight - 1, currentDiff.Count(), Console.WindowWidth - 1, dimensions.tabHeight + 2, Console.WindowHeight - 2);
-        //    }
-        //}
-
         private void GetNewLineDiff(List<string> currentDiff)
         {
-            if (y == height - 1 && ReadButtonsPressingOrActions.Type.down == true || y == 3 && ReadButtonsPressingOrActions.Type.up == true)
+            if (y == height - 1 && ReadButtons.Type.down == true || y == 3 && ReadButtons.Type.up == true)
             {
                 y = dimensions.tabHeight + 2;
                 GetAllDiffLines(currentDiff);
                 
-                if (ReadButtonsPressingOrActions.Type.up)
+                if (ReadButtons.Type.up)
                 {
                     y = dimensions.tabHeight + 2;
 

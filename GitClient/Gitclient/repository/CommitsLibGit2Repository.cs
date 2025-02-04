@@ -209,18 +209,17 @@ namespace GitClient.repository
             return fileDiffs;
         }
 
-        public List<FileDiff> GetCurrentDiffForSelectedFile(int index, string fileName)
+        public List<string> GetCurrentDiffForSelectedFile(int index, string fileName)
         {
             List<FileDiff> diff = new List<FileDiff>();
-            List<FileDiff> list = new List<FileDiff>();
-
+            List<string> list = new List<string>();
             diff = GetAllDiffs(index);
 
             foreach (var entry in diff)
             {
                 if (entry.fileName == fileName)
                 {
-                    list.Add(entry);
+                    list = entry.diffs;
                     break;
                 }
             }

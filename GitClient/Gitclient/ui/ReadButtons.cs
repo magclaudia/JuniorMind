@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GitClient.ui
 {
-    public static class ReadButtonsPressingOrActions
+    public static class ReadButtons
     {
         public struct Type
         {

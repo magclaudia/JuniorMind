@@ -14,7 +14,7 @@ namespace GitClient.ui
 
         public void ClearFiles(int x, int y, int startFrom, int width, int EndAt, string cleaningArea)
         {
-            ReadButtonsPressingOrActions.Type.deleted = true;
+            ReadButtons.Type.deleted = true;
             
             if (cleaningArea == "cleaningAllPanelArea")
             {
@@ -39,13 +39,13 @@ namespace GitClient.ui
             int x = 0;
             int width = 0;
 
-            if (ReadButtonsPressingOrActions.Type.diffMovements == true && y < EndAt && ReadButtonsPressingOrActions.Type.down == true || y > dimensions.tabHeight + 2 && ReadButtonsPressingOrActions.Type.up == true && ReadButtonsPressingOrActions.Type.diffMovements == true)
+            if (ReadButtons.Type.diffMovements == true && y < EndAt && ReadButtons.Type.down == true || y > dimensions.tabHeight + 2 && ReadButtons.Type.up == true && ReadButtons.Type.diffMovements == true)
             {
                 x = 1;
                 Console.SetCursorPosition(x, y);
                 Console.Write(new string(' ', Console.WindowWidth - 3));
             }
-            else if (ReadButtonsPressingOrActions.Type.rightStatus == true)
+            else if (ReadButtons.Type.rightStatus == true)
             {
                 startFrom = dimensions.tabHeight + 1;
                 x = 0;
@@ -59,17 +59,25 @@ namespace GitClient.ui
                     startFrom++;
                 }
             }
+            else if (ReadButtons.Type.diffMovements == true && y == EndAt)
+            {
+                width = Console.WindowWidth - 3;
+                startFrom = 3;
+
+                while (startFrom <= EndAt)
+                {
+                    Console.SetCursorPosition(1, startFrom);
+                    Console.Write(new string(' ', width));
+                    startFrom++;
+                }
+            }
             else
             {
-                if (ReadButtonsPressingOrActions.Type.rightOnce == true)
+                if (ReadButtons.Type.rightOnce == true)
                 {
                     x = Console.WindowWidth / 2 + 2;
                 }
-                //else
-                //{
-                //    x = Console.WindowWidth / 2 + 2;
-                //}
-
+               
                 width = Console.WindowWidth / 2 - 3;
 
                 while (startFrom <= EndAt)
@@ -83,7 +91,7 @@ namespace GitClient.ui
 
         public void ClearOneCommit(int x, int y, int width)
         {
-            int index = ReadButtonsPressingOrActions.Type.down == true ? y - 1 : y + 1; 
+            int index = ReadButtons.Type.down == true ? y - 1 : y + 1; 
             Console.SetCursorPosition(x, index);
             Console.Write(new string(' ', width));
         }
