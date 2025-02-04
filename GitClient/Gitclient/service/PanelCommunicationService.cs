@@ -20,10 +20,6 @@ namespace GitClient.service
         private int index;
         private string filePath = string.Empty;
         private int hunkIndex;
-        private int startIndex;
-        private int endIndex;
-        private int y;
-        private int commitNumber;
         private List<string> hunk = new List<string>();
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
@@ -57,54 +53,9 @@ namespace GitClient.service
             ui = panel;
         }
         
-        public void SetStartIndex(int index)
-        {
-            startIndex = index;
-        }
-
-        public int GetStartIndex()
-        {
-            return startIndex;
-        }
-
-        public void SetEndIndex(int index)
-        {
-            endIndex = index;
-        }
-
-        public int GetEndIndex()
-        {
-            return endIndex;
-        }
-
-        public void SetY(int position)
-        {
-            y = position;
-        }
-
-        public int GetY()
-        {
-            return y;
-        }
-
-        public void SetCommitNumber(int number)
-        {
-            commitNumber = number;
-        }
-
-        public int GetCommitNumber()
-        {
-            return commitNumber;
-        }
-
         public void SetLastUnstageFileName(string currentFileName)
         {
             lastFileName = currentFileName;
-        }
-
-        public string GetLastUnstageFileName()
-        {
-            return lastFileName;
         }
 
         public void SetCurrentFileName(string currentFileName)
@@ -155,14 +106,6 @@ namespace GitClient.service
         public List<string> GetHunkToBeTransfer()
         {
             return hunk;
-        }
-
-        public void NavigateToCommitsPanel()
-        {
-            if (commitsPanel != null)
-            {
-                commitsPanel.Show();
-            }
         }
 
         public void NavigateToUnstagedPanel()
