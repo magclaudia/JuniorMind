@@ -15,14 +15,14 @@ namespace GitClient.service
         }
 
 
-        public List<CommitsElements> GetAllCommits()
+        public List<model.Commit> GetAllCommits()
         {
             return libgit2Repository.GetAllCommits();
         }
 
-        public List<CommitsElements> GetCurrentListOfCommits(int startIndex, int endIndex)
+        public List<model.Commit> GetCurrentListOfCommits(int startIndex, int endIndex)
         {
-            List<CommitsElements> commits = GetAllCommits();
+            List<model.Commit> commits = GetAllCommits();
             int maxVisibleChanges = Console.WindowHeight - 4;
             int count = Math.Min(maxVisibleChanges, commits.Count - startIndex);
 
@@ -39,7 +39,7 @@ namespace GitClient.service
                 }
                 else
                 {
-                    commits = new List<CommitsElements>();
+                    commits = new List<model.Commit>();
                 }
             }
 

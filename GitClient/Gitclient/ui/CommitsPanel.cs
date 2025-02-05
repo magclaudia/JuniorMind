@@ -16,7 +16,7 @@ namespace GitClient.ui
         public event EventHandler<CommitSelectionChangedEventArgs>? CommitSelectionChanged;
         private CommitsService commitsService;
         private PanelCommunicationService panelCommunicationService;
-        private List<CommitsElements> currentCommits;
+        private List<Commit> currentCommits;
         private List<ChangeAttribute> currentFiles;
         private List<string> currentDiff;
         private BlueBox blueBox;
@@ -51,7 +51,7 @@ namespace GitClient.ui
             commitIndex = 0;
             fileIndex = 0;
             y = 3;
-            currentCommits = new List<CommitsElements>();
+            currentCommits = new List<Commit>();
             currentFiles = new List<ChangeAttribute>();
             blueBox = new BlueBox();
             indicator = new Indicator();

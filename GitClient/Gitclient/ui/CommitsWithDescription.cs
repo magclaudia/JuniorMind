@@ -15,7 +15,7 @@ namespace GitClient.ui
     public class CommitsWithDescription
     {
         private CommitsService commitsService;
-        private List<CommitsElements> currentCommits;
+        private List<Commit> currentCommits;
         private List<ChangeAttribute> currentFiles;
         private BlueBox blueBox;
         private Indicator indicator;
@@ -29,7 +29,7 @@ namespace GitClient.ui
         public CommitsWithDescription(CommitsService commitsService, PanelCommunicationService panelCommunicationService) 
         {
             this.commitsService = commitsService;
-            currentCommits = new List<CommitsElements>();
+            currentCommits = new List<Commit>();
             currentFiles = new List<ChangeAttribute>();
             blueBox = new BlueBox();
             indicator = new Indicator();
@@ -173,7 +173,7 @@ namespace GitClient.ui
                 
                 if (e.Y == 3 && ReadButtons.Up == true)
                 {
-                    index = e.DiffStartingindex;
+                    index = e.DiffStartingIndex;
                 }
             }
             else
@@ -255,7 +255,7 @@ namespace GitClient.ui
         }
         private void GetFileDiff(int x, int width, CommitSelectionChangedEventArgs e)
         {
-            int index = e.DiffStartingindex;
+            int index = e.DiffStartingIndex;
             List<string> currentDiff = commitsService.GetCurrentDiffForSelectedFile(e.CommitNumber - 1, currentFiles[e.FileIndex].GetFileName());
             
             int height = currentDiff.Count > Console.WindowHeight - 3 ? Console.WindowHeight - 1

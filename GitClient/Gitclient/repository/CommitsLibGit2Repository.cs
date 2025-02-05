@@ -15,9 +15,9 @@ namespace GitClient.repository
         private Dictionary<string, List<string>> keyValuePairs = new Dictionary<string, List<string>>();
 
 
-        public List<CommitsElements> GetAllCommits()
+        public List<Commit> GetAllCommits()
         {
-            List<CommitsElements> listOFCommits = new List<CommitsElements>();
+            List<Commit> listOFCommits = new List<Commit>();
             IntPtr walker = IntPtr.Zero;
             IntPtr commitPtr = IntPtr.Zero;
             IntPtr repo = GetRepo();
@@ -64,7 +64,7 @@ namespace GitClient.repository
                             description = string.Empty;
                         }
 
-                        listOFCommits.Add(new CommitsElements(GetCommitId(id), GetDateAndTime(commitPtr), GetCommitAuthor(commitPtr), message));
+                        listOFCommits.Add(new Commit(GetCommitId(id), GetDateAndTime(commitPtr), GetCommitAuthor(commitPtr), message));
                     }
                     else
                     {

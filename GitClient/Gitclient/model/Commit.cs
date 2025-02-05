@@ -10,7 +10,7 @@ using GitClient.ui;
 
 namespace GitClient.model
 {
-    public class CommitsElements
+    public class Commit
     {
         public string Id { get;  }
         public string DateAndTime { get;  }
@@ -18,10 +18,11 @@ namespace GitClient.model
         public string Message { get; }
 
         private string space;
+
         private string timeSpace;
 
 
-        public CommitsElements(string id, string date, string author, string message) 
+        public Commit(string id, string date, string author, string message) 
         {
             this.Id = id;
             this.DateAndTime = date;
@@ -35,26 +36,6 @@ namespace GitClient.model
         {
             return this.Id + timeSpace + this.DateAndTime + space + this.Author + "          " + this.Message;
         } 
-
-        public string GetCode()
-        {
-            return this.Id;
-        }
-
-        public string GetDate()
-        {
-            return this.DateAndTime;
-        }
-
-        public string GetAuthor() 
-        {
-            return this.Author;
-        }
-
-        public string GetMessage() 
-        {
-            return this.Message;
-        }
 
         public string SetSpace()
         {

@@ -18,4 +18,3 @@ namespace GitClient.ui
         }
     }
 }
-    

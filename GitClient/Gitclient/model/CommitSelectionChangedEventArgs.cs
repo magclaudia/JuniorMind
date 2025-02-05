@@ -12,9 +12,9 @@ namespace GitClient.ui
 {
     public class CommitSelectionChangedEventArgs : EventArgs
     {
-        public int StartIndex { get; }
-        public int EndIndex { get; }
-        public int CommitIndex { get; }
+        public int StartIndex { get; set; }
+        public int EndIndex { get; set; }
+        public int CommitIndex { get; set; }
         public int FileIndex { get; set; }
         public bool Enter { get; }
         public bool Right { get; }
@@ -25,9 +25,23 @@ namespace GitClient.ui
         public int FileNumber { get; set; }
         public int FilesStartingIndex { get; set; }
         public int DiffIndex { get; set; }
-        public int DiffStartingindex { get; set; }
+        public int DiffStartingIndex { get; set; }
 
-        public CommitSelectionChangedEventArgs(bool enter, bool right, bool left, bool diff, int startIndex, int endIndex, int currentIndex, int fileIndex, int y, int commitNumber, int fileNumber, int filesStartingIndex, int diffIndex, int diffStartingindex)
+        public CommitSelectionChangedEventArgs(
+            bool enter,
+            bool right,
+            bool left,
+            bool diff,
+            int startIndex,
+            int endIndex,
+            int currentIndex,
+            int fileIndex,
+            int y,
+            int commitNumber,
+            int fileNumber,
+            int filesStartingIndex,
+            int diffIndex,
+            int diffStartingIndex)
         {
             Enter = enter;
             Right = right;
@@ -42,7 +56,7 @@ namespace GitClient.ui
             FileNumber = fileNumber;
             FilesStartingIndex = filesStartingIndex;
             DiffIndex = diffIndex;
-            DiffStartingindex = diffStartingindex;
+            DiffStartingIndex = diffStartingIndex;
         }
     }
 }
