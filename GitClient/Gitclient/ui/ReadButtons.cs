@@ -17,6 +17,7 @@ namespace GitClient.ui
             public static bool rightTwice;
             public static bool rightStatus;
             public static bool enter;
+            public static bool esc;
 
             public static bool deleted;
             public static bool diffMovements;
