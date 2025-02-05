@@ -39,8 +39,6 @@ namespace GitClient.repository
 
             }
 
-          
-
             LibGit2Wrapper.GitDiffHunk hunkPtr;
             UIntPtr linesInHunk;
 
@@ -52,28 +50,13 @@ namespace GitClient.repository
             const int GIT_APPLY_LOCATION_INDEX = 0;
             const int GIT_APPLY_LOCATION_WORKDIR = 1;
 
-
-            int applyLocation = ReadButtons.Type.workingInStagePanel == true ? GIT_APPLY_LOCATION_INDEX : GIT_APPLY_LOCATION_WORKDIR;
-
+            int applyLocation = ReadButtons.WorkingInStagePanel == true ? GIT_APPLY_LOCATION_INDEX : GIT_APPLY_LOCATION_WORKDIR;
             int applyResult = LibGit2Wrapper.git_apply(repo, diff, applyLocation, IntPtr.Zero);
             
             if (applyResult != 0)
             {
                 throw new Exception($"Failed to apply hunk at location {applyLocation}: {applyResult}");
             }
-
-
-
-            //if (ButtomPress.Type.workingInStagePanel == false)
-            //{
-            //    StageHunk(diff, repo, (UIntPtr)hunkIndex, hunk);
-            //}
-            //else
-            //{
-            //    UnstageHunk(diff, repo, (UIntPtr)hunkIndex, hunk);
-            //}
-
-            //StageOrUnstageHunk(repo, diff, filePath, hunkIndex);
         }
 
         //private IntPtr GetPatchForFile(IntPtr diff, string filePath)

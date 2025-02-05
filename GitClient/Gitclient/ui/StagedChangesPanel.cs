@@ -73,7 +73,7 @@ namespace GitClient.ui
             panel.DrawStagePanel(currentStagedChanges, totalNumberOfFiles);
             Refresh();
 
-            if (ReadButtons.Type.workingInStagePanel == true)
+            if (ReadButtons.WorkingInStagePanel == true)
             {
                 Navigate();
             } 
@@ -89,7 +89,7 @@ namespace GitClient.ui
                 currentStagedChanges = statusService.GetCurrentChanges(startIndex, endIndex, "stage");
                 GetAllFiles(currentStagedChanges);
                
-                if (ReadButtons.Type.workingInStagePanel == true)
+                if (ReadButtons.WorkingInStagePanel == true)
                 {
                      blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                      indicator.GetIndicator(currentIndex, dimensions.stagedEnd - 1, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.stagedStart - 1, dimensions.stagedEnd);
@@ -109,8 +109,8 @@ namespace GitClient.ui
             ClearConsoleChoosenSpace clear = new ClearConsoleChoosenSpace();
             int countingNumberOfPressingUp = 0;
             totalNumberOfFiles = statusService.GetAllStageChanges().Count;
-            ReadButtons.Type.workingInStagePanel = true;
-            ReadButtons.Type.workingInUnstagePanel = false;
+            ReadButtons.WorkingInStagePanel = true;
+            ReadButtons.WorkingInUnstagePanel = false;
 
             do
             {
@@ -122,8 +122,8 @@ namespace GitClient.ui
                         {
                             if (currentIndex < totalNumberOfFiles - 1 && fileNumber > 0)
                             {
-                                ReadButtons.Type.down = true;
-                                ReadButtons.Type.up = false;
+                                ReadButtons.Down = true;
+                                ReadButtons.Up = false;
                                 clear.ClearFiles(x, y, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd, "cleaningOneFile");
                                 clear.ClearDiff(y);
 
@@ -164,8 +164,8 @@ namespace GitClient.ui
                         {
                             if (fileNumber > 1)
                             {
-                                ReadButtons.Type.down = false;
-                                ReadButtons.Type.up = true;
+                                ReadButtons.Down = false;
+                                ReadButtons.Up = true;
 
                                 clear.ClearDiff(y);
 
@@ -208,12 +208,12 @@ namespace GitClient.ui
                                 clear.ClearFiles(x, y, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningOneFile");
                                 GetOneFileAtTime(currentStagedChanges);
                                 panel.DrawStagePanel(currentStagedChanges, totalNumberOfFiles);
-                                ReadButtons.Type.deleted = false;
+                                ReadButtons.Deleted = false;
                                 clear.ClearDiff(y);
                                 string lastUntageFileName = statusService.GetAllUnstagedChanges().Last().GetFileName();
                                 OnFileSelectionChanged(lastUntageFileName, isStaged: false);
-                                ReadButtons.Type.workingInStagePanel = false;
-                                ReadButtons.Type.workingInUnstagePanel = false;
+                                ReadButtons.WorkingInStagePanel = false;
+                                ReadButtons.WorkingInUnstagePanel = false;
                                 clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
                                 communicationService.NavigateToUnstagedPanel();
                             }
@@ -221,9 +221,9 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.Enter:
                         {
-                            ReadButtons.Type.enter = true;
-                            ReadButtons.Type.up = false;
-                            ReadButtons.Type.down = false;
+                            ReadButtons.Enter = true;
+                            ReadButtons.Up = false;
+                            ReadButtons.Down = false;
                             statusService.UnstageFile(currentStagedChanges[currentIndex]);
                             currentStagedChanges = statusService.GetCurrentChanges(startIndex, endIndex, "stage");
 
@@ -249,7 +249,7 @@ namespace GitClient.ui
                                 string text = TextSettings.GetTextLength("No changes found in the staged area.", dimensions.changesPanelWidth - 4);
                                 Console.Write(text);
                                 OnFileSelectionChanged(statusService.GetAllUnstagedChanges().Last().GetFileName(), isStaged: false);
-                                ReadButtons.Type.workingInStagePanel = false;
+                                ReadButtons.WorkingInStagePanel = false;
                             }
 
                             communicationService.NavigateToUnstagedPanel();
@@ -257,11 +257,11 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.RightArrow:
                         {
-                            if (ReadButtons.Type.rightStatus == false)
+                            if (ReadButtons.RightStatus == false)
                             {
                                 if (totalNumberOfFiles > 0)
                                 {
-                                    ReadButtons.Type.rightStatus = true;
+                                    ReadButtons.RightStatus = true;
                                     Console.Clear();
                                     communicationService.NavigateToTabPanel();
                                     communicationService.SetCurrentIndex(currentIndex);

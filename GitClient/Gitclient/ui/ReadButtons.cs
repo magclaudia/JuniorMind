@@ -8,22 +8,18 @@ namespace GitClient.ui
 {
     public static class ReadButtons
     {
-        public struct Type
-        {
-            public static bool down;
-            public static bool up;
-            public static bool left;
-            public static bool rightOnce;
-            public static bool rightTwice;
-            public static bool rightStatus;
-            public static bool enter;
-            public static bool esc;
+        public static bool Down { get; set; }
+        public static bool Up { get; set; }
+        public static bool Left { get; set; }
+        public static bool RightOnce { get; set; }
+        public static bool RightStatus { get; set; }
+        public static bool Enter { get; set; }
+        public static bool Esc { get; set; }
 
-            public static bool deleted;
-            public static bool diffMovements;
-            public static bool workingInUnstagePanel;
-            public static bool workingInStagePanel;
-            public static bool displayListOfCommitsOnEntirePanel;
-        }
+        public static bool Deleted { get; set; }
+        public static bool DiffMovements { get; set; }
+        public static bool WorkingInUnstagePanel { get; set; }
+        public static bool WorkingInStagePanel { get; set; }
+        public static bool DisplayListOfCommitsOnEntirePanel { get; set; }
     }
 }

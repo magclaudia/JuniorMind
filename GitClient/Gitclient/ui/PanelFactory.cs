@@ -42,7 +42,7 @@ namespace GitClient.ui
 
         public static CommitsPanel CreateCommitsPanel()
         {
-            CommitsPanel panel = new CommitsPanel(commitsLibGit2Repository, commitsService, panelCommunicationService);
+            CommitsPanel panel = new CommitsPanel(commitsService, panelCommunicationService);
             panel.SetCommunicationService(panelCommunicationService);
             panelCommunicationService.RegisterCommitsPanel(panel);
             return panel;    

@@ -14,7 +14,7 @@ namespace GitClient.ui
 
         public void ClearFiles(int x, int y, int startFrom, int width, int EndAt, string cleaningArea)
         {
-            ReadButtons.Type.deleted = true;
+            ReadButtons.Deleted = true;
             
             if (cleaningArea == "cleaningAllPanelArea")
             {
@@ -39,13 +39,13 @@ namespace GitClient.ui
             int x = 0;
             int width = 0;
 
-            if (ReadButtons.Type.diffMovements == true && y < EndAt && ReadButtons.Type.down == true || y > dimensions.tabHeight + 2 && ReadButtons.Type.up == true && ReadButtons.Type.diffMovements == true)
+            if (ReadButtons.DiffMovements == true && y < EndAt && ReadButtons.Down == true || y > dimensions.tabHeight + 2 && ReadButtons.Up == true && ReadButtons.DiffMovements == true)
             {
                 x = 1;
                 Console.SetCursorPosition(x, y);
                 Console.Write(new string(' ', Console.WindowWidth - 3));
             }
-            else if (ReadButtons.Type.rightStatus == true)
+            else if (ReadButtons.RightStatus == true)
             {
                 startFrom = dimensions.tabHeight + 1;
                 x = 0;
@@ -59,7 +59,7 @@ namespace GitClient.ui
                     startFrom++;
                 }
             }
-            else if (ReadButtons.Type.diffMovements == true && y == EndAt || y == 3 && ReadButtons.Type.diffMovements == true)
+            else if (ReadButtons.DiffMovements == true && y == EndAt || y == 3 && ReadButtons.DiffMovements == true)
             {
                 width = Console.WindowWidth - 3;
                 startFrom = 3;
@@ -73,7 +73,7 @@ namespace GitClient.ui
             }
             else
             {
-                if (ReadButtons.Type.rightOnce == true)
+                if (ReadButtons.RightOnce == true)
                 {
                     x = Console.WindowWidth / 2 + 2;
                 }
@@ -91,7 +91,7 @@ namespace GitClient.ui
 
         public void ClearOneCommit(int x, int y, int width)
         {
-            int index = ReadButtons.Type.down == true ? y - 1 : y + 1; 
+            int index = ReadButtons.Down == true ? y - 1 : y + 1; 
             Console.SetCursorPosition(x, index);
             Console.Write(new string(' ', width));
         }
