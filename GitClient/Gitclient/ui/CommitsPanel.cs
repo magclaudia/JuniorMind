@@ -49,7 +49,7 @@ namespace GitClient.ui
             this.libgit2Repository = libGit2Repository;
             this.commitsService = commitsService;
             this.panelCommunicationService = panelCommunicationService;
-            commitsWithDescription = new CommitsWithDescription(libgit2Repository, this.commitsService, panelCommunicationService);
+            commitsWithDescription = new CommitsWithDescription(this.commitsService, panelCommunicationService);
             commitStartingIndex = GetStartIndex();
             commitEndIndex = GetEndIndex();
             commitIndex = CommitIndex();
@@ -220,7 +220,7 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.LeftArrow:
                         {
-                            if (ReadButtons.Type.rightOnce == true)
+                            if (ReadButtons.Type.rightOnce == true && ReadButtons.Type.diffMovements == false)
                             {
                                 ReadButtons.Type.rightOnce = false;
                                 clear.ClearCommitPanel();

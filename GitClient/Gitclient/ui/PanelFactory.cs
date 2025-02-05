@@ -50,7 +50,7 @@ namespace GitClient.ui
 
         public static CommitsWithDescription CommitsWithDescription() 
         {
-            CommitsWithDescription panel = new CommitsWithDescription(commitsLibGit2Repository, commitsService, panelCommunicationService);
+            CommitsWithDescription panel = new CommitsWithDescription(commitsService, panelCommunicationService);
             return panel;
         }
 

@@ -14,7 +14,7 @@ namespace GitClient.ui
     {
         public int StartIndex { get; }
         public int EndIndex { get; }
-        public int CurrentIndex { get; }
+        public int CommitIndex { get; }
         public int FileIndex { get; set; }
         public bool Enter { get; }
         public bool Right { get; }
@@ -35,7 +35,7 @@ namespace GitClient.ui
             Diff = diff;
             StartIndex = startIndex;
             EndIndex = endIndex;
-            CurrentIndex = currentIndex;
+            CommitIndex = currentIndex;
             FileIndex = fileIndex;
             Y = y;
             CommitNumber = commitNumber;
