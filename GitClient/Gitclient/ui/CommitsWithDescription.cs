@@ -120,7 +120,7 @@ namespace GitClient.ui
                 lastYPosition = e.Y;
                 e.Y = Console.WindowHeight / 2 + 5;
                 panel.DrawBorderForCommitsAfterPressingRightOnce();
-                GetInfo(x, width, Console.WindowHeight / 3 - 3, e);
+                GetInfo(x, width, Console.WindowHeight / 4, e);
                 GetMessage(x, width, Console.WindowHeight / 2 + 1, e);
                 GetPath(x, Console.WindowHeight / 2 + 4);
                 GetFiles(x, width, Console.WindowHeight - 1, Console.WindowHeight / 2 + 5, e.FileIndex, e.Y);
@@ -346,6 +346,10 @@ namespace GitClient.ui
                     string displayText = TextSettings.GetTextLength($"{text}", width);
                     Console.Write(displayText);
                 }
+                else
+                {
+                    break;
+                }
             }
         }
         private void GetMessage(int x, int width, int height, CommitSelectionChangedEventArgs e)
@@ -361,7 +365,6 @@ namespace GitClient.ui
                     {
                         break;
                     }
-
 
                     if (currentCommits[e.CommitIndex].Message.Length - index < width)
                     {
