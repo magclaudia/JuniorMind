@@ -72,9 +72,9 @@ namespace GitClient.ui
             panelCommunicationService = service;
         }
 
-        protected virtual void OnCommitSelectionChanged(bool enter, bool right, bool left, bool diff, int startIndex, int endIndex, int currentIndex, int fileIndex, int y, int commitNumber, int fileNumber, int filesStartingIndex, int diffIndex, int diffStartingIndex)
+        protected virtual void OnCommitSelectionChanged(ButtonStates buttonStates, int startIndex, int endIndex, int currentIndex, int fileIndex, int y, int commitNumber, int fileNumber, int filesStartingIndex, int diffIndex, int diffStartingIndex)
         {
-            CommitSelectionChanged?.Invoke(this, new CommitSelectionChangedEventArgs(enter, right, left, diff, startIndex, endIndex, currentIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex));
+            CommitSelectionChanged?.Invoke(this, new CommitSelectionChangedEventArgs(buttonStates, startIndex, endIndex, currentIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex));
         } 
 
         public int GetEndIndex()
@@ -119,15 +119,18 @@ namespace GitClient.ui
 
                             if (ReadButtons.DisplayListOfCommitsOnEntirePanel == true || ReadButtons.Enter == true)
                             {
-                                CommitsDownMoves();
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: true, right: false, left: false, diff: false);
+                                CommitsDownMoves(buttonStates);
                             }
                             else if (ReadButtons.DiffMovements == true)
                             {
-                                DiffDownMoves();
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: false, right: false, left: false, diff: true);
+                                DiffDownMoves(buttonStates);
                             }
                             else
                             {
-                                FilesDownMoves();
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: false, right: true, left: false, diff: false);
+                                FilesDownMoves(buttonStates);
                             }
                         }
                         break;
@@ -138,15 +141,18 @@ namespace GitClient.ui
 
                             if (ReadButtons.DisplayListOfCommitsOnEntirePanel == true || ReadButtons.Enter == true)
                             {
-                                CommitsUpMoves();
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: true, right: false, left: false, diff: false);
+                                CommitsUpMoves(buttonStates);
                             }
                             else if (ReadButtons.DiffMovements == true)
                             {
-                                DiffUpMoves();
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: false, right: false, left: false, diff: true);
+                                DiffUpMoves(buttonStates);
                             }
                             else
                             {
-                                FilesUpMoves();
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: false, right: true, left: false, diff: false);
+                                FilesUpMoves(buttonStates);
                             }
                         }
                         break;
@@ -154,11 +160,12 @@ namespace GitClient.ui
                         {
                             ReadButtons.Enter = true;
                             enterCount++;
-                           
+                            ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: true, right: false, left: false, diff: false);
+
                             if (enterCount == 1)
                             {
                                 clear.ClearCommitPanel();
-                                OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                                OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                                 ReadButtons.DisplayListOfCommitsOnEntirePanel = false;
                             }
                             else
@@ -174,9 +181,10 @@ namespace GitClient.ui
                     case ConsoleKey.RightArrow:
                         {
                             ReadButtons.RightOnce = true;
-                            
+
                             if (countingPressingRight == 1)
                             {
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: false, right: false, left: false, diff: true);
                                 y = 3;
                                 diffIndex = 0;
                                 diffStartingIndex = 0;
@@ -186,19 +194,20 @@ namespace GitClient.ui
                                 currentFiles = commitsService.GetCurrentFiles(filesStartingIndex, commitNumber - 1);
                                 currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitNumber - 1, currentFiles[fileIndex].GetFileName());
                                 panel.DrawDiffPanel(currentDiff, 1, commitIndex);
-                                OnCommitSelectionChanged(enter: false, right: false, left: false, diff: true, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                                OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                                 countingPressingRight = 0;
                                 ReadButtons.Enter = false;
                             }
 
                             if (ReadButtons.Enter == true)
                             {
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: false, right: true, left: false, diff: false);
                                 countingPressingRight++;
                                 retainPositionOfYWhenEnter = y;
                                 clear.ClearCommitPanel();
                                 y = Console.WindowHeight / 2 + 5;
                                 retainPositionOfYWhenRight = y;
-                                OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                                OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                                 ReadButtons.Enter = false;
                             }
                         }
@@ -207,6 +216,7 @@ namespace GitClient.ui
                         {
                             if (ReadButtons.RightOnce == true && ReadButtons.DiffMovements == false)
                             {
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: false, right: false, left: true, diff: false);
                                 ReadButtons.RightOnce = false;
                                 clear.ClearCommitPanel();
                                 y = retainPositionOfYWhenEnter;
@@ -214,15 +224,17 @@ namespace GitClient.ui
                                 fileIndex = 0;
                                 fileNumber = 1;
                                 filesStartingIndex = 0;
-                                OnCommitSelectionChanged(enter: false, right: false, left: true, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                                OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                                 ReadButtons.Enter = true;
                             }
                         }
                         break;
                     case ConsoleKey.Escape:
                         {
+
                             if (ReadButtons.DiffMovements == true)
                             {
+                                ButtonStates buttonStates = new ButtonStates(down: false, up: false, enter: false, right: true, left: false, diff: false);
                                 ReadButtons.DiffMovements = false;
                                 ReadButtons.Enter = true;
                                 ReadButtons.Esc = true;
@@ -231,7 +243,7 @@ namespace GitClient.ui
                                 diffIndex = 0;
                                 diffNumber = 1;
                                 diffStartingIndex = 0;
-                                OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                                OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                                 ReadButtons.Esc = false;
                                 ReadButtons.Enter = false;
                                 countingPressingRight++;
@@ -247,7 +259,7 @@ namespace GitClient.ui
             } while (true);
         }
 
-        private void CommitsDownMoves()
+        private void CommitsDownMoves(ButtonStates buttonStates)
         {
             if (commitNumber < totalCommits)
             {
@@ -284,7 +296,7 @@ namespace GitClient.ui
 
                 if (y <= Console.WindowHeight - 2 && ReadButtons.DisplayListOfCommitsOnEntirePanel == false)
                 {
-                    OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                 }
                 else
                 {
@@ -295,7 +307,7 @@ namespace GitClient.ui
             }
         }
 
-        private void FilesDownMoves()
+        private void FilesDownMoves(ButtonStates buttonStates)
         {
             totalFiles = commitsService.GetAllFilesForCommit(commitNumber - 1).Count;
             currentFiles = commitsService.GetCurrentFiles(filesStartingIndex, commitNumber - 1);
@@ -310,7 +322,7 @@ namespace GitClient.ui
                     commitStartingIndex++;
                     filesStartingIndex++;
                     retainPositionOfYWhenRight = y;
-                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                 }
                 else
                 {
@@ -332,12 +344,12 @@ namespace GitClient.ui
 
                 if (fileNumber <= totalFiles)
                 {
-                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                 }
             }
         }
 
-        private void DiffDownMoves()
+        private void DiffDownMoves(ButtonStates buttonStates)
         {
             List<ChangeAttribute> files = commitsService.GetAllFilesForCommit(commitNumber - 1);
             currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitNumber - 1, files[fileIndex].GetFileName());
@@ -349,7 +361,7 @@ namespace GitClient.ui
                     clear.ClearDiff(y);
                     diffStartingIndex++;
                     diffIndex++;
-                    OnCommitSelectionChanged(enter: false, right: false, left: false, diff: true, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                 }
                 else
                 {
@@ -369,12 +381,12 @@ namespace GitClient.ui
 
                 if (diffNumber <= currentDiff.Count && y < Console.WindowHeight - 1)
                 {
-                    OnCommitSelectionChanged(enter: false, right: false, left: false, diff: true, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                 }
             }
         }
 
-        private void CommitsUpMoves()
+        private void CommitsUpMoves(ButtonStates buttonStates)
         {
             if (commitNumber > 1)
             {
@@ -411,7 +423,7 @@ namespace GitClient.ui
 
                 if (y >= 3 && ReadButtons.DisplayListOfCommitsOnEntirePanel == false)
                 {
-                    OnCommitSelectionChanged(enter: true, right: false, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                 }
                 else if (ReadButtons.DisplayListOfCommitsOnEntirePanel == true)
                 {
@@ -422,7 +434,7 @@ namespace GitClient.ui
             }
         }
 
-        private void FilesUpMoves()
+        private void FilesUpMoves(ButtonStates buttonStates)
         {
             totalFiles = commitsService.GetAllFilesForCommit(commitIndex).Count;
             currentFiles = commitsService.GetCurrentFiles(fileIndex, commitIndex);
@@ -438,7 +450,7 @@ namespace GitClient.ui
                     commitStartingIndex--;
                     fileIndex = -1;
                     filesStartingIndex--;
-                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                     callOnCommitSelectionChanged = true;
                     fileIndex = 0;
                 }
@@ -462,12 +474,12 @@ namespace GitClient.ui
 
                 if (callOnCommitSelectionChanged == false)
                 {
-                    OnCommitSelectionChanged(enter: false, right: true, left: false, diff: false, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                 }
             }
         }
 
-        private void DiffUpMoves()
+        private void DiffUpMoves(ButtonStates buttonStates)
         {
             List<ChangeAttribute> files = commitsService.GetAllFilesForCommit(commitNumber - 1);
             currentDiff = commitsService.GetCurrentDiffForSelectedFile(commitNumber - 1, files[fileIndex].GetFileName());
@@ -480,7 +492,7 @@ namespace GitClient.ui
                 {
                     clear.ClearDiff(y);
                     diffStartingIndex--;
-                    OnCommitSelectionChanged(enter: false, right: false, left: false, diff: true, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                     callOnCommitSelectionChanged = true;
                 }
                 else
@@ -505,7 +517,7 @@ namespace GitClient.ui
 
                 if (callOnCommitSelectionChanged == false)
                 {
-                    OnCommitSelectionChanged(enter: false, right: false, left: false, diff: true, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
+                    OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                 }
             }
         }

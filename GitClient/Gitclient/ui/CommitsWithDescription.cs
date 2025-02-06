@@ -45,35 +45,40 @@ namespace GitClient.ui
         {
             commitsPanel.CommitSelectionChanged += HandleCommitsSelectionChanged!;
         }
+
         private void HandleCommitsSelectionChanged(object sender, CommitSelectionChangedEventArgs e)
         {
-            if (e.Enter == true)
+            ButtonStates buttonStates = e.ButtonStates;
+
+            if (buttonStates.Enter == true)
             {
                 listOfFiles = commitsService.GetAllFilesForCommit(e.CommitNumber - 1);
                 currentCommits = commitsService.GetCurrentListOfCommits(e.StartIndex, e.EndIndex);
                 currentFiles = commitsService.GetCurrentFiles(e.FilesStartingIndex, e.CommitNumber - 1);
                 HandlePressingEnterButton(e);
             }
-            else if (e.Right == true)
+            else if (buttonStates.Right == true)
             {
                 currentFiles = commitsService.GetCurrentFiles(e.FilesStartingIndex, e.CommitNumber - 1);
                 HandlePressingRightButtonOnce(e);
             }
-            else if (e.Left == true)
+            else if (buttonStates.Left == true)
             {
                 currentFiles = commitsService.GetCurrentFiles(0, e.CommitNumber - 1);
                 HandlePressingLeftButton(e);
             }
-            else if (e.Diff == true)
+            else if (buttonStates.Diff == true)
             {
                 HandleDisplayingDiff(e);
             }
         }
+
         private void HandlePressingEnterButton(CommitSelectionChangedEventArgs e)
         {
             width = Console.WindowWidth / 2 + 5;
             int height = Console.WindowHeight - 1;
             int x = Console.WindowWidth / 2 + 10;
+            ButtonStates buttonStates = e.ButtonStates;
 
             if (ReadButtons.DisplayListOfCommitsOnEntirePanel == true)
             {
@@ -82,7 +87,7 @@ namespace GitClient.ui
             }
             else
             {
-                if (e.Y == Console.WindowHeight - 2 || e.Y == 3 || e.Left == true)
+                if (e.Y == Console.WindowHeight - 2 || e.Y == 3 || buttonStates.Left == true)
                 {
                     clear.ClearCommitWithDescription(1, width, height);
                     DisplayCommits();

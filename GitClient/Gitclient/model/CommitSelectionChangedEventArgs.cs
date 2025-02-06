@@ -12,14 +12,11 @@ namespace GitClient.ui
 {
     public class CommitSelectionChangedEventArgs : EventArgs
     {
+        public ButtonStates ButtonStates { get; }
         public int StartIndex { get; set; }
         public int EndIndex { get; set; }
         public int CommitIndex { get; set; }
         public int FileIndex { get; set; }
-        public bool Enter { get; }
-        public bool Right { get; }
-        public bool Left { get; }
-        public bool Diff { get; }
         public int Y { get; set; }
         public int CommitNumber { get; set; }
         public int FileNumber { get; set; }
@@ -27,26 +24,10 @@ namespace GitClient.ui
         public int DiffIndex { get; set; }
         public int DiffStartingIndex { get; set; }
 
-        public CommitSelectionChangedEventArgs(
-            bool enter,
-            bool right,
-            bool left,
-            bool diff,
-            int startIndex,
-            int endIndex,
-            int currentIndex,
-            int fileIndex,
-            int y,
-            int commitNumber,
-            int fileNumber,
-            int filesStartingIndex,
-            int diffIndex,
-            int diffStartingIndex)
+        public CommitSelectionChangedEventArgs(ButtonStates buttonStates, int startIndex, int endIndex, int currentIndex,
+            int fileIndex, int y, int commitNumber, int fileNumber, int filesStartingIndex, int diffIndex, int diffStartingIndex)
         {
-            Enter = enter;
-            Right = right;
-            Left = left;
-            Diff = diff;
+            ButtonStates = buttonStates;
             StartIndex = startIndex;
             EndIndex = endIndex;
             CommitIndex = currentIndex;
