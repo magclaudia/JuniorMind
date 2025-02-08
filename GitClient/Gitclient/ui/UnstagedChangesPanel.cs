@@ -322,7 +322,8 @@ namespace GitClient.ui
                             {
                                 if (totalNumberOfFiles > 0)
                                 {
-                                    ReadButtons.RightStatus = true;
+                                    //ReadButtons.RightStatus = true;
+                                    ReadButtons.RightOnce = true;
                                     Console.Clear();
                                     communicationService.NavigateToTabPanel();
                                     communicationService.SetCurrentIndex(currentIndex);
