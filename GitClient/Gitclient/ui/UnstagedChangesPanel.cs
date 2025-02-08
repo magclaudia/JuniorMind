@@ -144,12 +144,10 @@ namespace GitClient.ui
             {
                 ReadButtons.WorkingInStagePanel = true;
                 communicationService.NavigateToStagedPanel();
-
-                GoToLog();
-                
-                
-                
             }
+
+            GoToLog();
+
         }
 
         private void GoToLog()
