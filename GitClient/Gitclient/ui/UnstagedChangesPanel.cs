@@ -144,14 +144,24 @@ namespace GitClient.ui
             {
                 ReadButtons.WorkingInStagePanel = true;
                 communicationService.NavigateToStagedPanel();
-                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+                GoToLog();
                 
-                if (keyInfo.Key == ConsoleKey.D2 || keyInfo.Key == ConsoleKey.NumPad2)
-                {
-                    communicationService.DisplayLog();
-                }
+                
+                
             }
         }
+
+        private void GoToLog()
+        {
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+            if (keyInfo.Key == ConsoleKey.D2 || keyInfo.Key == ConsoleKey.NumPad2)
+            {
+                communicationService.DisplayLog();
+            }
+        }
+
         private void Navigate()
         {
             ConsoleKeyInfo keyInfo;
