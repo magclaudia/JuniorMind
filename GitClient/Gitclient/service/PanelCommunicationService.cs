@@ -11,7 +11,7 @@ namespace GitClient.service
     {
         private UnstagedChangesPanel unstagedChangesPanel;
         private StagedChangesPanel stagedChangesPanel;
-        private CommitsPanel commitsPanel;
+        private LogPanel commitsPanel;
         private Ui ui;
         private DiffPanel diffPanel;
         private TabsPanel tabsPanel;
@@ -43,7 +43,7 @@ namespace GitClient.service
             tabsPanel = panel;
         }
 
-        public void RegisterCommitsPanel(CommitsPanel panel)
+        public void RegisterCommitsPanel(LogPanel panel)
         {
             commitsPanel = panel;
         }
@@ -172,7 +172,7 @@ namespace GitClient.service
         public void DisplayLog()
         {
             Console.Clear();
-            ui.Show(UiLayoutTypes.LogCommitList);
+            ui.Show(UiLayoutTypes.GitLog);
         }
     }
 }

@@ -51,23 +51,19 @@ namespace GitClient.ui
         {
             return startIndex;
         }
-
         public int GetCurrentIndex()
         {
             return currentIndex;
         }
-
         public int GetEndIndex()
         {
             return endIndex < dimensions.stagedEnd - dimensions.stagedStart ? dimensions.stagedEnd - dimensions.stagedStart
                : startIndex + dimensions.stagedEnd - dimensions.stagedStart;
         }
-
         public void SetCommunicationService(PanelCommunicationService service)
         {
             communicationService = service;
         }
-
         public override void Show()
         {
             panel.DrawStagePanel(currentStagedChanges, totalNumberOfFiles);
@@ -78,7 +74,6 @@ namespace GitClient.ui
                 Navigate();
             } 
         }
-
         private void Refresh()
         {
             totalNumberOfFiles = statusService.GetAllStageChanges().Count;
@@ -102,7 +97,6 @@ namespace GitClient.ui
                 Console.Write(text);
             }
         }
-
         private void Navigate()
         {
             ConsoleKeyInfo keyInfo;
@@ -279,12 +273,10 @@ namespace GitClient.ui
 
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
-
         public void OnFileSelectionChanged(string fileName, bool isStaged)
         {
             FileSelectionChanged?.Invoke(this, new FileSelectionChangedEventArgs(fileName, isStaged));
         }
-
         private void GetAllFiles(List<ChangeAttribute> currentStagedChanges)
         {
             for (int i = 0; i < currentStagedChanges.Count; i++)
@@ -297,7 +289,6 @@ namespace GitClient.ui
                 Console.ResetColor();
             }
         }
-
         private void GetOneFileAtTime(List<ChangeAttribute> currentStagedChanges)
         {
             string displayText = TextSettings.GetTextLength(currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
@@ -306,7 +297,6 @@ namespace GitClient.ui
             Console.Write(displayText);
             Console.ResetColor();
         }
-
         private void CloseApplication()
         {
             Console.Clear();

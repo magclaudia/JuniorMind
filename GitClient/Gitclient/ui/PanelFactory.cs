@@ -40,12 +40,18 @@ namespace GitClient.ui
             return panel;
         }
 
-        public static CommitsPanel CreateCommitsPanel()
+        public static LogPanel CreateLogPanel()
         {
-            CommitsPanel panel = new CommitsPanel(commitsService, panelCommunicationService);
+            LogPanel panel = new LogPanel(commitsService, panelCommunicationService);
             panel.SetCommunicationService(panelCommunicationService);
             panelCommunicationService.RegisterCommitsPanel(panel);
             return panel;    
+        }
+
+        public static CommitsNavigation CreateCommitsNavigation()
+        {
+            CommitsNavigation navigation = new CommitsNavigation(commitsService);   
+            return navigation;
         }
 
         public static CommitsWithDescription CommitsWithDescription() 

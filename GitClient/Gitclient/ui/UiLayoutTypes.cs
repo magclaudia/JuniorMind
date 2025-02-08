@@ -10,6 +10,6 @@ namespace GitClient.ui
     {
         GitStatus,
         DiffStatus,
-        LogCommitList
+        GitLog
     }
 }

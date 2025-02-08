@@ -41,16 +41,15 @@ namespace GitClient.ui
         }
 
 
-        public void SubscribeToPanel(CommitsPanel commitsPanel)
+        public void SubscribeToPanel(CommitsNavigation commitsNavigation)
         {
-            commitsPanel.CommitSelectionChanged += HandleCommitsSelectionChanged!;
+            commitsNavigation.CommitSelectionChanged += HandleCommitsSelectionChanged!;
         }
-
         private void HandleCommitsSelectionChanged(object sender, CommitSelectionChangedEventArgs e)
         {
             ButtonStates buttonStates = e.ButtonStates;
 
-            if (buttonStates.Enter == true)
+            if (buttonStates.Enter == true && buttonStates.GitLog == false)
             {
                 listOfFiles = commitsService.GetAllFilesForCommit(e.CommitNumber - 1);
                 currentCommits = commitsService.GetCurrentListOfCommits(e.StartIndex, e.EndIndex);
@@ -72,7 +71,6 @@ namespace GitClient.ui
                 HandleDisplayingDiff(e);
             }
         }
-
         private void HandlePressingEnterButton(CommitSelectionChangedEventArgs e)
         {
             width = Console.WindowWidth / 2 + 5;

@@ -31,7 +31,6 @@ namespace GitClient.repository
             index = hunkIndex;
             IntPtr repo = libGit2RepositoryChanges.GetRepo();
             IntPtr diff = libGit2RepositoryChanges.GetDiff();
-
             IntPtr patch = IntPtr.Zero;
 
             if (LibGit2Wrapper.git_patch_from_diff(out patch, diff, (UIntPtr)hunkIndex) != 0)
@@ -46,6 +45,7 @@ namespace GitClient.repository
             {
 
             }
+
 
             const int GIT_APPLY_LOCATION_INDEX = 0;
             const int GIT_APPLY_LOCATION_WORKDIR = 1;

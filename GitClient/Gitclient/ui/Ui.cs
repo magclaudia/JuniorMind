@@ -14,22 +14,30 @@ namespace GitClient.ui
         private StagedChangesPanel stagedChangesPanel;
         private DiffPanel diffPanel;
         private TabsPanel tabsPanel;
-        private CommitsPanel commitsPanel;
+        private LogPanel commitsPanel;
+        private CommitsNavigation commitsNavigation;
         private CommitsWithDescription commitsWithDescription;
 
         public Ui() 
         {
             unstangedChangesPanel = PanelFactory.CreateUnstagedChangesPanel();
             stagedChangesPanel = PanelFactory.CreateStagedChangesPanel();
-            commitsPanel = PanelFactory.CreateCommitsPanel();
+
+            commitsNavigation = PanelFactory.CreateCommitsNavigation();
+
+            commitsPanel = PanelFactory.CreateLogPanel();
+            commitsPanel.SubscribeToPanel(commitsNavigation);
+
             commitsWithDescription = PanelFactory.CommitsWithDescription();
-            commitsWithDescription.SubscribeToPanel(commitsPanel);
+            commitsWithDescription.SubscribeToPanel(commitsNavigation);
+
             diffPanel = PanelFactory.StatusDiffPanel();
             diffPanel.SubcribeToPanel(unstangedChangesPanel, stagedChangesPanel);
             tabsPanel = PanelFactory.Tabs();
+
             layoutTypes.Add(UiLayoutTypes.GitStatus, new List<UiComponent>() { diffPanel, stagedChangesPanel, unstangedChangesPanel });
             layoutTypes.Add(UiLayoutTypes.DiffStatus, new List<UiComponent>() { diffPanel });
-            layoutTypes.Add(UiLayoutTypes.LogCommitList, new List<UiComponent> { commitsPanel });
+            layoutTypes.Add(UiLayoutTypes.GitLog, new List<UiComponent> { commitsNavigation });
         }
 
         public void Show(UiLayoutTypes layout)

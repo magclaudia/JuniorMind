@@ -61,12 +61,10 @@ namespace GitClient.ui
         {
             communicationService = service;
         }
-
         protected virtual void OnFileSelectionChanged(string fileName, bool isStaged)
         {
             FileSelectionChanged?.Invoke(this, new FileSelectionChangedEventArgs(fileName, isStaged));
         }
-
         public int GetStartIndex()
         {
             if (ReadButtons.Enter == true)
@@ -79,12 +77,10 @@ namespace GitClient.ui
             
             return startIndex;
         }
-
         public int GetCurrentIndex()
         {
             return currentIndex;
         }
-
         public int GetEndIndex()
         {
             if (ReadButtons.Enter == true && ReadButtons.WorkingInUnstagePanel == false && ReadButtons.WorkingInStagePanel == false)
@@ -100,7 +96,6 @@ namespace GitClient.ui
 
             return endIndex;
         }
-
         public override void Show()
         {
             panel.DrawUnstagePanel(currentUnstagedChanges, totalNumberOfFiles, currentIndex);
@@ -112,7 +107,6 @@ namespace GitClient.ui
                 Navigate();
             }
         }
-
         private void Refresh()
         {
             currentUnstagedChanges.Clear();
@@ -152,7 +146,6 @@ namespace GitClient.ui
                 communicationService.NavigateToStagedPanel();
             }
         }
-
         private void Navigate()
         {
             ConsoleKeyInfo keyInfo;
@@ -353,7 +346,6 @@ namespace GitClient.ui
 
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
-
         private void SetY()
         {
             if (totalNumberOfFiles > dimensions.unstagedEnd)
@@ -365,7 +357,6 @@ namespace GitClient.ui
                 y = dimensions.tabHeight + totalNumberOfFiles + 2;
             }
         }
-
         private void GetUnstagedFiles(List<ChangeAttribute> currentUnstagedChanges)
         {
             if (y == dimensions.unstagedEnd && ReadButtons.Down == true || y == dimensions.unstagedStart && ReadButtons.Up == true)
@@ -410,7 +401,6 @@ namespace GitClient.ui
             Console.Write(displayText);
             Console.ResetColor();
         }
-
         private void CloseApplication()
         {
             Console.Clear();
