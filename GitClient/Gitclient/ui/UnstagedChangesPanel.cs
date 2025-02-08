@@ -144,6 +144,12 @@ namespace GitClient.ui
             {
                 ReadButtons.WorkingInStagePanel = true;
                 communicationService.NavigateToStagedPanel();
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                
+                if (keyInfo.Key == ConsoleKey.D2 || keyInfo.Key == ConsoleKey.NumPad2)
+                {
+                    communicationService.DisplayLog();
+                }
             }
         }
         private void Navigate()
@@ -166,8 +172,12 @@ namespace GitClient.ui
                                 ReadButtons.Down = true;
                                 ReadButtons.Up = false;
                                 ReadButtons.Enter = false;
-                                
+
+                                //
+                                ReadButtons.RightOnce = true;
                                 clear.ClearDiff(y);
+                                ReadButtons.RightOnce = false;
+                                //
 
                                 if (y == dimensions.unstagedEnd && endIndex < totalNumberOfFiles)
                                 {
@@ -212,8 +222,11 @@ namespace GitClient.ui
                                 clear.ClearFiles(x, y, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningOnFile");
                                 GetOneFileAtTime(currentUnstagedChanges);
                                 panel.DrawUnstagePanel(currentUnstagedChanges, totalNumberOfFiles, currentIndex);
+                               //
+                                ReadButtons.RightOnce = true;
                                 clear.ClearDiff(y);
-                                
+                                ReadButtons.RightOnce = false;
+                                //
                                 communicationService.SetLastUnstageFileName(currentUnstagedChanges.Last().GetFileName());
                                 string firstStageFileName = statusService.GetCurrentChanges(0, 1, "stage")[0].GetFileName();
                                 OnFileSelectionChanged(firstStageFileName, isStaged: true);
@@ -229,8 +242,12 @@ namespace GitClient.ui
                             {
                                 ReadButtons.Down = false;
                                 ReadButtons.Up = true;
-                                
+
+                                //
+                                ReadButtons.RightOnce = true;
                                 clear.ClearDiff(y);
+                                ReadButtons.RightOnce = false;
+                                //
 
                                 if (y == dimensions.unstagedStart && startIndex > 0)
                                 {
@@ -268,15 +285,20 @@ namespace GitClient.ui
                             ReadButtons.Down = false;
                             statusService.StageFile(currentUnstagedChanges[currentIndex]);
                             currentUnstagedChanges = statusService.GetCurrentChanges(GetStartIndex(), GetEndIndex(), "unstage");
-                            clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart - 1, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
-                            clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart - 1, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
+                            clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
+                            clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
+                            //
+                            ReadButtons.RightOnce = true;
                             clear.ClearDiff(y);
+                            ReadButtons.RightOnce = false;
+                            //
                             fileNumber--;
 
                             if (currentIndex > 0 && currentUnstagedChanges.Count > 0)
                             {
                                 y--;
                                 currentIndex--;
+
 
                                 if (currentIndex == 0)
                                 {

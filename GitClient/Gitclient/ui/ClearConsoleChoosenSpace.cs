@@ -36,7 +36,7 @@ namespace GitClient.ui
         {
             int startFrom = dimensions.tabHeight + 2;
             int EndAt = Console.WindowHeight - 2;
-            int x = 0;
+            int x = 1;
             int width = 0;
 
             if (ReadButtons.DiffMovements == true && y < EndAt && ReadButtons.Down == true || y > dimensions.tabHeight + 2 && ReadButtons.Up == true && ReadButtons.DiffMovements == true)
@@ -48,7 +48,7 @@ namespace GitClient.ui
             else if (ReadButtons.RightStatus == true)
             {
                 startFrom = dimensions.tabHeight + 1;
-                x = 0;
+                x = 1;
                 width = Console.WindowWidth;
                 EndAt = Console.WindowHeight - 1;
 

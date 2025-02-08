@@ -126,6 +126,7 @@ namespace GitClient.service
         {
             if (stagedChangesPanel != null)
             {
+
                 stagedChangesPanel.Show();
             }
             else

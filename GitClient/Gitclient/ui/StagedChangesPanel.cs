@@ -83,7 +83,8 @@ namespace GitClient.ui
                 currentStagedChanges.Clear();
                 currentStagedChanges = statusService.GetCurrentChanges(startIndex, endIndex, "stage");
                 GetAllFiles(currentStagedChanges);
-               
+                ProjectPath(1, dimensions.stagedStart - 1);
+
                 if (ReadButtons.WorkingInStagePanel == true)
                 {
                      blueBox.SetBlueBox((1, y), currentStagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
@@ -92,7 +93,7 @@ namespace GitClient.ui
             }
             else
             {
-                Console.SetCursorPosition(2, dimensions.unstagedEnd + 4);
+                Console.SetCursorPosition(2, dimensions.unstagedEnd + 6);
                 string text = TextSettings.GetTextLength("No changes found in the stage area.", dimensions.changesPanelWidth - 4);
                 Console.Write(text);
             }
@@ -119,7 +120,12 @@ namespace GitClient.ui
                                 ReadButtons.Down = true;
                                 ReadButtons.Up = false;
                                 clear.ClearFiles(x, y, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd, "cleaningOneFile");
+
+                                //
+                                ReadButtons.RightOnce = true;
                                 clear.ClearDiff(y);
+                                ReadButtons.RightOnce = false;
+                                //
 
                                 if (y == dimensions.stagedEnd - 1 && endIndex < totalNumberOfFiles)
                                 {
@@ -161,7 +167,11 @@ namespace GitClient.ui
                                 ReadButtons.Down = false;
                                 ReadButtons.Up = true;
 
+                                //
+                                ReadButtons.RightOnce = true;
                                 clear.ClearDiff(y);
+                                ReadButtons.RightOnce = false;
+                                //
 
                                 if (y == dimensions.stagedStart && startIndex > 0)
                                 {
@@ -203,7 +213,13 @@ namespace GitClient.ui
                                 GetOneFileAtTime(currentStagedChanges);
                                 panel.DrawStagePanel(currentStagedChanges, totalNumberOfFiles);
                                 ReadButtons.Deleted = false;
+
+
+                                //
+                                ReadButtons.RightOnce = true;
                                 clear.ClearDiff(y);
+                                ReadButtons.RightOnce = false;
+                                //
                                 string lastUntageFileName = statusService.GetAllUnstagedChanges().Last().GetFileName();
                                 OnFileSelectionChanged(lastUntageFileName, isStaged: false);
                                 ReadButtons.WorkingInStagePanel = false;
@@ -223,7 +239,11 @@ namespace GitClient.ui
 
                             clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
                             clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart - 1, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
+                            //
+                            ReadButtons.RightOnce = true;
                             clear.ClearDiff(y);
+                            ReadButtons.RightOnce = false;
+                            //
 
                             if (currentIndex > 0 && currentStagedChanges.Count > 0)
                             {
@@ -301,6 +321,15 @@ namespace GitClient.ui
         {
             Console.Clear();
             Environment.Exit(0);
+        }
+        private void ProjectPath(int x, int y)
+        {
+            GetProjectPath projectPath = new GetProjectPath();
+            string path = $"  ▾{projectPath.ProjectPath(Environment.CurrentDirectory)}";
+            path = TextSettings.GetTextLength(path, dimensions.changesPanelWidth - 1);
+            Console.SetCursorPosition(x, y);
+            Console.Write(path);
+            Console.ResetColor();
         }
     }
 }
