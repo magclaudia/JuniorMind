@@ -284,6 +284,12 @@ namespace GitClient.ui
                             }
                         }
                         break;
+                    case ConsoleKey.D2:
+                    case ConsoleKey.NumPad2:
+                        {
+                            communicationService.DisplayLog();
+                        }
+                        break;
                     case ConsoleKey.Escape:
                         {
                             CloseApplication();

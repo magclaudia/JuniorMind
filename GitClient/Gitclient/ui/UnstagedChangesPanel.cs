@@ -145,19 +145,6 @@ namespace GitClient.ui
                 ReadButtons.WorkingInStagePanel = true;
                 communicationService.NavigateToStagedPanel();
             }
-
-            GoToLog();
-
-        }
-
-        private void GoToLog()
-        {
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-
-            if (keyInfo.Key == ConsoleKey.D2 || keyInfo.Key == ConsoleKey.NumPad2)
-            {
-                communicationService.DisplayLog();
-            }
         }
 
         private void Navigate()
