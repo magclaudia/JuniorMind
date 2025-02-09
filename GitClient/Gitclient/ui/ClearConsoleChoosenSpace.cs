@@ -32,39 +32,32 @@ namespace GitClient.ui
             }
         }
 
-        public void ClearDiff (int y)
+        public void ClearDiff (int x, int y, int endAt)
         {
-            int startFrom = dimensions.tabHeight + 2;
-            int EndAt = Console.WindowHeight - 2;
-            int x = 1;
+            int startFrom = dimensions.tabHeight + 3;
             int width = 0;
 
-            if (ReadButtons.DiffMovements == true && y < EndAt && ReadButtons.Down == true || y > dimensions.tabHeight + 2 && ReadButtons.Up == true && ReadButtons.DiffMovements == true)
+            if (ReadButtons.DiffMovements == true && y < endAt && ReadButtons.Down == true || y > dimensions.tabHeight + 2 && ReadButtons.Up == true && ReadButtons.DiffMovements == true)
             {
-                x = 1;
                 Console.SetCursorPosition(x, y);
                 Console.Write(new string(' ', Console.WindowWidth - 3));
             }
             else if (ReadButtons.RightStatus == true)
             {
-                startFrom = dimensions.tabHeight + 1;
-                x = 1;
                 width = Console.WindowWidth;
-                EndAt = Console.WindowHeight - 1;
 
-                while (startFrom <= EndAt)
+                while (startFrom <= endAt)
                 {
                     Console.SetCursorPosition(x, startFrom);
-                    Console.Write(new string(' ', Console.WindowWidth));
+                    Console.Write(new string(' ', width));
                     startFrom++;
                 }
             }
-            else if (ReadButtons.DiffMovements == true && y == EndAt || y == 3 && ReadButtons.DiffMovements == true)
+            else if (ReadButtons.DiffMovements == true && y == endAt || y == 3 && ReadButtons.DiffMovements == true)
             {
                 width = Console.WindowWidth - 3;
-                startFrom = 3;
-
-                while (startFrom <= EndAt)
+                startFrom--;
+                while (startFrom <= endAt)
                 {
                     Console.SetCursorPosition(1, startFrom);
                     Console.Write(new string(' ', width));
@@ -73,14 +66,10 @@ namespace GitClient.ui
             }
             else
             {
-                if (ReadButtons.RightOnce == true)
-                {
-                    x = Console.WindowWidth / 2 + 2;
-                }
-               
                 width = Console.WindowWidth / 2 - 3;
+                startFrom--;
 
-                while (startFrom <= EndAt)
+                while (startFrom <= endAt)
                 {
                     Console.SetCursorPosition(x, startFrom);
                     Console.Write(new string(' ', width));

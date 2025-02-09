@@ -50,7 +50,7 @@ namespace GitClient.ui
 
         public static CommitsNavigation CreateCommitsNavigation()
         {
-            CommitsNavigation navigation = new CommitsNavigation(commitsService);   
+            CommitsNavigation navigation = new CommitsNavigation(commitsService, panelCommunicationService);   
             return navigation;
         }
 

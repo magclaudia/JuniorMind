@@ -113,8 +113,7 @@ namespace GitClient.ui
                             {
                                 ReadButtons.Down = true;
                                 ReadButtons.Up = false;
-                                clear.ClearDiff(y);
-                                panels.DrawDiffPanel(currentDiff, x, currentIndex); 
+                                clear.ClearDiff(1, y, Console.WindowHeight - 2);
 
                                 if (y == height - 1)
                                 {
@@ -141,8 +140,7 @@ namespace GitClient.ui
                             {
                                 ReadButtons.Down = false;
                                 ReadButtons.Up = true;
-                                clear.ClearDiff(y);
-                                panels.DrawDiffPanel(currentDiff, x, currentIndex);
+                                clear.ClearDiff(1, y, Console.WindowHeight - 2);
 
                                 if (y == dimensions.tabHeight + 2)
                                 {

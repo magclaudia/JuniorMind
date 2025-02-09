@@ -14,6 +14,7 @@ namespace GitClient.ui
     {
         public event EventHandler<CommitSelectionChangedEventArgs>? CommitSelectionChanged;
         private CommitsService commitsService;
+        private PanelCommunicationService panelCommunicationService;
         private List<Commit> currentCommits;
         private List<ChangeAttribute> currentFiles;
         private List<string> currentDiff;
@@ -27,6 +28,7 @@ namespace GitClient.ui
         private int fileIndex;
         private int totalCommits;
         private int y;
+        private int x;
         private int commitNumber;
         private int width = Console.WindowWidth - 3;
         private int enterCount = 0;
@@ -40,9 +42,10 @@ namespace GitClient.ui
         private int diffNumber;
         private int diffStartingIndex;
 
-        public CommitsNavigation(CommitsService commitsService)
+        public CommitsNavigation(CommitsService commitsService, PanelCommunicationService panelCommunicationService)
         {
             this.commitsService = commitsService;
+            this.panelCommunicationService = panelCommunicationService;
             commitStartingIndex = 0;
             commitEndIndex = GetEndIndex();
             commitIndex = 0;
@@ -219,6 +222,15 @@ namespace GitClient.ui
                             }
                         }
                         break;
+                    case ConsoleKey.D1:
+                    case ConsoleKey.NumPad1:
+                        {
+                            ReadButtons.RightOnce = false;
+                            ReadButtons.WorkingInStagePanel = false;
+                            Console.Clear();
+                            panelCommunicationService.NavigateToStatusInitialState();
+                        }
+                        break;
                     case ConsoleKey.Escape:
                         {
 
@@ -315,7 +327,9 @@ namespace GitClient.ui
                 if (y == Console.WindowHeight - 2)
                 {
                     clear.ClearFiles(1, y, Console.WindowHeight / 2 + 5, Console.WindowWidth / 2 - 3, Console.WindowHeight - 2, "cleaningAllPanelArea");
-                    clear.ClearDiff(y);
+                    
+                    //
+                    clear.ClearDiff(Console.WindowWidth / 2 - 3, y, Console.WindowHeight - 3);
                     commitStartingIndex++;
                     filesStartingIndex++;
                     retainPositionOfYWhenRight = y;
@@ -324,7 +338,10 @@ namespace GitClient.ui
                 else
                 {
                     clear.ClearFiles(1, y, commitStartingIndex, Console.WindowWidth / 2 - 3, Console.WindowHeight - 1, "cleaningOneFile");
-                    clear.ClearDiff(y);
+                    
+                    
+                    //
+                    clear.ClearDiff(Console.WindowWidth / 2 - 3, y, Console.WindowHeight - 3);
                 }
 
                 if (y < Console.WindowHeight - 2)
@@ -354,14 +371,16 @@ namespace GitClient.ui
             {
                 if (y == Console.WindowHeight - 2)
                 {
-                    clear.ClearDiff(y);
+                    //
+                    clear.ClearDiff(Console.WindowWidth / 2 - 3, y, Console.WindowHeight - 3);
                     diffStartingIndex++;
                     diffIndex++;
                     OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                 }
                 else
                 {
-                    clear.ClearDiff(y);
+                    //
+                    clear.ClearDiff(Console.WindowWidth / 2 - 3, y, Console.WindowHeight - 3);
                 }
 
                 if (y < Console.WindowHeight - 2)
@@ -445,7 +464,9 @@ namespace GitClient.ui
                 if (y == Console.WindowHeight / 2 + 5)
                 {
                     clear.ClearFiles(1, y, Console.WindowHeight / 2 + 5, Console.WindowWidth / 2 - 2, Console.WindowHeight - 2, "cleaningAllPanelArea");
-                    clear.ClearDiff(y);
+                    
+                    //
+                    clear.ClearDiff(Console.WindowWidth / 2 - 3, y, Console.WindowHeight - 3);
                     commitStartingIndex--;
                     fileIndex = -1;
                     filesStartingIndex--;
@@ -456,7 +477,9 @@ namespace GitClient.ui
                 else
                 {
                     clear.ClearFiles(1, y, commitStartingIndex, Console.WindowWidth / 2 - 2, Console.WindowHeight - 1, "cleaningOneFile");
-                    clear.ClearDiff(y);
+                   
+                    //
+                    clear.ClearDiff(Console.WindowWidth / 2 - 3, y, Console.WindowHeight - 3);
                 }
 
                 if (fileIndex > 0)
@@ -488,14 +511,16 @@ namespace GitClient.ui
 
                 if (y == 3)
                 {
-                    clear.ClearDiff(y);
+                    //
+                    clear.ClearDiff(Console.WindowWidth / 2 - 3, y, Console.WindowHeight - 3);
                     diffStartingIndex--;
                     OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                     callOnCommitSelectionChanged = true;
                 }
                 else
                 {
-                    clear.ClearDiff(y);
+                    //
+                    clear.ClearDiff(Console.WindowWidth / 2 - 3, y, Console.WindowHeight - 3);
                 }
 
                 if (diffIndex > 0)
