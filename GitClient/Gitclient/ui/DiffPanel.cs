@@ -68,7 +68,7 @@ namespace GitClient.ui
             string currentPanel;
             hunk.Clear();
 
-            if (ReadButtons.WorkingInStagePanel == true)
+            if (ReadButtons.WorkingInStagePanel == true || statusDiffService.GetAllUnstageDiffs().Count == 0)
             {
                 fileDiffs = statusDiffService.GetAllStageDiffs();
                 currentPanel = "stage";

@@ -452,6 +452,5 @@ namespace GitClient
                 throw new FileNotFoundException($"Failed to load {libName} from {libPath}.");
             }
         }
-
     }
 }
