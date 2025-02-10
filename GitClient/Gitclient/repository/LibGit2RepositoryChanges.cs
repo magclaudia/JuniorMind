@@ -11,7 +11,6 @@ namespace GitClient.repository
     public class LibGit2RepositoryChanges
     {
         private LibGit2Wrapper.GitDiffOptions options = new LibGit2Wrapper.GitDiffOptions();
-
         public List<ChangeAttribute> GetAllUnstagedChanges()
         {
             List<ChangeAttribute> stagedChanges = GetAllStageChanges();
@@ -63,8 +62,6 @@ namespace GitClient.repository
 
             return unstagedChanges;
         }
-
-
         public List<ChangeAttribute> GetAllStageChanges()
         {
             List<ChangeAttribute> stagedChanges = new List<ChangeAttribute>();
@@ -164,8 +161,6 @@ namespace GitClient.repository
 
             return stagedChanges;
         }
-
-
         public void StageFile(ChangeAttribute unstagedFile)
         {
             IntPtr repo = GetRepo();
@@ -218,8 +213,6 @@ namespace GitClient.repository
                 }
             }
         }
-
-
         public void UnstageFile(ChangeAttribute stagedFile)
         {
             IntPtr repo = GetRepo();
@@ -280,7 +273,6 @@ namespace GitClient.repository
                 }
             }
         }
-
         public IntPtr GetDiff()
         {
             IntPtr index = IntPtr.Zero;
@@ -318,7 +310,6 @@ namespace GitClient.repository
 
             return diff;
         }
-
         public IntPtr GetRepo()
         {
             GetProjectPath projectPath = new GetProjectPath();
@@ -339,7 +330,6 @@ namespace GitClient.repository
 
             return repo;
         }
-
         private string Symbol(LibGit2Wrapper.GitDiffDelta delta)
         {
             return delta.status switch

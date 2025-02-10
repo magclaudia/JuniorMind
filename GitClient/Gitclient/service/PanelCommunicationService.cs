@@ -73,6 +73,10 @@ namespace GitClient.service
             index = currentIndex;
         }
 
+        public int GetCurrentIndex()
+        {
+            return index;
+        }
         public void SetFilePath(string filePathGiven)
         {
             filePath = filePathGiven;
@@ -81,11 +85,6 @@ namespace GitClient.service
         public string GetFilePath()
         {
             return filePath;
-        }
-
-        public int GetCurrentIndex()
-        {
-            return index;
         }
 
         public void SetHunkIndex(int hunkIndexGiven)

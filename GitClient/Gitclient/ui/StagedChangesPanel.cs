@@ -93,7 +93,7 @@ namespace GitClient.ui
             }
             else
             {
-                Console.SetCursorPosition(2, dimensions.unstagedEnd + 6);
+                Console.SetCursorPosition(2, dimensions.stagedStart + (dimensions.stagedEnd - dimensions.stagedStart) / 2);
                 string text = TextSettings.GetTextLength("No changes found in the stage area.", dimensions.changesPanelWidth - 4);
                 Console.Write(text);
             }
@@ -267,6 +267,8 @@ namespace GitClient.ui
                     case ConsoleKey.D2:
                     case ConsoleKey.NumPad2:
                         {
+                            ReadButtons.WorkingInStagePanel = true;
+                            communicationService.SetCurrentIndex(currentIndex);
                             communicationService.DisplayLog();
                         }
                         break;

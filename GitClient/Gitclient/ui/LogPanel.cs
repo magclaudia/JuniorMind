@@ -11,7 +11,7 @@ using GitClient.service;
 
 namespace GitClient.ui
 {
-    public class LogPanel /*: UiComponent*/
+    public class LogPanel 
     {
         private CommitsService commitsService;
         private PanelCommunicationService panelCommunicationService;
@@ -78,12 +78,6 @@ namespace GitClient.ui
             }
         }
 
-
-        //public override void Show()
-        //{
-        //    Refresh();
-        //}
-
         public void Refresh(CommitSelectionChangedEventArgs e) 
         {
             ReadButtons.DisplayListOfCommitsOnEntirePanel = true;
@@ -102,8 +96,6 @@ namespace GitClient.ui
             return commitEndIndex < Console.WindowHeight - 3 ? Console.WindowHeight - 3
                 : commitStartingIndex + Console.WindowHeight - 3;
         }
-
-
         private void DisplayOneCommit(int width, CommitSelectionChangedEventArgs e)
         {
             int height = Console.WindowHeight;
@@ -111,7 +103,6 @@ namespace GitClient.ui
             Console.SetCursorPosition(1, e.Y);
             TextSettings.SetColorLog(displayText);
         }
-
         private void DisplayCommits(int width, CommitSelectionChangedEventArgs e)
         {
             int height = Console.WindowHeight;

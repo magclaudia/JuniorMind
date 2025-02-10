@@ -13,6 +13,9 @@ namespace GitClient.ui
     {
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
         private Indicator indicator = new Indicator();
+        private int yEndInfo = 0;
+        private int yEndMessage = 0;
+
 
         public void DrawUnstagePanel(List<ChangeAttribute> currentUnstagedChanges, int totalNumberOfFiles, int currentIndex)
         {
@@ -56,7 +59,6 @@ namespace GitClient.ui
                 ProjectPath(1, dimensions.unstagedStart - 1);
             }
         }
-
         public void DrawStagePanel(List<ChangeAttribute> currentStagedChanges, int totalNumberOfFiles)
         {
             for (int i = dimensions.unstagedEnd + 3; i < Console.WindowHeight - 1; i++)
@@ -93,7 +95,6 @@ namespace GitClient.ui
                 ProjectPath(1, dimensions.stagedStart - 1);
             }
         }
-
         public void DrawDiffPanel(List<string> currentDiff, int x, int currentIndex)
         {
             int width = 0;
@@ -146,7 +147,6 @@ namespace GitClient.ui
                 indicator.GetIndicator(currentIndex, Console.WindowHeight - 1, currentDiff.Count(), Console.WindowWidth - 1, dimensions.tabHeight + 2, Console.WindowHeight - 2);
             }
         }
-
         public void DrawBorderForFullSizeCommitList()
         {
             for (int i = 3; i < Console.WindowHeight - 1; i++)
@@ -174,7 +174,6 @@ namespace GitClient.ui
             Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
             Console.Write("┘");
         }
-
         public void DrawBorderForCommitsAfterPressingEnter()
         {
             for (int i = 3; i < Console.WindowHeight - 1; i++)
@@ -283,10 +282,11 @@ namespace GitClient.ui
             Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
             Console.Write("┘");
         }
-
         public void DrawBorderForCommitsAfterPressingRightOnce()
         {
-            for (int i = dimensions.tabHeight + 2; i < Console.WindowHeight / 3 - 2; i++)
+            yEndInfo = Console.WindowHeight / 3 - 2;
+
+            for (int i = dimensions.tabHeight + 2; i < yEndInfo; i++)
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
@@ -313,8 +313,10 @@ namespace GitClient.ui
 
             Console.SetCursorPosition(1, 2);
             Console.Write("Info ");
-            
-            for (int i = Console.WindowHeight / 4 + 3; i < Console.WindowHeight / 2 + 2; i++)
+
+            yEndMessage = Console.WindowHeight / 2 + 2;
+
+            for (int i = yEndInfo + 2; i < Console.WindowHeight / 2 + 2; i++)
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
@@ -324,25 +326,25 @@ namespace GitClient.ui
 
             for (int i = 1; i < dimensions.width / 2 - 1; i++)
             {
-                Console.SetCursorPosition(i, Console.WindowHeight / 4 + 2);
+                Console.SetCursorPosition(i, yEndInfo + 1);
                 Console.Write("─");
-                Console.SetCursorPosition(i, Console.WindowHeight / 2 + 2);
+                Console.SetCursorPosition(i, yEndMessage);
                 Console.Write("─");
             }
 
-            Console.SetCursorPosition(0, Console.WindowHeight / 4 + 2);
+            Console.SetCursorPosition(0, yEndInfo + 1);
             Console.Write("┌");
-            Console.SetCursorPosition(0, Console.WindowHeight / 2 + 2);
+            Console.SetCursorPosition(0, yEndMessage);
             Console.Write("└");
-            Console.SetCursorPosition(dimensions.width / 2 - 1, Console.WindowHeight / 4 + 2);
+            Console.SetCursorPosition(dimensions.width / 2 - 1, yEndInfo + 1);
             Console.Write("┐");
-            Console.SetCursorPosition(dimensions.width / 2 - 1, Console.WindowHeight / 2 + 2);
+            Console.SetCursorPosition(dimensions.width / 2 - 1, yEndMessage);
             Console.Write("┘");
 
-            Console.SetCursorPosition(1, Console.WindowHeight / 4 + 2);
+            Console.SetCursorPosition(1, yEndInfo + 1);
             Console.Write("Message ");
 
-            for (int i = Console.WindowHeight / 2 + 4; i < Console.WindowHeight - 1; i++)
+            for (int i = yEndMessage + 2; i < Console.WindowHeight - 1; i++)
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
@@ -352,17 +354,17 @@ namespace GitClient.ui
 
             for (int i = 1; i < dimensions.width / 2 - 1; i++)
             {
-                Console.SetCursorPosition(i, Console.WindowHeight / 2 + 3);
+                Console.SetCursorPosition(i, yEndMessage + 1);
                 Console.Write("─");
                 Console.SetCursorPosition(i, Console.WindowHeight - 1);
                 Console.Write("─");
             }
 
-            Console.SetCursorPosition(0, Console.WindowHeight / 2 + 3);
+            Console.SetCursorPosition(0, yEndMessage + 1);
             Console.Write("┌");
             Console.SetCursorPosition(0, Console.WindowHeight - 1);
             Console.Write("└");
-            Console.SetCursorPosition(dimensions.width / 2 - 1, Console.WindowHeight / 2 + 3);
+            Console.SetCursorPosition(dimensions.width / 2 - 1, yEndMessage + 1);
             Console.Write("┐");
             Console.SetCursorPosition(dimensions.width / 2 - 1, Console.WindowHeight - 1);
             Console.Write("┘");

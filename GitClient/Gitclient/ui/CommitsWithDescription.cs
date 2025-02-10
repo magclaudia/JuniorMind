@@ -130,12 +130,12 @@ namespace GitClient.ui
                 if (ReadButtons.Esc == true)
                 {
                     e.Y = lastYPosition;
-                    indicator.GetIndicator(e.FileIndex, Console.WindowHeight - height, listOfFiles.Count, width, lastYPosition, Console.WindowHeight - 1);
+                    indicator.GetIndicator(e.FileIndex, Console.WindowHeight - height, listOfFiles.Count, width + 1, lastYPosition, Console.WindowHeight - 1);
                     blueBox.SetBlueBox((1, e.Y), currentFiles[e.FileIndex].Display(), width - 3);
                 }
                 else
                 {
-                    indicator.GetIndicator(e.FileIndex, Console.WindowHeight - height, listOfFiles.Count, width, e.Y, Console.WindowHeight - 1);
+                    indicator.GetIndicator(e.FileIndex, Console.WindowHeight - height, listOfFiles.Count, width + 1, e.Y, Console.WindowHeight - 1);
                     blueBox.SetBlueBox((1, e.Y), currentFiles[e.FileIndex].Display(), width - 3);
                 }
 
@@ -353,7 +353,17 @@ namespace GitClient.ui
         }
         private void GetMessage(int x, int width, int height, CommitSelectionChangedEventArgs e)
         {
-            int y = Console.WindowHeight / 4 + 3;
+            int y = 0;
+            
+            if (ReadButtons.Enter == true && ReadButtons.RightOnce == false)
+            {
+                y = Console.WindowHeight / 4 + 3;
+            }
+            else
+            {
+                y = Console.WindowHeight / 3;
+            }
+             
             int index = 0;
 
             if (currentCommits[e.CommitIndex].Message.Length >= width)

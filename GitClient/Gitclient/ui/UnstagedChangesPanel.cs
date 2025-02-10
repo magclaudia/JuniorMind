@@ -298,6 +298,8 @@ namespace GitClient.ui
                             }
                             else
                             {
+                                Console.SetCursorPosition(1, 3);
+                                Console.Write(new string(' ', Console.WindowWidth / 2 - 3));
                                 Console.SetCursorPosition(2, dimensions.changesPanelHeight / 2 + dimensions.tabHeight);
                                 string text = TextSettings.GetTextLength("No changes found in the unstaged area.", dimensions.changesPanelWidth - 4);
                                 Console.Write(text);
@@ -332,6 +334,7 @@ namespace GitClient.ui
                     case ConsoleKey.D2:
                     case ConsoleKey.NumPad2:
                         {
+                            communicationService.SetCurrentIndex(currentIndex);
                             communicationService.DisplayLog();
                         }
                         break;
