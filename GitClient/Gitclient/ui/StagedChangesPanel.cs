@@ -4,6 +4,7 @@ using GitClient.service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace GitClient.ui
 {
     public class StagedChangesPanel : UiComponent
     {
-        public event EventHandler<FileSelectionChangedEventArgs> FileSelectionChanged;
+        public event EventHandler<FileSelectionChangedEventArgs>? FileSelectionChanged;
         private PanelCommunicationService communicationService;
         private StatusDiffService diffService;
         private StatusService statusService;
@@ -20,6 +21,7 @@ namespace GitClient.ui
         private BlueBox blueBox;
         private Indicator indicator;
         private DrawPanels panel;
+        private ClearConsoleChoosenSpace clear;
         private int totalNumberOfFiles;
         private int startIndex;
         private int currentIndex;
@@ -38,6 +40,7 @@ namespace GitClient.ui
             blueBox = new BlueBox();
             indicator = new Indicator();    
             panel = new DrawPanels();
+            clear = new ClearConsoleChoosenSpace();
             totalNumberOfFiles = statusService.GetAllStageChanges().Count;
             startIndex = GetStartIndex();
             currentIndex = GetCurrentIndex();
@@ -101,7 +104,6 @@ namespace GitClient.ui
         private void Navigate()
         {
             ConsoleKeyInfo keyInfo;
-            ClearConsoleChoosenSpace clear = new ClearConsoleChoosenSpace();
             int countingNumberOfPressingUp = 0;
             totalNumberOfFiles = statusService.GetAllStageChanges().Count;
             ReadButtons.WorkingInStagePanel = true;
@@ -220,10 +222,20 @@ namespace GitClient.ui
                             ReadButtons.Down = false;
                             statusService.UnstageFile(currentStagedChanges[currentIndex]);
                             currentStagedChanges = statusService.GetCurrentChanges(startIndex, endIndex, "stage");
-
-                            clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
-                            clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart - 1, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
-                            clear.ClearDiff(Console.WindowWidth / 2 + 2, y, Console.WindowHeight - 2);
+                            
+                            if (currentStagedChanges.Count == 0)
+                            {
+                                totalNumberOfFiles = statusService.GetAllStageChanges().Count;
+                                clear.ClearStagePanel(0, dimensions.stagedStart - 2, dimensions.changesPanelWidth + 1, dimensions.stagedEnd + 1);
+                                clear.ClearDiff(Console.WindowWidth / 2 + 2, y, Console.WindowHeight - 2);
+                                panel.DrawStagePanel(currentStagedChanges, totalNumberOfFiles);
+                            }
+                            else
+                            {
+                                clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
+                                clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
+                                clear.ClearDiff(Console.WindowWidth / 2 + 2, y, Console.WindowHeight - 2);
+                            }
                             
                             if (currentIndex > 0 && currentStagedChanges.Count > 0)
                             {
@@ -287,6 +299,8 @@ namespace GitClient.ui
         }
         private void GetAllFiles(List<ChangeAttribute> currentStagedChanges)
         {
+            clear.ClearFiles(x, y, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
+
             for (int i = 0; i < currentStagedChanges.Count; i++)
             {
                 int y = dimensions.stagedStart + i;

@@ -12,6 +12,30 @@ namespace GitClient.ui
     {
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
+        public void ClearUnstagePanel(int x, int y, int width, int heigth)
+        {
+            int i = y;
+            
+            while (i < heigth)
+            {
+                Console.SetCursorPosition(x, i);
+                Console.Write(new string(' ', width));
+                i++;
+            }
+        }
+
+        public void ClearStagePanel(int x, int y, int width, int heigth)
+        {
+            int i = y;
+
+            while (i < heigth)
+            {
+                Console.SetCursorPosition(x, i);
+                Console.Write(new string(' ', width));
+                i++;
+            }
+        }
+
         public void ClearFiles(int x, int y, int startFrom, int width, int EndAt, string cleaningArea)
         {
             ReadButtons.Deleted = true;

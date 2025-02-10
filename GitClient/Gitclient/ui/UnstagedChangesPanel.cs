@@ -17,7 +17,7 @@ namespace GitClient.ui
 {
     public class UnstagedChangesPanel : UiComponent
     {
-        public event EventHandler<FileSelectionChangedEventArgs> FileSelectionChanged;
+        public event EventHandler<FileSelectionChangedEventArgs>? FileSelectionChanged;
         private PanelCommunicationService communicationService;
         private StatusDiffService statusDiffService;
         private StatusService statusService;
@@ -26,6 +26,7 @@ namespace GitClient.ui
         private BlueBox blueBox;
         private Indicator indicator;
         private DrawPanels panel;
+        private ClearConsoleChoosenSpace clear;
         private int totalNumberOfFiles;
         private static int startIndex;
         private static int currentIndex;
@@ -46,6 +47,7 @@ namespace GitClient.ui
             blueBox = new BlueBox();
             indicator = new Indicator();
             panel = new DrawPanels();
+            clear = new ClearConsoleChoosenSpace();
             totalNumberOfFiles = statusService.GetAllUnstagedChanges().Count;
             startIndex = GetStartIndex();
             currentIndex = GetCurrentIndex();
@@ -116,6 +118,7 @@ namespace GitClient.ui
             {
                 currentUnstagedChanges = statusService.GetCurrentChanges(GetStartIndex(), GetEndIndex(), "unstage");
                 GetAllFiles(currentUnstagedChanges);
+                panel.DrawUnstagePanel(currentUnstagedChanges, totalNumberOfFiles, currentIndex);
 
                 if (ReadButtons.WorkingInUnstagePanel == false && ReadButtons.WorkingInStagePanel == false)
                 {
@@ -149,7 +152,6 @@ namespace GitClient.ui
         private void Navigate()
         {
             ConsoleKeyInfo keyInfo;
-            ClearConsoleChoosenSpace clear = new ClearConsoleChoosenSpace();
             ReadButtons.Enter = false;
 
             do
@@ -260,20 +262,29 @@ namespace GitClient.ui
                     case ConsoleKey.Enter:
                         {
                             ReadButtons.Enter = true;
-                            //ReadButtons.Up = false;
-                            //ReadButtons.Down = false;
                             statusService.StageFile(currentUnstagedChanges[currentIndex]);
                             currentUnstagedChanges = statusService.GetCurrentChanges(GetStartIndex(), GetEndIndex(), "unstage");
-                            clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
-                            clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
-                            clear.ClearDiff(Console.WindowWidth / 2 + 2, y, Console.WindowHeight - 2);
+                            
+                            if (currentUnstagedChanges.Count == 0)
+                            {
+                                totalNumberOfFiles = statusService.GetAllUnstagedChanges().Count;
+                                clear.ClearUnstagePanel(0, 2, dimensions.changesPanelWidth + 1, dimensions.unstagedEnd + 2);
+                                panel.DrawUnstagePanel(currentUnstagedChanges, totalNumberOfFiles, currentIndex);
+                                clear.ClearDiff(Console.WindowWidth / 2 + 2, y, Console.WindowHeight - 2);
+                            }
+                            else
+                            {
+                                clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
+                                clear.ClearFiles(x, dimensions.stagedStart, dimensions.stagedStart, dimensions.changesPanelWidth - 1, dimensions.stagedEnd - 1, "cleaningAllPanelArea");
+                                clear.ClearDiff(Console.WindowWidth / 2 + 2, y, Console.WindowHeight - 2);
+                            }
+                            
                             fileNumber--;
 
                             if (currentIndex > 0 && currentUnstagedChanges.Count > 0)
                             {
                                 y--;
                                 currentIndex--;
-
 
                                 if (currentIndex == 0)
                                 {
@@ -379,6 +390,8 @@ namespace GitClient.ui
         }
         public void GetAllFiles(List<ChangeAttribute> currentUnstagedChanges)
         {
+            clear.ClearFiles(x, dimensions.unstagedStart, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningAllPanelArea");
+
             for (int i = 0; i < currentUnstagedChanges.Count; i++)
             {
                 int position = dimensions.unstagedStart + i;
