@@ -180,7 +180,6 @@ namespace GitClient.ui
                             if (countingPressingRight == 1)
                             {
                                 ButtonStates buttonStates = SetButtonStates(diff: true);
-                                //y = 3;
                                 diffIndex = 0;
                                 diffStartingIndex = 0;
                                 diffNumber = 1;
@@ -537,12 +536,10 @@ namespace GitClient.ui
                 }
             }
         }
-
         private ButtonStates SetButtonStates(bool down = false, bool up = false, bool enter = false, bool right = false, bool left = false, bool diff = false, bool gitLog = false)
         {
             return new ButtonStates(down: down, up: up, enter: enter, right: right, left: left, diff: diff, gitLog);
         }
-
         private void CloseApplication()
         {
             Console.Clear();

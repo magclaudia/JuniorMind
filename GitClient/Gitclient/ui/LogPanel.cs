@@ -47,12 +47,10 @@ namespace GitClient.ui
         {
             panelCommunicationService = service;
         }
-
         public void SubscribeToPanel(CommitsNavigation commitsNavigation)
         {
             commitsNavigation.CommitSelectionChanged += HandleCommitsSelectionChanged!;
         }
-
         private void HandleCommitsSelectionChanged(object sender, CommitSelectionChangedEventArgs e)
         {
             ButtonStates buttonStates = e.ButtonStates;
@@ -77,7 +75,6 @@ namespace GitClient.ui
                 }
             }
         }
-
         public void Refresh(CommitSelectionChangedEventArgs e) 
         {
             ReadButtons.DisplayListOfCommitsOnEntirePanel = true;
@@ -90,7 +87,6 @@ namespace GitClient.ui
             blueBox.SetBlueBox((1, e.Y), currentCommits[e.CommitIndex].Display(), Console.WindowWidth - 3);
             GetCommitNumber(e);
         }
-
         private int GetEndIndex()
         {
             return commitEndIndex < Console.WindowHeight - 3 ? Console.WindowHeight - 3
@@ -120,7 +116,6 @@ namespace GitClient.ui
                 }
             }
         }
-
         private void GetCommitNumber(CommitSelectionChangedEventArgs e)
         {
             Console.SetCursorPosition(1, 2);
