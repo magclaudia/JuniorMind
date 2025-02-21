@@ -187,7 +187,7 @@ namespace GitClient.ui
                                     ReadButtons.RightOnce = true;
                                     Console.Clear();
                                     communicationService.NavigateToTabPanel();
-                                    communicationService.SetCurrentIndex(currentIndex);
+                                    communicationService.SetFileIndex(fileNumber - 1);
                                     communicationService.NavigateToDiffPanel();
                                 }
                             }
@@ -196,7 +196,7 @@ namespace GitClient.ui
                     case ConsoleKey.D2:
                     case ConsoleKey.NumPad2:
                         {
-                            communicationService.SetCurrentIndex(currentIndex);
+                            communicationService.SetFileIndex(currentIndex);
                             communicationService.DisplayLog();
                         }
                         break;

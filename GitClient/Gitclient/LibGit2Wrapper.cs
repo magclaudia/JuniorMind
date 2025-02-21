@@ -1,4 +1,5 @@
-﻿using System.Net.NetworkInformation;
+using LibGit2Sharp;
+using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -25,7 +26,7 @@ namespace GitClient
         [StructLayout(LayoutKind.Sequential)]
         public struct GitDiffOptions
         {
-            public uint version;
+            public uint Version;
             public uint flags;
             public SubmoduleIgnore ignoreSubmodules;
             public GitStrArray pathspec;
@@ -42,7 +43,7 @@ namespace GitClient
 
             public GitDiffOptions()
             {
-                version = 1;
+                Version = 1;
                 flags = (uint)DiffOptionFlags.GIT_DIFF_NORMAL;
                 ignoreSubmodules = SubmoduleIgnore.GIT_SUBMODULE_IGNORE_NONE;
                 pathspec = new GitStrArray { strings = IntPtr.Zero, count = 0 };
@@ -54,7 +55,7 @@ namespace GitClient
                 oid_type = GitOidT.GIT_OID_SHA1;
                 id_abbrev = 7;
                 max_size = 512 * 1024 * 1024;
-                old_prefix = Marshal.StringToCoTaskMemUTF8("a");
+                old_prefix = Marshal.StringToCoTaskMemUTF8("a"); 
                 new_prefix = Marshal.StringToCoTaskMemUTF8("b");
             }
         }
@@ -215,6 +216,17 @@ namespace GitClient
             public byte[] header;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct GitHunk
+        {
+            public int OldStart;
+            public int OldLines;
+            public int NewStart;
+            public int NewLines;
+            public IntPtr Header;
+            public UIntPtr HeaderLen;
+        }
+
         public enum GitObjectType
         {
             GIT_OBJECT_ANY = -2,
@@ -223,6 +235,32 @@ namespace GitClient
             GIT_OBJECT_TREE = 2,
             GIT_OBJECT_BLOB = 3,
             GIT_OBJECT_TAG = 4
+        }
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct git_index_time
+        {
+            public int seconds;
+            public uint nanoseconds;
+        }
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct GitIndexEntry
+        {
+            public git_index_time ctime;
+            public git_index_time mtime;
+            public uint dev;
+            public uint ino;
+            public uint mode;
+            public uint uid;
+            public uint gid;
+            public uint fileSize;
+            public GitOid id;
+            public ushort flags;
+            public ushort flagsExtended;
+            public IntPtr path;
         }
 
 
@@ -256,7 +294,15 @@ namespace GitClient
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_patch_from_blobs(out IntPtr patch, IntPtr old_blob, string old_as_path, IntPtr new_blob, string new_as_path, ref GitDiffOptions opts);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_libgit2_init();
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void git_patch_free(IntPtr patch);
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
@@ -265,6 +311,10 @@ namespace GitClient
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern void git_repository_free(IntPtr repo);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr git_repository_path(IntPtr repo);
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
@@ -312,6 +362,10 @@ namespace GitClient
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_patch_get_hunk(out IntPtr hunkPtr, out UIntPtr linesInHunk, IntPtr patch, uint hunkIndex);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_commit_tree(out IntPtr treeOut, IntPtr commit);
 
 
@@ -336,19 +390,37 @@ namespace GitClient
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_blob_lookup(out IntPtr blob, IntPtr repo, ref GitOid id);
+        public static extern int git_blob_lookup(out IntPtr blob, IntPtr repo, ref GitOid oid);
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr git_blob_rawcontent(IntPtr blob);
 
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern UIntPtr git_blob_rawsize(IntPtr blob);
+
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern long git_blob_rawsize(IntPtr blob);
+        public static extern int git_patch_get_line_in_hunk(out LibGit2Wrapper.GitDiffLine line, IntPtr patch, uint hunk_idx, uint line_of_hunk);
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern UIntPtr git_patch_num_hunks(IntPtr patch);
 
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_blob_create_from_buffer(out GitOid id, IntPtr repo, byte[] buffer, UIntPtr len);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr git_blob_id(IntPtr blob);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_checkout_head(IntPtr repo, IntPtr opts);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern void git_blob_free(IntPtr blob);
 
 
@@ -397,6 +469,17 @@ namespace GitClient
 
 
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int git_index_add(IntPtr index, ref GitIndexEntry entry);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr git_index_get_bypath(IntPtr index, string path, int stage);
+
+        //[DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int git_index_get_bypath(IntPtr index, string path, int stage);
+
+
+        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int git_index_remove_bypath(IntPtr index, string path);
 
 
@@ -412,17 +495,7 @@ namespace GitClient
         public static extern void git_object_free(IntPtr objectFree);
 
 
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_patch_from_diff(out IntPtr patch, IntPtr diff, UIntPtr hunkIndex);
-
-
-        [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_apply(IntPtr repo, IntPtr diff, int applyLocation, IntPtr options);
-
-        [DllImport("git2.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int git_patch_get_hunk(out GitDiffHunk outHunk, out UIntPtr linesInHunk, IntPtr patch,              
-           UIntPtr hunkIndex);
-
+       
 
 
         public static void LoadLibrary()

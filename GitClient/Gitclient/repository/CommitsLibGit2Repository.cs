@@ -371,6 +371,7 @@ namespace GitClient.repository
 
             return diff;
         }
+
         private string GetCommitId(LibGit2Wrapper.GitOid id)
         {
             StringBuilder sb = new StringBuilder();

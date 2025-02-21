@@ -8,6 +8,7 @@ namespace GitClient
         {
             try
             {
+                Console.OutputEncoding = System.Text.Encoding.UTF8;
                 Ui ui = new Ui();
                 PanelFactory.RegisterUi(ui);
                 Console.Clear();

@@ -43,10 +43,10 @@ namespace GitClient.repository
 
                         string fileName = Path.GetFileName(filePath)!;
 
-                        if (stagedChanges.Any(s => s.GetFilePath() == filePath))
-                        {
-                            continue;
-                        }
+                        //if (stagedChanges.Any(s => s.GetFilePath() == filePath))
+                        //{
+                        //    continue;
+                        //}
 
                         unstagedChanges.Add(new ChangeAttribute(Symbol(delta), fileName, filePath));
                     }

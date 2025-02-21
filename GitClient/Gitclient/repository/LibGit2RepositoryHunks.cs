@@ -1,209 +1,267 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GitClient.ui;
+﻿using GitClient;
+using GitClient.model;
+using GitClient.repository;
 using GitClient.service;
-using System.Runtime.InteropServices;
-using LibGit2Sharp;
-using System.Reflection;
-using static GitClient.LibGit2Wrapper;
+using System;
+using System.Diagnostics;
+using System.Text;
+using System.Text.RegularExpressions;
 
-
-namespace GitClient.repository
+public class LibGit2RepositoryHunks
 {
+    private LibGit2RepositoryChanges libGit2RepositoryChanges;
+    private LibGit2RepositoryDiff libGit2RepositoryDiff;
+    private PanelCommunicationService panelCommunicationService;
+    private GetProjectPath path;
+    private int hunkIndex;
 
-    public class LibGit2RepositoryHunks
+    public LibGit2RepositoryHunks(LibGit2RepositoryChanges libGit2RepositoryChanges, LibGit2RepositoryDiff libGit2RepositoryDiff, PanelCommunicationService panelCommunicationService)
     {
-        private LibGit2RepositoryChanges libGit2RepositoryChanges;
-        private LibGit2Wrapper.GitDiffOptions options;
-        private int index;
+        this.libGit2RepositoryChanges = libGit2RepositoryChanges;
+        this.libGit2RepositoryDiff = libGit2RepositoryDiff;
+        this.panelCommunicationService = panelCommunicationService;
+        path = new GetProjectPath();
+        hunkIndex = 0;
+    }
 
-        public LibGit2RepositoryHunks(LibGit2RepositoryChanges libGit2RepositoryChanges)
+    class Hunk
+    {
+        public List<string> FileHeaders { get; } = new List<string>();
+        public string HunkHeader { get; set; }
+        public List<HunkLine> Lines { get; } = new List<HunkLine>();
+    }
+
+    class HunkLine
+    {
+        public string Content { get; set; }
+        public LineType Type { get; set; }
+        public int? OldLineNumber { get; set; }
+        public int? NewLineNumber { get; set; }
+    }
+
+    enum LineType { Context, Addition, Removal, Header }
+
+    public void StageHunk(int hunkIndex, int index, string line)
+    {
+        List<Hunk> hunks = ParseGitDiff();
+
+        if (hunkIndex < 0 || hunkIndex >= hunks.Count)
         {
-            this.libGit2RepositoryChanges = libGit2RepositoryChanges;
-            options = new LibGit2Wrapper.GitDiffOptions();
+            return;
         }
 
-        public void StageOrUnstageHunk(string filePath, int hunkIndex, List<string> hunk, int fileIndex)
+        HandleLineSelection(hunks[hunkIndex], index, line);
+    }
+
+    private void HandleLineSelection(Hunk hunk, int index, string line)
+    {
+        List<string> diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}").Split("\n").ToList().Skip(4).ToList();
+        bool success = false;
+        
+        try
         {
-            index = hunkIndex;
-            IntPtr repo = libGit2RepositoryChanges.GetRepo();
-            IntPtr diff = libGit2RepositoryChanges.GetDiff();
-            IntPtr patch = IntPtr.Zero;
-
-            if (LibGit2Wrapper.git_patch_from_diff(out patch, diff, (UIntPtr)hunkIndex) != 0)
+            if (line.StartsWith("@@"))
             {
-
+                success = StageGitHunk(hunk);
             }
-
-            LibGit2Wrapper.GitDiffHunk hunkPtr;
-            UIntPtr linesInHunk;
-
-            if (LibGit2Wrapper.git_patch_get_hunk(out hunkPtr, out linesInHunk, patch, (UIntPtr)fileIndex) != 0)
+            else if (line.StartsWith('+') || line.StartsWith('-'))
             {
-
+                int indexForHunk = hunk.Lines.FindIndex(x => x.Content == line);
+                success = StageSingleLine(hunk, hunk.Lines[indexForHunk]);
             }
-
-
-            const int GIT_APPLY_LOCATION_INDEX = 0;
-            const int GIT_APPLY_LOCATION_WORKDIR = 1;
-
-            int applyLocation = ReadButtons.WorkingInStagePanel == true ? GIT_APPLY_LOCATION_INDEX : GIT_APPLY_LOCATION_WORKDIR;
-            int applyResult = LibGit2Wrapper.git_apply(repo, diff, applyLocation, IntPtr.Zero);
-            
-            if (applyResult != 0)
+            else
             {
-                throw new Exception($"Failed to apply hunk at location {applyLocation}: {applyResult}");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    private string BuildFullPatch(List<string> headers, string hunkHeader, List<HunkLine> lines)
+    {
+        return string.Join("\n", headers) + "\n" +
+               hunkHeader + "\n" +
+               string.Join("\n", lines.Select(l => l.Content)) + "\n";
+    }
+
+    
+    private (string header, List<HunkLine> lines) CreateHunkHeaderWithContext(List<HunkLine> contextLines)
+    {
+        var oldLines = contextLines.Where(l => l.OldLineNumber.HasValue).ToList();
+        var newLines = contextLines.Where(l => l.NewLineNumber.HasValue).ToList();
+        int oldStart = oldLines.FirstOrDefault()?.OldLineNumber ?? 0;
+        int newStart = newLines.FirstOrDefault()?.NewLineNumber ?? 0;
+        int oldCount = oldLines.Count(l => l.Type != LineType.Addition);
+        int newCount = newLines.Count(l => l.Type != LineType.Removal);
+        oldCount = oldCount == 0 ? 1 : oldCount;
+        newCount = newCount == 0 ? 1 : newCount;
+
+        var header = $"@@ -{oldStart},{oldCount} +{newStart},{newCount} @@";
+        return (header, contextLines);
+    }
+
+    private bool StageGitHunk(Hunk hunkAll)
+    {
+        var patch = BuildFullPatch(
+            hunkAll.FileHeaders,
+            hunkAll.HunkHeader,
+            hunkAll.Lines.Where(l => l.Type != LineType.Header).ToList());
+        return ApplyPatch(patch);
+    }
+
+    private bool StageSingleLine(Hunk hunk, HunkLine line)
+    {
+        var contextLines = GetContextAroundLine(
+            hunk.Lines, 
+            line,      
+            context: 2);
+
+        contextLines = contextLines.Where(l => l.Type != LineType.Header).ToList();
+        var (header, adjustedLines) = CreateHunkHeaderWithContext(contextLines);
+        var patch = BuildFullPatch(hunk.FileHeaders, header, adjustedLines);
+        return ApplyPatch(patch);
+    }
+
+    private List<HunkLine> GetContextAroundLine(List<HunkLine> lines, HunkLine target, int context = 1)
+    {
+        int index = lines.FindIndex(l => l.Content == target.Content);
+        if (index == -1) return new List<HunkLine>();
+        int start = Math.Max(0, index - context);
+        int end = Math.Min(lines.Count - 1, index + context);
+        return lines.GetRange(start, end - start + 1);
+    }
+
+    private bool ApplyPatch(string patch)
+    {
+        var tempFile = Path.GetTempFileName();
+
+        try
+        {
+            File.WriteAllText(tempFile, patch);
+            var result = RunGitCommand($"apply --cached --verbose \"{tempFile}\"");
+            return string.IsNullOrEmpty(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error applying patch: {ex.Message}");
+            Console.WriteLine($"Patch content:\n{patch}");
+            return false;
+        }
+        finally
+        {
+            File.Delete(tempFile); 
+        }
+    }
+
+    private List<Hunk> ParseGitDiff()
+    {
+        var diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}");
+        return ParseDiffHunks(diff);
+    }
+
+    private List<Hunk> ParseDiffHunks(string diff)
+    {
+        var hunks = new List<Hunk>();
+        var lines = diff.Split('\n');
+        List<string> currentFileHeaders = new List<string>();
+        Hunk currentHunk = null;
+
+        foreach (var line in lines)
+        {
+            if (line.StartsWith("diff --git"))
+            {
+                currentFileHeaders = new List<string> { line };
+                currentHunk = null;
+            }
+            else if (line.StartsWith("--- "))
+            {
+                currentFileHeaders.Add(line);
+            }
+            else if (line.StartsWith("+++ "))
+            {
+                currentFileHeaders.Add(line);
+            }
+            else if (line.StartsWith("@@"))
+            {
+                currentHunk = new Hunk();
+                currentHunk.FileHeaders.AddRange(currentFileHeaders);
+                currentHunk.HunkHeader = line;
+                currentHunk.Lines.Add(new HunkLine
+                {
+                    Content = line,
+                    Type = LineType.Header
+                });
+
+                hunks.Add(currentHunk);
+
+                var match = Regex.Match(line, @"@@ \-(\d+),?(\d*) \+(\d+),?(\d*) @@");
+                var oldStart = int.Parse(match.Groups[1].Value);
+                var oldLines = match.Groups[2].Success && !string.IsNullOrEmpty(match.Groups[2].Value)
+                    ? int.Parse(match.Groups[2].Value) : 0;
+                var newStart = int.Parse(match.Groups[3].Value);
+                var newLines = match.Groups[4].Success && !string.IsNullOrEmpty(match.Groups[4].Value)
+                    ? int.Parse(match.Groups[4].Value) : 0;
+
+                int oldLine = oldStart;
+                int newLine = newStart;
+
+                foreach (var contentLine in lines.SkipWhile(l => l != line).Skip(1))
+                {
+                    if (contentLine.StartsWith("@@")) break;
+
+                    var hunkLine = new HunkLine { Content = contentLine };
+
+                    if (contentLine.StartsWith("-"))
+                    {
+                        hunkLine.Type = LineType.Removal;
+                        hunkLine.OldLineNumber = oldLine++;
+                    }
+                    else if (contentLine.StartsWith("+"))
+                    {
+                        hunkLine.Type = LineType.Addition;
+                        hunkLine.NewLineNumber = newLine++;
+                    }
+                    else
+                    {
+                        hunkLine.Type = LineType.Context;
+                        hunkLine.OldLineNumber = oldLine++;
+                        hunkLine.NewLineNumber = newLine++;
+                    }
+
+                    currentHunk.Lines.Add(hunkLine);
+                }
             }
         }
 
-        //private IntPtr GetPatchForFile(IntPtr diff, string filePath)
-        //{
-        //    IntPtr patch = IntPtr.Zero;
+        return hunks;
+    }
 
-        //    UIntPtr numberOfDeltas = LibGit2Wrapper.git_diff_num_deltas(diff);
+    private string RunGitCommand(string arguments)
+    {
+        var startInfo = new ProcessStartInfo
+        {
+            FileName = "git",
+            Arguments = arguments,
+            WorkingDirectory = path.ProjectPath(Environment.CurrentDirectory),
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
 
-        //    for (UIntPtr i = UIntPtr.Zero; i.ToUInt64() < numberOfDeltas.ToUInt64(); i = new UIntPtr(i.ToUInt64() + 1))
-        //    {
-        //        IntPtr delta = LibGit2Wrapper.git_diff_get_delta(diff, i);
+        using var process = Process.Start(startInfo);
+        var output = process.StandardOutput.ReadToEnd();
+        var error = process.StandardError.ReadToEnd();
+        process.WaitForExit();
 
-        //        if (delta == IntPtr.Zero)
-        //        {
-        //            throw new Exception($"Failed to retrieve delta at index {i}.");
-        //        }
+        if (process.ExitCode != 0)
+        {
+            throw new Exception($"Git command failed: {error}");
+        }
 
-        //        LibGit2Wrapper.GitDiffDelta deltaStruct = Marshal.PtrToStructure<LibGit2Wrapper.GitDiffDelta>(delta);
-        //        string deltaFilePath = Marshal.PtrToStringAnsi(deltaStruct.new_file.path)!;
-
-        //        if (string.Equals(deltaFilePath, filePath, StringComparison.OrdinalIgnoreCase))
-        //        {
-        //            int result = LibGit2Wrapper.git_patch_from_diff(out patch, diff, i);
-
-        //            if (result != 0 || patch == IntPtr.Zero)
-        //            {
-        //                throw new Exception($"Failed to create patch for file '{filePath}': {result}");
-        //            }
-
-        //            return patch;
-        //        }
-        //    }
-
-        //    throw new FileNotFoundException($"File '{filePath}' not found in diff.");
-        //}
-
-        //public void StageOrUnstageHunk(IntPtr repo, IntPtr diff, string filePath, int hunkIndex)
-        //{
-        //    IntPtr patch = GetPatchForFile(diff, filePath);
-
-        //    try
-        //    {
-        //        ApplyHunk(repo, diff, patch, hunkIndex);
-        //    }
-        //    finally
-        //    {
-        //        if (patch != IntPtr.Zero)
-        //        {
-        //           // LibGit2Wrapper.git_patch_free(patch); // Free the patch
-        //        }
-        //    }
-        //}
-
-        //private LibGit2Wrapper.GitDiffHunk GetHunkFromPatch(IntPtr patch, int hunkIndex)
-        //{
-        //    LibGit2Wrapper.GitDiffHunk hunkPtr;
-        //    UIntPtr lineCount = UIntPtr.Zero;
-
-        //    int result = LibGit2Wrapper.git_patch_get_hunk(out hunkPtr, out lineCount, patch, (UIntPtr)hunkIndex);
-
-        //    if (result != 0)
-        //    {
-        //        throw new Exception($"Failed to retrieve hunk at index {hunkIndex}: {result}");
-        //    }
-
-        //    return hunkPtr;
-        //}
-
-        //private void ApplyHunk(IntPtr repo, IntPtr diff, IntPtr patch, int hunkIndex)
-        //{
-        //    LibGit2Wrapper.GitDiffHunk hunk = GetHunkFromPatch(patch, hunkIndex);
-
-        //    //if (hunk == IntPtr.Zero)
-        //    //{
-        //    //    throw new Exception($"Hunk at index {hunkIndex} could not be retrieved.");
-        //    //}
-
-        //    const int GIT_APPLY_LOCATION_INDEX = 0;
-        //    const int GIT_APPLY_LOCATION_WORKDIR = 1;
-
-        //    int applyLocation = ButtomPress.Type.workingInStagePanel == true ? GIT_APPLY_LOCATION_INDEX : GIT_APPLY_LOCATION_WORKDIR;
-        //    int result = LibGit2Wrapper.git_apply(repo, patch, applyLocation, IntPtr.Zero);
-
-        //    if (result != 0)
-        //    {
-        //        throw new Exception($"Failed to apply hunk at index {hunkIndex}: {result}");
-        //    }
-        //}
-
-        //private void StageHunk(IntPtr diff, IntPtr repo, UIntPtr hunkIndex, List<string> hunk)
-        //{
-        //    IntPtr patch = IntPtr.Zero;
-
-        //    try
-        //    {
-        //        int result = LibGit2Wrapper.git_patch_from_diff(out patch, diff, hunkIndex);
-
-        //        if (result != 0)
-        //        {
-        //            throw new Exception($"Failed to create patch for hunk: {result}");
-        //        }
-
-        //        const int GIT_APPLY_LOCATION_INDEX = 0;
-        //        result = LibGit2Wrapper.git_apply(repo, patch, GIT_APPLY_LOCATION_INDEX, IntPtr.Zero);
-
-        //        if (result != 0)
-        //        {
-        //            throw new Exception($"Failed to apply patch to index: {result}");
-        //        }
-        //    }
-        //    finally
-        //    {
-        //        if (patch != IntPtr.Zero)
-        //        {
-        //            // LibGit2Wrapper.git_patch_free(patch); 
-        //        }
-        //    }
-        //}
-
-        //private void UnstageHunk(IntPtr diff, IntPtr repo, UIntPtr hunkIndex, List<string> hunk)
-        //{
-        //    IntPtr patch = IntPtr.Zero;
-
-        //    try
-        //    {
-        //        int result = LibGit2Wrapper.git_patch_from_diff(out patch, diff, hunkIndex);
-
-        //        if (result != 0)
-        //        {
-        //            throw new Exception($"Failed to create patch for hunk: {result}");
-        //        }
-
-        //        const int GIT_APPLY_LOCATION_WORKDIR = 1;
-        //        result = LibGit2Wrapper.git_apply(repo, patch, GIT_APPLY_LOCATION_WORKDIR, IntPtr.Zero);
-
-        //        if (result != 0)
-        //        {
-        //            throw new Exception($"Failed to unstage patch: {result}");
-        //        }
-        //    }
-        //    finally
-        //    {
-        //        if (patch != IntPtr.Zero)
-        //        {
-        //            // LibGit2Wrapper.git_patch_free(patch); // Ensure you free the patch after use if needed
-        //        }
-        //    }
-        //}
+        return output;
     }
 }

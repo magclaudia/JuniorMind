@@ -1,4 +1,5 @@
-﻿using GitClient.repository;
+﻿using GitClient.model;
+using GitClient.repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +19,12 @@ namespace GitClient.service
             this.panelCommunicationService = panelCommunicationService;
         }
 
-        public void GetHunks()
+        public void StageHunk()
         {
-            string filePath = panelCommunicationService.GetFilePath();
             int hunkIndex = panelCommunicationService.GetHunkIndex();
-            List<string> hunk = panelCommunicationService.GetHunkToBeTransfer();
-            int fileIndex = panelCommunicationService.GetCurrentIndex();
-            repositoryHunks.StageOrUnstageHunk(filePath, hunkIndex, hunk, fileIndex);
+            int diffIndex = panelCommunicationService.GetDiffIndex();
+            string line = panelCommunicationService.GetLineToBeStaged();
+            repositoryHunks.StageHunk(hunkIndex, diffIndex - 1, line);
         }
     }
 }

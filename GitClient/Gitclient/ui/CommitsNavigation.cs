@@ -209,8 +209,10 @@ namespace GitClient.ui
                         {
                             if (ReadButtons.RightOnce == true && ReadButtons.DiffMovements == false)
                             {
+                                ReadButtons.Left = true;
                                 ButtonStates buttonStates = SetButtonStates(left: true);
                                 ReadButtons.RightOnce = false;
+                                y = retainPositionOfYForCommit;
                                 clear.ClearCommitPanel();
                                 countingPressingRight = 0;
                                 fileIndex = 0;
@@ -218,6 +220,7 @@ namespace GitClient.ui
                                 filesStartingIndex = 0;
                                 OnCommitSelectionChanged(buttonStates, commitStartingIndex, commitEndIndex, commitIndex, fileIndex, y, commitNumber, fileNumber, filesStartingIndex, diffIndex, diffStartingIndex);
                                 ReadButtons.Enter = true;
+                                ReadButtons.Left = false;
                             }
                         }
                         break;

@@ -348,7 +348,7 @@ namespace GitClient.ui
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write("│");
-                Console.SetCursorPosition(dimensions.width / 2 - 1, i);
+                Console.SetCursorPosition(Console.WindowWidth / 2 - 2, i);
                 Console.Write("║");
             }
 

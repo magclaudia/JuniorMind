@@ -56,10 +56,10 @@ namespace GitClient.repository
 
             foreach (var entry in keyValuePairs)
             {
-                if (stagedDiff.Any(s => s.fileName == entry.Key))
-                {
-                    continue;
-                }
+                //if (stagedDiff.Any(s => s.fileName == entry.Key))
+                //{
+                //    continue;
+                //}
 
                 unstagedDiff.Add(new FileDiff(entry.Value, entry.Key));
             }
@@ -200,7 +200,9 @@ namespace GitClient.repository
 
         private int DiffLineCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, ref LibGit2Wrapper.GitDiffLine line, IntPtr payload)
         {
-            string content = Marshal.PtrToStringAnsi(line.content, (int)line.content_len);
+            byte[] contentBytes = new byte[(int)line.content_len];
+            Marshal.Copy(line.content, contentBytes, 0, (int)line.content_len);
+            string content = Encoding.UTF8.GetString(contentBytes);
             string? filePath = Path.GetFileName(Marshal.PtrToStringAnsi(delta.new_file.path));
            
             if (content.StartsWith('\t'))
@@ -214,7 +216,7 @@ namespace GitClient.repository
                 content = content[..content.IndexOf("\n\t")];
             }
 
-            string text = $"{(char)line.origin} {content}".TrimEnd();
+            string text = $"{(char)line.origin}{content}".TrimEnd();
 
             if (!string.IsNullOrEmpty(filePath) && keyValuePairs.ContainsKey(filePath))
             {

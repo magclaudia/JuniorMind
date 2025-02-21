@@ -17,6 +17,7 @@ namespace GitClient.ui
         private HunksService hunksService;
         private PanelCommunicationService communicationService;
         private DrawTabs.Dimensions dimensions;
+        private List<FileDiff> fileDiffs;
         private List<string> currentDiff;
         private List<string> hunk;
         private BlueBox blueBox;
@@ -26,7 +27,7 @@ namespace GitClient.ui
         private int x;
         private int y;
         private int startIndex;
-        private int currentIndex;
+        private int diffIndex;
         private int hunkIndex;
 
 
@@ -37,6 +38,7 @@ namespace GitClient.ui
             this.hunksService = hunksService;
             this.communicationService = communicationService;
             dimensions = new DrawTabs.Dimensions();
+            fileDiffs = new List<FileDiff>();
             currentDiff = new List<string>();
             hunk = new List<string>();
             blueBox = new BlueBox();
@@ -46,7 +48,7 @@ namespace GitClient.ui
             x = 1;
             y = dimensions.tabHeight + 2;
             startIndex = GetStartIndex();
-            currentIndex = GetCurrentIndex();
+            diffIndex = GetCurrentIndex();
             hunkIndex = 0;
         }
 
@@ -55,7 +57,6 @@ namespace GitClient.ui
             unstagedChangesPanel.FileSelectionChanged += HandleFileSelectionChanged!;
             stagedChangesPanel.FileSelectionChanged += HandleFileSelectionChanged!;
         }
-
         public void SetCommunicationService(PanelCommunicationService service)
         {
             communicationService = service;
@@ -63,7 +64,6 @@ namespace GitClient.ui
         public override void Show()
         {
             y = dimensions.tabHeight + 2;
-            List<FileDiff> fileDiffs = new List<FileDiff>();
             string currentPanel;
             hunk.Clear();
 
@@ -80,10 +80,10 @@ namespace GitClient.ui
             
             if (fileDiffs.Count > 0)
             {
-                currentIndex = communicationService.GetCurrentIndex();
-                string fileName = fileDiffs[currentIndex].fileName;
+                diffIndex = communicationService.GetFileIndex();
+                string fileName = fileDiffs[diffIndex].fileName;
                 currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentDiff(fileName, currentPanel)[0].diffs : new List<string>();
-                currentIndex = 0;
+                diffIndex = 0;
             }
 
             Refresh(currentDiff);
@@ -93,13 +93,14 @@ namespace GitClient.ui
                 Navigate();
             }
         }
-        public void Navigate()
+        private void Navigate()
         {
             ConsoleKeyInfo keyInfo;
             ClearConsoleChoosenSpace clear = new ClearConsoleChoosenSpace();
 
             do
             {
+                
                 keyInfo = Console.ReadKey();
                 ReadButtons.DiffMovements = true;
 
@@ -107,7 +108,7 @@ namespace GitClient.ui
                 {
                     case ConsoleKey.DownArrow:
                         {
-                            if (currentIndex < currentDiff.Count - 1)
+                            if (diffIndex < currentDiff.Count - 1)
                             {
                                 ReadButtons.Down = true;
                                 ReadButtons.Up = false;
@@ -125,16 +126,16 @@ namespace GitClient.ui
                                     y++;
                                 }
 
-                                currentIndex++;
-                                IsHunkHeader(currentDiff[currentIndex]);
-                                blueBox.SetBlueBox((1, y), currentDiff[currentIndex], Console.WindowWidth - 3);
-                                indicator.GetIndicator(currentIndex, height - 1, currentDiff.Count, Console.WindowWidth - 1, 3, height);
+                                diffIndex++;
+                                IsHunkHeader(currentDiff[diffIndex]);
+                                blueBox.SetBlueBox((1, y), currentDiff[diffIndex], Console.WindowWidth - 3);
+                                indicator.GetIndicator(diffIndex, height - 1, currentDiff.Count, Console.WindowWidth - 1, 3, height);
                             }
                         }
                         break;
                     case ConsoleKey.UpArrow:
                         {
-                            if (currentIndex > 0)
+                            if (diffIndex > 0)
                             {
                                 ReadButtons.Down = false;
                                 ReadButtons.Up = true;
@@ -152,24 +153,24 @@ namespace GitClient.ui
                                     y--;
                                 }
 
-                                currentIndex--;
-                                blueBox.SetBlueBox((1, y), currentDiff[currentIndex], Console.WindowWidth - 3);
-                                indicator.GetIndicator(currentIndex, height - 1, currentDiff.Count, Console.WindowWidth - 1, 3, height);
+                                diffIndex--;
+                                blueBox.SetBlueBox((1, y), currentDiff[diffIndex], Console.WindowWidth - 3);
+                                indicator.GetIndicator(diffIndex, height - 1, currentDiff.Count, Console.WindowWidth - 1, 3, height);
                             }
                         }
                         break;
                     case ConsoleKey.Enter:
                         {
-                            if (currentIndex > 0)
+                            if (diffIndex > 0)
                             {
-                                int fileIndex = communicationService.GetCurrentIndex();
-                                var filePath = statusService.GetAllUnstagedChanges()[fileIndex].GetFilePath();
+                                int fileIndex = communicationService.GetFileIndex();
+                                string filePath = statusService.GetAllUnstagedChanges()[fileIndex].GetFilePath();
                                 communicationService.SetFilePath(filePath);
-                                SetListsOfHunks(currentDiff[currentIndex]);
+                                SetHunkIndex(currentDiff[diffIndex]);
                                 communicationService.SetHunkIndex(hunkIndex);
-                                communicationService.SetHunkToBeTransfer(hunk);
-                                communicationService.GetCurrentIndex();
-                                hunksService.GetHunks();
+                                communicationService.SetDiffIndex(diffIndex);
+                                communicationService.SetLineToBeStaged(currentDiff[diffIndex]);
+                                hunksService.StageHunk();
                             }
                         }
                         break;
@@ -178,7 +179,6 @@ namespace GitClient.ui
                             ReadButtons.DiffMovements = false;
                             Console.Clear();
                             ReadButtons.RightOnce = false;
-                            currentIndex = communicationService.GetCurrentIndex();
                             startIndex = 0;
                             communicationService.NavigateToStatusInitialState();
                         }
@@ -200,38 +200,39 @@ namespace GitClient.ui
                 }
             }
 
-            panels.DrawDiffPanel(currentDiff, x, currentIndex);
+            panels.DrawDiffPanel(currentDiff, x, diffIndex);
         }
         public int GetCurrentIndex()
         {
-            return currentIndex;
+            return diffIndex;
         }
         private int GetStartIndex()
         {
             return 0;
         }
-        private void SetListsOfHunks(string line)
+        private void SetHunkIndex(string targetLine)
         {
-            int index = currentIndex;
-            
-            List<List<string>> listOfHunks = new List<List<string>>();
+            int currentHunkIndex = -1;
+            hunkIndex = -1;
 
-            listOfHunks = currentDiff.Aggregate(new List<List<string>>(), (acc, line) =>
+            foreach (var line in currentDiff)
             {
                 if (line.StartsWith("@@"))
                 {
-                    acc.Add(new List<string> { line });
+                    currentHunkIndex++;
                 }
-                else if (acc.Any())
+
+                if (line == targetLine)
                 {
-                    acc.Last().Add(line);
+                    hunkIndex = currentHunkIndex;
+                    break;
                 }
+            }
 
-                return acc;
-            });
-
-            hunk = listOfHunks.First(list => list.Contains(line));
-            hunkIndex = listOfHunks.IndexOf(hunk);
+            if (hunkIndex == -1)
+            {
+                throw new InvalidOperationException("Target line not found in diff");
+            }
         }
         private void IsHunkHeader(string line)
         {
@@ -338,7 +339,7 @@ namespace GitClient.ui
         }
         private void GetOneLineAtTime(List<string> currentDiff)
         {
-            string displayText = TextSettings.GetTextLength(currentDiff[currentIndex], Console.WindowWidth - 3);
+            string displayText = TextSettings.GetTextLength(currentDiff[diffIndex], Console.WindowWidth - 3);
             Console.SetCursorPosition(1, y);
             
             if (displayText != "")

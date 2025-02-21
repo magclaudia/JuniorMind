@@ -17,10 +17,11 @@ namespace GitClient.service
         private TabsPanel tabsPanel;
         private string lastFileName = string.Empty;
         private string fileName = string.Empty;
-        private int index;
+        private int fileIndex;
+        private int diffIndex;
         private string filePath = string.Empty;
         private int hunkIndex;
-        private List<string> hunk = new List<string>();
+        private string line = "";
         private DrawTabs.Dimensions dimensions = new DrawTabs.Dimensions();
 
         public void RegisterUnstagedChangesPanel(UnstagedChangesPanel panel) 
@@ -68,15 +69,26 @@ namespace GitClient.service
             return fileName;
         }
 
-        public void SetCurrentIndex(int currentIndex)
+        public void SetFileIndex(int currentIndex)
         {
-            index = currentIndex;
+            fileIndex = currentIndex;
         }
 
-        public int GetCurrentIndex()
+        public int GetFileIndex()
         {
-            return index;
+            return fileIndex;
         }
+
+        public void SetDiffIndex(int diffindex)
+        {
+            diffIndex = diffindex;
+        }
+
+        public int GetDiffIndex()
+        {
+            return diffIndex;
+        }
+
         public void SetFilePath(string filePathGiven)
         {
             filePath = filePathGiven;
@@ -97,14 +109,14 @@ namespace GitClient.service
             return hunkIndex;
         }
 
-        public void SetHunkToBeTransfer(List<string> listOfHunk)
+        public void SetLineToBeStaged(string lineForTransfer)
         {
-            hunk = listOfHunk;
+            line = lineForTransfer;
         }
 
-        public List<string> GetHunkToBeTransfer()
+        public string GetLineToBeStaged()
         {
-            return hunk;
+            return line;
         }
 
         public void NavigateToUnstagedPanel()

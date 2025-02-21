@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
+using static GitClient.DrawTabs;
 
 namespace GitClient.ui
 {
@@ -114,7 +115,7 @@ namespace GitClient.ui
         {
             int x = 1;
             width = (Console.WindowWidth / 2) - 2;
-            int height = Console.WindowHeight - (Console.WindowHeight / 2 + 4);
+            int height = Console.WindowHeight - 1;
 
             if (ReadButtons.Enter == true)
             {
@@ -130,12 +131,12 @@ namespace GitClient.ui
                 if (ReadButtons.Esc == true)
                 {
                     e.Y = lastYPosition;
-                    indicator.GetIndicator(e.FileIndex, Console.WindowHeight - height, listOfFiles.Count, width + 1, lastYPosition, Console.WindowHeight - 1);
+                    indicator.GetIndicator(e.FileIndex, Console.WindowHeight - 1, listOfFiles.Count, Console.WindowWidth / 2 - 2, lastYPosition, Console.WindowHeight - 1);
                     blueBox.SetBlueBox((1, e.Y), currentFiles[e.FileIndex].Display(), width - 3);
                 }
                 else
                 {
-                    indicator.GetIndicator(e.FileIndex, Console.WindowHeight - height, listOfFiles.Count, width + 1, e.Y, Console.WindowHeight - 1);
+                    indicator.GetIndicator(e.FileIndex, Console.WindowHeight - 1, listOfFiles.Count, Console.WindowWidth / 2 - 2, e.Y, Console.WindowHeight - 1);
                     blueBox.SetBlueBox((1, e.Y), currentFiles[e.FileIndex].Display(), width - 3);
                 }
 
@@ -144,7 +145,7 @@ namespace GitClient.ui
             else if (e.FileNumber >= currentFiles.Count - 1 && ReadButtons.Down == true || e.FileIndex == -1 && ReadButtons.Up == true)
             {
                 GetFiles(x, width, Console.WindowHeight - 1, Console.WindowHeight / 2 + 5, e.FilesStartingIndex, Console.WindowHeight / 2 + 5);
-                indicator.GetIndicator(e.FileIndex, Console.WindowHeight - height, listOfFiles.Count, width, e.Y, Console.WindowHeight - 1);
+                indicator.GetIndicator(e.FileIndex, Console.WindowHeight - 1, listOfFiles.Count, Console.WindowWidth / 2 - 2, e.Y, Console.WindowHeight - 1);
                 
                 if (e.FileIndex == -1)
                 {
@@ -253,7 +254,7 @@ namespace GitClient.ui
             Console.ForegroundColor = TextSettings.SetColorStatus(displayText[0]);
             Console.Write(displayText);
             Console.ResetColor();
-            indicator.GetIndicator(e.FileIndex, Console.WindowHeight - Console.WindowHeight / 2 + 3, listOfFiles.Count, width + 2, Console.WindowHeight / 2 + 4, Console.WindowHeight - 1);
+            indicator.GetIndicator(e.FileIndex, Console.WindowHeight - 1, listOfFiles.Count, (Console.WindowWidth / 2) - 2, (Console.WindowHeight / 2) + 4, Console.WindowHeight - 1);
             blueBox.SetBlueBox((1, y), currentFiles[e.FileIndex].Display(), width);
         }
         private void GetFileDiff(int x, int width, CommitSelectionChangedEventArgs e)
@@ -358,6 +359,10 @@ namespace GitClient.ui
             if (ReadButtons.Enter == true && ReadButtons.RightOnce == false)
             {
                 y = Console.WindowHeight / 4 + 3;
+            }
+            else if (ReadButtons.Left == true)
+            {
+                y = Console.WindowHeight / 3 + 1;
             }
             else
             {
