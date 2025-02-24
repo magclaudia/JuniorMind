@@ -1,4 +1,4 @@
-﻿using GitClient.repository;
+using GitClient.repository;
 using GitClient.ui;
 using System;
 using System.Collections.Generic;

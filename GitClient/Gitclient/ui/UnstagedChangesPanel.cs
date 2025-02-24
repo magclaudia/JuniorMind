@@ -1,4 +1,4 @@
-﻿using GitClient.model;
+using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
 using System;
@@ -229,7 +229,7 @@ namespace GitClient.ui
                 {
                     clear.ClearFiles(x, y, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningOnFile");
                     GetUnstagedFiles(currentUnstagedChanges);
-                    indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
+                    indicator.GetIndicator(fileNumber, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
                 }
 
                 if (y < dimensions.unstagedEnd)
@@ -246,7 +246,7 @@ namespace GitClient.ui
                 communicationService.SetCurrentFileName(currentUnstagedChanges[currentIndex].GetFileName());
                 countingIndex++;
                 blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
-                indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
+                indicator.GetIndicator(fileNumber, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
                 OnFileSelectionChanged(communicationService.GetCurrentFileName(), isStaged: false);
             }
 
@@ -299,7 +299,7 @@ namespace GitClient.ui
             }
 
             blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
-            indicator.GetIndicator(currentIndex, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd + 1);
+            indicator.GetIndicator(fileNumber, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd + 1);
             OnFileSelectionChanged(currentUnstagedChanges[currentIndex].GetFileName(), isStaged: false);
         }
         private void HandlePressingEnter()

@@ -1,4 +1,4 @@
-﻿using GitClient.model;
+using GitClient.model;
 using GitClient.repository;
 using LibGit2Sharp;
 using static GitClient.DrawTabs;

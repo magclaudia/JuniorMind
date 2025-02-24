@@ -1,4 +1,4 @@
-﻿using GitClient.ui;
+using GitClient.ui;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

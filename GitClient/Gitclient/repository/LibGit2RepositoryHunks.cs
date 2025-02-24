@@ -1,4 +1,4 @@
-﻿using GitClient;
+using GitClient;
 using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
@@ -41,7 +41,7 @@ public class LibGit2RepositoryHunks
 
     enum LineType { Context, Addition, Removal, Header }
 
-    public void StageHunk(int hunkIndex, int index, string line)
+    public void StageHunk(int hunkIndex, string line)
     {
         List<Hunk> hunks = ParseGitDiff();
 
@@ -50,33 +50,32 @@ public class LibGit2RepositoryHunks
             return;
         }
 
-        HandleLineSelection(hunks[hunkIndex], index, line);
+        HandleLineSelection(hunks[hunkIndex], line);
     }
 
-    private void HandleLineSelection(Hunk hunk, int index, string line)
+    private void HandleLineSelection(Hunk hunk, string line)
     {
         List<string> diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}").Split("\n").ToList().Skip(4).ToList();
         bool success = false;
-        
-        try
+
+        if (line.StartsWith("@@"))
         {
-            if (line.StartsWith("@@"))
-            {
-                success = StageGitHunk(hunk);
-            }
-            else if (line.StartsWith('+') || line.StartsWith('-'))
-            {
-                int indexForHunk = hunk.Lines.FindIndex(x => x.Content == line);
-                success = StageSingleLine(hunk, hunk.Lines[indexForHunk]);
-            }
-            else
+            success = StageGitHunk(hunk);
+        }
+        else if (line.StartsWith('+') || line.StartsWith('-'))
+        {
+            int indexForHunk = hunk.Lines.FindIndex(x => x.Content == line);
+
+            if (indexForHunk < 0)
             {
                 return;
             }
+
+            success = StageSingleLine(hunk, hunk.Lines[indexForHunk]);
         }
-        catch (Exception ex)
+        else
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            return;
         }
     }
 
@@ -87,8 +86,26 @@ public class LibGit2RepositoryHunks
                string.Join("\n", lines.Select(l => l.Content)) + "\n";
     }
 
-    
-    private (string header, List<HunkLine> lines) CreateHunkHeaderWithContext(List<HunkLine> contextLines)
+    private bool StageSingleLine(Hunk hunk, HunkLine line)
+    {
+        var patch = string.Join("\n", hunk.FileHeaders) + "\n" +
+                   CreateSingleLinePatch(hunk, line);
+
+        return ApplyPatch(patch);
+    }
+
+    private string CreateSingleLinePatch(Hunk hunk, HunkLine line)
+    {
+        var contextLines = hunk.Lines
+            .Where(l => l.Type == LineType.Context)
+            .Take(3)
+            .ToList();
+
+        return $"{hunk.HunkHeader}\n" +
+               $"{line.Content}";
+    }
+
+    private (string header, List<HunkLine> lines) CreateHunkHeaderWithContext(List<HunkLine> contextLines, Hunk header)
     {
         var oldLines = contextLines.Where(l => l.OldLineNumber.HasValue).ToList();
         var newLines = contextLines.Where(l => l.NewLineNumber.HasValue).ToList();
@@ -99,8 +116,20 @@ public class LibGit2RepositoryHunks
         oldCount = oldCount == 0 ? 1 : oldCount;
         newCount = newCount == 0 ? 1 : newCount;
 
-        var header = $"@@ -{oldStart},{oldCount} +{newStart},{newCount} @@";
-        return (header, contextLines);
+        int startFrom = $"@@ -{oldStart},{oldCount} +{newStart},{newCount} @@ ".Length;
+        var headerLimits = "";
+
+        if (header.HunkHeader.Length > startFrom)
+        {
+            string text = header.HunkHeader.Substring(startFrom);
+            headerLimits = $"@@ -{oldStart},{oldCount} +{newStart},{newCount} @@ {text}";
+        }
+        else
+        {
+            headerLimits = $"@@ -{oldStart},{oldCount} +{newStart},{newCount} @@";
+        }
+
+        return (headerLimits, contextLines);
     }
 
     private bool StageGitHunk(Hunk hunkAll)
@@ -112,18 +141,18 @@ public class LibGit2RepositoryHunks
         return ApplyPatch(patch);
     }
 
-    private bool StageSingleLine(Hunk hunk, HunkLine line)
-    {
-        var contextLines = GetContextAroundLine(
-            hunk.Lines, 
-            line,      
-            context: 2);
+    //private bool StageSingleLine(Hunk hunk, HunkLine line)
+    //{
+    //    var contextLines = GetContextAroundLine(
+    //        hunk.Lines, 
+    //        line,      
+    //        context: 2);
 
-        contextLines = contextLines.Where(l => l.Type != LineType.Header).ToList();
-        var (header, adjustedLines) = CreateHunkHeaderWithContext(contextLines);
-        var patch = BuildFullPatch(hunk.FileHeaders, header, adjustedLines);
-        return ApplyPatch(patch);
-    }
+    //    contextLines = contextLines.Where(l => l.Type != LineType.Header).ToList();
+    //    var (header, adjustedLines) = CreateHunkHeaderWithContext(contextLines, hunk);
+    //    var patch = BuildFullPatch(hunk.FileHeaders, header, adjustedLines);
+    //    return ApplyPatch(patch);
+    //}
 
     private List<HunkLine> GetContextAroundLine(List<HunkLine> lines, HunkLine target, int context = 1)
     {
@@ -144,10 +173,8 @@ public class LibGit2RepositoryHunks
             var result = RunGitCommand($"apply --cached --verbose \"{tempFile}\"");
             return string.IsNullOrEmpty(result);
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine($"Error applying patch: {ex.Message}");
-            Console.WriteLine($"Patch content:\n{patch}");
             return false;
         }
         finally

@@ -1,4 +1,4 @@
-﻿using GitClient.service;
+using GitClient.service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
