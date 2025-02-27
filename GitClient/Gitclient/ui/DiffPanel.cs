@@ -81,6 +81,12 @@ namespace GitClient.ui
             if (fileDiffs.Count > 0)
             {
                 diffIndex = communicationService.GetFileIndex();
+                
+                if (diffIndex >= fileDiffs.Count)
+                {
+                    diffIndex = fileDiffs.Count - 1;
+                }
+                
                 string fileName = fileDiffs[diffIndex].fileName;
                 currentDiff = fileName != "" ? currentDiff = statusDiffService.GetCurrentDiff(fileName, currentPanel)[0].diffs : new List<string>();
                 diffIndex = 0;
@@ -125,6 +131,7 @@ namespace GitClient.ui
                                 {
                                     y++;
                                 }
+
 
                                 diffIndex++;
                                 IsHunkHeader(currentDiff[diffIndex]);

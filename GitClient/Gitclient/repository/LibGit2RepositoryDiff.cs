@@ -220,7 +220,10 @@ namespace GitClient.repository
 
             if (!string.IsNullOrEmpty(filePath) && keyValuePairs.ContainsKey(filePath))
             {
-                keyValuePairs[filePath].Add(text);
+                if (text != "=\n\\ No newline at end of file")
+                {
+                    keyValuePairs[filePath].Add(text);
+                }
             }
 
             return 0;

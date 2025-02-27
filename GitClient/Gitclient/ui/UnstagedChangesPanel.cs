@@ -133,6 +133,13 @@ namespace GitClient.ui
                 }
                 else if (ReadButtons.WorkingInUnstagePanel == true)
                 {
+                    if (currentIndex >= currentUnstagedChanges.Count)
+                    {
+                        currentIndex = currentUnstagedChanges.Count - 1;
+                        y--;
+                        fileNumber--;
+                    }
+
                     blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                 }
             }
@@ -213,6 +220,7 @@ namespace GitClient.ui
         {
             if (fileNumber < totalNumberOfFiles)
             {
+                checkLastFile = 0;
                 ReadButtons.WorkingInUnstagePanel = true;
                 ReadButtons.Down = true;
                 ReadButtons.Up = false;
@@ -229,7 +237,7 @@ namespace GitClient.ui
                 {
                     clear.ClearFiles(x, y, dimensions.unstagedStart, dimensions.changesPanelWidth - 1, dimensions.unstagedEnd, "cleaningOnFile");
                     GetUnstagedFiles(currentUnstagedChanges);
-                    indicator.GetIndicator(fileNumber, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
+                    indicator.GetIndicator(fileNumber - 1, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
                 }
 
                 if (y < dimensions.unstagedEnd)
@@ -299,7 +307,7 @@ namespace GitClient.ui
             }
 
             blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
-            indicator.GetIndicator(fileNumber, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd + 1);
+            indicator.GetIndicator(fileNumber - 1, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd + 1);
             OnFileSelectionChanged(currentUnstagedChanges[currentIndex].GetFileName(), isStaged: false);
         }
         private void HandlePressingEnter()
@@ -322,7 +330,10 @@ namespace GitClient.ui
                 clear.ClearDiff(Console.WindowWidth / 2 + 2, y, Console.WindowHeight - 2);
             }
 
-            fileNumber--;
+            if (fileNumber == totalNumberOfFiles)
+            {
+                fileNumber--;
+            }
 
             if (currentIndex > 0 && currentUnstagedChanges.Count > 0)
             {
