@@ -132,7 +132,10 @@ namespace GitClient.ui
                         break;
                     case ConsoleKey.Enter:
                         {
-                            HandlePressingEnter();
+                            if (totalNumberOfFiles > 0)
+                            {
+                                HandlePressingEnter();
+                            }
                         }
                         break;
                     case ConsoleKey.RightArrow:
