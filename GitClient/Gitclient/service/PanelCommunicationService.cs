@@ -28,97 +28,78 @@ namespace GitClient.service
         {
             unstagedChangesPanel = panel;
         }
-
         public void RegisterStagedChangesPanel(StagedChangesPanel panel)
         {
             stagedChangesPanel = panel;
         }
-
         public void RegisterDiffPanel(DiffPanel panel)
         {
             diffPanel = panel;  
         }
-
         public void RegisterTabPanel(TabsPanel panel)
         {
             tabsPanel = panel;
         }
-
         public void RegisterCommitsPanel(LogPanel panel)
         {
             commitsPanel = panel;
         }
-
         public void RegisterUi(Ui panel)
         {
             ui = panel;
         }
-        
         public void SetLastUnstageFileName(string currentFileName)
         {
             lastFileName = currentFileName;
         }
-
         public void SetCurrentFileName(string currentFileName)
         {
             fileName = currentFileName;
         }
-
         public string GetCurrentFileName()
         {
             return fileName;
         }
-
         public void SetFileIndex(int currentIndex)
         {
             fileIndex = currentIndex;
         }
-
         public int GetFileIndex()
         {
             return fileIndex;
         }
-
         public void SetDiffIndex(int diffindex)
         {
             diffIndex = diffindex;
         }
-
         public int GetDiffIndex()
         {
             return diffIndex;
         }
-
         public void SetFilePath(string filePathGiven)
         {
             filePath = filePathGiven;
         }
-
         public string GetFilePath()
         {
             return filePath;
         }
-
         public void SetHunkIndex(int hunkIndexGiven)
         {
             hunkIndex = hunkIndexGiven;
         }
-
         public int GetHunkIndex()
         {
             return hunkIndex;
         }
-
         public void SetLineToBeStaged(string lineForTransfer)
         {
             line = lineForTransfer;
         }
-
         public string GetLineToBeStaged()
         {
             return line;
         }
-
         public void NavigateToUnstagedPanel()
         {
             if (unstagedChangesPanel != null) 
@@ -132,12 +113,10 @@ namespace GitClient.service
                 Console.Write(text);
             }
         }
-
         public void NavigateToStagedPanel()
         {
             if (stagedChangesPanel != null)
             {
-
                 stagedChangesPanel.Show();
             }
             else
@@ -147,7 +126,6 @@ namespace GitClient.service
                 Console.Write(text);
             }
         }
-
         public void NavigateToDiffPanel()
         {
             if (diffPanel != null)
@@ -155,7 +133,6 @@ namespace GitClient.service
                 diffPanel.Show();
             }
         }
-
         public void NavigateToTabPanel()
         {
             if (tabsPanel != null)
@@ -163,7 +140,6 @@ namespace GitClient.service
                 tabsPanel.Show();
             }
         }
-
         public void NavigateToStatusInitialState()
         {
             tabsPanel.Show();
@@ -180,7 +156,6 @@ namespace GitClient.service
                 unstagedChangesPanel.Show();
             }
         }
-
         public void DisplayLog()
         {
             Console.Clear();

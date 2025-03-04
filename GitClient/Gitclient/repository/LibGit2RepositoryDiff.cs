@@ -180,19 +180,18 @@ namespace GitClient.repository
 
         private int DiffHunkCallback(ref LibGit2Wrapper.GitDiffDelta delta, ref LibGit2Wrapper.GitDiffHunk hunk, IntPtr payload)
         {
-            byte[] filteredHeader = hunk.header.Where(c => c != '\0' && c != '0').ToArray();
+            byte[] filteredHeader = hunk.header.Where(c => c != '\0').ToArray();
             string hunkHeader = System.Text.Encoding.UTF8.GetString(filteredHeader);
-            string text = hunkHeader;
             string? filePath = Path.GetFileName(Marshal.PtrToStringAnsi(delta.new_file.path));
 
-            if (text.Contains('\n'))
+            if (hunkHeader.Contains('\n'))
             {
-                text = text.Remove(text.IndexOf('\n'));
+                hunkHeader = hunkHeader.Remove(hunkHeader.IndexOf('\n'));
             }
 
             if (!string.IsNullOrEmpty(filePath) && keyValuePairs.ContainsKey(filePath))
             {
-                keyValuePairs[filePath].Add(text);
+                keyValuePairs[filePath].Add(hunkHeader);
             }
 
             return 0;

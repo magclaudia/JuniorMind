@@ -17,12 +17,11 @@ namespace GitClient.ui
         private static PanelCommunicationService panelCommunicationService = new PanelCommunicationService();
         private static StatusDiffService statusDiffService = new StatusDiffService(libGit2RepositoryDiff, libGit2RepositoryChanges, panelCommunicationService);
         
-        private static LibGit2RepositoryHunks repositoryHunks = new LibGit2RepositoryHunks(/*libGit2RepositoryChanges, libGit2RepositoryDiff, */panelCommunicationService);
+        private static LibGit2RepositoryHunks repositoryHunks = new LibGit2RepositoryHunks(panelCommunicationService);
         private static HunksService hunksService = new HunksService(repositoryHunks, panelCommunicationService);
 
         private static CommitsLibGit2Repository commitsLibGit2Repository = new CommitsLibGit2Repository();
         private static CommitsService commitsService = new CommitsService(commitsLibGit2Repository);
-
 
         public static UnstagedChangesPanel CreateUnstagedChangesPanel()
         {

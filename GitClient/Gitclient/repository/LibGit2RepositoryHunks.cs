@@ -1,7 +1,8 @@
-using GitClient;
+﻿using GitClient;
 using GitClient.model;
 using GitClient.repository;
 using GitClient.service;
+using GitClient.ui;
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -11,56 +12,67 @@ namespace GitClient.repository
 {
     public class LibGit2RepositoryHunks
     {
-        //private LibGit2RepositoryChanges libGit2RepositoryChanges;
-        //private LibGit2RepositoryDiff libGit2RepositoryDiff;
         private PanelCommunicationService panelCommunicationService;
         private GetProjectPath path;
-
-        public LibGit2RepositoryHunks(/*LibGit2RepositoryChanges libGit2RepositoryChanges, LibGit2RepositoryDiff libGit2RepositoryDiff, */PanelCommunicationService panelCommunicationService)
+        private string diff;
+        public LibGit2RepositoryHunks(PanelCommunicationService panelCommunicationService)
         {
-            //this.libGit2RepositoryChanges = libGit2RepositoryChanges;
-            //this.libGit2RepositoryDiff = libGit2RepositoryDiff;
             this.panelCommunicationService = panelCommunicationService;
             path = new GetProjectPath();
+            diff = "";
         }
 
-        class Hunk
-        {
-            public List<string> FileHeaders { get; } = new List<string>();
-            public string HunkHeader { get; set; }
-            public List<HunkLine> Lines { get; } = new List<HunkLine>();
-        }
-
-        class HunkLine
-        {
-            public string Content { get; set; }
-            public LineType Type { get; set; }
-            public int? OldLineNumber { get; set; }
-            public int? NewLineNumber { get; set; }
-        }
-
-        enum LineType { Context, Addition, Removal, Header }
 
         public void StageHunk(int hunkIndex, string line)
         {
             List<Hunk> hunks = ParseGitDiff();
 
-            if (hunkIndex < 0 || hunkIndex >= hunks.Count)
+            if (hunkIndex < 0 || hunkIndex >= hunks.Count && hunks.Count > 0)
             {
                 return;
             }
-
-            HandleLineSelection(hunks[hunkIndex], line);
+            else if (hunks.Count == 0)
+            {
+                RunGitCommand($"add -- {panelCommunicationService.GetFilePath()}");
+            }
+            else
+            {
+                HandleLineSelection(hunks[hunkIndex], line);
+            }
         }
 
+        public void UnstageHunk(int hunkIndex, string line)
+        {
+            List<Hunk> hunks = ParseGitDiff();
+
+            if (hunkIndex < 0 || hunkIndex >= hunks.Count && hunks.Count > 0)
+            {
+                return;
+            }
+            else if (hunks.Count == 0 || hunks[hunkIndex].HunkHeader!.Contains("-0,0"))
+            {
+                RunGitCommand($"reset -- {panelCommunicationService.GetFilePath()}");
+            }
+            else
+            {
+                HandleLineSelection(hunks[hunkIndex], line);
+            }
+        }
         private void HandleLineSelection(Hunk hunk, string line)
         {
-            List<string> diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}").Split("\n").ToList().Skip(4).ToList();
+            List<string> diffList = new List<string>();
             bool success = false;
 
             if (line.StartsWith("@@"))
             {
-                success = StageGitHunk(hunk);
+                if (ReadButtons.WorkingInUnstagePanel == true)
+                {
+                    success = StageGitHunk(hunk);
+                }
+                else
+                {
+                    success = UnstageGitHunk(hunk);
+                }
             }
             else if (line.StartsWith('+') || line.StartsWith('-'))
             {
@@ -71,7 +83,14 @@ namespace GitClient.repository
                     return;
                 }
 
-                success = StageSingleLine(hunk, hunk.Lines[indexForHunk]);
+                if (ReadButtons.WorkingInUnstagePanel == true)
+                {
+                    // success = StageSingleLine(hunk, hunk.Lines[indexForHunk]);
+                }
+                else
+                {
+                    //success = UnstageSingleLine(hunk, hunk.Lines[indexForHunk]);
+                }
             }
             else
             {
@@ -119,7 +138,7 @@ namespace GitClient.repository
             int startFrom = $"@@ -{oldStart},{oldCount} +{newStart},{newCount} @@ ".Length;
             var headerLimits = "";
 
-            if (header.HunkHeader.Length > startFrom)
+            if (header.HunkHeader!.Length > startFrom)
             {
                 string text = header.HunkHeader.Substring(startFrom);
                 headerLimits = $"@@ -{oldStart},{oldCount} +{newStart},{newCount} @@ {text}";
@@ -132,12 +151,21 @@ namespace GitClient.repository
             return (headerLimits, contextLines);
         }
 
-        private bool StageGitHunk(Hunk hunkAll)
+        private bool StageGitHunk(Hunk hunk)
         {
             var patch = BuildFullPatch(
-                hunkAll.FileHeaders,
-                hunkAll.HunkHeader,
-                hunkAll.Lines.Where(l => l.Type != LineType.Header).ToList());
+                hunk.FileHeaders,
+                hunk.HunkHeader!,
+                hunk.Lines.Where(line => line.Type != LineType.Header).ToList());
+            return ApplyPatch(patch);
+        }
+
+        private bool UnstageGitHunk(Hunk hunk)
+        {
+            var patch = BuildFullPatch(
+                hunk.FileHeaders,
+                hunk.HunkHeader!,
+                hunk.Lines.Where(line => line.Type != LineType.Header).ToList());
             return ApplyPatch(patch);
         }
 
@@ -170,7 +198,17 @@ namespace GitClient.repository
             try
             {
                 File.WriteAllText(tempFile, patch);
-                var result = RunGitCommand($"apply --cached --verbose \"{tempFile}\"");
+                string result = "";
+
+                if (ReadButtons.WorkingInUnstagePanel == true)
+                {
+                    result = RunGitCommand($"apply --cached --verbose \"{tempFile}\"");
+                }
+                else
+                {
+                    result = RunGitCommand($"apply -R --cached \"{tempFile}\"");
+                }
+
                 return string.IsNullOrEmpty(result);
             }
             catch
@@ -185,11 +223,20 @@ namespace GitClient.repository
 
         private List<Hunk> ParseGitDiff()
         {
-            var diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}");
-            return ParseDiffHunks(diff);
+            if (ReadButtons.WorkingInUnstagePanel == true)
+            {
+                diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}")/*.Split("\n").ToList().Skip(4).ToList()*/;
+            }
+            else
+            {
+                diff = RunGitCommand($"diff --staged {panelCommunicationService.GetFilePath()}")/*.Split("\n").ToList().Skip(4).ToList()*/;
+            }
+
+            //var diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}");
+            return ParseDiffHunks();
         }
 
-        private List<Hunk> ParseDiffHunks(string diff)
+        private List<Hunk> ParseDiffHunks()
         {
             var hunks = new List<Hunk>();
             var lines = diff.Split('\n');
@@ -280,7 +327,7 @@ namespace GitClient.repository
             };
 
             using var process = Process.Start(startInfo);
-            var output = process.StandardOutput.ReadToEnd();
+            var output = process!.StandardOutput.ReadToEnd();
             var error = process.StandardError.ReadToEnd();
             process.WaitForExit();
 

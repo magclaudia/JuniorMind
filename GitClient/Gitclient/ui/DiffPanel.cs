@@ -47,7 +47,7 @@ namespace GitClient.ui
             panels = new DrawPanels();
             x = 1;
             y = dimensions.tabHeight + 2;
-            startIndex = GetStartIndex();
+            startIndex = 0;
             diffIndex = GetCurrentIndex();
             hunkIndex = 0;
         }
@@ -64,10 +64,11 @@ namespace GitClient.ui
         public override void Show()
         {
             y = dimensions.tabHeight + 2;
+            startIndex = 0;
             string currentPanel;
             hunk.Clear();
 
-            if (ReadButtons.WorkingInStagePanel == true || statusDiffService.GetAllUnstageDiffs().Count == 0)
+            if (ReadButtons.WorkingInStagePanel == true && statusDiffService.GetAllStageDiffs().Count > 0 || statusDiffService.GetAllUnstageDiffs().Count == 0)
             {
                 fileDiffs = statusDiffService.GetAllStageDiffs();
                 currentPanel = "stage";
@@ -106,7 +107,6 @@ namespace GitClient.ui
 
             do
             {
-                
                 keyInfo = Console.ReadKey();
                 ReadButtons.DiffMovements = true;
 
@@ -131,7 +131,6 @@ namespace GitClient.ui
                                 {
                                     y++;
                                 }
-
 
                                 diffIndex++;
                                 IsHunkHeader(currentDiff[diffIndex]);
@@ -171,13 +170,49 @@ namespace GitClient.ui
                             if (diffIndex > 0)
                             {
                                 int fileIndex = communicationService.GetFileIndex();
-                                string filePath = statusService.GetAllUnstagedChanges()[fileIndex].GetFilePath();
+                                string filePath = "";
+                                string fileName = "";
+
+                                if (ReadButtons.WorkingInUnstagePanel == true)
+                                {
+                                    if (statusService.GetAllUnstagedChanges().Count == 0 || fileIndex < 0 || fileIndex >= statusService.GetAllUnstagedChanges().Count)
+                                    {
+                                        break;
+                                    }
+
+                                    filePath = statusService.GetAllUnstagedChanges()[fileIndex].GetFilePath();
+                                    fileName = statusService.GetAllUnstagedChanges()[fileIndex].GetFileName();
+                                }
+                                else
+                                {
+                                    if (statusService.GetAllStageChanges().Count == 0 || fileIndex < 0 || fileIndex >= statusService.GetAllStageChanges().Count)
+                                    {
+                                        break;
+                                    }
+
+                                    filePath = statusService.GetAllStageChanges()[fileIndex].GetFilePath();
+                                    fileName = statusService.GetAllStageChanges()[fileIndex].GetFileName();
+                                }
+
+                                if (!currentDiff[0].Contains(fileName))
+                                {
+                                    break;
+                                }
+
                                 communicationService.SetFilePath(filePath);
                                 SetHunkIndex(currentDiff[diffIndex]);
                                 communicationService.SetHunkIndex(hunkIndex);
                                 communicationService.SetDiffIndex(diffIndex);
                                 communicationService.SetLineToBeStaged(currentDiff[diffIndex]);
-                                hunksService.StageHunk();
+                                
+                                if (ReadButtons.WorkingInUnstagePanel == true)
+                                {
+                                    hunksService.StageHunk();
+                                }
+                                else
+                                {
+                                    hunksService.UnstageHunk();
+                                }
                             }
                         }
                         break;
@@ -186,7 +221,20 @@ namespace GitClient.ui
                             ReadButtons.DiffMovements = false;
                             Console.Clear();
                             ReadButtons.RightOnce = false;
-                            startIndex = 0;
+                            ReadButtons.Down = false;
+
+                            if (statusService.GetAllUnstagedChanges().Count == 0)
+                            {
+                                ReadButtons.WorkingInUnstagePanel = false;
+                                ReadButtons.WorkingInStagePanel = true;
+                            }
+                            else if (statusService.GetAllStageChanges().Count == 0)
+                            {
+                                ReadButtons.WorkingInUnstagePanel = true;
+                                ReadButtons.WorkingInStagePanel = false;
+                                communicationService.SetFileIndex(statusService.GetAllUnstagedChanges().Count - 1);
+                            }
+
                             communicationService.NavigateToStatusInitialState();
                         }
                         break;
@@ -213,10 +261,7 @@ namespace GitClient.ui
         {
             return diffIndex;
         }
-        private int GetStartIndex()
-        {
-            return 0;
-        }
+        
         private void SetHunkIndex(string targetLine)
         {
             int currentHunkIndex = -1;
@@ -319,6 +364,7 @@ namespace GitClient.ui
         private void GetAllDiffLines(List<string> currentDiff)
         {
             int index = startIndex; 
+
             for (int i = 0; i < height - 1; i++)
             {
                 if (i == currentDiff.Count || y == height || index == currentDiff.Count)

@@ -25,5 +25,12 @@ namespace GitClient.service
             string line = panelCommunicationService.GetLineToBeStaged();
             repositoryHunks.StageHunk(hunkIndex, line);
         }
+        
+        public void UnstageHunk()
+        {
+            int hunkIndex = panelCommunicationService.GetHunkIndex();
+            string line = panelCommunicationService.GetLineToBeStaged();
+            repositoryHunks.UnstageHunk(hunkIndex, line);
+        }
     }
 }
