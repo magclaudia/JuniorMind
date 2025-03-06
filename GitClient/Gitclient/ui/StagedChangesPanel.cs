@@ -44,7 +44,7 @@ namespace GitClient.ui
             clear = new ClearConsoleChoosenSpace();
             totalNumberOfFiles = statusService.GetAllStageChanges().Count;
             startIndex = GetStartIndex();
-            currentIndex = GetCurrentIndex();
+            currentIndex = 0;
             endIndex = GetEndIndex();
             fileNumber = 1;
             countingNumberOfPressingUp = 0;
@@ -52,6 +52,11 @@ namespace GitClient.ui
             y = dimensions.stagedStart;
         }
 
+       
+        public void SetCommunicationService(PanelCommunicationService service)
+        {
+            communicationService = service;
+        }
         private int GetStartIndex()
         {
             if (ReadButtons.Enter == true)
@@ -68,10 +73,6 @@ namespace GitClient.ui
 
             return startIndex;
         }
-        public int GetCurrentIndex()
-        {
-            return currentIndex;
-        }
         private int GetEndIndex()
         {
             if (ReadButtons.Enter == true && ReadButtons.WorkingInUnstagePanel == false && ReadButtons.WorkingInStagePanel == false)
@@ -86,10 +87,6 @@ namespace GitClient.ui
             }
 
             return endIndex;
-        }
-        public void SetCommunicationService(PanelCommunicationService service)
-        {
-            communicationService = service;
         }
         public override void Show()
         {
@@ -203,7 +200,6 @@ namespace GitClient.ui
 
             } while (keyInfo.Key != ConsoleKey.Escape);
         }
-
         private void HandleFilesDownMoves()
         {
             ReadButtons.Down = true;

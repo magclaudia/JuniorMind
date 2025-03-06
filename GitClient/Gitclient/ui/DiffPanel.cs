@@ -204,14 +204,38 @@ namespace GitClient.ui
                                 communicationService.SetHunkIndex(hunkIndex);
                                 communicationService.SetDiffIndex(diffIndex);
                                 communicationService.SetLineToBeStaged(currentDiff[diffIndex]);
-                                
+                                Console.Clear();
+                                TabsPanel tabs = new TabsPanel();
+
                                 if (ReadButtons.WorkingInUnstagePanel == true)
                                 {
                                     hunksService.StageHunk();
+                                    var list = statusDiffService.GetCurrentDiff(fileName, "unstage");
+                                   
+                                    if (list.Count > 0)
+                                    {
+                                        currentDiff = statusDiffService.GetCurrentDiff(fileName, "unstage")[0].diffs;
+                                        startIndex = 0;
+                                        diffIndex = 0;
+                                        y = dimensions.tabHeight + 2;
+                                        tabs.Show();
+                                        Refresh(currentDiff);
+                                    }
                                 }
                                 else
                                 {
                                     hunksService.UnstageHunk();
+                                    var list = statusDiffService.GetCurrentDiff(fileName, "stage");
+
+                                    if (list.Count > 0)
+                                    {
+                                        currentDiff = statusDiffService.GetCurrentDiff(fileName, "stage")[0].diffs;
+                                        startIndex = 0;
+                                        diffIndex = 0;
+                                        y = dimensions.tabHeight + 2;
+                                        tabs.Show();
+                                        Refresh(currentDiff);
+                                    }
                                 }
                             }
                         }

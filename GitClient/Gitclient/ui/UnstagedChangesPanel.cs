@@ -34,7 +34,6 @@ namespace GitClient.ui
         private static int fileNumber;
         private int x;
         private static int y;
-        private int countingIndex;
         private int checkLastFile;
 
         public UnstagedChangesPanel(StatusService statusService, StatusDiffService statusDiffService, PanelCommunicationService communicationService)
@@ -55,7 +54,6 @@ namespace GitClient.ui
             fileNumber = 1;
             x = 1;
             y = dimensions.unstagedStart;
-            countingIndex = 0;
             checkLastFile = 0;
         }
 
@@ -67,23 +65,6 @@ namespace GitClient.ui
         {
             FileSelectionChanged?.Invoke(this, new FileSelectionChangedEventArgs(fileName, isStaged));
         }
-        public override void Show()
-        {
-            if (ReadButtons.WorkingInUnstagePanel == false && ReadButtons.WorkingInStagePanel == false)
-            {
-                panel.DrawUnstagePanel(currentUnstagedChanges, totalNumberOfFiles, currentIndex);
-                fileNumber = communicationService.GetFileIndex() + 1;
-                currentIndex = communicationService.GetFileIndex();
-            }
-            
-            Refresh();
-
-            if (ReadButtons.WorkingInStagePanel == false)
-            {
-                ReadButtons.WorkingInUnstagePanel = true;
-                Navigate();
-            }
-        }
         private int GetStartIndex()
         {
             if (ReadButtons.Up == true && ReadButtons.WorkingInUnstagePanel == false || fileNumber == totalNumberOfFiles - 1)
@@ -93,10 +74,9 @@ namespace GitClient.ui
                     startIndex = statusService.GetAllUnstagedChanges().Count - (dimensions.unstagedEnd - dimensions.unstagedStart + 1);
                 }
             }
-            
+
             return startIndex;
         }
-        
         private int GetEndIndex()
         {
             if (ReadButtons.Enter == true && ReadButtons.WorkingInUnstagePanel == false && ReadButtons.WorkingInStagePanel == false)
@@ -111,6 +91,23 @@ namespace GitClient.ui
             }
 
             return endIndex;
+        }
+        public override void Show()
+        {
+            if (ReadButtons.WorkingInUnstagePanel == false && ReadButtons.WorkingInStagePanel == false)
+            {
+                fileNumber = communicationService.GetFileIndex() + 1;
+                currentIndex = communicationService.GetFileIndex();
+            }
+
+            panel.DrawUnstagePanel(currentUnstagedChanges, totalNumberOfFiles, currentIndex);
+            Refresh();
+
+            if (ReadButtons.WorkingInStagePanel == false)
+            {
+                ReadButtons.WorkingInUnstagePanel = true;
+                Navigate();
+            }
         }
         private void Refresh()
         {
@@ -265,7 +262,6 @@ namespace GitClient.ui
                 }
 
                 communicationService.SetCurrentFileName(currentUnstagedChanges[currentIndex].GetFileName());
-                countingIndex++;
                 blueBox.SetBlueBox((1, y), currentUnstagedChanges[currentIndex].Display(), dimensions.changesPanelWidth - 2);
                 indicator.GetIndicator(fileNumber, dimensions.unstagedEnd, totalNumberOfFiles, dimensions.width / 2 - 1, dimensions.unstagedStart - 1, dimensions.unstagedEnd);
                 OnFileSelectionChanged(communicationService.GetCurrentFileName(), isStaged: false);
@@ -384,7 +380,6 @@ namespace GitClient.ui
             ReadButtons.Enter = false;
             communicationService.NavigateToStagedPanel();
         }
-       
         private void GetUnstagedFiles(List<ChangeAttribute> currentUnstagedChanges)
         {
             if (y == dimensions.unstagedEnd && ReadButtons.Down == true || y == dimensions.unstagedStart && ReadButtons.Up == true)

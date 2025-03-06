@@ -23,22 +23,32 @@ namespace GitClient.repository
         }
 
 
-        public void StageHunk(int hunkIndex, string line)
+        public void StageHunk(string line)
         {
             List<Hunk> hunks = ParseGitDiff();
 
-            if (hunkIndex < 0 || hunkIndex >= hunks.Count && hunks.Count > 0)
-            {
-                return;
-            }
-            else if (hunks.Count == 0)
+            if (hunks.Count == 0)
             {
                 RunGitCommand($"add -- {panelCommunicationService.GetFilePath()}");
             }
+
+            int hunkIndex = -1;
+
+            if (line.StartsWith("@@"))
+            {
+                hunkIndex = hunks.FindIndex(x => x.HunkHeader == line);
+            }
             else
             {
-                HandleLineSelection(hunks[hunkIndex], line);
+                hunkIndex = hunks.FindIndex(x => x.Lines.Any(y => y.Content == line));
             }
+            
+            if (hunkIndex < 0 || hunkIndex >= hunks.Count)
+            {
+                return;
+            }
+
+            HandleLineSelection(hunks[hunkIndex], line);
         }
 
         public void UnstageHunk(int hunkIndex, string line)
@@ -157,7 +167,13 @@ namespace GitClient.repository
                 hunk.FileHeaders,
                 hunk.HunkHeader!,
                 hunk.Lines.Where(line => line.Type != LineType.Header).ToList());
-            return ApplyPatch(patch);
+            
+            if (ApplyPatch(patch))
+            {
+                diff = null!;
+                return true;
+            }
+            return false;
         }
 
         private bool UnstageGitHunk(Hunk hunk)
@@ -166,7 +182,13 @@ namespace GitClient.repository
                 hunk.FileHeaders,
                 hunk.HunkHeader!,
                 hunk.Lines.Where(line => line.Type != LineType.Header).ToList());
-            return ApplyPatch(patch);
+            
+            if (ApplyPatch(patch))
+            {
+                diff = null!;
+                return true;
+            }
+            return false;
         }
 
         //private bool StageSingleLine(Hunk hunk, HunkLine line)
@@ -223,44 +245,56 @@ namespace GitClient.repository
 
         private List<Hunk> ParseGitDiff()
         {
-            if (ReadButtons.WorkingInUnstagePanel == true)
+            if (string.IsNullOrEmpty(diff))
             {
-                diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}")/*.Split("\n").ToList().Skip(4).ToList()*/;
+                if (ReadButtons.WorkingInUnstagePanel == true)
+                {
+                    diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}");
+                }
+                else
+                {
+                    diff = RunGitCommand($"diff --staged {panelCommunicationService.GetFilePath()}");
+                }
             }
-            else
-            {
-                diff = RunGitCommand($"diff --staged {panelCommunicationService.GetFilePath()}")/*.Split("\n").ToList().Skip(4).ToList()*/;
-            }
-
-            //var diff = RunGitCommand($"diff -- {panelCommunicationService.GetFilePath()}");
             return ParseDiffHunks();
         }
 
         private List<Hunk> ParseDiffHunks()
         {
-            var hunks = new List<Hunk>();
-            var lines = diff.Split('\n');
+            List<Hunk> hunks = new List<Hunk>();
+            string[] lines = diff.Split('\n');
             List<string> currentFileHeaders = new List<string>();
-            Hunk? currentHunk = null;
+            Hunk? currentHunk = new Hunk();
+            bool inHunk = false;
+            int currentOldLine = 0;
+            int currentNewLine = 0;
 
             foreach (var line in lines)
             {
                 if (line.StartsWith("diff --git"))
                 {
                     currentFileHeaders = new List<string> { line };
-                    currentHunk = null;
+
+                    if (inHunk)
+                    {
+                        hunks.Add(currentHunk!);
+                        currentHunk = null;
+                        inHunk = false;
+                    }
                 }
-                else if (line.StartsWith("--- "))
-                {
-                    currentFileHeaders.Add(line);
-                }
-                else if (line.StartsWith("+++ "))
+                else if (line.StartsWith("--- ") || line.StartsWith("+++ "))
                 {
                     currentFileHeaders.Add(line);
                 }
                 else if (line.StartsWith("@@"))
                 {
+                    if (inHunk)
+                    {
+                        hunks.Add(currentHunk!);
+                    }
+
                     currentHunk = new Hunk();
+                    inHunk = true;
                     currentHunk.FileHeaders.AddRange(currentFileHeaders);
                     currentHunk.HunkHeader = line;
                     currentHunk.Lines.Add(new HunkLine
@@ -269,45 +303,54 @@ namespace GitClient.repository
                         Type = LineType.Header
                     });
 
-                    hunks.Add(currentHunk);
-
                     var match = Regex.Match(line, @"@@ \-(\d+),?(\d*) \+(\d+),?(\d*) @@");
-                    var oldStart = int.Parse(match.Groups[1].Value);
-                    var oldLines = match.Groups[2].Success && !string.IsNullOrEmpty(match.Groups[2].Value)
-                        ? int.Parse(match.Groups[2].Value) : 0;
-                    var newStart = int.Parse(match.Groups[3].Value);
-                    var newLines = match.Groups[4].Success && !string.IsNullOrEmpty(match.Groups[4].Value)
-                        ? int.Parse(match.Groups[4].Value) : 0;
-
-                    int oldLine = oldStart;
-                    int newLine = newStart;
-
-                    foreach (var contentLine in lines.SkipWhile(l => l != line).Skip(1))
+                    
+                    if (!match.Success)
                     {
-                        if (contentLine.StartsWith("@@")) break;
-
-                        var hunkLine = new HunkLine { Content = contentLine };
-
-                        if (contentLine.StartsWith("-"))
-                        {
-                            hunkLine.Type = LineType.Removal;
-                            hunkLine.OldLineNumber = oldLine++;
-                        }
-                        else if (contentLine.StartsWith("+"))
-                        {
-                            hunkLine.Type = LineType.Addition;
-                            hunkLine.NewLineNumber = newLine++;
-                        }
-                        else
-                        {
-                            hunkLine.Type = LineType.Context;
-                            hunkLine.OldLineNumber = oldLine++;
-                            hunkLine.NewLineNumber = newLine++;
-                        }
-
-                        currentHunk.Lines.Add(hunkLine);
+                        continue;
                     }
+
+                    int oldStart = int.Parse(match.Groups[1].Value);
+                    int oldCount = string.IsNullOrEmpty(match.Groups[2].Value)
+                        ? 1
+                        : int.Parse(match.Groups[2].Value);
+
+                    int newStart = int.Parse(match.Groups[3].Value);
+                    int newCount = string.IsNullOrEmpty(match.Groups[4].Value)
+                        ? 1
+                        : int.Parse(match.Groups[4].Value);
+
+                    currentOldLine = oldStart;
+                    currentNewLine = newStart;
                 }
+                else if (inHunk)
+                {
+                    var hunkLine = new HunkLine() { Content = line };
+
+                    if (line.StartsWith("-"))
+                    {
+                        hunkLine.Type = LineType.Removal;
+                        hunkLine.OldLineNumber = currentOldLine++;
+                    }
+                    else if (line.StartsWith("+"))
+                    {
+                        hunkLine.Type = LineType.Addition;
+                        hunkLine.NewLineNumber = currentNewLine++;
+                    }
+                    else
+                    {
+                        hunkLine.Type = LineType.Context;
+                        hunkLine.OldLineNumber = currentOldLine++;
+                        hunkLine.NewLineNumber = currentNewLine++;
+                    }
+
+                    currentHunk!.Lines.Add(hunkLine);
+                }
+            }
+
+            if (inHunk)
+            {
+                hunks.Add(currentHunk!);
             }
 
             return hunks;
